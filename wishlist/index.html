@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wishlist — kmufti.com</title>
+  <meta name="description" content="Paste a product link, watch it become a cutout on your scrapbook wish list." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Hanken+Grotesk:wght@300;400;500&family=Spline+Sans+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=1" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../">kmufti.com</a>
+    <span class="crumb">/ wishlist</span>
+  </header>
+
+  <section class="hero">
+    <h1>Wish&nbsp;List</h1>
+    <p class="tagline">a picture is worth a thousand wishes.</p>
+  </section>
+
+  <form id="add-form" class="add-form">
+    <input
+      id="add-input"
+      type="url"
+      inputmode="url"
+      placeholder="paste a product link…"
+      autocomplete="off"
+      required
+    />
+    <button type="submit" id="add-btn">add</button>
+  </form>
+  <p id="add-status" class="add-status"></p>
+
+  <p class="bookmarklet-hint">
+    drag <a id="bookmarklet" class="bookmarklet" href="#">+ wish</a>
+    to your bookmarks bar to add from any page in one click.
+  </p>
+
+  <!-- Scrapbook canvas: items are absolutely positioned inside -->
+  <div class="collage" id="collage"></div>
+  <div class="empty-note" id="empty-note">your wish list is empty — add something above.</div>
+
+  <!-- Item template -->
+  <template id="card-template">
+    <div class="item" draggable="false">
+      <a class="item-link" target="_blank" rel="noopener noreferrer" draggable="false">
+        <img class="item-img" alt="" draggable="false" />
+        <span class="item-fallback"><span class="item-glyph"></span></span>
+      </a>
+      <button class="item-remove" title="Remove" aria-label="Remove item">&times;</button>
+      <div class="item-caption">
+        <span class="item-title"></span>
+        <span class="item-price"></span>
+      </div>
+    </div>
+  </template>
+
+  <!-- Shopping cart: drag items onto it to collect them; click to see totals -->
+  <button class="cart-fab" id="cart-fab" aria-label="Open cart" aria-expanded="false">
+    <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M2 3h2.2l1.9 11a1.6 1.6 0 0 0 1.58 1.32h8.3a1.6 1.6 0 0 0 1.57-1.27L20.6 7H5.3" />
+      <circle cx="9" cy="20" r="1.25" />
+      <circle cx="17.5" cy="20" r="1.25" />
+    </svg>
+    <span class="cart-badge" id="cart-badge" hidden>0</span>
+  </button>
+
+  <div class="cart-screen" id="cart-panel" role="dialog" aria-label="Cart" hidden>
+    <div class="cart-screen-inner">
+      <header class="cart-screen-head">
+        <button class="cart-back" id="cart-close" aria-label="Back to wishlist">&larr; back</button>
+        <h2 class="cart-screen-title">Cart</h2>
+      </header>
+      <div class="cart-empty" id="cart-empty">your cart is empty — drag items onto the cart button to collect them here.</div>
+      <div class="cart-list" id="cart-list"></div>
+      <div class="cart-summary" id="cart-summary"></div>
+      <div class="cart-actions" id="cart-actions" hidden>
+        <button class="cart-share" id="cart-share">copy list to share</button>
+        <button class="cart-clear" id="cart-clear">empty cart</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=1"></script>
+</body>
+</html>

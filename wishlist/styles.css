@@ -1,0 +1,603 @@
+:root {
+  --bg: #ffffff;          /* pure white = cleanest white-knockout cutouts */
+  --ink: #1a1a1a;
+  --ink-dim: #6b6b6b;
+  --ink-faint: #a8a29a;
+  --line: rgba(0, 0, 0, 0.1);
+  --accent: #c98a8a;
+  --green: #3f7d5a;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Hanken Grotesk", sans-serif;
+  font-weight: 300;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+
+/* ---------- Header ---------- */
+.site-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 24px 40px;
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+.brand { color: var(--ink); font-weight: 400; transition: opacity 0.15s ease; }
+.brand:hover { opacity: 0.6; }
+.crumb { color: var(--ink-faint); }
+
+/* ---------- Hero ---------- */
+.hero { text-align: center; padding: 24px 20px 20px; }
+.hero h1 {
+  font-family: "Fraunces", serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: clamp(40px, 7vw, 68px);
+  letter-spacing: 1px;
+  margin: 0 0 8px;
+}
+.tagline {
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink-dim);
+  margin: 0;
+}
+
+/* ---------- Add form ---------- */
+.add-form {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 10px;
+}
+#add-input {
+  flex: 1;
+  background: #f7f7f5;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 14px;
+  padding: 12px 14px;
+  transition: border-color 0.15s ease;
+}
+#add-input::placeholder { color: var(--ink-faint); }
+#add-input:focus { outline: none; border-color: var(--accent); }
+#add-btn {
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 1px;
+  padding: 12px 22px;
+  transition: opacity 0.15s ease, transform 0.08s ease;
+}
+#add-btn:hover { opacity: 0.85; }
+#add-btn:active { transform: scale(0.97); }
+#add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.add-status {
+  max-width: 540px;
+  margin: 10px auto 0;
+  padding: 0 20px;
+  min-height: 18px;
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 12px;
+  color: var(--ink-faint);
+  text-align: center;
+}
+.add-status.error { color: #c0392b; }
+.add-status.ok { color: var(--green); }
+
+/* ---------- Bookmarklet hint ---------- */
+.bookmarklet-hint {
+  max-width: 540px;
+  margin: 6px auto 0;
+  padding: 0 20px;
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+  text-align: center;
+}
+.bookmarklet {
+  display: inline-block;
+  padding: 3px 10px;
+  margin: 0 2px;
+  background: var(--ink);
+  color: #fff !important;
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  cursor: grab;
+  transition: opacity 0.15s ease;
+}
+.bookmarklet:hover { opacity: 0.85; }
+.bookmarklet:active { cursor: grabbing; }
+
+/* ---------- Scrapbook canvas ---------- */
+.collage {
+  position: relative;
+  width: 100%;
+  max-width: 1120px;
+  margin: 20px auto 60px;
+  /* height set by JS based on packed items */
+  touch-action: none; /* let us handle drag without scroll interference */
+}
+
+.empty-note {
+  text-align: center;
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 12px;
+  color: var(--ink-faint);
+  padding: 60px 20px 120px;
+}
+
+/* ---------- Item (free-positioned cutout) ---------- */
+.item {
+  position: absolute;
+  /* left/top/width/--rot set inline by JS. transform-origin is the center so
+     rotation looks natural. Box is sized tightly to the image = small hitbox. */
+  transform: translate(-50%, -50%) rotate(var(--rot, 0deg));
+  cursor: grab;
+  transition: filter 0.15s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+  touch-action: none;   /* we handle dragging; don't let the browser scroll/drag */
+}
+
+.item-link,
+.item-img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+.item:hover {
+  z-index: 500 !important; /* hovered item always reachable above overlaps */
+}
+.item.dragging {
+  cursor: grabbing;
+  z-index: 900 !important;
+  transition: none;
+  will-change: transform;   /* promote to its own compositor layer */
+}
+/* Drop the costly blend + shadow while moving so the drag stays smooth;
+   they snap back the moment you release. */
+.item.dragging .item-img {
+  mix-blend-mode: normal;
+  filter: none;
+  transform: none;
+  transition: none;
+  will-change: transform;
+}
+
+.item-link {
+  display: block;
+  line-height: 0;
+}
+
+.item-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  mix-blend-mode: multiply;      /* knocks out white product backgrounds */
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.16));
+  transition: transform 0.15s ease;
+  pointer-events: none;          /* clicks handled on the .item / link */
+}
+.item:hover .item-img { transform: scale(1.05); }
+.item-img[hidden] { display: none; }
+
+/* While dragging, drop the multiply blend on every item — compositing the
+   blend against overlapping items each frame is what made dragging lag. */
+.collage.dragging-active .item-img {
+  mix-blend-mode: normal;
+}
+
+.item-fallback {
+  display: none;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  align-items: center;
+  justify-content: center;
+  background: #ece7df;
+  border-radius: 10px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
+}
+.item-fallback.show { display: flex; }
+.item-glyph {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-size: 40px;
+  color: var(--ink-faint);
+}
+
+.item-remove {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+.item:hover .item-remove { opacity: 1; }
+.item-remove:hover { background: #c0392b; }
+
+/* caption floats below the image on hover, doesn't affect hitbox */
+.item-caption {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 6px;
+  white-space: nowrap;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 5px 10px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.item:hover .item-caption { opacity: 1; }
+.item-title {
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.item-price {
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 11px;
+  color: var(--ink-dim);
+}
+.item-caption:empty { display: none; }
+
+/* ---------- Bought state (right-click toggles) ---------- */
+.item--bought {
+  opacity: 0.6;
+}
+.item--bought::before,
+.item--bought::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.item--bought::before {
+  background: linear-gradient(
+    to bottom right,
+    transparent calc(50% - 2px),
+    rgba(200, 30, 30, 0.88) calc(50% - 2px),
+    rgba(200, 30, 30, 0.88) calc(50% + 2px),
+    transparent calc(50% + 2px)
+  );
+}
+.item--bought::after {
+  background: linear-gradient(
+    to bottom left,
+    transparent calc(50% - 2px),
+    rgba(200, 30, 30, 0.88) calc(50% - 2px),
+    rgba(200, 30, 30, 0.88) calc(50% + 2px),
+    transparent calc(50% + 2px)
+  );
+}
+
+@media (max-width: 640px) {
+  .site-header { padding: 18px 20px; }
+  .collage { padding: 0 10px; }
+  .add-form { flex-direction: column; }
+}
+
+/* ---------- Shopping cart ---------- */
+.cart-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 1000;
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  border: none;
+  background: var(--ink);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.2);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+.cart-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+}
+.cart-fab:active { transform: translateY(0); }
+.cart-icon { width: 50px; height: 50px; transform: translateX(-1px); }
+
+/* Rose highlight while an item is dragged over it (the one splash of accent) */
+.cart-fab.cart-fab--over {
+  transform: scale(1.12);
+  background: var(--accent);
+  box-shadow: 0 12px 30px rgba(150, 80, 80, 0.35);
+}
+/* A restrained bump when something is added */
+@keyframes cart-bump {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+.cart-fab.cart-fab--bump { animation: cart-bump 0.34s ease; }
+
+.cart-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 7px;
+  border-radius: 13px;
+  background: var(--accent);
+  color: #fff;
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 12.5px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.cart-badge[hidden] { display: none; }
+
+/* ---- Cart screen (full page) ---- */
+.cart-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  background: var(--bg);
+  overflow-y: auto;
+  animation: cart-screen-in 0.25s ease;
+}
+.cart-screen[hidden] { display: none; }
+@keyframes cart-screen-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.cart-screen-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 30px 40px 90px;
+}
+.cart-screen-head {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 6px 0 22px;
+  border-bottom: 1px solid var(--line);
+}
+.cart-back {
+  border: none;
+  background: none;
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink-dim);
+  padding: 6px 2px;
+  transition: color 0.15s ease;
+}
+.cart-back:hover { color: var(--ink); }
+.cart-screen-title {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 34px;
+  margin: 0;
+}
+
+.cart-empty {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 14px;
+}
+
+.cart-list {
+  padding: 8px 0;
+}
+.cart-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 6px;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.12s ease;
+}
+.cart-row:hover { background: rgba(0, 0, 0, 0.02); }
+.cart-thumb {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #ece7df;
+}
+.cart-thumb-glyph {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #ece7df;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-size: 26px;
+  color: var(--ink-faint);
+}
+.cart-row-body { flex: 1; min-width: 0; }
+.cart-row-title {
+  display: block;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.15s ease;
+}
+.cart-row-title:hover { opacity: 0.6; }
+.cart-row-price {
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 13px;
+  color: var(--green);
+  border: none;
+  background: none;
+  padding: 2px 0;
+  text-align: left;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.cart-row-price:hover { text-decoration: underline; text-underline-offset: 2px; }
+.cart-row-price.none { color: var(--ink-faint); }
+.cart-price-input {
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 13px;
+  color: var(--green);
+  width: 110px;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  outline: none;
+}
+.cart-price-input:focus { border-color: var(--accent); }
+.cart-row-remove {
+  border: none;
+  background: none;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ink-faint);
+  padding: 4px 8px;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+.cart-row-remove:hover { color: #c0392b; }
+
+.cart-summary {
+  padding: 6px 0 0;
+}
+.cart-summary:empty { display: none; }
+.cart-total-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 22px 0 8px;
+}
+.cart-total-label {
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.cart-total-value {
+  font-family: "Fraunces", serif;
+  font-weight: 700;
+  font-size: 40px;
+}
+.cart-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  font-size: 13px;
+  color: var(--ink-dim);
+}
+.cart-stats .warn { color: var(--accent); }
+
+.cart-actions {
+  padding: 34px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.cart-actions[hidden] { display: none; }
+.cart-share {
+  border: none;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 9px;
+  padding: 10px 22px;
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.cart-share:hover { opacity: 0.85; }
+.cart-share.copied { background: var(--green); }
+.cart-clear {
+  border: 1px solid var(--line);
+  background: none;
+  border-radius: 9px;
+  padding: 10px 20px;
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: var(--ink-dim);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.cart-clear:hover { color: #c0392b; border-color: #c0392b; }
+
+/* "Heyy, I'm here!" — on drag the cart lunges up-and-to-the-left toward the
+   board, expanding from its bottom-right corner with a springy accelerated
+   bounce, then settles and repeats to keep drawing the eye. Suppressed while
+   the pointer is actually over it (the rose highlight state takes over). */
+@keyframes cart-heyy {
+  0%   { transform: translate(0, 0) scale(1.12); }
+  16%  { transform: translate(-17px, -19px) scale(1.32); }  /* fast lunge up-left */
+  30%  { transform: translate(-3px, -4px) scale(1.13); }    /* rebound */
+  42%  { transform: translate(-11px, -12px) scale(1.22); }  /* second, smaller hop */
+  54%  { transform: translate(-1px, -2px) scale(1.12); }
+  64%  { transform: translate(0, 0) scale(1.14); }          /* settle */
+  100% { transform: translate(0, 0) scale(1.14); }          /* hold, then repeat */
+}
+.cart-fab.cart-fab--armed {
+  transform-origin: bottom right;
+  animation: cart-heyy 1.5s cubic-bezier(0.5, 0, 0.25, 1) infinite;
+}
+
+@media (max-width: 640px) {
+  .cart-screen-inner { padding: 24px 20px 80px; }
+  .cart-screen-title { font-size: 28px; }
+  .cart-fab { bottom: 16px; right: 16px; width: 92px; height: 92px; }
+  .cart-icon { width: 44px; height: 44px; }
+}

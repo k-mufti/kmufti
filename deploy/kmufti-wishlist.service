@@ -1,0 +1,23 @@
+# systemd unit for the wishlist backend (link scraping + image proxy).
+# Install: sudo cp deploy/kmufti-wishlist.service /etc/systemd/system/
+#          sudo systemctl daemon-reload
+#          sudo systemctl enable --now kmufti-wishlist
+#
+# Adjust WorkingDirectory / ExecStart / User to match your server.
+# Find your node path with:  which node   (nvm installs live under ~/.nvm/...)
+
+[Unit]
+Description=kmufti wishlist API (unfurl + image proxy)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/kmufti-hub/wishlist
+ExecStart=/usr/bin/node server.js
+Environment=PORT=8021
+Restart=always
+RestartSec=3
+User=www-data
+
+[Install]
+WantedBy=multi-user.target

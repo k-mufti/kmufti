@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Larprady!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Oswald:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=3" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+  <!-- Start screen -->
+  <section id="start-screen" class="screen active">
+    <canvas id="canvas-start" class="start-canvas"></canvas>
+    <div class="start-inner">
+      <h1 class="logo" id="logo-title" aria-label="LARPRADY!"><span class="logo-letter">L</span><span class="logo-letter">A</span><span class="logo-letter">R</span><span class="logo-letter">P</span><span class="logo-letter">R</span><span class="logo-letter">A</span><span class="logo-letter">D</span><span class="logo-letter">Y</span><span class="logo-letter logo-bang">!</span></h1>
+      <p class="tagline" id="start-tagline">Answer in the form of a question.</p>
+      <div class="start-buttons" id="start-buttons">
+        <button id="btn-new-game" class="primary-btn">Random Episode</button>
+        <button id="btn-custom-game" class="primary-btn secondary">Custom Board</button>
+      </div>
+      <p id="loading-status" class="loading">Loading question bank&hellip;</p>
+    </div>
+  </section>
+
+  <!-- Team setup screen -->
+  <section id="team-screen" class="screen">
+    <canvas id="canvas-team" class="start-canvas"></canvas>
+    <div class="team-setup-inner">
+      <div class="custom-header">
+        <h2>Teams</h2>
+        <button id="btn-team-back" class="text-btn">&larr; Back</button>
+      </div>
+      <p class="custom-help">How many teams are playing?</p>
+      <div class="team-count-row" id="team-count-row">
+        <button class="team-count-btn active" data-count="1">1</button>
+        <button class="team-count-btn" data-count="2">2</button>
+        <button class="team-count-btn" data-count="3">3</button>
+        <button class="team-count-btn" data-count="4">4</button>
+      </div>
+      <div id="team-name-fields" class="team-name-fields"></div>
+      <div class="episode-picker hidden" id="episode-picker">
+        <p class="episode-label">Which episode?</p>
+        <select id="episode-select" class="episode-select" aria-label="Pick an episode">
+          <option value="">Random episode</option>
+        </select>
+      </div>
+      <div class="team-actions">
+        <button id="btn-team-continue" class="primary-btn">Continue</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Custom board picker screen -->
+  <section id="custom-screen" class="screen">
+    <canvas id="canvas-custom" class="start-canvas"></canvas>
+    <div class="custom-inner">
+      <div class="custom-header">
+        <h2>Build Your Board</h2>
+        <button id="btn-custom-back" class="text-btn">&larr; Back</button>
+      </div>
+      <p class="custom-help">Pick 6 categories. Click a slot to remove it.</p>
+
+      <div class="slots" id="slots"></div>
+
+      <div class="picker-controls">
+        <input id="category-search" type="text" placeholder="Search 47k+ categories&hellip;" autocomplete="off" />
+      </div>
+
+      <div class="set-bar" id="set-bar"></div>
+
+      <div class="tag-wrap" id="tag-wrap">
+        <button class="tag-toggle" id="tag-toggle" aria-expanded="true">
+          <span class="tag-toggle-caret">▾</span> Topics
+        </button>
+        <div class="tag-bar" id="tag-bar"></div>
+      </div>
+
+      <div class="picker-status" id="picker-status">
+        <span id="picker-count" class="picker-count"></span>
+        <button id="btn-clear-sel" class="text-btn small hidden">Clear All</button>
+      </div>
+
+      <div class="category-list" id="category-list">
+        <div class="cat-list-empty" id="cat-list-empty">
+          Search or pick a pack above to see categories.
+        </div>
+        <div id="vscroll-sizer"></div>
+        <div id="vscroll-rows"></div>
+      </div>
+
+      <div class="custom-actions">
+        <button id="btn-custom-random" class="text-btn">Randomize 6</button>
+        <button id="btn-custom-start" class="primary-btn" disabled>Start Game</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Round intro overlay -->
+  <section id="round-intro" class="screen">
+    <canvas id="canvas-round" class="start-canvas"></canvas>
+    <div class="round-intro-inner">
+      <h2 id="round-intro-title"></h2>
+      <button id="btn-round-continue" class="primary-btn">Continue</button>
+    </div>
+  </section>
+
+  <!-- Game screen -->
+  <section id="game-screen" class="screen">
+    <canvas id="canvas-game" class="start-canvas"></canvas>
+    <header class="game-header">
+      <div class="round-label" id="round-label">Jeopardy!</div>
+      <div id="teams-display" class="teams-display"></div>
+    </header>
+    <div class="board" id="board"></div>
+  </section>
+
+  <!-- Clue modal -->
+  <div id="clue-modal" class="modal hidden">
+    <div class="clue-card">
+      <div class="clue-header">
+        <span id="clue-category"></span>
+        <span id="clue-value"></span>
+      </div>
+
+      <div id="daily-double-splash" class="dd-splash hidden">
+        <div class="dd-title">DAILY<br />DOUBLE!</div>
+      </div>
+
+      <div id="wager-panel" class="wager-panel hidden">
+        <label for="wager-input">Enter your wager</label>
+        <div class="wager-range" id="wager-range"></div>
+        <input id="wager-input" type="number" min="5" step="1" />
+        <button id="btn-submit-wager" class="primary-btn">Submit</button>
+        <p id="wager-error" class="wager-error"></p>
+      </div>
+
+      <div id="clue-timer" class="clue-timer hidden">
+        <div class="clue-timer-track">
+          <div id="clue-timer-bar" class="clue-timer-bar"></div>
+        </div>
+        <span id="clue-timer-text" class="clue-timer-text">45</span>
+      </div>
+
+      <div id="clue-body" class="clue-body hidden">
+        <p id="clue-question" class="clue-question"></p>
+        <div id="clue-answer-wrap" class="clue-answer-wrap hidden">
+          <p class="answer-label">Answer</p>
+          <p id="clue-answer" class="clue-answer"></p>
+        </div>
+        <div class="clue-actions">
+          <button id="btn-show-answer" class="primary-btn">Show Answer</button>
+          <div id="judge-buttons" class="judge-buttons hidden">
+            <div id="active-team-label" class="active-team-label"></div>
+            <div class="judge-row">
+              <button id="btn-correct" class="judge-btn correct">Correct (+<span id="judge-value"></span>)</button>
+              <button id="btn-wrong" class="judge-btn wrong">Wrong (&minus;<span id="judge-value-2"></span>)</button>
+              <button id="btn-skip" class="judge-btn skip">Skip</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final Jeopardy screen -->
+  <section id="final-screen" class="screen">
+    <canvas id="canvas-final" class="start-canvas"></canvas>
+    <div class="final-inner">
+      <h2 class="final-title">FINAL JEOPARDY!</h2>
+
+      <div id="final-category-panel">
+        <p class="final-label">Category</p>
+        <p id="final-category" class="final-category"></p>
+        <div id="final-wager-fields" class="final-wager-fields"></div>
+        <button id="btn-final-wager" class="primary-btn">Lock in Wagers</button>
+        <p id="final-wager-error" class="wager-error"></p>
+      </div>
+
+      <div id="final-clue-panel" class="hidden">
+        <p id="final-clue" class="clue-question"></p>
+        <div id="final-answer-wrap" class="clue-answer-wrap hidden">
+          <p class="answer-label">Answer</p>
+          <p id="final-answer" class="clue-answer"></p>
+        </div>
+        <div class="clue-actions">
+          <button id="btn-final-show-answer" class="primary-btn">Show Answer</button>
+          <div id="final-judge" class="final-team-judges hidden"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- End screen -->
+  <section id="end-screen" class="screen">
+    <canvas id="canvas-end" class="start-canvas"></canvas>
+    <div class="end-inner">
+      <h2>Game Over</h2>
+      <div id="end-scores" class="end-scores"></div>
+      <p id="end-episode" class="end-episode"></p>
+      <button id="btn-play-again" class="primary-btn">Play Again</button>
+    </div>
+  </section>
+
+  <!-- Score adjust popup -->
+  <div id="score-adjust-popup" class="score-adjust-popup hidden"></div>
+
+  <script src="game.js?v=7"></script>
+  <script>
+  // ---------- Hex canvas background for all screens ----------
+  (function () {
+
+    const canvasIds = ['canvas-start', 'canvas-team', 'canvas-custom', 'canvas-round', 'canvas-game', 'canvas-final', 'canvas-end'];
+    const canvases = canvasIds.map(id => document.getElementById(id)).filter(c => c);
+    const contexts = canvases.map(c => c.getContext('2d'));
+    const hexGrids = canvases.map(() => []);
+
+    function buildHexGrid(canvasIndex) {
+      const canvas = canvases[canvasIndex];
+      const W = canvas.width;
+      const H = canvas.height;
+      const size = 35;
+      const h = size * 2;
+      const w = Math.sqrt(3) * size;
+      const xStep = w;
+      const yStep = h * 0.75;
+      
+      const cols = Math.ceil(W / xStep) + 2;
+      const rows = Math.ceil(H / yStep) + 2;
+      
+      const hexes = [];
+      for (let r = -1; r < rows; r++) {
+        for (let c = -1; c < cols; c++) {
+          const xOff = (r % 2) * (w / 2);
+          const cx = c * xStep + xOff;
+          const cy = r * yStep;
+          
+          const vertices = [];
+          for (let i = 0; i < 6; i++) {
+            const angle = (Math.PI / 3) * i - Math.PI / 6;
+            vertices.push([
+              cx + size * Math.cos(angle),
+              cy + size * Math.sin(angle)
+            ]);
+          }
+          
+          hexes.push({
+            x: cx,
+            y: cy,
+            row: r,
+            phase: Math.random() * Math.PI * 2,
+            speed: 0.2 + Math.random() * 0.3,
+            vertices
+          });
+        }
+      }
+      hexGrids[canvasIndex] = hexes;
+    }
+
+    function resize() {
+      canvases.forEach((canvas, i) => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        buildHexGrid(i);
+      });
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function drawFrame(ts) {
+      const t = ts * 0.001;
+
+      canvases.forEach((canvas, i) => {
+        const ctx = contexts[i];
+        const hexes = hexGrids[i];
+        const W = canvas.width;
+        const H = canvas.height;
+
+        // Base fill
+        ctx.fillStyle = '#04083a';
+        ctx.fillRect(0, 0, W, H);
+
+        // Shimmer band position — slow drift, sized to sweep the whole grid
+        const bx = W * (0.5 + 0.65 * Math.sin(t * 0.11));
+        const by = H * (0.5 + 0.55 * Math.cos(t * 0.09));
+        const bandR = Math.min(W, H) * 0.6;
+
+        // Fill each hex
+        for (const h of hexes) {
+          const pulse = 0.5 + 0.5 * Math.sin(t * h.speed + h.phase);
+          const dist = Math.hypot(h.x - bx, h.y - by);
+          const bandFactor = Math.max(0, 1 - dist / bandR);
+          const glow = Math.pow(bandFactor, 1.6);
+
+          // Static per-row/col checker tone gives clear grid definition even at rest...
+          const rowTone = (h.row % 2 === 0) ? 1 : 0;
+          let r = 10 + rowTone * 22 + pulse * 20;
+          let g = 16 + rowTone * 30 + pulse * 26;
+          let b = 96 + rowTone * 55 + pulse * 50;
+          // ...and washed toward bright warm gold where the light band sweeps through
+          r += (255 - r) * glow;
+          g += (200 - g) * glow;
+          b += (40 - b) * glow;
+
+          // Manual shadow (offset darker hex)
+          ctx.beginPath();
+          ctx.moveTo(h.vertices[0][0] + 3, h.vertices[0][1] + 3);
+          for (let j = 1; j < h.vertices.length; j++) {
+            ctx.lineTo(h.vertices[j][0] + 3, h.vertices[j][1] + 3);
+          }
+          ctx.closePath();
+          ctx.fillStyle = 'rgba(0, 0, 20, 0.4)';
+          ctx.fill();
+
+          // Main hex
+          ctx.beginPath();
+          ctx.moveTo(h.vertices[0][0], h.vertices[0][1]);
+          for (let j = 1; j < h.vertices.length; j++) {
+            ctx.lineTo(h.vertices[j][0], h.vertices[j][1]);
+          }
+          ctx.closePath();
+          ctx.fillStyle = `rgb(${r | 0}, ${g | 0}, ${b | 0})`;
+          ctx.fill();
+        }
+
+        // Hex edges — clearly visible grid lines
+        ctx.strokeStyle = 'rgba(140, 170, 255, 0.45)';
+        ctx.lineWidth = 1.5;
+        for (const h of hexes) {
+          ctx.beginPath();
+          ctx.moveTo(h.vertices[0][0], h.vertices[0][1]);
+          for (let j = 1; j < h.vertices.length; j++) {
+            ctx.lineTo(h.vertices[j][0], h.vertices[j][1]);
+          }
+          ctx.closePath();
+          ctx.stroke();
+        }
+
+        // Gentle vignette
+        const vig = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.8);
+        vig.addColorStop(0.5, 'rgba(0,0,0,0)');
+        vig.addColorStop(1, 'rgba(0,0,6,0.45)');
+        ctx.fillStyle = vig;
+        ctx.fillRect(0, 0, W, H);
+      });
+
+      requestAnimationFrame(drawFrame);
+    }
+
+    requestAnimationFrame(drawFrame);
+
+    /* ---- GSAP title entrance ---- */
+    gsap.set('.logo-letter', { opacity: 0, y: -90, rotationX: 85, transformOrigin: '50% 0%' });
+    gsap.set('#start-tagline', { opacity: 0, y: 20 });
+    gsap.set('#start-buttons', { opacity: 0, y: 20 });
+
+    gsap.to('.logo-letter', {
+      opacity: 1, y: 0, rotationX: 0,
+      duration: 0.55, ease: 'back.out(2)',
+      stagger: 0.06, delay: 0.2,
+      onComplete() {
+        gsap.to('#logo-title', {
+          filter: 'drop-shadow(0 0 40px rgba(255, 200, 60, 0.28))',
+          duration: 3.5, ease: 'sine.inOut', repeat: -1, yoyo: true,
+        });
+      },
+    });
+
+    const afterLetters = 0.2 + 0.06 * 9 + 0.35;
+    gsap.to('#start-tagline', { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', delay: afterLetters });
+    gsap.to('#start-buttons', { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', delay: afterLetters + 0.15 });
+  })();
+  </script>
+</body>
+</html>

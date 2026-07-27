@@ -1,0 +1,15 @@
+# OS / editor cruft
+.DS_Store
+*.log
+
+# Local agent config (Claude Code) — not needed for hosting
+.claude/
+**/.claude/
+
+# Node
+node_modules/
+
+# Larprady: raw source data — build-time only. The live game runs on the
+# generated boards.json / categories.json (which ARE committed). Keep a copy
+# of this CSV somewhere safe if you ever want to re-run build_boards.py.
+jeoprady/JEOPARDY_CSV.csv

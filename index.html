@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>kmufti.com</title>
+  <meta name="description" content="A small collection of apps and experiments by Kareem Muftee." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=5" />
+</head>
+<body>
+  <header class="site-header">
+    <span class="brand">kmufti.com</span>
+    <a class="header-link" href="https://kareemmuftee.com">kareemmuftee.com &rarr;</a>
+  </header>
+
+  <!-- The gallery: a framed canvas hung on the wall. The canvas AND the tiles
+       live on one fixed stage that scales together, so a drawing over a tile
+       stays over that tile on every device. Drawing is bounded to the frame. -->
+  <section class="gallery-area" id="galleryArea">
+    <div class="gallery" id="gallery">
+      <div class="stage" id="stage">
+        <canvas id="board"></canvas>
+        <main class="hub">
+          <p class="hub-tagline">small things i've built &middot; one click away</p>
+          <div class="apps" id="apps"><!-- tiles injected from projects.js --></div>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <!-- Deep space: where the frame ends. Home for handles / links. -->
+  <footer class="deep-space">
+    <nav class="handles">
+      <!-- Fill these in with your real links. -->
+      <a href="#">contact</a>
+      <a href="#">donate</a>
+      <a href="#">github</a>
+      <a href="#">twitter</a>
+    </nav>
+    <p class="deep-caption">made by kareem muftee</p>
+  </footer>
+
+  <!-- Always-on draw controls: no color choice, a random color per stroke. -->
+  <div class="draw-bar" id="drawBar">
+    <span class="draw-note">&#127922; place pixels &middot; random colors</span>
+    <button class="tool-btn" id="clear" title="Clear the drawing">clear</button>
+  </div>
+
+  <script src="projects.js?v=5"></script>
+  <script src="artwork.js?v=5"></script>
+  <script src="app.js?v=5"></script>
+</body>
+</html>
