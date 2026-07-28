@@ -16,6 +16,15 @@ const SETS = [
   { id: 'modern', label: 'Easy Questions Pack', tagId: 'modern', grouped: true },
 ];
 
+// Board sources for the Random flow: build a random board from a pack, or pull
+// a real aired episode. Order = display order; Newest is the recommended default.
+const BOARD_SOURCES = [
+  { id: 'newest',  label: 'Newest Pack',    star: true },
+  { id: 'og',      label: 'OG Pack' },
+  { id: 'modern',  label: 'Easy Questions' },
+  { id: 'episode', label: 'Real Episode',   episode: true },
+];
+
 // Topic tags = subject filters. A category matches if it carries the topic's
 // section sub-tag (used by the curated sets) OR its name matches a keyword
 // (used across the full 47k library).
@@ -41,6 +50,7 @@ const state = {
   boards: null,
   categoryIndex: null,
   mode: "random",       // 'random' | 'custom'
+  boardSource: "newest", // random-flow source: pack id ('newest'|'og'|'modern') or 'episode'
   pendingMode: null,    // mode queued until team setup done
   currentBoard: null,
   round: "jeopardy",   // 'jeopardy' | 'double' | 'final'
@@ -170,14 +180,44 @@ function openTeamSetup(mode) {
   teamSetupCount = 1;
   highlightTeamCountBtn(1);
   renderTeamNameFields(1);
-  // Episode picker only applies to the random flow; reset to "random" each time.
+  // Board-source picker only applies to the random flow.
   state.selectedBoard = null;
-  const picker = $("episode-picker");
-  if (picker) {
-    picker.classList.toggle("hidden", mode !== "random");
-    $("episode-select").value = "";
+  const boardSource = $("board-source");
+  if (mode === "random") {
+    buildSourceBar();
+    selectBoardSource("newest"); // default to the recommended pack
+    boardSource.classList.remove("hidden");
+  } else {
+    boardSource.classList.add("hidden");
   }
   showScreen("team-screen");
+}
+
+// ---------- Board source (random flow) ----------
+function buildSourceBar() {
+  const bar = $("source-bar");
+  bar.innerHTML = "";
+  for (const src of BOARD_SOURCES) {
+    const btn = document.createElement("button");
+    btn.className = "source-btn" + (src.star ? " recommended" : "");
+    btn.textContent = src.star ? `★ ${src.label}` : src.label;
+    btn.dataset.sourceId = src.id;
+    btn.addEventListener("click", () => selectBoardSource(src.id));
+    bar.appendChild(btn);
+  }
+}
+
+function selectBoardSource(id) {
+  state.boardSource = id;
+  document.querySelectorAll("#source-bar .source-btn").forEach((b) =>
+    b.classList.toggle("active", b.dataset.sourceId === id)
+  );
+  // The 600-episode dropdown only applies to the real-episode source.
+  $("episode-picker").classList.toggle("hidden", id !== "episode");
+  if (id !== "episode") {
+    state.selectedBoard = null;
+    $("episode-select").value = "";
+  }
 }
 
 function highlightTeamCountBtn(n) {
@@ -340,20 +380,59 @@ function goHome() {
 // ---------- Game flow ----------
 function startRandomGame() {
   state.mode = "random";
-  const board = state.selectedBoard
-    || state.boards[Math.floor(Math.random() * state.boards.length)];
+  let board = null;
+  // Pack source: build a random 6-category board from that pack.
+  if (state.boardSource && state.boardSource !== "episode") {
+    const pool = categoriesInSet(state.boardSource);
+    if (pool.length) {
+      const src = BOARD_SOURCES.find((s) => s.id === state.boardSource);
+      board = buildCategoryBoard(drawRandomCategories(pool, 6), src ? src.label : "Pack");
+    }
+  }
+  // Real-episode source (or an empty pack, as a fallback): pull a real aired board.
+  if (!board) {
+    board = state.selectedBoard
+      || state.boards[Math.floor(Math.random() * state.boards.length)];
+  }
   state.currentBoard = board;
   state.teams.forEach((t) => { t.score = 0; });
   renderTeamsDisplay();
   beginRound("jeopardy");
 }
 
-function startCustomGame() {
-  state.mode = "custom";
-  const chosenCats = state.pickerSelected.map((i) => state.categoryIndex[i]);
+// Playable categories in a pack (>=5 clues), by explicit tag or the set predicate.
+function categoriesInSet(setId) {
+  const set = SETS.find((s) => s.id === setId);
+  if (!set) return [];
+  const out = [];
+  for (const cat of state.categoryIndex) {
+    if (!Array.isArray(cat.clues) || cat.clues.length < 5) continue;
+    const inSet = set.match ? set.match(cat) : (cat.tags && cat.tags.includes(set.tagId));
+    if (inSet) out.push(cat);
+  }
+  return out;
+}
+
+// Draw up to n distinct random categories from a pool.
+function drawRandomCategories(pool, n) {
+  const chosen = [];
+  const used = new Set();
+  const target = Math.min(n, pool.length);
+  while (chosen.length < target) {
+    const i = Math.floor(Math.random() * pool.length);
+    if (used.has(i)) continue;
+    used.add(i);
+    chosen.push(pool[i]);
+  }
+  return chosen;
+}
+
+// Build a single-round board (Jeopardy! + Final) from a set of categories.
+// Shared by the Custom picker and the Random-from-pack flow.
+function buildCategoryBoard(chosenCats, showLabel) {
   const categories = chosenCats.map((c) => ({
     name: c.name,
-    clues: c.clues.map((cl, idx) => ({
+    clues: c.clues.slice(0, 5).map((cl, idx) => ({
       position: idx,
       standardValue: STANDARD_JEOPARDY_VALUES[idx],
       isDailyDouble: cl.isDailyDouble,
@@ -363,13 +442,19 @@ function startCustomGame() {
     })),
   }));
   const randomBoard = state.boards[Math.floor(Math.random() * state.boards.length)];
-  state.currentBoard = {
-    show: "Custom",
+  return {
+    show: showLabel,
     airDate: chosenCats.map((c) => c.name).slice(0, 3).join(" • ") + "…",
     jeopardy: { scale: "new", values: STANDARD_JEOPARDY_VALUES, categories },
     double: null,
     final: randomBoard.final,
   };
+}
+
+function startCustomGame() {
+  state.mode = "custom";
+  const chosenCats = state.pickerSelected.map((i) => state.categoryIndex[i]);
+  state.currentBoard = buildCategoryBoard(chosenCats, "Custom");
   state.teams.forEach((t) => { t.score = 0; });
   renderTeamsDisplay();
   beginRound("jeopardy");
@@ -381,8 +466,9 @@ function beginRound(round) {
     startFinalJeopardy();
     return;
   }
-  // In custom mode, skip Double Jeopardy — go straight to Final after Jeopardy!
-  if (round === "double" && state.mode === "custom") {
+  // Single-round boards (Custom or Random-from-pack) have no Double Jeopardy —
+  // go straight to Final after the Jeopardy! round.
+  if (round === "double" && !state.currentBoard.double) {
     beginRound("final");
     return;
   }

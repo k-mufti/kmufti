@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Oswald:wght@500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=4" />
+  <link rel="stylesheet" href="styles.css?v=5" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
@@ -41,11 +41,15 @@
         <button class="team-count-btn" data-count="4">4</button>
       </div>
       <div id="team-name-fields" class="team-name-fields"></div>
-      <div class="episode-picker hidden" id="episode-picker">
-        <p class="episode-label">Which episode?</p>
-        <select id="episode-select" class="episode-select" aria-label="Pick an episode">
-          <option value="">Random episode</option>
-        </select>
+      <div class="board-source hidden" id="board-source">
+        <p class="episode-label">Board source</p>
+        <div class="source-bar" id="source-bar"></div>
+        <div class="episode-picker hidden" id="episode-picker">
+          <p class="episode-label">Which episode?</p>
+          <select id="episode-select" class="episode-select" aria-label="Pick an episode">
+            <option value="">Random episode</option>
+          </select>
+        </div>
       </div>
       <div class="team-actions">
         <button id="btn-team-continue" class="primary-btn">Continue</button>
@@ -207,7 +211,7 @@
   <!-- Score adjust popup -->
   <div id="score-adjust-popup" class="score-adjust-popup hidden"></div>
 
-  <script src="game.js?v=9"></script>
+  <script src="game.js?v=10"></script>
   <script>
   // ---------- Hex canvas background for all screens ----------
   (function () {
