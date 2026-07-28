@@ -33,32 +33,38 @@ const ARTWORK = {
       </g>
     </svg>`,
 
-  /* Wishlist — overlapping product cards, the unfurl-into-a-card idea. */
+  /* Wishlist — overlapping product cards on warm paper, matching the app's
+     clean white-and-ink look with its muted-green "got it" accent. */
   wishlist: `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="wl-bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#f6efe8"/>
-          <stop offset="1" stop-color="#ecd7d1"/>
+          <stop offset="0" stop-color="#f8f6f1"/>
+          <stop offset="1" stop-color="#e8e2d8"/>
         </linearGradient>
-        <linearGradient id="wl-img" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#d99f9f"/>
-          <stop offset="1" stop-color="#b56b6b"/>
-        </linearGradient>
+        <filter id="wl-shadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#1a1a1a" flood-opacity="0.13"/>
+        </filter>
       </defs>
       <rect width="320" height="200" fill="url(#wl-bg)"/>
-      <g transform="rotate(8 224 100)">
-        <rect x="182" y="42" width="104" height="120" rx="12" fill="#ffffff" opacity="0.7"/>
-        <rect x="196" y="56" width="76" height="44" rx="7" fill="#e7cfc9"/>
-        <rect x="196" y="112" width="60" height="7" rx="3.5" fill="#e2dbd4"/>
-        <rect x="196" y="126" width="38" height="7" rx="3.5" fill="#ece6df"/>
+      <!-- back card -->
+      <g transform="rotate(7 224 100)" filter="url(#wl-shadow)">
+        <rect x="184" y="44" width="104" height="118" rx="12" fill="#ffffff"/>
+        <rect x="198" y="58" width="76" height="44" rx="7" fill="#ece7df"/>
+        <rect x="198" y="114" width="58" height="7" rx="3.5" fill="#e0d9cf"/>
+        <rect x="198" y="128" width="36" height="7" rx="3.5" fill="#e9e3da"/>
       </g>
-      <g transform="rotate(-5 108 106)">
+      <!-- front card -->
+      <g transform="rotate(-5 108 106)" filter="url(#wl-shadow)">
         <rect x="46" y="46" width="122" height="120" rx="14" fill="#ffffff"/>
-        <rect x="58" y="58" width="98" height="52" rx="8" fill="url(#wl-img)"/>
-        <rect x="58" y="122" width="72" height="8" rx="4" fill="#d9d2cb"/>
-        <rect x="58" y="136" width="46" height="8" rx="4" fill="#e4ddd6"/>
-        <rect x="58" y="150" width="44" height="16" rx="8" fill="#b56b6b"/>
+        <rect x="58" y="58" width="98" height="52" rx="8" fill="#ece7df"/>
+        <!-- product silhouette in the image area -->
+        <rect x="92" y="66" width="30" height="36" rx="6" fill="#cabfb0"/>
+        <!-- title + subtitle lines -->
+        <rect x="58" y="122" width="72" height="8" rx="4" fill="#1a1a1a" opacity="0.82"/>
+        <rect x="58" y="136" width="46" height="7" rx="3.5" fill="#cfc7bc"/>
+        <!-- muted-green price pill (the app's positive accent) -->
+        <rect x="58" y="150" width="46" height="16" rx="8" fill="#3f7d5a"/>
       </g>
     </svg>`,
 

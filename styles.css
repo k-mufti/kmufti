@@ -139,6 +139,22 @@ a {
   text-align: center;
 }
 
+/* A "mounting board" behind the posters: an opaque matte with a border gives
+   the tiles (and the tagline) a clean, protected margin, so a drawing that
+   covers the whole canvas stops at this frame instead of crowding the tiles. */
+.app-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  max-width: 1480px;
+  padding: 40px 44px 48px;
+  background: #ffffff;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  border-radius: 30px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.06);
+}
+
 .apps {
   display: flex;
   flex-wrap: wrap;
