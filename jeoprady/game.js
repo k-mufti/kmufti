@@ -9,10 +9,11 @@ const TEAM_COLORS = ['#ffcc00', '#64b5f6', '#81c784', '#ff8a65'];
 // Sets = curated collections, matched by explicit tag membership. A set and a
 // topic tag can be active at the same time (they AND together).
 const SETS = [
+  // Newest first — the recommended, best pack.
+  { id: 'newest', label: 'Newest Pack',      tagId: 'newest', grouped: true },
   // The classic archive: every real-show category (i.e. not part of a custom pack).
   { id: 'og',     label: 'Jeoprady OG Pack',   match: (c) => !(c.tags && c.tags.includes('modern')), grouped: true },
   { id: 'modern', label: 'Easy Questions Pack', tagId: 'modern', grouped: true },
-  { id: 'newest', label: 'Newest Pack',      tagId: 'newest', grouped: true },
 ];
 
 // Topic tags = subject filters. A category matches if it carries the topic's
