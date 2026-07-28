@@ -47,21 +47,18 @@ const ARTWORK = {
         </filter>
       </defs>
       <rect width="320" height="200" fill="url(#wl-bg)"/>
-      <g transform="rotate(-8 160 104)">
-        <!-- string looped through a small ring -->
-        <circle cx="70" cy="58" r="6" fill="none" stroke="#c4bbad" stroke-width="3"/>
-        <path d="M74 63 Q80 84 88 99" fill="none" stroke="#c4bbad" stroke-width="3" stroke-linecap="round"/>
+      <g transform="rotate(-8 160 102)">
         <!-- tag body -->
         <g filter="url(#wl-shadow)">
-          <path d="M96 60 L232 60 Q248 60 248 76 L248 132 Q248 148 232 148 L96 148 L60 104 Z" fill="#ffffff"/>
+          <path d="M74 50 L250 50 Q270 50 270 72 L270 132 Q270 154 250 154 L74 154 L34 102 Z" fill="#ffffff"/>
         </g>
         <!-- punch hole -->
-        <circle cx="88" cy="104" r="9" fill="#efe9e0"/>
-        <circle cx="88" cy="104" r="9" fill="none" stroke="#cbc2b5" stroke-width="2"/>
+        <circle cx="60" cy="102" r="11" fill="#efe9e0"/>
+        <circle cx="60" cy="102" r="11" fill="none" stroke="#cbc2b5" stroke-width="2"/>
         <!-- green sparkle accent -->
-        <g transform="translate(226,80) scale(0.85)"><path d="M0,-9 L2.4,-2.6 L9,-2.6 L3.6,1.3 L5.6,8 L0,3.6 L-5.6,8 L-3.6,1.3 L-9,-2.6 L-2.4,-2.6 Z" fill="#3f7d5a"/></g>
+        <g transform="translate(256,62) scale(0.95)"><path d="M0,-9 L2.4,-2.6 L9,-2.6 L3.6,1.3 L5.6,8 L0,3.6 L-5.6,8 L-3.6,1.3 L-9,-2.6 L-2.4,-2.6 Z" fill="#3f7d5a"/></g>
         <!-- the word, in the app's Fraunces italic display face -->
-        <text x="164" y="121" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="700" font-style="italic" font-size="52" fill="#26211b">wish</text>
+        <text x="172" y="125" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="700" font-style="italic" font-size="66" fill="#26211b">wish</text>
       </g>
     </svg>`,
 
