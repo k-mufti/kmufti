@@ -23,12 +23,14 @@
   const STAGE_H = 2400;
   const CELL = 8;
 
-  function randomColor() {
-    // Fully random across the whole hex space: any of 16,777,216 colors.
-    const hex = Math.floor(Math.random() * 0x1000000)
-      .toString(16)
-      .padStart(6, "0");
-    return "#" + hex;
+  // The canvas palette — each stroke draws one random color from this set.
+  const PALETTE = [
+    "#fb0000", "#ff4400", "#ffaf0d", "#ffde00", "#bbff00", "#62d42d", "#075327", "#34dcd3",
+    "#1caffd", "#003eff", "#6400ff", "#ff8bf6", "#ff00b7", "#ffffff", "#898989", "#000000",
+  ];
+
+  function nextStrokeColor() {
+    return PALETTE[(Math.random() * PALETTE.length) | 0];
   }
 
   const galleryArea = document.getElementById("galleryArea");
@@ -40,7 +42,7 @@
   const ctx = canvas.getContext("2d");
 
   let drawing = false;
-  let strokeColor = randomColor(); // one random color per stroke
+  let strokeColor = nextStrokeColor(); // one color per stroke (random, or palette on localhost)
   let last = null; // previous pointer position, in stage coords
   let lastCell = ""; // last painted cell key, so a drag doesn't repaint it
   let saveTimer = null;
@@ -96,7 +98,7 @@
   function startDraw(e) {
     if (e.button !== undefined && e.button !== 0) return;
     drawing = true;
-    strokeColor = randomColor(); // a fresh color for this stroke
+    strokeColor = nextStrokeColor(); // a fresh color for this stroke
     lastCell = "";
     last = pointFromEvent(e);
     fillCellAt(last.x, last.y);
