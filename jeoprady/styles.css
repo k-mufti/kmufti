@@ -1009,6 +1009,29 @@ button {
   color: var(--jeop-gold);
   letter-spacing: 3px;
   text-transform: uppercase;
+  cursor: pointer;
+  justify-self: start;
+  transition: color 0.15s ease, text-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.round-label:hover,
+.round-label:focus-visible {
+  color: #fff;
+  text-shadow: 0 0 18px rgba(255, 200, 60, 0.55);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* Small "home" hint that appears before the label on hover/focus */
+.round-label::before {
+  content: "\2190\00a0"; /* left arrow + nbsp */
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.round-label:hover::before,
+.round-label:focus-visible::before {
+  opacity: 1;
 }
 
 .score-panel {

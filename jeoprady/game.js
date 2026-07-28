@@ -318,6 +318,24 @@ function buildEpisodeDropdown() {
   }
 }
 
+// ---------- Navigation ----------
+// Return to the main menu from anywhere. Confirms first if a game is underway
+// so an accidental click doesn't wipe out scores mid-board.
+function goHome() {
+  const gameInProgress =
+    $("game-screen").classList.contains("active") ||
+    $("final-screen").classList.contains("active");
+  if (gameInProgress && !confirm("Leave this game and return to the main menu?")) {
+    return;
+  }
+  stopClueTimer();
+  closeScoreAdjust();
+  $("clue-timer").classList.add("hidden");
+  $("clue-modal").classList.add("hidden");
+  state.activeClue = null;
+  showScreen("start-screen");
+}
+
 // ---------- Game flow ----------
 function startRandomGame() {
   state.mode = "random";
@@ -1040,6 +1058,16 @@ document.addEventListener("DOMContentLoaded", () => {
   $("btn-custom-game").disabled = true;
   showScreen("start-screen");
   boot();
+
+  // Clicking the round label (top-left of the board) returns to the main menu.
+  const roundLabel = $("round-label");
+  roundLabel.addEventListener("click", goHome);
+  roundLabel.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      goHome();
+    }
+  });
 
   $("btn-new-game").addEventListener("click", () => openTeamSetup("random"));
   $("episode-select").addEventListener("change", (e) => {

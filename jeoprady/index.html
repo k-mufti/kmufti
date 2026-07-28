@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Oswald:wght@500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="stylesheet" href="styles.css?v=4" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
@@ -111,7 +111,7 @@
   <section id="game-screen" class="screen">
     <canvas id="canvas-game" class="start-canvas"></canvas>
     <header class="game-header">
-      <div class="round-label" id="round-label">Jeopardy!</div>
+      <div class="round-label" id="round-label" role="button" tabindex="0" title="Back to main menu">Jeopardy!</div>
       <div id="teams-display" class="teams-display"></div>
     </header>
     <div class="board" id="board"></div>
@@ -207,7 +207,7 @@
   <!-- Score adjust popup -->
   <div id="score-adjust-popup" class="score-adjust-popup hidden"></div>
 
-  <script src="game.js?v=7"></script>
+  <script src="game.js?v=8"></script>
   <script>
   // ---------- Hex canvas background for all screens ----------
   (function () {
