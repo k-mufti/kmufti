@@ -33,38 +33,35 @@ const ARTWORK = {
       </g>
     </svg>`,
 
-  /* Wishlist — overlapping product cards on warm paper, matching the app's
-     clean white-and-ink look with its muted-green "got it" accent. */
+  /* Wishlist — a stylized price tag reading "wish" in the app's own display
+     face (Fraunces italic), on warm paper with its muted-green accent. */
   wishlist: `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="wl-bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#f8f6f1"/>
-          <stop offset="1" stop-color="#e8e2d8"/>
+          <stop offset="0" stop-color="#f7f3ec"/>
+          <stop offset="1" stop-color="#e7e0d4"/>
         </linearGradient>
         <filter id="wl-shadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#1a1a1a" flood-opacity="0.13"/>
+          <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#1a1a1a" flood-opacity="0.16"/>
         </filter>
       </defs>
       <rect width="320" height="200" fill="url(#wl-bg)"/>
-      <!-- back card -->
-      <g transform="rotate(7 224 100)" filter="url(#wl-shadow)">
-        <rect x="184" y="44" width="104" height="118" rx="12" fill="#ffffff"/>
-        <rect x="198" y="58" width="76" height="44" rx="7" fill="#ece7df"/>
-        <rect x="198" y="114" width="58" height="7" rx="3.5" fill="#e0d9cf"/>
-        <rect x="198" y="128" width="36" height="7" rx="3.5" fill="#e9e3da"/>
-      </g>
-      <!-- front card -->
-      <g transform="rotate(-5 108 106)" filter="url(#wl-shadow)">
-        <rect x="46" y="46" width="122" height="120" rx="14" fill="#ffffff"/>
-        <rect x="58" y="58" width="98" height="52" rx="8" fill="#ece7df"/>
-        <!-- product silhouette in the image area -->
-        <rect x="92" y="66" width="30" height="36" rx="6" fill="#cabfb0"/>
-        <!-- title + subtitle lines -->
-        <rect x="58" y="122" width="72" height="8" rx="4" fill="#1a1a1a" opacity="0.82"/>
-        <rect x="58" y="136" width="46" height="7" rx="3.5" fill="#cfc7bc"/>
-        <!-- muted-green price pill (the app's positive accent) -->
-        <rect x="58" y="150" width="46" height="16" rx="8" fill="#3f7d5a"/>
+      <g transform="rotate(-8 160 104)">
+        <!-- string looped through a small ring -->
+        <circle cx="70" cy="58" r="6" fill="none" stroke="#c4bbad" stroke-width="3"/>
+        <path d="M74 63 Q80 84 88 99" fill="none" stroke="#c4bbad" stroke-width="3" stroke-linecap="round"/>
+        <!-- tag body -->
+        <g filter="url(#wl-shadow)">
+          <path d="M96 60 L232 60 Q248 60 248 76 L248 132 Q248 148 232 148 L96 148 L60 104 Z" fill="#ffffff"/>
+        </g>
+        <!-- punch hole -->
+        <circle cx="88" cy="104" r="9" fill="#efe9e0"/>
+        <circle cx="88" cy="104" r="9" fill="none" stroke="#cbc2b5" stroke-width="2"/>
+        <!-- green sparkle accent -->
+        <g transform="translate(226,80) scale(0.85)"><path d="M0,-9 L2.4,-2.6 L9,-2.6 L3.6,1.3 L5.6,8 L0,3.6 L-5.6,8 L-3.6,1.3 L-9,-2.6 L-2.4,-2.6 Z" fill="#3f7d5a"/></g>
+        <!-- the word, in the app's Fraunces italic display face -->
+        <text x="164" y="121" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="700" font-style="italic" font-size="52" fill="#26211b">wish</text>
       </g>
     </svg>`,
 

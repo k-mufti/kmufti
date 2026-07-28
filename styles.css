@@ -52,7 +52,8 @@ a {
   position: relative;
   overflow: hidden;
   background: #ffffff;
-  border: 1px solid rgba(17, 17, 17, 0.1);
+  /* Same color as the inner .app-board border, so the two frames match. */
+  border: 1px solid rgba(17, 17, 17, 0.12);
   border-radius: 8px;
   box-shadow: 0 26px 60px rgba(0, 0, 0, 0.16), 0 3px 10px rgba(0, 0, 0, 0.07);
 }
@@ -146,12 +147,12 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
-  max-width: 1480px;
-  padding: 40px 44px 48px;
+  gap: 22px;
+  max-width: 1320px;
+  padding: 26px 30px 30px;
   background: #ffffff;
   border: 1px solid rgba(17, 17, 17, 0.12);
-  border-radius: 30px;
+  border-radius: 26px;
   box-shadow: 0 10px 34px rgba(0, 0, 0, 0.06);
 }
 
@@ -159,7 +160,7 @@ a {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 44px 40px;
+  gap: 32px 30px;
   max-width: 1400px;
 }
 
