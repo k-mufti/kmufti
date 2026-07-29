@@ -13,3 +13,7 @@ node_modules/
 # generated boards.json / categories.json (which ARE committed). Keep a copy
 # of this CSV somewhere safe if you ever want to re-run build_boards.py.
 jeoprady/JEOPARDY_CSV.csv
+
+# Drawing canvas runtime state (server-side, not source)
+draw/canvas.bin
+draw/canvas.bin.tmp

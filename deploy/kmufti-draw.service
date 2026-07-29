@@ -1,0 +1,27 @@
+# systemd unit for the shared drawing canvas backend (SSE + snapshot).
+# Install:
+#   sudo mkdir -p /var/lib/kmufti-draw && sudo chown www-data:www-data /var/lib/kmufti-draw
+#   # put a secret in /etc/kmufti-draw.env :  DRAW_ADMIN_KEY=your-long-secret
+#   sudo cp deploy/kmufti-draw.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now kmufti-draw
+#
+# After changing draw/server.js on the box:  sudo systemctl restart kmufti-draw
+
+[Unit]
+Description=kmufti shared drawing canvas (SSE + snapshot)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/kmufti-hub/draw
+ExecStart=/usr/bin/node server.js
+Environment=PORT=8022
+Environment=DRAW_DATA=/var/lib/kmufti-draw/canvas.bin
+EnvironmentFile=-/etc/kmufti-draw.env
+Restart=always
+RestartSec=3
+User=www-data
+
+[Install]
+WantedBy=multi-user.target

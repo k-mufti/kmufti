@@ -8,11 +8,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,600;1,700&family=Inter:wght@100;200;300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=7" />
+  <link rel="stylesheet" href="styles.css?v=10" />
 </head>
 <body>
   <header class="site-header">
-    <span class="brand">kmufti.com</span>
+    <span class="header-left">
+      <span class="brand">kmufti.com</span>
+      <span class="draw-presence" id="drawPresence"></span>
+    </span>
     <a class="header-link" href="https://kareemmuftee.com">kareemmuftee.com &rarr;</a>
   </header>
 
@@ -45,14 +48,17 @@
     <p class="deep-caption">made by kareem muftee</p>
   </footer>
 
-  <!-- Always-on draw controls: no color choice, a random color per stroke. -->
+  <!-- Always-on shared canvas: a random palette color per stroke, rate-limited
+       by a shared "paint" meter. Presence shows how many people are drawing. -->
   <div class="draw-bar" id="drawBar">
-    <span class="draw-note">&#127922; place pixels &middot; random colors</span>
-    <button class="tool-btn" id="clear" title="Clear the drawing">clear</button>
+    <div class="ink-well" id="inkWell" title="Your paint &mdash; drains as you draw, reloads when empty. The fill shows your next color.">
+      <div class="ink-liquid" id="inkLiquid"></div>
+      <span class="ink-label" id="inkLabel"></span>
+    </div>
   </div>
 
   <script src="projects.js?v=6"></script>
   <script src="artwork.js?v=8"></script>
-  <script src="app.js?v=7"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>

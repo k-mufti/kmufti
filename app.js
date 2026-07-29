@@ -2,56 +2,99 @@
   "use strict";
 
   /* =========================================================================
-     kmufti.com — an app launcher over an always-on, r/place-style pixel
-     canvas: drag anywhere to place pixels, one random color per stroke.
+     kmufti.com — an app launcher over an always-on, SHARED r/place-style pixel
+     canvas: drag anywhere to place pixels, one random palette color per stroke.
 
-     The tiles AND the canvas live on one FIXED stage (STAGE_W × STAGE_H).
-     The stage is scaled as a single unit to fit any screen, so the drawing
-     and the tiles always line up the same way on every device — a circle
-     drawn over a tile stays over that tile everywhere. Because both scale
-     together, resizing only changes the CSS scale; nothing is redrawn.
-
-     Drawings persist per-visitor in localStorage. sendStroke() is the seam
-     where a shared backend would hook in later.
+     The tiles AND the canvas live on one FIXED stage (STAGE_W × STAGE_H) that
+     scales as a single unit, so the drawing lines up with the tiles on every
+     device. The canvas is synced to draw/server.js over Server-Sent Events:
+     the server holds the authoritative grid, streams a snapshot on connect,
+     and broadcasts every accepted pixel to all viewers. Local edits are sent
+     as batched POSTs and rate-limited by a shared "paint meter".
      ========================================================================= */
 
-  const STORAGE_KEY = "kmufti-stage-v2";
-
-  // The fixed stage (the framed canvas). Tiles and canvas both live here and
-  // scale together. CELL is the pixel size in stage px.
   const STAGE_W = 1440;
   const STAGE_H = 2400;
   const CELL = 8;
+  const GRID_W = STAGE_W / CELL; // 180
+  const GRID_H = STAGE_H / CELL; // 300
+  const N = GRID_W * GRID_H;     // 54,000 cells
+  const EMPTY = 255;             // unpainted sentinel
 
-  // The canvas palette — each stroke draws one random color from this set.
+  // Palette (indices 0..15) — kept in sync with draw/server.js.
   const PALETTE = [
     "#fb0000", "#ff4400", "#ffaf0d", "#ffde00", "#bbff00", "#62d42d", "#075327", "#34dcd3",
     "#1caffd", "#003eff", "#6400ff", "#ff8bf6", "#ff00b7", "#ffffff", "#898989", "#000000",
   ];
 
-  function nextStrokeColor() {
-    return PALETTE[(Math.random() * PALETTE.length) | 0];
-  }
+  // API base: same-origin /draw/api in production (nginx proxies it); the dev
+  // server port in local dev. The server strips the /draw prefix either way.
+  const isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+  const DRAW_API = (isLocal ? `${location.protocol}//${location.hostname}:8022` : "") + "/draw/api";
 
-  const galleryArea = document.getElementById("galleryArea");
+  // A stable per-visitor id keys the server-side paint meter across reloads.
+  let clientId;
+  try {
+    clientId = localStorage.getItem("kmufti-draw-id") || "";
+    if (!clientId) {
+      clientId = Math.random().toString(36).slice(2) + Date.now().toString(36);
+      localStorage.setItem("kmufti-draw-id", clientId);
+    }
+  } catch { clientId = Math.random().toString(36).slice(2); }
+
   const gallery = document.getElementById("gallery");
   const stage = document.getElementById("stage");
   const canvas = document.getElementById("board");
-  canvas.width = STAGE_W; // fixed backing store; a CSS transform scales it
+  canvas.width = STAGE_W;
   canvas.height = STAGE_H;
   const ctx = canvas.getContext("2d");
 
-  let drawing = false;
-  let strokeColor = nextStrokeColor(); // one color per stroke (random, or palette on localhost)
-  let last = null; // previous pointer position, in stage coords
-  let lastCell = ""; // last painted cell key, so a drag doesn't repaint it
-  let saveTimer = null;
+  // Client mirror of the grid — lets us repaint cleanly (e.g. under the glow).
+  let cells = new Uint8Array(N).fill(EMPTY);
 
-  /* ---------- Fit the framed gallery to the screen width. The frame can be
-     taller than the viewport — the page scrolls down to deep space. -------- */
+  let drawing = false;
+  let strokeColorIndex = (Math.random() * PALETTE.length) | 0;
+  let nextColorIndex = (Math.random() * PALETTE.length) | 0; // previewed in the ink well
+  let last = null;
+  let lastCell = "";
+
+  /* ---------- Paint allowance (mirror of the server clip + cooldown) ------- */
+  // Draw up to `clip` pixels; the moment the clip hits 0, a hard `cooldownMs`
+  // reload begins (no partial trickle). Server is authoritative.
+  let clip = 100, cooldownMs = 10000;
+  let left = clip;        // pixels remaining in the current clip
+  let cooldownUntil = 0;  // performance.now() ms when reload completes (0 = ready)
+  function meterReady() {
+    const now = performance.now();
+    if (cooldownUntil && now >= cooldownUntil) { left = clip; cooldownUntil = 0; }
+    return !cooldownUntil && left > 0;
+  }
+  function spendPixel() {
+    left -= 1;
+    if (left <= 0) { left = 0; cooldownUntil = performance.now() + cooldownMs; }
+    updateMeterUI();
+  }
+  function updateMeterUI() {
+    const now = performance.now();
+    if (cooldownUntil && now >= cooldownUntil) { left = clip; cooldownUntil = 0; }
+    const liq = document.getElementById("inkLiquid");
+    const lbl = document.getElementById("inkLabel");
+    if (!liq) return;
+    if (cooldownUntil) {
+      const remain = Math.max(0, cooldownUntil - now);
+      liq.style.height = 100 * (1 - remain / cooldownMs) + "%"; // refilling
+      liq.style.background = "#c98a3a"; // amber while reloading
+      if (lbl) lbl.textContent = Math.ceil(remain / 1000) + "s";
+    } else {
+      liq.style.height = (100 * left) / clip + "%";
+      liq.style.background = PALETTE[nextColorIndex]; // preview: your next color
+      if (lbl) lbl.textContent = Math.round(left); // pixels left
+    }
+  }
+  setInterval(updateMeterUI, 200);
+
+  /* ---------- Fit the framed gallery to the screen width ------------------- */
   function fitStage() {
-    // Fill the width (with a small side margin), capped so it doesn't get
-    // absurd on ultrawide monitors. Height follows the fixed board aspect.
     const frameW = Math.min(window.innerWidth - 32, 2200);
     const s = Math.max(0, frameW / STAGE_W);
     gallery.style.width = STAGE_W * s + "px";
@@ -59,9 +102,41 @@
     stage.style.setProperty("--stage-scale", s);
   }
 
-  /* ---------- Drawing (all in fixed stage coordinates) ------------------- */
-  // Screen point -> stage coordinates. getBoundingClientRect() already
-  // reflects the CSS scale, so dividing by the rect size maps back to stage px.
+  /* ---------- Rendering --------------------------------------------------- */
+  function paintCell(idx, colorIdx) {
+    const cx = idx % GRID_W, cy = (idx / GRID_W) | 0;
+    if (colorIdx === EMPTY) ctx.clearRect(cx * CELL, cy * CELL, CELL, CELL);
+    else { ctx.fillStyle = PALETTE[colorIdx] || "#000"; ctx.fillRect(cx * CELL, cy * CELL, CELL, CELL); }
+  }
+  function renderAll() {
+    ctx.clearRect(0, 0, STAGE_W, STAGE_H);
+    for (let idx = 0; idx < N; idx++) {
+      const v = cells[idx];
+      if (v !== EMPTY) paintCell(idx, v);
+    }
+  }
+
+  /* ---------- Neighbor glow: incoming pixels briefly flash ----------------- */
+  const glow = new Map(); // idx -> start time
+  const mine = new Map(); // idx -> time I painted it (suppresses self-glow)
+  const GLOW_MS = 600;
+  let glowRAF = null;
+  function addGlow(idx) { glow.set(idx, performance.now()); if (!glowRAF) glowRAF = requestAnimationFrame(glowLoop); }
+  function glowLoop(now) {
+    glowRAF = null;
+    glow.forEach((t, idx) => {
+      const age = now - t;
+      paintCell(idx, cells[idx]); // clean base first
+      if (age >= GLOW_MS) { glow.delete(idx); return; }
+      const a = 0.6 * (1 - age / GLOW_MS);
+      const cx = idx % GRID_W, cy = (idx / GRID_W) | 0;
+      ctx.fillStyle = `rgba(255,255,255,${a})`;
+      ctx.fillRect(cx * CELL, cy * CELL, CELL, CELL);
+    });
+    if (glow.size) glowRAF = requestAnimationFrame(glowLoop);
+  }
+
+  /* ---------- Drawing (fixed stage coordinates) --------------------------- */
   function pointFromEvent(e) {
     const r = canvas.getBoundingClientRect();
     return {
@@ -70,57 +145,49 @@
     };
   }
 
-  // Fill the grid cell containing stage point (x, y) with the stroke color.
   function fillCellAt(x, y) {
     const cx = Math.floor(x / CELL);
     const cy = Math.floor(y / CELL);
-    if (cx < 0 || cy < 0 || cx * CELL >= STAGE_W || cy * CELL >= STAGE_H) return;
+    if (cx < 0 || cy < 0 || cx >= GRID_W || cy >= GRID_H) return;
     const key = cx + "," + cy;
-    if (key === lastCell) return; // just painted this one — skip
+    if (key === lastCell) return;
     lastCell = key;
-    ctx.fillStyle = strokeColor;
-    ctx.fillRect(cx * CELL, cy * CELL, CELL, CELL);
-    sendStroke(cx, cy, strokeColor); // shared-canvas seam
+    if (!meterReady()) return; // out of paint — reloading
+    spendPixel();
+    const idx = cy * GRID_W + cx;
+    cells[idx] = strokeColorIndex;
+    paintCell(idx, strokeColorIndex);
+    mine.set(idx, performance.now());
+    enqueueCell(idx, strokeColorIndex);
   }
 
-  // Walk the line between two stage points, filling every cell along the way,
-  // so a fast cursor move leaves a continuous run of pixels instead of gaps.
   function paintLine(a, b) {
-    const dx = b.x - a.x;
-    const dy = b.y - a.y;
+    const dx = b.x - a.x, dy = b.y - a.y;
     const dist = Math.hypot(dx, dy);
     const steps = Math.max(1, Math.ceil(dist / (CELL / 2)));
-    for (let i = 1; i <= steps; i++) {
-      fillCellAt(a.x + (dx * i) / steps, a.y + (dy * i) / steps);
-    }
+    for (let i = 1; i <= steps; i++) fillCellAt(a.x + (dx * i) / steps, a.y + (dy * i) / steps);
   }
 
   function startDraw(e) {
     if (e.button !== undefined && e.button !== 0) return;
     drawing = true;
-    strokeColor = nextStrokeColor(); // a fresh color for this stroke
+    strokeColorIndex = nextColorIndex; // use the previewed color
     lastCell = "";
     last = pointFromEvent(e);
     fillCellAt(last.x, last.y);
     canvas.setPointerCapture && canvas.setPointerCapture(e.pointerId);
   }
-
   function moveDraw(e) {
     if (!drawing) return;
     const events = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
-    for (const ev of events) {
-      const p = pointFromEvent(ev);
-      paintLine(last, p);
-      last = p;
-    }
+    for (const ev of events) { const p = pointFromEvent(ev); paintLine(last, p); last = p; }
   }
-
   function endDraw() {
     if (!drawing) return;
-    drawing = false;
-    last = null;
-    lastCell = "";
-    scheduleSave();
+    drawing = false; last = null; lastCell = "";
+    flushOutbox();
+    nextColorIndex = (Math.random() * PALETTE.length) | 0; // load & preview the next color
+    updateMeterUI();
   }
 
   canvas.addEventListener("pointerdown", startDraw);
@@ -128,49 +195,81 @@
   window.addEventListener("pointerup", endDraw);
   window.addEventListener("pointercancel", endDraw);
 
-  /* ---------- Persistence (per-visitor, localStorage) --------------------- */
-  function scheduleSave() {
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(save, 500);
+  /* ---------- Send strokes (batched POST) --------------------------------- */
+  let outbox = [];
+  let sendTimer = null;
+  function enqueueCell(idx, colorIdx) {
+    outbox.push([idx, colorIdx]);
+    if (!sendTimer) sendTimer = setTimeout(flushOutbox, 80);
+  }
+  function flushOutbox() {
+    if (sendTimer) { clearTimeout(sendTimer); sendTimer = null; }
+    if (!outbox.length) return;
+    const batch = outbox; outbox = [];
+    fetch(`${DRAW_API}/paint`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: clientId, cells: batch }),
+    })
+      .then((r) => r.json())
+      .then((d) => {
+        if (!d) return;
+        if (d.clip) clip = d.clip;
+        if (typeof d.cooldownMs === "number" && d.cooldownMs > 0) {
+          cooldownUntil = performance.now() + d.cooldownMs; // server authoritative
+          left = 0;
+        } else if (typeof d.left === "number") {
+          left = Math.min(left, d.left);
+          cooldownUntil = 0;
+        }
+        updateMeterUI();
+      })
+      .catch(() => { /* offline / server down — keep drawing locally */ });
   }
 
-  function save() {
-    try {
-      // The canvas is a fixed STAGE_W×STAGE_H bitmap, so this is device-independent.
-      localStorage.setItem(STORAGE_KEY, canvas.toDataURL("image/png"));
-    } catch (err) {
-      /* quota exceeded / storage blocked — drawing just won't persist */
+  /* ---------- Receive: live stream ---------------------------------------- */
+  function setPresence(n) {
+    const el = document.getElementById("drawPresence");
+    if (el) el.textContent = n > 0 ? "● " + n + (n === 1 ? " here" : " here") : "";
+  }
+  function applyDelta(arr) {
+    const now = performance.now();
+    for (let k = 0; k + 1 < arr.length; k += 2) {
+      const idx = arr[k], c = arr[k + 1];
+      if (idx < 0 || idx >= N) continue;
+      cells[idx] = c;
+      paintCell(idx, c);
+      const m = mine.get(idx);
+      if (m && now - m < 1500) continue; // my own pixel echoed back — no glow
+      addGlow(idx);
     }
+    // prune old "mine" marks
+    if (mine.size > 4000) mine.forEach((t, i) => { if (now - t > 3000) mine.delete(i); });
   }
-
-  window.addEventListener("pagehide", save);
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") save();
-  });
-
-  function restore() {
-    let data;
-    try {
-      data = localStorage.getItem(STORAGE_KEY);
-    } catch (err) {
-      return;
+  function onInit(d) {
+    if (d.clip) clip = d.clip;
+    if (d.cooldownMs) cooldownMs = d.cooldownMs;
+    if (typeof d.grid === "string") {
+      const bin = atob(d.grid);
+      const snap = new Uint8Array(N).fill(EMPTY);
+      for (let i = 0; i < N && i < bin.length; i++) snap[i] = bin.charCodeAt(i);
+      cells = snap;
+      glow.clear();
+      renderAll();
     }
-    if (!data) return;
-    const img = new Image();
-    img.onload = function () {
-      ctx.drawImage(img, 0, 0, STAGE_W, STAGE_H);
-    };
-    img.src = data;
+    updateMeterUI();
   }
 
-  /* ---------- Shared-canvas seam (no-op until a backend exists) ----------- */
-  function sendStroke(/* cx, cy, color */) {}
-
-  /* ---------- Clear (the only control — drawing is always on) ------------- */
-  document.getElementById("clear").addEventListener("click", () => {
-    ctx.clearRect(0, 0, STAGE_W, STAGE_H);
-    save();
-  });
+  function connect() {
+    let es;
+    try { es = new EventSource(`${DRAW_API}/stream`); }
+    catch { return; }
+    es.addEventListener("init", (e) => { try { onInit(JSON.parse(e.data)); } catch {} });
+    es.addEventListener("px", (e) => { try { applyDelta(JSON.parse(e.data)); } catch {} });
+    es.addEventListener("presence", (e) => { try { setPresence(JSON.parse(e.data).count); } catch {} });
+    es.addEventListener("clear", () => { cells.fill(EMPTY); glow.clear(); ctx.clearRect(0, 0, STAGE_W, STAGE_H); });
+    // EventSource auto-reconnects; on reconnect the server re-sends "init".
+  }
 
   /* ---------- App launcher (from projects.js) ----------------------------- */
   const appsWrap = document.getElementById("apps");
@@ -206,7 +305,8 @@
 
   /* ---------- Boot -------------------------------------------------------- */
   fitStage();
-  restore();
+  updateMeterUI();
+  connect();
 
   let resizeTimer = null;
   window.addEventListener("resize", () => {
