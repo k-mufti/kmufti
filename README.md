@@ -10,3 +10,4 @@ Almost entirely static. The only server-side piece is the wishlist backend
 (`wishlist/server.js`) which scrapes link previews and proxies product images.
 
 See [DEPLOY.md](DEPLOY.md) for hosting on a VPS with nginx.
+
