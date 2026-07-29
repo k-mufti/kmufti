@@ -36,7 +36,7 @@ const PALETTE = [
 // Paint allowance — a "clip" of pixels, then a hard cooldown before it refills.
 // Draw up to CLIP pixels; the moment you hit 0 you must wait COOLDOWN_MS for a
 // full fresh clip (no partial trickle — predictable for the user).
-const CLIP = Number(process.env.DRAW_CLIP || 100);
+const CLIP = Number(process.env.DRAW_CLIP || 200);
 const COOLDOWN_MS = Number(process.env.DRAW_COOLDOWN_MS || 10000);
 
 const DATA_FILE = process.env.DRAW_DATA || path.join(__dirname, "canvas.bin");

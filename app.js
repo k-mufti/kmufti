@@ -61,7 +61,7 @@
   /* ---------- Paint allowance (mirror of the server clip + cooldown) ------- */
   // Draw up to `clip` pixels; the moment the clip hits 0, a hard `cooldownMs`
   // reload begins (no partial trickle). Server is authoritative.
-  let clip = 100, cooldownMs = 10000;
+  let clip = 200, cooldownMs = 10000;
   let left = clip;        // pixels remaining in the current clip
   let cooldownUntil = 0;  // performance.now() ms when reload completes (0 = ready)
   function meterReady() {
