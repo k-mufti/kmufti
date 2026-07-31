@@ -80,14 +80,17 @@ const ARTWORK = {
         </filter>
       </defs>
       <rect width="320" height="200" fill="url(#mc-bg)"/>
-      <!-- the blank white figure, lying down (head to the right), behind the text -->
-      <g transform="translate(160,108) rotate(88) scale(0.62) translate(-110,-220)" fill="url(#mc-fig)" opacity="0.9">
-        <rect x="66" y="262" width="42" height="164" rx="21"/>
-        <rect x="112" y="262" width="42" height="164" rx="21"/>
-        <rect x="34" y="150" width="38" height="150" rx="19" transform="rotate(7 53 225)"/>
-        <rect x="148" y="150" width="38" height="150" rx="19" transform="rotate(-7 167 225)"/>
-        <rect x="52" y="106" width="116" height="196" rx="56"/>
-        <circle cx="110" cy="72" r="38"/>
+      <!-- blank figure reclining with arms raised ("hand up"), head to the right -->
+      <g fill="url(#mc-fig)" opacity="0.9">
+        <!-- legs, extended to the left -->
+        <rect x="16" y="80" width="116" height="24" rx="12" transform="rotate(-5 132 92)"/>
+        <rect x="16" y="104" width="116" height="24" rx="12" transform="rotate(5 132 116)"/>
+        <!-- one arm raised straight up ("hand up"), beside the head -->
+        <rect x="206" y="14" width="26" height="82" rx="13" transform="rotate(-6 219 94)"/>
+        <!-- torso -->
+        <rect x="108" y="78" width="128" height="54" rx="27"/>
+        <!-- head, resting on the right -->
+        <circle cx="242" cy="104" r="32"/>
       </g>
       <!-- FIND MECCHA — Anton, red, filling the tile -->
       <g fill="#e23b2e" font-family="Anton, sans-serif" text-anchor="middle" filter="url(#mc-tsh)">
