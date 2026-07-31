@@ -80,17 +80,21 @@ const ARTWORK = {
         </filter>
       </defs>
       <rect width="320" height="200" fill="url(#mc-bg)"/>
-      <!-- blank figure reclining with arms raised ("hand up"), head to the right -->
-      <g fill="url(#mc-fig)" opacity="0.9">
-        <!-- legs, extended to the left -->
-        <rect x="16" y="80" width="116" height="24" rx="12" transform="rotate(-5 132 92)"/>
-        <rect x="16" y="104" width="116" height="24" rx="12" transform="rotate(5 132 116)"/>
-        <!-- one arm raised straight up ("hand up"), beside the head -->
-        <rect x="206" y="14" width="26" height="82" rx="13" transform="rotate(-6 219 94)"/>
-        <!-- torso -->
-        <rect x="108" y="78" width="128" height="54" rx="27"/>
-        <!-- head, resting on the right -->
-        <circle cx="242" cy="104" r="32"/>
+      <!-- blank figure lying on its side: head ball at right, both arms stretched
+           forward to the left, legs trailing behind. Limbs are round-capped
+           strokes so they read as soft rounded tubes, like the 3D model. -->
+      <g stroke="url(#mc-fig)" fill="url(#mc-fig)" stroke-linecap="round"
+         stroke-linejoin="round" opacity="0.92">
+        <!-- limbs first: parallel and horizontal, emerging from under the body -->
+        <path d="M228,88 Q142,82 58,80" fill="none" stroke-width="27"/>
+        <path d="M224,112 Q130,111 34,110" fill="none" stroke-width="27"/>
+        <path d="M205,148 Q130,153 56,158" fill="none" stroke-width="32"/>
+        <!-- torso: a thick horizontal capsule — the mass the limbs come out of -->
+        <path d="M172,118 L238,110" fill="none" stroke-width="88"/>
+        <!-- the arm tucked under the head, hooking out to the right -->
+        <path d="M252,132 Q278,140 292,150" fill="none" stroke-width="25"/>
+        <!-- head, a distinct ball resting up and right of the shoulder -->
+        <circle cx="277" cy="84" r="30" stroke="none"/>
       </g>
       <!-- FIND MECCHA — Anton, red, filling the tile -->
       <g fill="#e23b2e" font-family="Anton, sans-serif" text-anchor="middle" filter="url(#mc-tsh)">
