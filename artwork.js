@@ -80,8 +80,8 @@ const ARTWORK = {
         </filter>
       </defs>
       <rect width="320" height="200" fill="url(#mc-bg)"/>
-      <!-- the blank white figure, hero behind the text -->
-      <g transform="translate(115,8) scale(0.41)" fill="url(#mc-fig)" opacity="0.9">
+      <!-- the blank white figure, lying down (head to the right), behind the text -->
+      <g transform="translate(160,108) rotate(88) scale(0.62) translate(-110,-220)" fill="url(#mc-fig)" opacity="0.9">
         <rect x="66" y="262" width="42" height="164" rx="21"/>
         <rect x="112" y="262" width="42" height="164" rx="21"/>
         <rect x="34" y="150" width="38" height="150" rx="19" transform="rotate(7 53 225)"/>
