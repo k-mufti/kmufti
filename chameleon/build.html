@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Meccha Chameleon · Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="build.css?v=3" />
+</head>
+<body>
+  <header class="b-header">
+    <span class="b-title"><b>MECCHA CHAMELEON</b> · Builder</span>
+    <a class="b-link" href="./">← back to game</a>
+  </header>
+
+  <div class="b-wrap">
+    <!-- Preview -->
+    <section class="b-stage">
+      <div class="b-frame">
+        <canvas id="c"></canvas>
+      </div>
+      <div class="b-badge" id="badge">—</div>
+      <p class="b-hint">Drag the figure on the photo to reposition · toggle Reveal to see it clearly</p>
+    </section>
+
+    <!-- Controls -->
+    <aside class="b-panel">
+      <div class="b-group">
+        <label class="b-label">Photo</label>
+        <select id="imgSel" class="b-select"></select>
+        <div class="b-row">
+          <button class="b-btn" id="autoBtn">⟳ Auto-place</button>
+          <label class="b-check"><input type="checkbox" id="revealChk" /> Reveal</label>
+        </div>
+      </div>
+
+      <div class="b-group">
+        <label class="b-label">Placement &amp; look</label>
+        <div class="b-slider"><span>Size</span><input type="range" id="size" min="0.05" max="0.20" step="0.005" /><output id="sizeV"></output></div>
+        <div class="b-slider"><span>Tilt</span><input type="range" id="rot" min="-15" max="15" step="1" /><output id="rotV"></output></div>
+        <div class="b-slider"><span>Shadow</span><input type="range" id="shadow" min="0.40" max="0.95" step="0.01" /><output id="shadowV"></output></div>
+        <div class="b-slider"><span>Strength</span><input type="range" id="opacity" min="0.20" max="1.00" step="0.02" /><output id="opacityV"></output></div>
+        <div class="b-slider"><span>Blend</span>
+          <select id="blend" class="b-select b-select-sm">
+            <option value="multiply">multiply</option>
+            <option value="soft-light">soft-light</option>
+            <option value="overlay">overlay</option>
+            <option value="darken">darken</option>
+          </select>
+        </div>
+        <label class="b-check b-auto"><input type="checkbox" id="autoOpChk" checked /> Auto strength (adaptive) when auto-placing</label>
+      </div>
+
+      <details class="b-group b-adv">
+        <summary>Filters (what counts as a good spot)</summary>
+        <div class="b-slider"><span>Target detail</span><input type="range" id="targetDetail" min="4" max="30" step="1" /><output id="targetDetailV"></output></div>
+        <div class="b-slider"><span>Min busyness</span><input type="range" id="detailLo" min="0" max="20" step="1" /><output id="detailLoV"></output></div>
+        <div class="b-slider"><span>Max busyness</span><input type="range" id="detailHi" min="8" max="50" step="1" /><output id="detailHiV"></output></div>
+        <div class="b-slider"><span>Min brightness</span><input type="range" id="minLum" min="0" max="150" step="5" /><output id="minLumV"></output></div>
+        <div class="b-slider"><span>Max brightness</span><input type="range" id="maxLum" min="150" max="255" step="5" /><output id="maxLumV"></output></div>
+      </details>
+
+      <div class="b-group">
+        <label class="b-label">Approve → queue</label>
+        <div class="b-row">
+          <input type="date" id="date" class="b-date" />
+          <button class="b-btn b-btn-add" id="addBtn">✓ Add to queue</button>
+        </div>
+        <div class="b-queue" id="queue"></div>
+        <div class="b-row">
+          <button class="b-btn" id="exportBtn">⬇ Export daily.json</button>
+          <button class="b-btn" id="copyBtn">Copy JSON</button>
+        </div>
+        <button class="b-btn b-btn-ghost" id="importBtn">Load existing daily.json</button>
+      </div>
+
+      <div class="b-group">
+        <label class="b-label">Banned images</label>
+        <p class="b-hint" style="text-align:left">Ban an image to remove it from all future auto-placement and the queue.</p>
+        <button class="b-btn b-btn-ban" id="banBtn">⊘ Ban current image</button>
+        <div class="b-queue" id="bannedList"></div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="mecha.js?v=2"></script>
+  <script src="build.js?v=3"></script>
+</body>
+</html>

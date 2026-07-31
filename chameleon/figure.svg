@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="440" viewBox="0 0 220 440">
+  <defs>
+    <!-- Mostly WHITE (vanishes under multiply) with a soft shaded rim toward
+         the lower-right, so only the figure's shadows imprint on the scene. -->
+    <radialGradient id="body" cx="37%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="64%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#b6b6b6"/>
+    </radialGradient>
+    <radialGradient id="head" cx="37%" cy="32%" r="74%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#bcbcbc"/>
+    </radialGradient>
+  </defs>
+  <!-- One smooth blank figure: limbs first, torso + head on top so seams vanish.
+       Each shape carries its own light→shadow gradient (per-shape shading). -->
+  <g fill="url(#body)">
+    <!-- legs -->
+    <rect x="66"  y="262" width="42" height="164" rx="21"/>
+    <rect x="112" y="262" width="42" height="164" rx="21"/>
+    <!-- arms, angled slightly out -->
+    <rect x="34"  y="150" width="38" height="150" rx="19" transform="rotate(7 53 225)"/>
+    <rect x="148" y="150" width="38" height="150" rx="19" transform="rotate(-7 167 225)"/>
+    <!-- torso: broad rounded shoulders -->
+    <rect x="52" y="106" width="116" height="196" rx="56"/>
+  </g>
+  <!-- head, drawn last — smaller, tucked onto the shoulders -->
+  <circle cx="110" cy="72" r="38" fill="url(#head)"/>
+</svg>

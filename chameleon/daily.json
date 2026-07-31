@@ -1,0 +1,4 @@
+{
+  "note": "Approved daily puzzles, keyed by UTC date (YYYY-MM-DD). Built + approved in build.html. Fields: image, x, y (figure CENTER as fractions 0-1), size (height fraction), rot (deg), blend, shadow (0-1), opacity (0-1). Days with no entry fall back to auto-placement.",
+  "puzzles": {}
+}

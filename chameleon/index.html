@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Meccha Chameleon</title>
+  <meta name="description" content="A blank figure is hiding in today's photo. Find it as fast as you can." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=18" />
+</head>
+<body>
+  <div class="mc-app">
+    <header class="mc-header">
+      <a class="mc-back" href="../">&larr; kmufti.com</a>
+      <span class="mc-wordmark">MECCHA&nbsp;CHAMELEON</span>
+      <span class="mc-day" id="dayLabel">—</span>
+    </header>
+
+    <!-- Sentinels: game.js holds refs to these but they stay hidden (verdict is canvas-drawn) -->
+    <span id="hudEnd" hidden></span>
+    <span id="verdictWord" hidden></span>
+    <span id="verdictStats" hidden></span>
+
+    <main class="mc-stage" id="stage">
+
+      <!-- Live play HUD: time + clicks, sits above the photo -->
+      <div class="mc-hud-play" id="hudPlay" hidden>
+        <span class="mc-hud-time"><span id="timeText">0.0</span><span class="mc-hud-unit">s</span></span>
+        <span class="mc-hud-sep">·</span>
+        <span class="mc-hud-clicks"><span id="clickText">0</span> <span id="clickLbl">clicks</span></span>
+      </div>
+
+      <div class="mc-frame" id="frame">
+        <canvas id="game"></canvas>
+
+        <!-- End state: Share button bottom-right of photo -->
+        <div class="mc-resultbar" id="resultBar" hidden>
+          <button class="mc-share-btn" id="shareBtn">SHARE</button>
+        </div>
+
+        <!-- Start screen -->
+        <div class="mc-overlay mc-start" id="startOverlay">
+          <p class="mc-kicker">FIND THE</p>
+          <h1 class="mc-title">MECCHA<br>CHAMELEON</h1>
+          <p class="mc-sub">A blank figure is hiding in the photo.<br>No hints. The clock is red at 30s.</p>
+          <button class="mc-btn" id="startBtn">Start</button>
+          <p class="mc-fineprint" id="startFine">Your <b>time</b> and <b>clicks</b> are the only score.</p>
+        </div>
+      </div>
+
+      <!-- Practice link — below the photo, not overlapping it -->
+      <div class="mc-practice-row" id="practiceRow" hidden>
+        <button class="mc-practice-btn" id="practiceBtn">Play again (very buggy, under construction)</button>
+      </div>
+    </main>
+
+
+  </div>
+
+  <script src="mecha.js?v=2"></script>
+  <script src="game.js?v=24"></script>
+</body>
+</html>

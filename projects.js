@@ -21,6 +21,16 @@ const PROJECTS = [
     status: "live",
   },
   {
+    slug: "chameleon",
+    title: "Meccha Chameleon",
+    description: "A blank figure is hiding in today's photo. Find it as fast as you can — your time and your click count are the only score. One a day.",
+    tags: ["game", "daily", "js"],
+    accent: "#ffffff",
+    accentBg: "linear-gradient(135deg, #e23b2e 0%, #7b1e14 100%)",
+    href: "chameleon/",
+    status: "live",
+  },
+  {
     slug: "keyboard",
     title: "Keyboard",
     description: "…",
