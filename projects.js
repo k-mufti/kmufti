@@ -30,14 +30,4 @@ const PROJECTS = [
     href: "chameleon/",
     status: "live",
   },
-  {
-    slug: "keyboard",
-    title: "Keyboard",
-    description: "…",
-    tags: [],
-    accent: "#ffffff",
-    accentBg: "linear-gradient(135deg, #3a3a3a 0%, #111111 100%)",
-    href: "#",
-    status: "soon",
-  },
 ];

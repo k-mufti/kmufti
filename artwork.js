@@ -62,6 +62,40 @@ const ARTWORK = {
       </g>
     </svg>`,
 
+  /* Meccha Chameleon — the blank white figure behind bold red "FIND MECCHA"
+     in the game's own Anton display face, on the game's near-black. */
+  chameleon: `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="mc-bg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#18171d"/>
+          <stop offset="1" stop-color="#0b0a0e"/>
+        </linearGradient>
+        <linearGradient id="mc-fig" x1="0.3" y1="0.15" x2="0.72" y2="1">
+          <stop offset="0" stop-color="#ffffff"/>
+          <stop offset="1" stop-color="#c9c9c9"/>
+        </linearGradient>
+        <filter id="mc-tsh" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.5"/>
+        </filter>
+      </defs>
+      <rect width="320" height="200" fill="url(#mc-bg)"/>
+      <!-- the blank white figure, hero behind the text -->
+      <g transform="translate(115,8) scale(0.41)" fill="url(#mc-fig)" opacity="0.9">
+        <rect x="66" y="262" width="42" height="164" rx="21"/>
+        <rect x="112" y="262" width="42" height="164" rx="21"/>
+        <rect x="34" y="150" width="38" height="150" rx="19" transform="rotate(7 53 225)"/>
+        <rect x="148" y="150" width="38" height="150" rx="19" transform="rotate(-7 167 225)"/>
+        <rect x="52" y="106" width="116" height="196" rx="56"/>
+        <circle cx="110" cy="72" r="38"/>
+      </g>
+      <!-- FIND MECCHA — Anton, red, filling the tile -->
+      <g fill="#e23b2e" font-family="Anton, sans-serif" text-anchor="middle" filter="url(#mc-tsh)">
+        <text x="160" y="84" font-size="54" textLength="150" lengthAdjust="spacingAndGlyphs">FIND</text>
+        <text x="160" y="170" font-size="84" textLength="306" lengthAdjust="spacingAndGlyphs">MECCHA</text>
+      </g>
+    </svg>`,
+
   /* Keyboard — a bed of keycaps with a couple of accent keys. */
   keyboard: `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
