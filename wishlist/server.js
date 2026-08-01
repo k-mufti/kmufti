@@ -129,18 +129,20 @@ function fetchHtmlViaCurl(urlObj) {
 
 async function fetchHtmlWithGuard(urlObj, hopsLeft = 2) {
   await assertPublicHost(urlObj.hostname);
-  let html = "";
+  // Curl FIRST: it slips past bot-protection that blocks Node's TLS/HTTP
+  // fingerprint, and a plain curl (no -L) won't follow redirects to internal
+  // hosts. Trying Node first would trip the site's IP block and poison the
+  // curl retry, so order matters here.
+  let html = await fetchHtmlViaCurl(urlObj);
+  if (html.length >= 500) return html;
+  // Curl yielded nothing useful (e.g. the URL redirects, which plain curl won't
+  // follow) — fall back to Node, which follows redirects with a per-hop guard.
   try {
     const result = await fetchHtml(urlObj);
     if (result.redirect && hopsLeft > 0) return fetchHtmlWithGuard(result.redirect, hopsLeft - 1);
-    html = result.html || "";
+    if ((result.html || "").length > html.length) html = result.html || "";
   } catch {
-    html = "";
-  }
-  // Blocked or empty? Fall back to curl (host already SSRF-checked above).
-  if (html.length < 500) {
-    const viaCurl = await fetchHtmlViaCurl(urlObj);
-    if (viaCurl.length > html.length) html = viaCurl;
+    /* keep whatever curl gave us */
   }
   return html;
 }
