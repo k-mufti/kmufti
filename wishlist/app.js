@@ -795,17 +795,21 @@
           "for(j=0;j<m.length;j++){im=m[j];ar=im.naturalWidth*im.naturalHeight;if(ar>a&&im.src&&/^https?:/.test(im.src)){a=ar;b=im.src;}}" +
           "return b;" +
         "}" +
+        "function V(e){return !!(e&&(e.offsetWidth||e.offsetHeight||(e.getClientRects&&e.getClientRects().length)))}" +
+        "function K(e){var n=e,i=0,t,c,d;while(n&&i<4){t=(n.tagName||'').toLowerCase();if(t=='del'||t=='s'||t=='strike')return true;c=((typeof n.className=='string'?n.className:'')+' '+(n.id||'')).toLowerCase();if(/strike|compare|original|msrp|rrp|slash|-was|was-/.test(c))return true;try{d=getComputedStyle(n);if(/line-through/.test(d.textDecorationLine||d.textDecoration||''))return true;}catch(_){}n=n.parentElement;i++;}return false}" +
         "function P(){" +
+          "var re=/[$\\u20ac\\u00a3\\u00a5]\\s?[0-9][0-9.,]*/;" +
+          "var az=document.querySelector('.a-price .a-offscreen,.priceToPay .a-offscreen');" +
+          "if(az){var am=(az.textContent||'').match(re);if(am)return am[0].replace(/\\s/g,'');}" +
+          "var N=document.querySelectorAll('span,b,strong,ins,p,h1,h2,h3,div,[itemprop=\"price\"]'),i,e,t,m,v,fs,B='',bf=-1;" +
+          "for(i=0;i<N.length;i++){e=N[i];if(e.children&&e.children.length)continue;t=(e.getAttribute&&e.getAttribute('content'))||e.textContent||'';if(!t||t.length>18)continue;if(!V(e)||K(e))continue;m=t.match(re);if(!m)continue;v=parseFloat(m[0].replace(/[^0-9.]/g,''));if(!(v>0))continue;fs=0;try{fs=parseFloat(getComputedStyle(e).fontSize)||0;}catch(_){}if(fs>bf){bf=fs;B=m[0].replace(/\\s/g,'');}}" +
+          "if(B)return B;" +
           "var M={USD:'$',EUR:'\\u20ac',GBP:'\\u00a3',JPY:'\\u00a5',CAD:'$',AUD:'$'};" +
           "var a=q('meta[property=\"product:price:amount\"]')||q('meta[property=\"og:price:amount\"]')||q('meta[itemprop=\"price\"]');" +
           "var c=q('meta[property=\"product:price:currency\"]')||q('meta[property=\"og:price:currency\"]');" +
           "if(a)return (M[c]||'$')+a;" +
           "var L=document.querySelectorAll('script[type=\"application/ld+json\"]'),k,j,ar,x,o,f;" +
-          "for(k=0;k<L.length;k++){try{j=JSON.parse(L[k].textContent);ar=Array.isArray(j)?j:(j['@graph']||[j]);for(x=0;x<ar.length;x++){f=ar[x]&&ar[x].offers;if(f){o=Array.isArray(f)?f[0]:f;if(o&&o.price)return (M[o.priceCurrency]||'$')+o.price;}}}catch(e){}}" +
-          "var D=['.a-price .a-offscreen','.priceToPay .a-offscreen','[data-a-color=\"price\"] .a-offscreen','[itemprop=\"price\"]'],d,e2,t2,m;" +
-          "for(d=0;d<D.length;d++){e2=document.querySelector(D[d]);if(e2){t2=(e2.getAttribute&&e2.getAttribute('content'))||e2.textContent||'';m=t2.match(/[$\\u20ac\\u00a3\\u00a5]\\s?[0-9][0-9.,]*/);if(m)return m[0].replace(/\\s/g,'');}}" +
-          "var Q=document.querySelectorAll('[class*=price i],[id*=price i],[data-testid*=price i]'),z;" +
-          "for(z=0;z<Q.length;z++){m=(Q[z].textContent||'').match(/[$\\u20ac\\u00a3\\u00a5]\\s?[0-9][0-9.,]*/);if(m)return m[0].replace(/\\s/g,'');}" +
+          "for(k=0;k<L.length;k++){try{j=JSON.parse(L[k].textContent);ar=Array.isArray(j)?j:(j['@graph']||[j]);for(x=0;x<ar.length;x++){f=ar[x]&&ar[x].offers;if(f){o=Array.isArray(f)?f[0]:f;if(o&&o.price)return (M[o.priceCurrency]||'$')+o.price;}}}catch(_){}}" +
           "return '';" +
         "}" +
         "var t=q('meta[property=\"og:title\"]')||document.title;" +
