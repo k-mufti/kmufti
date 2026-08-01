@@ -11,6 +11,7 @@ const fs = require("fs");
 const path = require("path");
 const dns = require("dns").promises;
 const net = require("net");
+const { execFile } = require("child_process");
 
 const PORT = process.env.PORT || 8021;
 const STATIC_DIR = __dirname;
@@ -104,13 +105,44 @@ function fetchHtml(targetUrl) {
   });
 }
 
+// Some storefronts (Akamai/etc.) block Node's TLS+HTTP fingerprint while
+// letting curl through from the very same host. If the Node fetch is blocked
+// or comes back suspiciously empty, retry once via curl. The host has already
+// passed the SSRF check and curl is told not to follow redirects.
+function fetchHtmlViaCurl(urlObj) {
+  return new Promise((resolve) => {
+    // Minimal flags on purpose: no -L (so curl won't follow redirects to an
+    // internal host), matching the plain request that gets through.
+    execFile(
+      "curl",
+      [
+        "-s",
+        "--max-time", String(Math.ceil(FETCH_TIMEOUT_MS / 1000)),
+        "-A", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+        urlObj.href,
+      ],
+      { timeout: FETCH_TIMEOUT_MS + 2000, maxBuffer: MAX_HTML_BYTES + 65536 },
+      (err, stdout) => resolve(err || !stdout ? "" : String(stdout).slice(0, MAX_HTML_BYTES))
+    );
+  });
+}
+
 async function fetchHtmlWithGuard(urlObj, hopsLeft = 2) {
   await assertPublicHost(urlObj.hostname);
-  const result = await fetchHtml(urlObj);
-  if (result.redirect && hopsLeft > 0) {
-    return fetchHtmlWithGuard(result.redirect, hopsLeft - 1);
+  let html = "";
+  try {
+    const result = await fetchHtml(urlObj);
+    if (result.redirect && hopsLeft > 0) return fetchHtmlWithGuard(result.redirect, hopsLeft - 1);
+    html = result.html || "";
+  } catch {
+    html = "";
   }
-  return result.html || "";
+  // Blocked or empty? Fall back to curl (host already SSRF-checked above).
+  if (html.length < 500) {
+    const viaCurl = await fetchHtmlViaCurl(urlObj);
+    if (viaCurl.length > html.length) html = viaCurl;
+  }
+  return html;
 }
 
 // ---------- Extraction ----------
