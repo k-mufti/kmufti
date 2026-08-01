@@ -182,7 +182,12 @@ function extractImage(html, pageUrl) {
   }
 }
 
-function extractPrice(html) {
+// Pull the raw { amount, currency } a storefront advertises. Note: many sites
+// (esp. non-US locales) only embed their HOME currency in the HTML metadata and
+// render the localized/USD price with client-side JS — which our scraper can't
+// see. So whatever we get here is the origin currency; resolveUsdPrice() below
+// converts it to USD.
+function extractPriceRaw(html) {
   // Tier 1: explicit price meta tags used by most storefronts
   let amount = matchMetaContent(html, metaTag("product:price:amount"));
   let currency = matchMetaContent(html, metaTag("product:price:currency"));
@@ -199,13 +204,70 @@ function extractPrice(html) {
   if (!amount) {
     const m = html.match(/"price"\s*:\s*"?([\d]+(?:\.\d{1,2})?)"?/);
     if (m) amount = m[1];
+  }
+  if (!currency) {
     const c = html.match(/"priceCurrency"\s*:\s*"([A-Z]{3})"/);
     if (c) currency = c[1];
   }
 
-  if (!amount) return "";
+  if (!amount) return null;
+  return { amount, currency: (currency || "").toUpperCase() };
+}
+
+function formatPrice(amount, currency) {
   const symbol = { USD: "$", EUR: "€", GBP: "£", JPY: "¥", CAD: "$", AUD: "$" }[currency] || "";
-  return symbol ? `${symbol}${amount}` : currency ? `${amount} ${currency}` : `$${amount}`;
+  const num = parseFloat(String(amount).replace(/[^0-9.]/g, ""));
+  const shown = Number.isFinite(num) ? (Number.isInteger(num) ? String(num) : num.toFixed(2)) : amount;
+  return symbol ? `${symbol}${shown}` : currency ? `${shown} ${currency}` : `$${shown}`;
+}
+
+// Cached FX rates (currency -> USD), so we don't hit the API on every unfurl.
+const fxCache = new Map();
+const FX_TTL_MS = 12 * 3600 * 1000;
+function getUsdRate(currency) {
+  return new Promise((resolve) => {
+    if (!currency || currency === "USD") return resolve(1);
+    const hit = fxCache.get(currency);
+    if (hit && Date.now() - hit.ts < FX_TTL_MS) return resolve(hit.rate);
+    const req = https.get(
+      `https://api.frankfurter.dev/v1/latest?from=${encodeURIComponent(currency)}&to=USD`,
+      { timeout: 5000 },
+      (res) => {
+        if (res.statusCode !== 200) { res.resume(); return resolve(null); }
+        let data = "";
+        res.on("data", (d) => (data += d));
+        res.on("end", () => {
+          try {
+            const rate = JSON.parse(data)?.rates?.USD;
+            if (typeof rate === "number") { fxCache.set(currency, { rate, ts: Date.now() }); resolve(rate); }
+            else resolve(null);
+          } catch { resolve(null); }
+        });
+      }
+    );
+    req.on("error", () => resolve(null));
+    req.on("timeout", () => { req.destroy(); resolve(null); });
+  });
+}
+
+// Extract the price and always return it in USD (converting when needed).
+async function resolveUsdPrice(html) {
+  const raw = extractPriceRaw(html);
+  if (!raw) return "";
+  const num = parseFloat(String(raw.amount).replace(/[^0-9.]/g, ""));
+  if (!Number.isFinite(num)) return "";
+  if (raw.currency && raw.currency !== "USD") {
+    const rate = await getUsdRate(raw.currency);
+    if (rate) return `$${(num * rate).toFixed(2)}`; // converted to USD
+    return formatPrice(raw.amount, raw.currency); // conversion unavailable — show origin
+  }
+  return formatPrice(raw.amount, raw.currency);
+}
+
+// Kept for the module export / any sync caller: format without conversion.
+function extractPrice(html) {
+  const raw = extractPriceRaw(html);
+  return raw ? formatPrice(raw.amount, raw.currency) : "";
 }
 
 // ---------- Fallback: Microlink (free API, runs a headless browser) ----------
@@ -329,7 +391,7 @@ const server = http.createServer((req, res) => {
         const html = await fetchHtmlWithGuard(urlObj);
         title = extractTitle(html);
         image = extractImage(html, urlObj);
-        price = extractPrice(html);
+        price = await resolveUsdPrice(html);
       } catch {
         // swallow — we'll try the fallbacks below
       }
@@ -463,4 +525,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { extractTitle, extractImage, extractPrice };
+module.exports = { extractTitle, extractImage, extractPrice, extractPriceRaw, resolveUsdPrice };
