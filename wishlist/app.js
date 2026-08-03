@@ -743,22 +743,27 @@
     render();
   }
 
-  function reportAdd(newItem, priceParamSent) {
+  const CURRENT_BMV = "3"; // bump whenever the bookmarklet code changes
+
+  function reportAdd(newItem, bmv) {
     console.log("[wishlist] added:", {
       url: newItem.url,
       title: newItem.title,
       hasImage: !!newItem.image,
-      priceParamSent: priceParamSent,
+      bmv: bmv,
       price: newItem.price || "(empty)",
     });
-    if (priceParamSent === false) {
-      setStatusMsg('added — this is the OLD bookmarklet (no price). Re-drag "+ wish".', "error");
+    if (bmv !== CURRENT_BMV) {
+      setStatusMsg(
+        'added — but your "+ wish" is OUTDATED (v' + (bmv || "0") + '). Reload this page, then drag a fresh "+ wish" to your bookmarks bar (delete the old one) so prices come out right.',
+        "error"
+      );
     } else if (!newItem.price) {
-      setStatusMsg("added — the page didn't expose a price. Click the price in the cart to type one.", "error");
+      setStatusMsg("added — the page didn't show a price. Click the price in the cart to type one.", "error");
     } else {
-      setStatusMsg("added — price found: " + newItem.price, "ok");
+      setStatusMsg("added — price: " + newItem.price, "ok");
     }
-    setTimeout(() => setStatusMsg(""), 7000);
+    setTimeout(() => setStatusMsg(""), 9000);
   }
 
   function ingestQueryParams() {
@@ -766,11 +771,11 @@
     if (params.get("add") !== "1") return;
     const newItem = buildItemFromParams(params);
     if (!newItem) return;
-    const priceParamSent = params.has("price");
+    const bmv = params.get("bmv") || "0";
     // clean the URL so a refresh doesn't add the item again
     history.replaceState({}, "", location.pathname);
     addIngestedItem(newItem);
-    reportAdd(newItem, priceParamSent);
+    reportAdd(newItem, bmv);
   }
 
   // ---------- Bookmarklet ----------
@@ -802,7 +807,7 @@
           "var az=document.querySelector('.a-price .a-offscreen,.priceToPay .a-offscreen');" +
           "if(az){var am=(az.textContent||'').match(re);if(am)return am[0].replace(/\\s/g,'');}" +
           "var N=document.querySelectorAll('span,b,strong,ins,p,h1,h2,h3,div,[itemprop=\"price\"]'),i,e,t,m,v,fs,B='',bf=-1;" +
-          "for(i=0;i<N.length;i++){e=N[i];if(e.children&&e.children.length)continue;t=(e.getAttribute&&e.getAttribute('content'))||e.textContent||'';if(!t||t.length>18)continue;if(!V(e)||K(e))continue;m=t.match(re);if(!m)continue;v=parseFloat(m[0].replace(/[^0-9.]/g,''));if(!(v>0))continue;fs=0;try{fs=parseFloat(getComputedStyle(e).fontSize)||0;}catch(_){}if(fs>bf){bf=fs;B=m[0].replace(/\\s/g,'');}}" +
+          "for(i=0;i<N.length;i++){e=N[i];t=(e.getAttribute&&e.getAttribute('content'))||e.textContent||'';if(!t){continue}t=t.replace(/\\s+/g,' ').trim();if(!t||t.length>16)continue;if(!V(e)||K(e))continue;m=t.match(re);if(!m)continue;v=parseFloat(m[0].replace(/[^0-9.]/g,''));if(!(v>0))continue;fs=0;try{fs=parseFloat(getComputedStyle(e).fontSize)||0;}catch(_){}if(fs>bf){bf=fs;B=m[0].replace(/\\s/g,'');}}" +
           "if(B)return B;" +
           "var M={USD:'$',EUR:'\\u20ac',GBP:'\\u00a3',JPY:'\\u00a5',CAD:'$',AUD:'$'};" +
           "var a=q('meta[property=\"product:price:amount\"]')||q('meta[property=\"og:price:amount\"]')||q('meta[itemprop=\"price\"]');" +
@@ -813,7 +818,7 @@
           "return '';" +
         "}" +
         "var t=q('meta[property=\"og:title\"]')||document.title;" +
-        "var p=new URLSearchParams({add:'1',url:location.href,title:t,image:I(),price:P()});" +
+        "var p=new URLSearchParams({add:'1',bmv:'3',url:location.href,title:t,image:I(),price:P()});" +
         "window.open('" + target + "?'+p.toString(),'_blank');" +
       "})();";
     link.setAttribute("href", code);
