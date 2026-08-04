@@ -117,28 +117,48 @@
     item.rot = (Math.random() * 2 - 1) * 13;
 
     const rPx = (item.fw * W) / 2;
-    const vSpan = Math.max(360, 120 + count * 78); // canvas grows with items
     const placed = items.filter((it) => it !== item && it.fx != null);
+
+    // First item: start near the top-center, not scattered across the board.
+    if (placed.length === 0) {
+      item.fx = 0.42 + Math.random() * 0.16;
+      item.ypx = 90 + Math.random() * 40;
+      return;
+    }
+
+    // Candidates are drawn HUGGING the existing cluster (its bounding box,
+    // padded by a bit more than one item's radius) instead of across the
+    // whole — now quite wide — canvas. That keeps new items landing right
+    // next to the pile rather than randomly far away. If nothing in that
+    // tight area is free enough, the pad widens a few times before giving up.
+    let cxs = placed.map((o) => o.fx * W);
+    let cys = placed.map((o) => o.ypx);
+    let minX = Math.min(...cxs), maxX = Math.max(...cxs);
+    let minY = Math.min(...cys), maxY = Math.max(...cys);
 
     let best = null;
     let bestScore = Infinity;
-    for (let t = 0; t < 30; t++) {
-      const fx = 0.08 + Math.random() * 0.84;
-      const yPx = 90 + Math.random() * vSpan;
-      const cxPx = fx * W;
-      let overlap = 0;
-      for (const o of placed) {
-        const oR = (o.fw * W) / 2;
-        const dist = Math.hypot(cxPx - o.fx * W, yPx - o.ypx);
-        overlap += Math.max(0, rPx + oR - dist);
+    for (let pass = 0; pass < 4; pass++) {
+      const pad = rPx * (2.2 + pass * 1.6); // widen the search area each pass
+      const loX = Math.max(rPx, minX - pad), hiX = Math.min(W - rPx, maxX + pad);
+      const loY = Math.max(90, minY - pad), hiY = maxY + pad;
+      for (let t = 0; t < 24; t++) {
+        const cxPx = loX + Math.random() * Math.max(1, hiX - loX);
+        const yPx = loY + Math.random() * Math.max(1, hiY - loY);
+        let overlap = 0;
+        for (const o of placed) {
+          const oR = (o.fw * W) / 2;
+          const dist = Math.hypot(cxPx - o.fx * W, yPx - o.ypx);
+          overlap += Math.max(0, rPx + oR - dist);
+        }
+        if (overlap < bestScore) {
+          bestScore = overlap;
+          best = { fx: cxPx / W, ypx: yPx };
+        }
       }
-      if (overlap < bestScore) {
-        bestScore = overlap;
-        best = { fx, ypx: yPx };
-        if (overlap === 0) break;
-      }
+      if (bestScore < rPx * 0.4) break; // good enough — small, acceptable overlap
     }
-    item.fx = best.fx;
+    item.fx = clamp(best.fx, 0.04, 0.96);
     item.ypx = best.ypx;
   }
 
