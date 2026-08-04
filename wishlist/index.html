@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
   <header class="site-header">
@@ -50,13 +50,24 @@
         <img class="item-img" alt="" draggable="false" />
         <span class="item-fallback"><span class="item-glyph"></span></span>
       </a>
-      <button class="item-remove" title="Remove" aria-label="Remove item">&times;</button>
       <div class="item-caption">
         <span class="item-title"></span>
         <span class="item-price"></span>
       </div>
     </div>
   </template>
+
+  <!-- Trash: drag a cutout here to crumple it away -->
+  <div class="trash-fab" id="trash-fab" title="Drag an item here to trash it" aria-hidden="true">
+    <svg class="trash-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <g class="trash-lid">
+        <path d="M3 6h18" />
+        <path d="M9 6V4.6A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.6V6" />
+      </g>
+      <path d="M5.5 6.5l1 13.2A1.6 1.6 0 0 0 8.1 21h7.8a1.6 1.6 0 0 0 1.6-1.3l1-13.2" />
+      <path d="M10 10.5v6M14 10.5v6" />
+    </svg>
+  </div>
 
   <!-- Shopping cart: drag items onto it to collect them; click to see totals -->
   <button class="cart-fab" id="cart-fab" aria-label="Open cart" aria-expanded="false">
@@ -84,6 +95,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=6"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>

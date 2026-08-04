@@ -13,6 +13,7 @@
   const collage = document.getElementById("collage");
   const emptyNote = document.getElementById("empty-note");
   const cartFab = document.getElementById("cart-fab");
+  const trashFab = document.getElementById("trash-fab");
   const cartBadge = document.getElementById("cart-badge");
   const cartPanel = document.getElementById("cart-panel");
   const cartList = document.getElementById("cart-list");
@@ -71,6 +72,36 @@
   }
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
+  // ---------- Fasteners: each cutout is held to the board by washi tape or a
+  // push-pin (chosen once per item, then remembered). ----------
+  const justAddedIds = new Set(); // transient: which items should play the drop-in
+  const TAPE_COLORS = ["#e7b2ba", "#a6d4c2", "#f0dd9e", "#b6cbe9", "#d8c1e8", "#f2b6a0"];
+  const PIN_COLORS = ["#d64b45", "#e2a12f", "#3f7d5a", "#3f6fb0", "#8a5cc0"];
+  function assignFastener(it) {
+    it.fastener = Math.random() < 0.5 ? "tape" : "pin";
+    it.fastenerVariant = Math.floor(Math.random() * 6);
+    it.fastenerRot = Math.round((Math.random() * 2 - 1) * 11);
+  }
+  function ensureFasteners() {
+    let changed = false;
+    items.forEach((it) => { if (!it.fastener) { assignFastener(it); changed = true; } });
+    if (changed) saveItems();
+  }
+
+  // Fling a cutout into the trash can, then delete it.
+  function crumpleAndRemove(node, item) {
+    const iR = node.getBoundingClientRect();
+    const tR = trashFab.getBoundingClientRect();
+    node.style.setProperty("--crx", (tR.left + tR.width / 2 - (iR.left + iR.width / 2)) + "px");
+    node.style.setProperty("--cry", (tR.top + tR.height / 2 - (iR.top + iR.height / 2)) + "px");
+    void node.offsetWidth; // lock in the start transform before animating
+    node.classList.add("item--crumple");
+    trashFab.classList.remove("trash-fab--over", "trash-fab--armed");
+    trashFab.classList.add("trash-fab--chomp");
+    setTimeout(() => trashFab.classList.remove("trash-fab--chomp"), 420);
+    setTimeout(() => removeItem(item.id), 430);
+  }
+
   // Pull a number + currency symbol out of a price string like "$1,299.00".
   function parsePrice(str) {
     if (!str) return { value: null, currency: "" };
@@ -127,6 +158,7 @@
     collage.innerHTML = "";
     const boardItems = items.filter((it) => !it.inCart);
     emptyNote.style.display = boardItems.length ? "none" : "block";
+    ensureFasteners();
     ensurePlacements();
     boardItems.forEach((item) => collage.appendChild(renderItem(item)));
     layout();
@@ -186,14 +218,24 @@
     node.querySelector(".item-title").textContent = item.title || item.url;
     node.querySelector(".item-price").textContent = item.price || "";
 
-    node.querySelector(".item-remove").addEventListener("pointerdown", (e) => {
-      e.stopPropagation(); // don't start a drag
-    });
-    node.querySelector(".item-remove").addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      removeItem(item.id);
-    });
+    // Fastener — washi tape or a push-pin holding the cutout to the board.
+    const fast = document.createElement("div");
+    if (item.fastener === "pin") {
+      fast.className = "item-fastener pin";
+      fast.style.setProperty("--pin-c", PIN_COLORS[item.fastenerVariant % PIN_COLORS.length]);
+    } else {
+      fast.className = "item-fastener tape";
+      fast.style.setProperty("--tape-c", TAPE_COLORS[item.fastenerVariant % TAPE_COLORS.length]);
+      fast.style.setProperty("--tape-rot", (item.fastenerRot || 0) + "deg");
+    }
+    node.appendChild(fast);
+
+    // A freshly-added item peels/drops onto the board.
+    if (justAddedIds.has(item.id)) {
+      justAddedIds.delete(item.id);
+      node.classList.add("item--dropping");
+      setTimeout(() => node.classList.remove("item--dropping"), 620);
+    }
 
     node.addEventListener("contextmenu", (e) => {
       e.preventDefault();
@@ -523,6 +565,7 @@
     let startX, startY, startLeft, startTop, W;
     let dx = 0, dy = 0, rafId = null;
     let cartRect = null, overCart = false;
+    let trashRect = null, overTrash = false;
     let dragging = false;
 
     const baseTransform = () =>
@@ -555,6 +598,14 @@
         cartFab.classList.toggle("cart-fab--over", overCart);
         cartFab.classList.toggle("cart-fab--armed", !overCart);
       }
+      const nowOverT =
+        trashRect &&
+        e.clientX >= trashRect.left && e.clientX <= trashRect.right &&
+        e.clientY >= trashRect.top && e.clientY <= trashRect.bottom;
+      if (nowOverT !== overTrash) {
+        overTrash = nowOverT;
+        trashFab.classList.toggle("trash-fab--over", overTrash);
+      }
       if (!rafId) rafId = requestAnimationFrame(applyOffset);
     }
 
@@ -567,6 +618,7 @@
       node.classList.remove("dragging");
       collage.classList.remove("dragging-active");
       cartFab.classList.remove("cart-fab--over", "cart-fab--armed");
+      trashFab.classList.remove("trash-fab--over", "trash-fab--armed");
       document.body.style.userSelect = "";
     }
 
@@ -574,7 +626,19 @@
       if (!dragging) return;
       const moved = node._dragMoved;
       const droppedOnCart = moved && overCart;
+      const droppedOnTrash = moved && overTrash;
       stopDrag();
+      if (droppedOnTrash) {
+        // commit the position so the crumple starts from a clean transform,
+        // then fling the cutout into the trash.
+        item.fx = clamp((startLeft + dx) / W, 0.04, 0.96);
+        item.ypx = Math.max(40, startTop + dy);
+        node.style.left = item.fx * W + "px";
+        node.style.top = item.ypx + "px";
+        node.style.transform = baseTransform();
+        crumpleAndRemove(node, item);
+        return;
+      }
       if (droppedOnCart) {
         node.style.transform = baseTransform();
         addToCart(item);
@@ -616,10 +680,13 @@
       node._dragMoved = false;
       cartRect = cartFab.getBoundingClientRect();
       overCart = false;
+      trashRect = trashFab.getBoundingClientRect();
+      overTrash = false;
       dragging = true;
       node.classList.add("dragging");
       collage.classList.add("dragging-active"); // drop blend-mode for smoothness
       cartFab.classList.add("cart-fab--armed");
+      trashFab.classList.add("trash-fab--armed");
       document.body.style.userSelect = "none";
       document.addEventListener("pointermove", onMove);
       document.addEventListener("pointerup", onUp);
@@ -681,6 +748,7 @@
     placeItem(newItem, items.length + 1);
     items.push(newItem);
     saveItems();
+    justAddedIds.add(newItem.id);
     render();
 
     input.value = "";
@@ -740,6 +808,7 @@
     placeItem(newItem, items.length + 1);
     items.push(newItem);
     saveItems();
+    justAddedIds.add(newItem.id);
     render();
   }
 

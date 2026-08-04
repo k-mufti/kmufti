@@ -283,6 +283,70 @@ button { font-family: inherit; cursor: pointer; }
 }
 .item-caption:empty { display: none; }
 
+/* ---------- Fasteners: washi tape + push-pins ---------- */
+.item-fastener {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 4;
+  pointer-events: none;
+}
+.item-fastener.tape {
+  width: 74px;
+  height: 26px;
+  transform: translate(-50%, -55%) rotate(var(--tape-rot, -6deg));
+  background-color: var(--tape-c, #e7b2ba);
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.16) 0 6px, rgba(255, 255, 255, 0) 6px 12px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(0, 0, 0, 0.06));
+  opacity: 0.82;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);
+}
+.item-fastener.pin {
+  width: 20px;
+  height: 20px;
+  transform: translate(-50%, -62%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.9), var(--pin-c, #d64b45) 46%, rgba(0, 0, 0, 0.4));
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.32);
+}
+.item-fastener.pin::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 78%;
+  width: 2px;
+  height: 9px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #9a9a9a, #555);
+  border-radius: 0 0 1px 1px;
+}
+
+/* Drop-in: a fresh cutout peels onto the board. */
+@keyframes item-drop {
+  0%   { opacity: 0; transform: translate(-50%, calc(-50% - 34px)) rotate(calc(var(--rot, 0deg) * 2.4)) scale(1.16); }
+  55%  { opacity: 1; }
+  74%  { transform: translate(-50%, -50%) rotate(calc(var(--rot, 0deg) - 3deg)) scale(0.965); }
+  100% { opacity: 1; transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1); }
+}
+.item--dropping { animation: item-drop 0.56s cubic-bezier(0.3, 1.3, 0.5, 1); z-index: 40; }
+.item--dropping .item-fastener { animation: fastener-in 0.24s ease 0.36s backwards; }
+@keyframes fastener-in { from { opacity: 0; } }
+
+/* Crumple: fling the cutout into the trash. */
+@keyframes item-crumple {
+  100% {
+    opacity: 0;
+    filter: blur(1.5px);
+    transform: translate(calc(-50% + var(--crx, -200px)), calc(-50% + var(--cry, 240px))) rotate(-170deg) scale(0.05);
+  }
+}
+.item--crumple {
+  animation: item-crumple 0.42s cubic-bezier(0.5, 0, 0.85, 0.35) forwards;
+  pointer-events: none;
+  z-index: 60;
+}
+
 /* ---------- Bought state (right-click toggles) ---------- */
 .item--bought {
   opacity: 0.6;
@@ -358,6 +422,56 @@ button { font-family: inherit; cursor: pointer; }
   100% { transform: scale(1); }
 }
 .cart-fab.cart-fab--bump { animation: cart-bump 0.34s ease; }
+
+/* ---------- Trash can: drag a cutout here to crumple it away ---------- */
+.trash-fab {
+  position: fixed;
+  bottom: 30px;
+  left: 28px;
+  z-index: 1000;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--line, rgba(0, 0, 0, 0.1));
+  color: var(--ink-faint, #a8a29a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  opacity: 0.5;
+  transition: transform 0.18s ease, opacity 0.18s ease, background 0.18s ease,
+    color 0.18s ease, box-shadow 0.18s ease;
+}
+.trash-icon { width: 34px; height: 34px; }
+.trash-lid { transform-origin: 12px 6px; transition: transform 0.18s ease; }
+/* An item is being dragged — the can wakes up. */
+.trash-fab.trash-fab--armed { opacity: 1; color: var(--ink-dim, #6b6b6b); }
+/* The item is over the can — lid opens, goes red. */
+.trash-fab.trash-fab--over {
+  transform: scale(1.14);
+  background: #c0392b;
+  color: #fff;
+  border-color: #c0392b;
+  box-shadow: 0 12px 28px rgba(192, 57, 43, 0.4);
+}
+.trash-fab.trash-fab--over .trash-lid { transform: translateY(-3px) rotate(-18deg); }
+@keyframes trash-chomp {
+  0%   { transform: scale(1.14); }
+  35%  { transform: scale(0.9); }
+  70%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.trash-fab.trash-fab--chomp {
+  animation: trash-chomp 0.4s ease;
+  background: #c0392b;
+  color: #fff;
+  border-color: #c0392b;
+}
+@media (max-width: 640px) {
+  .trash-fab { bottom: 16px; left: 16px; width: 62px; height: 62px; }
+  .trash-icon { width: 28px; height: 28px; }
+}
 
 .cart-badge {
   position: absolute;
