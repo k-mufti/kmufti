@@ -75,12 +75,9 @@
   // ---------- Fasteners: each cutout is held to the board by washi tape or a
   // push-pin (chosen once per item, then remembered). ----------
   const justAddedIds = new Set(); // transient: which items should play the drop-in
-  const TAPE_COLORS = ["#e7b2ba", "#a6d4c2", "#f0dd9e", "#b6cbe9", "#d8c1e8", "#f2b6a0"];
-  const PIN_COLORS = ["#d64b45", "#e2a12f", "#3f7d5a", "#3f6fb0", "#8a5cc0"];
   function assignFastener(it) {
-    it.fastener = Math.random() < 0.5 ? "tape" : "pin";
-    it.fastenerVariant = Math.floor(Math.random() * 6);
-    it.fastenerRot = Math.round((Math.random() * 2 - 1) * 11);
+    it.fastener = "tape";
+    it.fastenerRot = Math.round((Math.random() * 2 - 1) * 12);
   }
   function ensureFasteners() {
     let changed = false;
@@ -97,8 +94,6 @@
     void node.offsetWidth; // lock in the start transform before animating
     node.classList.add("item--crumple");
     trashFab.classList.remove("trash-fab--over", "trash-fab--armed");
-    trashFab.classList.add("trash-fab--chomp");
-    setTimeout(() => trashFab.classList.remove("trash-fab--chomp"), 420);
     setTimeout(() => removeItem(item.id), 430);
   }
 
@@ -218,16 +213,10 @@
     node.querySelector(".item-title").textContent = item.title || item.url;
     node.querySelector(".item-price").textContent = item.price || "";
 
-    // Fastener — washi tape or a push-pin holding the cutout to the board.
+    // Fastener — a strip of clear tape holding the cutout to the board.
     const fast = document.createElement("div");
-    if (item.fastener === "pin") {
-      fast.className = "item-fastener pin";
-      fast.style.setProperty("--pin-c", PIN_COLORS[item.fastenerVariant % PIN_COLORS.length]);
-    } else {
-      fast.className = "item-fastener tape";
-      fast.style.setProperty("--tape-c", TAPE_COLORS[item.fastenerVariant % TAPE_COLORS.length]);
-      fast.style.setProperty("--tape-rot", (item.fastenerRot || 0) + "deg");
-    }
+    fast.className = "item-fastener tape";
+    fast.style.setProperty("--tape-rot", (item.fastenerRot || 0) + "deg");
     node.appendChild(fast);
 
     // A freshly-added item peels/drops onto the board.
