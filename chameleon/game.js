@@ -115,10 +115,7 @@
   }
 
   // Auto (deterministic) placement for practice + un-curated days.
-  // Difficulty is CALIBRATED: after picking a spot we compose the scene,
-  // measure how visible the figure actually is, and adjust opacity until it
-  // lands in the sweet-spot band (MECHA.DEFAULTS.visLo..visHi). If a spot
-  // can't be calibrated into the band, we try the next-best spot.
+  // Uses 3D rendered figure (FIGURE3D) when available, falls back to SVG.
   async function buildAuto(seedStr) {
     stopReveal();
     const rng = rngFrom(seedStr);
@@ -133,24 +130,61 @@
     bctx.drawImage(img, 0, 0, CW, CH);
     const baseData = bctx.getImageData(0, 0, CW, CH).data;
 
-    const shadow = MECHA.DEFAULTS.shadow;
-    const figImg = await MECHA.figure(shadow);
+    // Pick a random 3D pose
+    const poseIdx = Math.floor(rng() * FIGURE3D.POSE_PATHS.length);
+    const posePath = FIGURE3D.POSE_PATHS[poseIdx];
+
+    // Find placement first (need position to sample lighting)
+    const spot = MECHA.autoPlace(baseData, CW, CH, figW, figH, MECHA.DEFAULTS, rng);
+
+    // Sample lighting from the photo around the placement area
+    const lighting = FIGURE3D.sampleLighting(baseData, CW, CH, spot.fx, spot.fy, figW, figH);
+
+    // Load 3D model and render it
+    let figImg, using3D = false;
+    try {
+      console.log('[MC] Loading 3D pose:', posePath);
+      const model = await FIGURE3D.loadPose(posePath);
+      console.log('[MC] Model loaded, children:', model.children.length);
+      figImg = FIGURE3D.render(model, figW, figH, lighting, rot);
+      using3D = true;
+      console.log('[MC] 3D render done, canvas:', figImg.width, 'x', figImg.height);
+      // Debug: show the raw rendered figure
+      if (params.has('debug')) {
+        let dbg = document.getElementById('mc-debug-fig');
+        if (!dbg) { dbg = document.createElement('canvas'); dbg.id = 'mc-debug-fig'; dbg.style.cssText = 'position:fixed;top:10px;right:10px;border:2px solid lime;z-index:9999;background:#222;max-width:150px;'; document.body.appendChild(dbg); }
+        dbg.width = figImg.width; dbg.height = figImg.height;
+        dbg.getContext('2d').drawImage(figImg, 0, 0);
+      }
+    } catch (err) {
+      console.warn('[MC] 3D figure failed, falling back to SVG:', err);
+      figImg = await MECHA.figure(MECHA.DEFAULTS.shadow);
+    }
+    console.log('[MC] Using 3D:', using3D, '| figImg type:', figImg.constructor.name, '| size:', figW, 'x', figH);
+
     const { visLo, visHi } = MECHA.DEFAULTS;
 
-    // Try up to 3 candidate spots; keep the first that calibrates into the
-    // band, otherwise use whichever came closest.
-    let bestResult = null, bestSpot = null, bestDist = Infinity;
+    // Calibrate visibility
+    let bestResult = null, bestSpot = spot, bestDist = Infinity;
     for (let attempt = 0; attempt < 3; attempt++) {
-      const spot = MECHA.autoPlace(baseData, CW, CH, figW, figH, MECHA.DEFAULTS, rng);
+      const s = attempt === 0 ? spot : MECHA.autoPlace(baseData, CW, CH, figW, figH, MECHA.DEFAULTS, rng);
+      if (attempt > 0) {
+        // Re-render figure for new spot's lighting
+        const lit = FIGURE3D.sampleLighting(baseData, CW, CH, s.fx, s.fy, figW, figH);
+        try {
+          const model = await FIGURE3D.loadPose(posePath);
+          figImg = FIGURE3D.render(model, figW, figH, lit, rot);
+        } catch (_) {}
+      }
       const p = {
-        img, CW, CH, fx: spot.fx, fy: spot.fy, figW, figH, rot,
+        img, CW, CH, fx: s.fx, fy: s.fy, figW, figH, rot,
         blend: MECHA.DEFAULTS.blend, feather: MECHA.DEFAULTS.feather, figImg,
-        opacity: MECHA.adaptiveOpacity(spot.st.detail, MECHA.DEFAULTS),
+        opacity: MECHA.adaptiveOpacity(s.st.detail, MECHA.DEFAULTS),
       };
       const r = MECHA.calibratedCompose(p, baseData, visLo, visHi);
       const dist = r.vis < visLo ? visLo - r.vis : r.vis > visHi ? r.vis - visHi : 0;
-      if (dist < bestDist) { bestDist = dist; bestResult = r; bestSpot = spot; }
-      if (dist === 0) break;   // in the band — done
+      if (dist < bestDist) { bestDist = dist; bestResult = r; bestSpot = s; }
+      if (dist === 0) break;
     }
 
     canvas.width = CW; canvas.height = CH;
@@ -158,7 +192,8 @@
     round = {
       CW, CH, fx: bestSpot.fx, fy: bestSpot.fy, figW, figH,
       cx: bestSpot.fx + figW / 2, cy: bestSpot.fy + figH / 2, rot,
-      blend: MECHA.DEFAULTS.blend, opacity: bestResult.opacity, shadow,
+      blend: MECHA.DEFAULTS.blend, opacity: bestResult.opacity,
+      shadow: MECHA.DEFAULTS.shadow,
       _figImg: figImg, _won: false,
     };
     ctx.drawImage(scene, 0, 0);
@@ -176,7 +211,22 @@
     const fy = Math.round(e.y * CH - figH / 2);
     const rot = (e.rot || 0) * Math.PI / 180;
     const shadow = e.shadow != null ? e.shadow : MECHA.DEFAULTS.shadow;
-    const figImg = await MECHA.figure(shadow);
+
+    // Use 3D figure with lighting from placement area
+    let figImg;
+    const base = document.createElement('canvas'); base.width = CW; base.height = CH;
+    const bctx = base.getContext('2d', { willReadFrequently: true });
+    bctx.drawImage(img, 0, 0, CW, CH);
+    const baseData = bctx.getImageData(0, 0, CW, CH).data;
+    const poseIdx = (e.pose != null) ? e.pose : Math.floor(Math.random() * FIGURE3D.POSE_PATHS.length);
+    try {
+      const lighting = FIGURE3D.sampleLighting(baseData, CW, CH, fx, fy, figW, figH);
+      const model = await FIGURE3D.loadPose(FIGURE3D.POSE_PATHS[poseIdx]);
+      figImg = FIGURE3D.render(model, figW, figH, lighting, rot);
+    } catch (err) {
+      console.warn('3D figure failed, falling back to SVG:', err);
+      figImg = await MECHA.figure(shadow);
+    }
     finishRound({ img, CW, CH, fx, fy, figW, figH, rot, blend: e.blend || 'multiply', opacity: e.opacity != null ? e.opacity : 0.9, shadow }, figImg);
   }
 
@@ -451,6 +501,7 @@
   async function boot() {
     $('dayLabel').textContent = 'DAY ' + dayNumber();
     await loadManifest();
+    FIGURE3D.preloadAll();   // start loading 3D poses in background
     await loadDaily();
 
     if (FORCE_SEED) {

@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>3D Model Test</title>
+  <style>
+    body { margin: 0; background: #222; display: flex; flex-wrap: wrap; gap: 10px; padding: 10px; }
+    canvas { border: 2px solid lime; }
+    #info { color: #eee; font: 14px monospace; width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="info">Loading...</div>
+  <script src="three.min.js"></script>
+  <script src="GLTFLoader.js"></script>
+  <script>
+    const info = document.getElementById('info');
+    const poses = ['figures/pose1.glb','figures/pose2.glb','figures/pose3.glb','figures/pose4.glb'];
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
+    renderer.setSize(220, 440);
+    renderer.setClearColor(0x333333, 1);
+    renderer.setPixelRatio(1);
+
+    const loader = new THREE.GLTFLoader();
+
+    async function renderPose(path) {
+      return new Promise((res, rej) => {
+        loader.load(path, (gltf) => {
+          const model = gltf.scene;
+          let meshInfo = '';
+
+          // Log everything about the model
+          model.traverse((c) => {
+            if (c.isMesh) {
+              const pos = c.geometry.attributes.position;
+              const norm = c.geometry.attributes.normal;
+              meshInfo += `Mesh: ${c.name || '(unnamed)'}, verts: ${pos.count}, hasNormals: ${!!norm}\n`;
+
+              // Log bounds
+              c.geometry.computeBoundingBox();
+              const bb = c.geometry.boundingBox;
+              meshInfo += `  Bounds: (${bb.min.x.toFixed(1)}, ${bb.min.y.toFixed(1)}, ${bb.min.z.toFixed(1)}) to (${bb.max.x.toFixed(1)}, ${bb.max.y.toFixed(1)}, ${bb.max.z.toFixed(1)})\n`;
+              const size = new THREE.Vector3();
+              bb.getSize(size);
+              meshInfo += `  Size: ${size.x.toFixed(1)} x ${size.y.toFixed(1)} x ${size.z.toFixed(1)}\n`;
+
+              if (!norm) c.geometry.computeVertexNormals();
+            }
+          });
+
+          info.textContent = path + '\n' + meshInfo;
+          console.log(path, meshInfo);
+
+          // === ATTEMPT 1: Just render as-is, no transforms ===
+          const scene1 = new THREE.Scene();
+          scene1.add(model.clone());
+          scene1.add(new THREE.AmbientLight(0xffffff, 2));
+          scene1.add(new THREE.DirectionalLight(0xffffff, 2));
+
+          const box = new THREE.Box3().setFromObject(model);
+          const center = box.getCenter(new THREE.Vector3());
+          const bsize = box.getSize(new THREE.Vector3());
+          console.log('Box center:', center, 'size:', bsize);
+
+          // Camera looking down -Z (default)
+          const maxDim = Math.max(bsize.x, bsize.y, bsize.z);
+          const cam1 = new THREE.OrthographicCamera(-maxDim, maxDim, maxDim, -maxDim, 0.1, maxDim * 10);
+          cam1.position.set(center.x, center.y, center.z + maxDim * 2);
+          cam1.lookAt(center);
+
+          renderer.render(scene1, cam1);
+          const c1 = document.createElement('canvas');
+          c1.width = 220; c1.height = 440;
+          c1.getContext('2d').drawImage(renderer.domElement, 0, 0);
+          c1.title = path + ' (front Z)';
+          document.body.appendChild(c1);
+
+          // === ATTEMPT 2: Camera looking down -X ===
+          const scene2 = new THREE.Scene();
+          scene2.add(model.clone());
+          scene2.add(new THREE.AmbientLight(0xffffff, 2));
+          scene2.add(new THREE.DirectionalLight(0xffffff, 2));
+          const cam2 = new THREE.OrthographicCamera(-maxDim, maxDim, maxDim, -maxDim, 0.1, maxDim * 10);
+          cam2.position.set(center.x + maxDim * 2, center.y, center.z);
+          cam2.lookAt(center);
+
+          renderer.render(scene2, cam2);
+          const c2 = document.createElement('canvas');
+          c2.width = 220; c2.height = 440;
+          c2.getContext('2d').drawImage(renderer.domElement, 0, 0);
+          c2.title = path + ' (side X)';
+          document.body.appendChild(c2);
+
+          // === ATTEMPT 3: Camera looking down -Y ===
+          const scene3 = new THREE.Scene();
+          scene3.add(model.clone());
+          scene3.add(new THREE.AmbientLight(0xffffff, 2));
+          const dl3 = new THREE.DirectionalLight(0xffffff, 2);
+          dl3.position.set(0, -1, 0);
+          scene3.add(dl3);
+          const cam3 = new THREE.OrthographicCamera(-maxDim, maxDim, maxDim, -maxDim, 0.1, maxDim * 10);
+          cam3.position.set(center.x, center.y - maxDim * 2, center.z);
+          cam3.lookAt(center);
+          cam3.up.set(0, 0, 1);
+
+          renderer.render(scene3, cam3);
+          const c3 = document.createElement('canvas');
+          c3.width = 220; c3.height = 440;
+          c3.getContext('2d').drawImage(renderer.domElement, 0, 0);
+          c3.title = path + ' (top Y)';
+          document.body.appendChild(c3);
+
+          // === ATTEMPT 4: MeshNormalMaterial (shows normals as colors) ===
+          const scene4 = new THREE.Scene();
+          const m4 = model.clone();
+          m4.traverse((child) => {
+            if (child.isMesh) {
+              child.material = new THREE.MeshNormalMaterial();
+            }
+          });
+          scene4.add(m4);
+          const cam4 = new THREE.OrthographicCamera(-maxDim, maxDim, maxDim, -maxDim, 0.1, maxDim * 10);
+          cam4.position.set(center.x, center.y, center.z + maxDim * 2);
+          cam4.lookAt(center);
+
+          renderer.render(scene4, cam4);
+          const c4 = document.createElement('canvas');
+          c4.width = 220; c4.height = 440;
+          c4.getContext('2d').drawImage(renderer.domElement, 0, 0);
+          c4.title = path + ' (normals)';
+          document.body.appendChild(c4);
+
+          res();
+        }, undefined, rej);
+      });
+    }
+
+    (async () => {
+      try {
+        await renderPose(poses[0]);
+        info.textContent += '\nDone! 4 views: front(Z), side(X), top(Y), normals';
+      } catch (e) {
+        info.textContent = 'ERROR: ' + e.message;
+        console.error(e);
+      }
+    })();
+  </script>
+</body>
+</html>
