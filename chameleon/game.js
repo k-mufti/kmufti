@@ -131,8 +131,7 @@
     const baseData = bctx.getImageData(0, 0, CW, CH).data;
 
     // Pick a random 3D pose
-    const poseIdx = Math.floor(rng() * FIGURE3D.POSE_PATHS.length);
-    const posePath = FIGURE3D.POSE_PATHS[poseIdx];
+    const poseIdx = Math.floor(rng() * FIGURE3D.POSES_PROCEDURAL.length);
 
     // Find placement first (need position to sample lighting)
     const spot = MECHA.autoPlace(baseData, CW, CH, figW, figH, MECHA.DEFAULTS, rng);
@@ -140,27 +139,15 @@
     // Sample lighting from the photo around the placement area
     const lighting = FIGURE3D.sampleLighting(baseData, CW, CH, spot.fx, spot.fy, figW, figH);
 
-    // Load 3D model and render it
-    let figImg, using3D = false;
+    // Render 3D figure
+    let figImg;
     try {
-      console.log('[MC] Loading 3D pose:', posePath);
-      const model = await FIGURE3D.loadPose(posePath);
-      console.log('[MC] Model loaded, children:', model.children.length);
+      const model = await FIGURE3D.getModel(poseIdx);
       figImg = FIGURE3D.render(model, figW, figH, lighting, rot);
-      using3D = true;
-      console.log('[MC] 3D render done, canvas:', figImg.width, 'x', figImg.height);
-      // Debug: show the raw rendered figure
-      if (params.has('debug')) {
-        let dbg = document.getElementById('mc-debug-fig');
-        if (!dbg) { dbg = document.createElement('canvas'); dbg.id = 'mc-debug-fig'; dbg.style.cssText = 'position:fixed;top:10px;right:10px;border:2px solid lime;z-index:9999;background:#222;max-width:150px;'; document.body.appendChild(dbg); }
-        dbg.width = figImg.width; dbg.height = figImg.height;
-        dbg.getContext('2d').drawImage(figImg, 0, 0);
-      }
     } catch (err) {
       console.warn('[MC] 3D figure failed, falling back to SVG:', err);
       figImg = await MECHA.figure(MECHA.DEFAULTS.shadow);
     }
-    console.log('[MC] Using 3D:', using3D, '| figImg type:', figImg.constructor.name, '| size:', figW, 'x', figH);
 
     const { visLo, visHi } = MECHA.DEFAULTS;
 
@@ -172,7 +159,7 @@
         // Re-render figure for new spot's lighting
         const lit = FIGURE3D.sampleLighting(baseData, CW, CH, s.fx, s.fy, figW, figH);
         try {
-          const model = await FIGURE3D.loadPose(posePath);
+          const model = await FIGURE3D.getModel(poseIdx);
           figImg = FIGURE3D.render(model, figW, figH, lit, rot);
         } catch (_) {}
       }
@@ -195,6 +182,7 @@
       blend: MECHA.DEFAULTS.blend, opacity: bestResult.opacity,
       shadow: MECHA.DEFAULTS.shadow,
       _figImg: figImg, _won: false,
+      _rebuild: { img, baseData, poseIdx, spot: bestSpot, rot },
     };
     ctx.drawImage(scene, 0, 0);
     if (params.has('debug')) window.__mc = { round, isHit, vis: bestResult.vis };
@@ -221,7 +209,7 @@
     const poseIdx = (e.pose != null) ? e.pose : Math.floor(Math.random() * FIGURE3D.POSE_PATHS.length);
     try {
       const lighting = FIGURE3D.sampleLighting(baseData, CW, CH, fx, fy, figW, figH);
-      const model = await FIGURE3D.loadPose(FIGURE3D.POSE_PATHS[poseIdx]);
+      const model = await FIGURE3D.getModel(poseIdx);
       figImg = FIGURE3D.render(model, figW, figH, lighting, rot);
     } catch (err) {
       console.warn('3D figure failed, falling back to SVG:', err);
@@ -285,7 +273,7 @@
   function tick(now) {
     if (!running) return;
     elapsed = (now - startTime) / 1000;
-    if (elapsed >= CONFIG.loseAt) { elapsed = CONFIG.loseAt; endGame(false); return; }
+    if (elapsed >= CONFIG.loseAt && !params.has('debug')) { elapsed = CONFIG.loseAt; endGame(false); return; }
     const c = zoneRGB(elapsed);
     timeText.textContent = elapsed.toFixed(1);
     hudPlay.style.color = rgbCss(c);
@@ -515,6 +503,60 @@
     if (mode === 'daily' && !NO_LOCK && !FORCE_SEED) {
       const prev = playedToday();
       if (prev) { startOverlay.hidden = true; showLockedResult(prev); }
+    }
+
+    // Debug: re-render the live round's figure whenever CFG changes
+    if (params.has('debug')) {
+      window.addEventListener('f3d-cfg-changed', async () => {
+        if (!round || !round._rebuild) return;
+        const { img, baseData, poseIdx, spot, rot } = round._rebuild;
+        const { CW, CH, figW, figH } = round;
+        try {
+          const lighting = FIGURE3D.sampleLighting(baseData, CW, CH, spot.fx, spot.fy, figW, figH);
+          const model = await FIGURE3D.getModel(poseIdx);
+          const figImg = FIGURE3D.render(model, figW, figH, lighting, rot);
+          const r = MECHA.compose({
+            img, CW, CH, fx: spot.fx, fy: spot.fy, figW, figH, rot,
+            blend: round.blend, opacity: round.opacity,
+            feather: MECHA.DEFAULTS.feather, figImg,
+          });
+          scene = r.scene; mask = r.mask;
+          round._figImg = figImg;
+          ctx.drawImage(scene, 0, 0);
+        } catch (e) { console.error('[MC] debug rebuild failed', e); }
+      });
+    }
+
+    // Debug: bottom-left button to swap the image (new random round)
+    if (params.has('debug')) {
+      const btn = document.createElement('button');
+      btn.textContent = 'CHANGE IMAGE';
+      btn.style.cssText = 'position:fixed;bottom:10px;left:10px;z-index:99999;background:#333;color:#eee;border:1px solid #666;padding:6px 12px;font:12px monospace;cursor:pointer;';
+      btn.addEventListener('click', async () => {
+        mode = 'practice'; resultBar.hidden = true; hudEnd.hidden = true; practiceRow.hidden = true;
+        await buildAuto('debug-' + Math.random().toString(36).slice(2));
+        startGame();
+      });
+      document.body.appendChild(btn);
+
+      // Pause/resume the round timer
+      const pauseBtn = document.createElement('button');
+      pauseBtn.textContent = 'PAUSE TIMER';
+      pauseBtn.style.cssText = 'position:fixed;bottom:10px;left:130px;z-index:99999;background:#333;color:#eee;border:1px solid #666;padding:6px 12px;font:12px monospace;cursor:pointer;';
+      let pausedAt = 0;
+      pauseBtn.addEventListener('click', () => {
+        if (running) {
+          running = false; cancelAnimationFrame(raf);
+          pausedAt = performance.now();
+          pauseBtn.textContent = 'RESUME TIMER';
+        } else if (pausedAt) {
+          startTime += performance.now() - pausedAt;   // don't count paused time
+          pausedAt = 0;
+          running = true; raf = requestAnimationFrame(tick);
+          pauseBtn.textContent = 'PAUSE TIMER';
+        }
+      });
+      document.body.appendChild(pauseBtn);
     }
   }
 

@@ -1,8 +1,10 @@
 /* figure3d.js — Offscreen Three.js renderer for the 3D Meccha figure.
  *
- * Loads GLB models, renders with photo-sampled lighting.
- * Includes a debug panel when ?debug is in the URL.
+ * Two modes:
+ *   A) "procedural" — round 3D figure built from primitives (sphere, capsules)
+ *   B) "relief" — flat STL relief models lit to show embossed depth
  *
+ * Debug panel at ?debug lets you toggle and tweak.
  * Requires three.min.js + GLTFLoader.js loaded before this script.
  */
 window.FIGURE3D = (function () {
@@ -15,16 +17,25 @@ window.FIGURE3D = (function () {
     'figures/pose4.glb',
   ];
 
-  // Tunable defaults — debug panel overrides these
+  // Tunable defaults — recorded from user's debug session (subject A)
   const CFG = {
-    color:       0xd8d8d0,
-    roughness:   0.55,
-    metalness:   0.05,
-    mainLight:   1.5,
-    fillLight:   0.4,
-    ambientLight: 1.0,
-    hemiLight:   0.5,
-    camZoom:     0.85,   // fraction of figH the model fills
+    mode: 'relief',   // 'procedural' (primitives) or 'relief' (your STL models)
+    color:        0xc8c8c0,
+    roughness:    0.6,
+    metalness:    0.05,
+    mainLight:    0.19,
+    fillLight:    0.56,
+    ambientLight: 0.83,
+    hemiLight:    1.11,
+    camZoom:      0.80,
+    // Body proportions (unit height ≈ 1.0) — tweakable in debug panel
+    headR:    0.115,
+    torsoLen: 0.34,
+    torsoR:   0.10,
+    armLen:   0.26,
+    armR:     0.055,
+    legLen:   0.28,
+    legR:     0.062,
   };
 
   const poseCache = new Map();
@@ -35,7 +46,6 @@ window.FIGURE3D = (function () {
       renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
       renderer.setClearColor(0x000000, 0);
       renderer.setPixelRatio(1);
-      // Ensure output encoding is linear (r128)
       if (renderer.outputEncoding !== undefined) renderer.outputEncoding = THREE.LinearEncoding;
     }
     return renderer;
@@ -45,23 +55,12 @@ window.FIGURE3D = (function () {
     if (poseCache.has(path)) return poseCache.get(path);
     const p = new Promise((res, rej) => {
       const loader = new THREE.GLTFLoader();
-      loader.load(
-        path,
-        (gltf) => {
-          console.log('[F3D] Loaded', path, '— meshes:');
-          gltf.scene.traverse((c) => {
-            if (c.isMesh) {
-              console.log('  mesh:', c.name, 'verts:', c.geometry.attributes.position.count,
-                'hasNormals:', !!c.geometry.attributes.normal);
-              // Ensure normals exist
-              if (!c.geometry.attributes.normal) c.geometry.computeVertexNormals();
-            }
-          });
-          res(gltf.scene);
-        },
-        undefined,
-        (err) => { console.error('[F3D] Load failed:', path, err); rej(err); }
-      );
+      loader.load(path, (gltf) => {
+        gltf.scene.traverse((c) => {
+          if (c.isMesh && !c.geometry.attributes.normal) c.geometry.computeVertexNormals();
+        });
+        res(gltf.scene);
+      }, undefined, rej);
     });
     poseCache.set(path, p);
     return p;
@@ -69,7 +68,89 @@ window.FIGURE3D = (function () {
 
   function preloadAll() { POSE_PATHS.forEach(loadPose); }
 
-  // Sample lighting from photo region
+  // =========================================================================
+  // PROCEDURAL FIGURE — built from smooth primitives (like the real game)
+  // =========================================================================
+  // Builds a figure group: sphere head, capsule torso, capsule limbs.
+  // Pose is defined by limb angles.
+  const POSES_PROCEDURAL = [
+    // pose 1: neutral standing (like the real figure)
+    { lArmAngle: -8, rArmAngle: 8, lLegAngle: -4, rLegAngle: 4, torsoTilt: 0 },
+    // pose 2: walking
+    { lArmAngle: -20, rArmAngle: 25, lLegAngle: 15, rLegAngle: -15, torsoTilt: 0 },
+    // pose 3: one arm raised
+    { lArmAngle: -150, rArmAngle: 10, lLegAngle: -5, rLegAngle: 5, torsoTilt: -3 },
+    // pose 4: arms out
+    { lArmAngle: -60, rArmAngle: 60, lLegAngle: -8, rLegAngle: 8, torsoTilt: 0 },
+  ];
+
+  function makeCapsule(radius, length, capSegs, radSegs) {
+    // CapsuleGeometry is available in newer Three.js; for r128, build from cylinder + spheres
+    const group = new THREE.Group();
+    const cylGeo = new THREE.CylinderGeometry(radius, radius, length, radSegs || 12, 1);
+    const cyl = new THREE.Mesh(cylGeo);
+    group.add(cyl);
+    const sphereGeo = new THREE.SphereGeometry(radius, radSegs || 12, capSegs || 8);
+    const top = new THREE.Mesh(sphereGeo);
+    top.position.y = length / 2;
+    group.add(top);
+    const bot = new THREE.Mesh(sphereGeo.clone());
+    bot.position.y = -length / 2;
+    group.add(bot);
+    return group;
+  }
+
+  function buildProceduralFigure(poseIdx) {
+    const pose = POSES_PROCEDURAL[poseIdx % POSES_PROCEDURAL.length];
+    const figure = new THREE.Group();
+
+    // Proportions come from CFG so they're tweakable in the debug panel.
+    const headR = CFG.headR;
+    const torsoLen = CFG.torsoLen;
+    const torsoR = CFG.torsoR;
+    const armLen = CFG.armLen;
+    const armR = CFG.armR;
+    const legLen = CFG.legLen;
+    const legR = CFG.legR;
+
+    // Head — slightly egg-shaped (taller than wide), overlapping torso top
+    const headGeo = new THREE.SphereGeometry(headR, 20, 16);
+    const head = new THREE.Mesh(headGeo);
+    head.scale.set(0.95, 1.05, 0.95);
+    head.position.y = torsoLen / 2 + headR * 0.75;   // sits on shoulders, no neck
+    figure.add(head);
+
+    // Torso
+    const torso = makeCapsule(torsoR, torsoLen, 8, 16);
+    if (pose.torsoTilt) torso.rotation.z = pose.torsoTilt * Math.PI / 180;
+    figure.add(torso);
+
+    // Arms hang from the shoulders, close to the body.
+    // Position pivot at shoulder, rotate about it.
+    function addLimb(len, rad, px, py, angleDeg) {
+      const limb = makeCapsule(rad, len, 6, 12);
+      const pivot = new THREE.Group();
+      limb.position.y = -len / 2;          // hang downward from pivot
+      pivot.add(limb);
+      pivot.position.set(px, py, 0);
+      pivot.rotation.z = angleDeg * Math.PI / 180;
+      figure.add(pivot);
+    }
+
+    // Shoulders at top of torso
+    addLimb(armLen, armR, -(torsoR + armR * 0.35), torsoLen * 0.42, pose.lArmAngle);
+    addLimb(armLen, armR, (torsoR + armR * 0.35), torsoLen * 0.42, pose.rArmAngle);
+
+    // Hips at bottom of torso
+    addLimb(legLen, legR, -torsoR * 0.45, -torsoLen / 2 - legR * 0.2, pose.lLegAngle);
+    addLimb(legLen, legR, torsoR * 0.45, -torsoLen / 2 - legR * 0.2, pose.rLegAngle);
+
+    return figure;
+  }
+
+  // =========================================================================
+  // SAMPLE LIGHTING from photo region
+  // =========================================================================
   function sampleLighting(baseData, CW, CH, fx, fy, figW, figH) {
     const margin = Math.max(figW, figH);
     const sx = Math.max(0, fx - margin);
@@ -112,55 +193,72 @@ window.FIGURE3D = (function () {
     };
   }
 
-  // Core render — uses CFG values (debug panel overrides them)
+  // =========================================================================
+  // RENDER — works for both procedural and relief models
+  // =========================================================================
   function render(model, figW, figH, lighting, rotation) {
     const r = getRenderer();
     r.setSize(figW, figH);
 
     const scene = new THREE.Scene();
 
-    // Deep-clone: clone geometry + create fresh material per mesh
-    const figure = new THREE.Group();
-    model.traverse((child) => {
-      if (child.isMesh) {
-        const geo = child.geometry.clone();
-        // Models exported from decimated STL have NO normals — must compute
-        geo.computeVertexNormals();
-        const mat = new THREE.MeshPhongMaterial({
-          color: CFG.color,
-          shininess: 30,
-          specular: 0x444444,
-          flatShading: false,
-        });
-        const m = new THREE.Mesh(geo, mat);
-        m.position.copy(child.position);
-        m.rotation.copy(child.rotation);
-        m.scale.copy(child.scale);
-        figure.add(m);
-      }
-    });
-
-    // Center the figure at origin
-    const box = new THREE.Box3().setFromObject(figure);
-    const center = box.getCenter(new THREE.Vector3());
-    const bsize = box.getSize(new THREE.Vector3());
-    figure.position.sub(center);
-
-    // The model's front faces +X, tallest along Z (height), Y is depth.
-    // Rotate so camera looking down -Z sees the front:
-    //   - Rotate -90 deg around Y so +X face → +Z face (towards camera)
-    //   - Rotate -90 deg around X so Z-up → Y-up (standing upright in screen)
-    figure.rotation.set(-Math.PI / 2, -Math.PI / 2, 0);
-
-    // Wrap in a container for game rotation
-    const container = new THREE.Group();
-    container.add(figure);
-
-    // Normalize to unit size after rotation
-    const box2 = new THREE.Box3().setFromObject(container);
-    const bsize2 = box2.getSize(new THREE.Vector3());
-    const maxDim = Math.max(bsize2.x, bsize2.y, bsize2.z) || 1;
-    container.scale.multiplyScalar(1 / maxDim);
+    let container;
+    if (model.__procedural) {
+      // Procedural: model is already a Group of primitives
+      container = model.clone(true);
+      // Apply material to all meshes
+      container.traverse((child) => {
+        if (child.isMesh) {
+          child.material = new THREE.MeshLambertMaterial({
+            color: CFG.color,   // matte, no specular — like matte clay/3D print
+          });
+        }
+      });
+      // Center
+      const box = new THREE.Box3().setFromObject(container);
+      const center = box.getCenter(new THREE.Vector3());
+      container.position.sub(center);
+      // Normalize to unit
+      const box2 = new THREE.Box3().setFromObject(container);
+      const sz = box2.getSize(new THREE.Vector3());
+      const maxDim = Math.max(sz.x, sz.y, sz.z) || 1;
+      container.scale.multiplyScalar(1 / maxDim);
+    } else {
+      // Relief GLB model
+      const figure = new THREE.Group();
+      model.traverse((child) => {
+        if (child.isMesh) {
+          const geo = child.geometry.clone();
+          geo.computeVertexNormals();
+          const mat = new THREE.MeshLambertMaterial({
+            color: CFG.color,
+          });
+          const m = new THREE.Mesh(geo, mat);
+          m.position.copy(child.position);
+          m.rotation.copy(child.rotation);
+          m.scale.copy(child.scale);
+          figure.add(m);
+        }
+      });
+      // Center on the INNER node, rotate on an OUTER node — rotation is
+      // applied before position on the same node, which would fling the
+      // centered model out of the camera frustum.
+      const box = new THREE.Box3().setFromObject(figure);
+      const center = box.getCenter(new THREE.Vector3());
+      figure.position.sub(center);
+      // Orient the STL figure: model is 36w x 80h x 15d with height along Z
+      // and front along +X. Rotate so front faces the camera (+Z) and the
+      // figure stands upright (+Y).
+      const orient = new THREE.Group();
+      orient.add(figure);
+      orient.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
+      container = new THREE.Group();
+      container.add(orient);
+      const box2 = new THREE.Box3().setFromObject(container);
+      const sz = box2.getSize(new THREE.Vector3());
+      const maxDim = Math.max(sz.x, sz.y, sz.z) || 1;
+      container.scale.multiplyScalar(1 / maxDim);
+    }
 
     if (rotation) container.rotation.z = rotation;
     scene.add(container);
@@ -171,15 +269,22 @@ window.FIGURE3D = (function () {
     const dirLight = new THREE.DirectionalLight(
       new THREE.Color(lightColor[0], lightColor[1], lightColor[2]), CFG.mainLight
     );
-    dirLight.position.set(lightDir[0], lightDir[1], lightDir[2]).normalize().multiplyScalar(5);
+    if (model.__procedural) {
+      // For round figure: light from the photo's bright direction
+      dirLight.position.set(lightDir[0], lightDir[1], lightDir[2]).normalize().multiplyScalar(5);
+    } else {
+      // For relief: strong raking light to show edges
+      dirLight.position.set(lightDir[0] * 0.5 - 0.6, lightDir[1] * 0.5 + 0.5, 1.0).normalize().multiplyScalar(5);
+    }
     scene.add(dirLight);
 
     const fillLight = new THREE.DirectionalLight(0xffffff, CFG.fillLight);
-    fillLight.position.set(-lightDir[0], -lightDir[1], 0.5).normalize().multiplyScalar(3);
+    fillLight.position.set(-lightDir[0] * 0.5 + 0.5, -lightDir[1] * 0.5 - 0.3, 0.8).normalize().multiplyScalar(3);
     scene.add(fillLight);
 
     const ambient = new THREE.AmbientLight(
-      new THREE.Color(ambientColor[0], ambientColor[1], ambientColor[2]), CFG.ambientLight
+      new THREE.Color(ambientColor[0], ambientColor[1], ambientColor[2]),
+      CFG.ambientLight
     );
     scene.add(ambient);
 
@@ -187,7 +292,6 @@ window.FIGURE3D = (function () {
     scene.add(hemi);
 
     // --- Orthographic camera ---
-    // Model is now ~1 unit tall. Camera frustum sized to show it.
     const viewH = 1 / CFG.camZoom;
     const aspect = figW / figH;
     const cam = new THREE.OrthographicCamera(
@@ -198,12 +302,10 @@ window.FIGURE3D = (function () {
 
     r.render(scene, cam);
 
-    // Copy to output canvas
     const out = document.createElement('canvas');
     out.width = figW; out.height = figH;
     out.getContext('2d').drawImage(r.domElement, 0, 0);
 
-    // Cleanup
     scene.traverse((obj) => {
       if (obj.geometry) obj.geometry.dispose();
       if (obj.material) obj.material.dispose();
@@ -212,9 +314,22 @@ window.FIGURE3D = (function () {
     return out;
   }
 
-  // ========================================================================
-  // DEBUG PANEL — only created when ?debug is in the URL
-  // ========================================================================
+  // =========================================================================
+  // Public: get the model to render (either procedural or GLB)
+  // =========================================================================
+  function getModel(poseIdx) {
+    if (CFG.mode === 'procedural') {
+      const fig = buildProceduralFigure(poseIdx);
+      fig.__procedural = true;
+      return Promise.resolve(fig);
+    } else {
+      return loadPose(POSE_PATHS[poseIdx % POSE_PATHS.length]);
+    }
+  }
+
+  // =========================================================================
+  // DEBUG PANEL
+  // =========================================================================
   function initDebugPanel() {
     if (!new URLSearchParams(window.location.search).has('debug')) return;
 
@@ -225,89 +340,129 @@ window.FIGURE3D = (function () {
         #f3d-debug {
           position: fixed; top: 8px; right: 8px; z-index: 99999;
           background: rgba(0,0,0,0.92); color: #eee; font: 12px/1.4 monospace;
-          padding: 10px; border: 1px solid #555; max-width: 320px;
-          max-height: 90vh; overflow-y: auto;
+          padding: 10px; border: 1px solid #555; width: 310px;
+          max-height: 90vh; overflow-y: auto; border-radius: 4px;
         }
         #f3d-debug h3 { margin: 0 0 8px; font-size: 13px; color: lime; }
         #f3d-debug label { display: flex; justify-content: space-between; align-items: center; margin: 3px 0; }
-        #f3d-debug input[type=range] { width: 120px; }
+        #f3d-debug input[type=range] { width: 110px; }
         #f3d-debug select { background: #222; color: #eee; border: 1px solid #555; }
         #f3d-debug button { background: #333; color: #eee; border: 1px solid #666; padding: 4px 10px; cursor: pointer; margin: 2px; }
         #f3d-debug button:hover { background: #555; }
-        #f3d-debug canvas { border: 1px solid lime; margin-top: 6px; display: block; max-width: 100%; }
-        #f3d-debug .val { color: #aaa; min-width: 40px; text-align: right; }
+        #f3d-debug .preview-row { display: flex; gap: 6px; margin-top: 6px; }
+        #f3d-debug canvas { border: 1px solid lime; display: block; }
+        #f3d-debug .val { color: #aaa; min-width: 36px; text-align: right; font-size: 11px; }
       </style>
       <h3>FIGURE3D DEBUG</h3>
-      <label>Pose <select id="f3d-pose">${POSE_PATHS.map((p, i) => `<option value="${i}">Pose ${i + 1}</option>`).join('')}</select></label>
-      <label>Roughness <input type="range" id="f3d-rough" min="0" max="100" value="55"> <span class="val" id="f3d-rough-v">0.55</span></label>
-      <label>Metalness <input type="range" id="f3d-metal" min="0" max="100" value="5"> <span class="val" id="f3d-metal-v">0.05</span></label>
-      <label>Main light <input type="range" id="f3d-main" min="0" max="300" value="150"> <span class="val" id="f3d-main-v">1.5</span></label>
-      <label>Fill light <input type="range" id="f3d-fill" min="0" max="200" value="40"> <span class="val" id="f3d-fill-v">0.4</span></label>
-      <label>Ambient <input type="range" id="f3d-amb" min="0" max="300" value="100"> <span class="val" id="f3d-amb-v">1.0</span></label>
-      <label>Hemi light <input type="range" id="f3d-hemi" min="0" max="200" value="50"> <span class="val" id="f3d-hemi-v">0.5</span></label>
-      <label>Zoom <input type="range" id="f3d-zoom" min="20" max="100" value="85"> <span class="val" id="f3d-zoom-v">0.85</span></label>
-      <label>Color <input type="color" id="f3d-color" value="#d8d8d0"></label>
-      <label>Rotation <input type="range" id="f3d-rot" min="-30" max="30" value="0"> <span class="val" id="f3d-rot-v">0</span></label>
-      <div><button id="f3d-render">Re-render</button> <button id="f3d-close">Close</button></div>
-      <canvas id="f3d-preview" width="220" height="440"></canvas>
+      <label>Mode <select id="f3d-mode"><option value="relief">B: Your STL model</option><option value="procedural">A: Procedural 3D</option></select></label>
+      <label>Pose <select id="f3d-pose"><option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option></select></label>
+      <label>Main light <input type="range" id="f3d-main" min="0" max="400" value="19"> <span class="val" id="f3d-main-v">0.19</span></label>
+      <label>Fill light <input type="range" id="f3d-fill" min="0" max="200" value="56"> <span class="val" id="f3d-fill-v">0.56</span></label>
+      <label>Ambient <input type="range" id="f3d-amb" min="0" max="300" value="83"> <span class="val" id="f3d-amb-v">0.83</span></label>
+      <label>Hemi <input type="range" id="f3d-hemi" min="0" max="200" value="111"> <span class="val" id="f3d-hemi-v">1.11</span></label>
+      <label>Zoom <input type="range" id="f3d-zoom" min="30" max="100" value="80"> <span class="val" id="f3d-zoom-v">0.80</span></label>
+      <div style="color:lime;margin-top:6px;font-size:11px;">PROPORTIONS</div>
+      <label>Head size <input type="range" id="f3d-headR" min="50" max="250" value="115"> <span class="val" id="f3d-headR-v">0.115</span></label>
+      <label>Torso length <input type="range" id="f3d-torsoLen" min="100" max="500" value="340"> <span class="val" id="f3d-torsoLen-v">0.340</span></label>
+      <label>Torso width <input type="range" id="f3d-torsoR" min="40" max="200" value="100"> <span class="val" id="f3d-torsoR-v">0.100</span></label>
+      <label>Arm length <input type="range" id="f3d-armLen" min="80" max="400" value="260"> <span class="val" id="f3d-armLen-v">0.260</span></label>
+      <label>Arm width <input type="range" id="f3d-armR" min="20" max="120" value="55"> <span class="val" id="f3d-armR-v">0.055</span></label>
+      <label>Leg length <input type="range" id="f3d-legLen" min="80" max="450" value="280"> <span class="val" id="f3d-legLen-v">0.280</span></label>
+      <label>Leg width <input type="range" id="f3d-legR" min="20" max="130" value="62"> <span class="val" id="f3d-legR-v">0.062</span></label>
+      <label>Color <input type="color" id="f3d-color" value="#c8c8c0"></label>
+      <label>Rotation <input type="range" id="f3d-rot" min="-45" max="45" value="0"> <span class="val" id="f3d-rot-v">0&deg;</span></label>
+      <div><button id="f3d-render">Render Both</button> <button id="f3d-close">X</button></div>
+      <div class="preview-row">
+        <div><div style="color:#aaa;font-size:10px;text-align:center;">A: Procedural</div><canvas id="f3d-prevA" width="120" height="240"></canvas></div>
+        <div><div style="color:#aaa;font-size:10px;text-align:center;">B: Relief</div><canvas id="f3d-prevB" width="120" height="240"></canvas></div>
+      </div>
       <div id="f3d-info" style="margin-top:4px;color:#888;font-size:11px;"></div>
     `;
     document.body.appendChild(panel);
 
     const $ = (id) => document.getElementById(id);
 
-    // Slider helper
+    // Live re-render (debounced with rAF)
+    let renderQueued = false;
+    async function doRender() {
+      renderQueued = false;
+      const info = $('f3d-info');
+      const poseIdx = parseInt($('f3d-pose').value);
+      const rot = parseInt($('f3d-rot').value) * Math.PI / 180;
+      const lighting = {
+        lightDir: [0.4, 0.5, 1],
+        lightColor: [1, 0.97, 0.92],
+        ambientColor: [0.4, 0.4, 0.42],
+      };
+      const W = 120, H = 240;
+
+      // Render A: Procedural
+      try {
+        const figA = buildProceduralFigure(poseIdx);
+        figA.__procedural = true;
+        const canvA = render(figA, W, H, lighting, rot);
+        const prevA = $('f3d-prevA');
+        prevA.width = W; prevA.height = H;
+        prevA.getContext('2d').drawImage(canvA, 0, 0);
+      } catch (e) { info.textContent = 'A error: ' + e.message; console.error(e); }
+
+      // Render B: Relief
+      try {
+        const model = await loadPose(POSE_PATHS[poseIdx % POSE_PATHS.length]);
+        const canvB = render(model, W, H, lighting, rot);
+        const prevB = $('f3d-prevB');
+        prevB.width = W; prevB.height = H;
+        prevB.getContext('2d').drawImage(canvB, 0, 0);
+      } catch (e) { info.textContent += ' | B error: ' + e.message; console.error(e); }
+
+      info.textContent = `pose ${poseIdx + 1} · main ${CFG.mainLight.toFixed(2)} fill ${CFG.fillLight.toFixed(2)} amb ${CFG.ambientLight.toFixed(2)} hemi ${CFG.hemiLight.toFixed(2)}`;
+    }
+    function queueRender() {
+      if (renderQueued) return;
+      renderQueued = true;
+      requestAnimationFrame(() => {
+        doRender();
+        window.dispatchEvent(new Event('f3d-cfg-changed'));
+      });
+    }
+
     function bindSlider(id, key, scale) {
       const el = $(id), val = $(id + '-v');
       el.addEventListener('input', () => {
-        const v = el.value / scale;
-        CFG[key] = v;
-        val.textContent = v.toFixed(2);
+        CFG[key] = el.value / scale;
+        val.textContent = (el.value / scale).toFixed(scale >= 1000 ? 3 : 2);
+        queueRender();
       });
     }
-    bindSlider('f3d-rough', 'roughness', 100);
-    bindSlider('f3d-metal', 'metalness', 100);
     bindSlider('f3d-main', 'mainLight', 100);
     bindSlider('f3d-fill', 'fillLight', 100);
     bindSlider('f3d-amb', 'ambientLight', 100);
     bindSlider('f3d-hemi', 'hemiLight', 100);
     bindSlider('f3d-zoom', 'camZoom', 100);
+    bindSlider('f3d-headR', 'headR', 1000);
+    bindSlider('f3d-torsoLen', 'torsoLen', 1000);
+    bindSlider('f3d-torsoR', 'torsoR', 1000);
+    bindSlider('f3d-armLen', 'armLen', 1000);
+    bindSlider('f3d-armR', 'armR', 1000);
+    bindSlider('f3d-legLen', 'legLen', 1000);
+    bindSlider('f3d-legR', 'legR', 1000);
 
+    $('f3d-rot').addEventListener('input', (e) => {
+      $('f3d-rot-v').textContent = e.target.value + '\u00b0';
+      queueRender();
+    });
     $('f3d-color').addEventListener('input', (e) => {
       CFG.color = parseInt(e.target.value.slice(1), 16);
+      queueRender();
     });
-
+    $('f3d-mode').addEventListener('change', (e) => { CFG.mode = e.target.value; queueRender(); });
+    $('f3d-pose').addEventListener('change', queueRender);
     $('f3d-close').addEventListener('click', () => panel.remove());
+    $('f3d-render').addEventListener('click', queueRender);
 
-    $('f3d-render').addEventListener('click', async () => {
-      const info = $('f3d-info');
-      info.textContent = 'Rendering...';
-      try {
-        const poseIdx = parseInt($('f3d-pose').value);
-        const rot = parseInt($('f3d-rot').value) * Math.PI / 180;
-        const model = await loadPose(POSE_PATHS[poseIdx]);
-        // Default lighting for debug preview (bright white, front-ish)
-        const lighting = {
-          lightDir: [0.5, 0.5, 1],
-          lightColor: [1, 1, 1],
-          ambientColor: [0.4, 0.4, 0.4],
-        };
-        const fig = render(model, 220, 440, lighting, rot);
-        const preview = $('f3d-preview');
-        preview.width = fig.width; preview.height = fig.height;
-        preview.getContext('2d').drawImage(fig, 0, 0);
-        info.textContent = `OK — ${fig.width}x${fig.height}, pose ${poseIdx + 1}`;
-      } catch (err) {
-        info.textContent = 'ERROR: ' + err.message;
-        console.error(err);
-      }
-    });
-
-    // Auto-render on load
-    setTimeout(() => $('f3d-render').click(), 500);
+    setTimeout(queueRender, 600);
   }
 
-  // Init debug panel after DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initDebugPanel);
   } else {
@@ -315,8 +470,9 @@ window.FIGURE3D = (function () {
   }
 
   return {
-    POSE_PATHS, CFG,
+    POSE_PATHS, POSES_PROCEDURAL, CFG,
     loadPose, preloadAll,
     sampleLighting, render,
+    getModel, buildProceduralFigure,
   };
 })();
