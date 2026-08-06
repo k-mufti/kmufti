@@ -82,11 +82,17 @@ const ARTWORK = {
       <rect width="320" height="200" fill="#000000"/>
       <!-- The real 3D figure (pose 2), exported straight from the game's own
            renderer, laid on its side across the tile. -->
-      <!-- Square box centred on the tile so the 90° rotation can't clip it:
-           the figure's long axis ends up spanning the tile's width. -->
-      <g transform="rotate(90 160 100)">
+      <!-- Square box centred on the tile so the rotation can't clip it: the
+           figure's long axis spans the tile's width. 270° = 90° + a 180° flip,
+           so he lies the other way round. -->
+      <g transform="rotate(270 160 100)">
         <image href="images/meccha-pose2.png?v=2" x="-5" y="-65" width="330" height="330"
                preserveAspectRatio="xMidYMid meet"/>
+      </g>
+      <!-- FIND MECCHA — Anton, red, over the figure -->
+      <g fill="#e23b2e" font-family="Anton, sans-serif" text-anchor="middle" filter="url(#mc-tsh)">
+        <text x="160" y="84" font-size="54" textLength="150" lengthAdjust="spacingAndGlyphs">FIND</text>
+        <text x="160" y="170" font-size="84" textLength="306" lengthAdjust="spacingAndGlyphs">MECCHA</text>
       </g>
     </svg>`,
 
