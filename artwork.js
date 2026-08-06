@@ -82,8 +82,10 @@ const ARTWORK = {
       <rect width="320" height="200" fill="#000000"/>
       <!-- The real 3D figure (pose 2), exported straight from the game's own
            renderer, laid on its side across the tile. -->
+      <!-- Square box centred on the tile so the 90° rotation can't clip it:
+           the figure's long axis ends up spanning the tile's width. -->
       <g transform="rotate(90 160 100)">
-        <image href="images/meccha-pose2.png" x="60" y="-40" width="200" height="280"
+        <image href="images/meccha-pose2.png" x="-5" y="-65" width="330" height="330"
                preserveAspectRatio="xMidYMid meet"/>
       </g>
     </svg>`,
