@@ -30,4 +30,14 @@ const PROJECTS = [
     href: "chameleon/",
     status: "live",
   },
+  {
+    slug: "white-canvas",
+    title: "White Canvas",
+    description: "A shared pixel wall. Everyone draws on the same canvas, live — and every pixel stays.",
+    tags: ["toy", "realtime", "js"],
+    accent: "#003eff",
+    accentBg: "linear-gradient(135deg, #ffffff 0%, #e6e4e0 100%)",
+    href: "white-canvas/",
+    status: "live",
+  },
 ];

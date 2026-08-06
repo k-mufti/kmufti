@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>White Canvas — kmufti.com</title>
+  <meta name="description" content="A shared pixel canvas. Everyone draws on the same wall, in real time." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=1" />
+</head>
+<body>
+  <header class="site-header">
+    <span class="header-left">
+      <a class="brand" href="../">kmufti.com</a>
+      <span class="crumb">/ white canvas</span>
+      <span class="draw-presence" id="drawPresence"></span>
+    </span>
+    <a class="header-link" href="../">&larr; back</a>
+  </header>
+
+  <section class="hero">
+    <h1>White&nbsp;Canvas</h1>
+    <p class="tagline">one wall, everyone draws on it &middot; drag to place pixels</p>
+  </section>
+
+  <!-- The framed canvas hung on the wall. width/height set by JS to keep the
+       fixed board aspect; the stage inside scales as a single unit. -->
+  <section class="gallery-area" id="galleryArea">
+    <div class="gallery" id="gallery">
+      <div class="stage" id="stage">
+        <canvas id="board"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ink well: paint level, tinted with your next stroke's colour. -->
+  <div class="draw-bar" id="drawBar">
+    <div class="ink-well" id="inkWell" title="Your paint &mdash; drains as you draw, reloads when empty. The fill shows your next colour.">
+      <div class="ink-liquid" id="inkLiquid"></div>
+      <span class="ink-label" id="inkLabel"></span>
+    </div>
+  </div>
+
+  <footer class="deep-space">
+    <p class="deep-caption">a shared wall &middot; every pixel is permanent</p>
+  </footer>
+
+  <script src="app.js?v=1"></script>
+</body>
+</html>

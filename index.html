@@ -14,29 +14,20 @@
   <header class="site-header">
     <span class="header-left">
       <span class="brand">kmufti.com</span>
-      <span class="draw-presence" id="drawPresence"></span>
     </span>
     <a class="header-link" href="https://kareemmuftee.com">kareemmuftee.com &rarr;</a>
   </header>
 
-  <!-- The gallery: a framed canvas hung on the wall. The canvas AND the tiles
-       live on one fixed stage that scales together, so a drawing over a tile
-       stays over that tile on every device. Drawing is bounded to the frame. -->
-  <section class="gallery-area" id="galleryArea">
-    <div class="gallery" id="gallery">
-      <div class="stage" id="stage">
-        <canvas id="board"></canvas>
-        <main class="hub">
-          <div class="app-board">
-            <p class="hub-tagline">small things i've built &middot; one click away</p>
-            <div class="apps" id="apps"><!-- tiles injected from projects.js --></div>
-          </div>
-        </main>
-      </div>
+  <!-- The launcher: tiles on a mounting board. (The shared pixel canvas that
+       used to live behind these tiles is now its own project: white-canvas/) -->
+  <main class="hub">
+    <div class="app-board">
+      <p class="hub-tagline">small things i've built &middot; one click away</p>
+      <div class="apps" id="apps"><!-- tiles injected from projects.js --></div>
     </div>
-  </section>
+  </main>
 
-  <!-- Deep space: where the frame ends. Home for handles / links. -->
+  <!-- Deep space: below the launcher. Home for handles / links. -->
   <footer class="deep-space">
     <nav class="handles">
       <!-- Fill these in with your real links. -->
@@ -48,17 +39,8 @@
     <p class="deep-caption">made by kareem muftee</p>
   </footer>
 
-  <!-- Always-on shared canvas: a random palette color per stroke, rate-limited
-       by a shared "paint" meter. Presence shows how many people are drawing. -->
-  <div class="draw-bar" id="drawBar">
-    <div class="ink-well" id="inkWell" title="Your paint &mdash; drains as you draw, reloads when empty. The fill shows your next color.">
-      <div class="ink-liquid" id="inkLiquid"></div>
-      <span class="ink-label" id="inkLabel"></span>
-    </div>
-  </div>
-
-  <script src="projects.js?v=7"></script>
-  <script src="artwork.js?v=11"></script>
-  <script src="app.js?v=11"></script>
+  <script src="projects.js?v=8"></script>
+  <script src="artwork.js?v=12"></script>
+  <script src="app.js?v=12"></script>
 </body>
 </html>

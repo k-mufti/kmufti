@@ -122,4 +122,45 @@ const ARTWORK = {
       <rect x="199" y="118" width="66" height="34" rx="6" fill="#e2a1a1"/>
       <rect x="80" y="160" width="160" height="26" rx="6" fill="#d7d7df"/>
     </svg>`,
+
+  /* White Canvas — a mostly-blank wall with pixels being placed on it, drawn
+     in the canvas's real 16-colour palette. */
+  'white-canvas': `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <rect width="320" height="200" fill="#ffffff"/>
+      <g shape-rendering="crispEdges">
+        <rect x="40" y="34" width="10" height="10" fill="#fb0000"/>
+        <rect x="50" y="34" width="10" height="10" fill="#ff4400"/>
+        <rect x="60" y="34" width="10" height="10" fill="#ffaf0d"/>
+        <rect x="50" y="44" width="10" height="10" fill="#ffde00"/>
+        <rect x="60" y="44" width="10" height="10" fill="#bbff00"/>
+        <rect x="70" y="44" width="10" height="10" fill="#62d42d"/>
+        <rect x="60" y="54" width="10" height="10" fill="#075327"/>
+
+        <rect x="132" y="72" width="10" height="10" fill="#34dcd3"/>
+        <rect x="142" y="72" width="10" height="10" fill="#1caffd"/>
+        <rect x="152" y="72" width="10" height="10" fill="#003eff"/>
+        <rect x="142" y="82" width="10" height="10" fill="#6400ff"/>
+        <rect x="152" y="82" width="10" height="10" fill="#ff00b7"/>
+        <rect x="162" y="82" width="10" height="10" fill="#ff8bf6"/>
+        <rect x="152" y="92" width="10" height="10" fill="#000000"/>
+        <rect x="162" y="92" width="10" height="10" fill="#898989"/>
+
+        <rect x="228" y="126" width="10" height="10" fill="#ffde00"/>
+        <rect x="238" y="126" width="10" height="10" fill="#fb0000"/>
+        <rect x="238" y="136" width="10" height="10" fill="#003eff"/>
+        <rect x="248" y="136" width="10" height="10" fill="#62d42d"/>
+
+        <rect x="86" y="146" width="10" height="10" fill="#1caffd"/>
+        <rect x="96" y="146" width="10" height="10" fill="#6400ff"/>
+        <rect x="96" y="156" width="10" height="10" fill="#ff4400"/>
+
+        <rect x="196" y="30" width="10" height="10" fill="#898989"/>
+        <rect x="206" y="40" width="10" height="10" fill="#34dcd3"/>
+        <rect x="264" y="60" width="10" height="10" fill="#ff00b7"/>
+        <rect x="34" y="104" width="10" height="10" fill="#ffaf0d"/>
+        <rect x="274" y="168" width="10" height="10" fill="#075327"/>
+        <rect x="120" y="176" width="10" height="10" fill="#ffde00"/>
+      </g>
+    </svg>`,
 };

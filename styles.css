@@ -36,57 +36,6 @@ a {
   text-decoration: none;
 }
 
-/* ---------- Always-drawable canvas -------------------------------------- */
-/* ---------- Gallery: a framed canvas hung on the wall ------------------ */
-.gallery-area {
-  flex: 0 0 auto; /* sizes to the frame; deep space fills what's left */
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* top-align the frame */
-  padding: 12px 16px 8px;
-}
-
-/* The frame. width/height are set by JS to keep the fixed board aspect
-   (contain-fit inside the gallery area). */
-.gallery {
-  position: relative;
-  overflow: hidden;
-  background: #ffffff;
-  /* Same color as the inner .app-board border, so the two frames match. */
-  border: 1px solid rgba(17, 17, 17, 0.12);
-  border-radius: 8px;
-  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.16), 0 3px 10px rgba(0, 0, 0, 0.07);
-}
-
-/* Inner stage: fixed board coordinates, scaled to fill the frame. The canvas
-   AND the tiles live here and scale together, so a drawing over a tile stays
-   over that tile on every device. */
-.stage {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1440px;
-  height: 2400px;
-  transform-origin: top left;
-  transform: scale(var(--stage-scale, 1));
-}
-
-/* Canvas fills the stage at a fixed resolution; the transform scales it.
-   image-rendering:pixelated keeps pixels crisp and square at any scale. */
-#board {
-  position: absolute;
-  inset: 0;
-  width: 1440px;
-  height: 2400px;
-  display: block;
-  z-index: 0;
-  pointer-events: auto;
-  cursor: crosshair;
-  touch-action: none;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-}
-
 /* ---------- Header ------------------------------------------------------ */
 .site-header {
   flex: 0 0 auto;
@@ -122,20 +71,15 @@ a {
   color: var(--ink);
 }
 
-/* ---------- The launcher: centered app grid (fills the stage) ---------- */
+/* ---------- The launcher: centered app grid ----------------------------- */
 .hub {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
+  flex: 1 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Top-aligned: tiles sit a fixed distance from the top; the space that
-     grows/shrinks with the screen is below them. */
   justify-content: flex-start;
   gap: 34px;
-  padding: 120px 24px 24px;
-  pointer-events: none;
+  padding: 60px 24px 72px;
 }
 
 .hub-tagline {
@@ -173,7 +117,6 @@ a {
 
 /* Each app is a graphical rectangle "poster" + label. */
 .app {
-  pointer-events: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -243,105 +186,7 @@ a {
   margin-top: -9px;
 }
 
-/* ---------- Always-on draw control bar (subtle, bottom-right) ----------- */
-.draw-bar {
-  position: fixed;
-  z-index: 20;
-  bottom: 20px;
-  right: 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px;
-  background: var(--panel);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  box-shadow: var(--shadow);
-  max-width: calc(100vw - 40px);
-}
-
-.tool-btn {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
-  letter-spacing: 0.5px;
-  color: var(--ink-dim);
-  background: none;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 7px 12px;
-  cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-}
-
-.tool-btn:hover {
-  color: var(--ink);
-  border-color: var(--ink-faint);
-}
-
-.tool-btn.active {
-  color: #fff;
-  background: var(--ink);
-  border-color: var(--ink);
-}
-
-.draw-note {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11.5px;
-  letter-spacing: 0.5px;
-  color: var(--ink-dim);
-  white-space: nowrap;
-}
-
-/* Shared-canvas ink well: paint level (drains as you draw, reloads when empty).
-   The liquid is tinted with your NEXT stroke's color, previewing it. */
-.ink-well {
-  position: relative;
-  width: 66px;
-  height: 88px;
-  flex: 0 0 auto;
-  border: 3px solid var(--ink-faint);
-  border-top: none;
-  border-radius: 0 0 15px 15px;
-  overflow: hidden;
-  background: rgba(0, 0, 0, 0.06);
-}
-
-.ink-liquid {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 100%;
-  background: #3f7d5a;
-  border-top: 1px solid rgba(0, 0, 0, 0.18); /* waterline, so pale colors still read */
-  transition: height 0.15s ease, background 0.15s ease;
-}
-
-.ink-label {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 15px;
-  font-weight: 500;
-  color: #fff;
-  mix-blend-mode: difference; /* readable on any liquid color */
-  pointer-events: none;
-}
-
-.draw-presence {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11.5px;
-  letter-spacing: 0.5px;
-  color: #3f7d5a;
-  white-space: nowrap;
-}
-
-/* ---------- Deep space: the footer below the frame --------------------- */
+/* ---------- Deep space: the footer below the launcher ------------------ */
 .deep-space {
   flex: 0 0 auto; /* a section below the frame; scroll down to reach it */
   min-height: 340px;
@@ -407,14 +252,8 @@ a {
   color: rgba(255, 255, 255, 0.4);
 }
 
-/* Only chrome (fixed to the viewport) is responsive. The stage itself never
-   reflows — it just scales — so the tiles stay identical on every device. */
 @media (max-width: 620px) {
-  .draw-bar {
-    bottom: 12px;
-    right: 12px;
-  }
-  .draw-note {
-    display: none;
-  }
+  .hub { padding: 36px 14px 56px; }
+  .app-board { padding: 20px 16px 24px; border-radius: 20px; }
+  .app { width: 100%; max-width: 340px; }
 }
