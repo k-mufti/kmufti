@@ -21,6 +21,35 @@
   const ROUNDS = 10;
   const PTS_MEANING = 10;
   const PTS_LANGUAGE = 5;
+  const HINTS_FREE = 2;       // free hints per round
+  const PTS_HINT_COST = 3;    // points deducted for each paid hint
+
+  // Map puzzle language codes → Wiktionary subdomain + script info
+  const WIKT = {
+    spa: { sub: 'es', dir: 'ltr' },
+    por: { sub: 'pt', dir: 'ltr' },
+    ita: { sub: 'it', dir: 'ltr' },
+    fra: { sub: 'fr', dir: 'ltr' },
+    deu: { sub: 'de', dir: 'ltr' },
+    nld: { sub: 'nl', dir: 'ltr' },
+    swe: { sub: 'sv', dir: 'ltr' },
+    dan: { sub: 'da', dir: 'ltr' },
+    fin: { sub: 'fi', dir: 'ltr' },
+    pol: { sub: 'pl', dir: 'ltr' },
+    tur: { sub: 'tr', dir: 'ltr' },
+    vie: { sub: 'vi', dir: 'ltr' },
+    ind: { sub: 'id', dir: 'ltr' },
+    rus: { sub: 'ru', dir: 'ltr' },
+    ukr: { sub: 'uk', dir: 'ltr' },
+    ell: { sub: 'el', dir: 'ltr' },
+    heb: { sub: 'he', dir: 'rtl' },
+    ara: { sub: 'ar', dir: 'rtl' },
+    hin: { sub: 'hi', dir: 'ltr' },
+    tha: { sub: 'th', dir: 'ltr' },
+    jpn: { sub: 'ja', dir: 'ltr' },
+    kor: { sub: 'ko', dir: 'ltr' },
+    cmn: { sub: 'zh', dir: 'ltr' },
+  };
 
   const $ = (id) => document.getElementById(id);
 
@@ -35,6 +64,8 @@
   let pickedLang = null;   // code, when mode === 'pick'
   let tally = { meaning: 0, language: 0 };
   let answered = false;
+  let hintsUsed = 0;        // per round
+  let hintCache = {};       // word → definition string (cross-round cache)
 
   function shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {
@@ -150,7 +181,10 @@
     if (round >= deck.length) return endGame();
     const p = deck[round];
     answered = false;
-    $("phrase").textContent = p.q;
+    hintsUsed = 0;
+    closeHintPopover();
+    renderPhrase(p);
+    updateHintBar();
     $("char-count").textContent = p.q.length + " characters";
     $("btn-next").classList.add("hidden");
 
@@ -167,6 +201,160 @@
 
     askMeaning(p);
     updateHud();
+  }
+
+  // Render the phrase as individually tappable word spans.
+  function renderPhrase(p) {
+    const el = $("phrase");
+    el.innerHTML = "";
+    // Split on whitespace, keep punctuation attached to words (natural wrapping)
+    const tokens = p.q.split(/(\s+)/);
+    tokens.forEach((tok) => {
+      if (/^\s+$/.test(tok)) {
+        el.appendChild(document.createTextNode(tok));
+        return;
+      }
+      // Strip surrounding punctuation for the lookup word, keep for display
+      const span = document.createElement("span");
+      span.className = "hint-word";
+      span.textContent = tok;
+      span.dataset.lang = p.l;
+      span.dataset.word = tok.replace(/^[\p{P}\p{Z}]+|[\p{P}\p{Z}]+$/gu, "");
+      span.addEventListener("click", onWordClick);
+      el.appendChild(span);
+    });
+  }
+
+  // ---- Hint popover --------------------------------------------------------
+  let activePopover = null;
+
+  function closeHintPopover() {
+    if (activePopover) { activePopover.remove(); activePopover = null; }
+  }
+
+  function updateHintBar() {
+    let bar = $("hint-bar");
+    if (!bar) return;
+    const free = Math.max(0, HINTS_FREE - hintsUsed);
+    bar.textContent = free > 0
+      ? `${free} free hint${free !== 1 ? "s" : ""} left · tap any word`
+      : `hints cost ${PTS_HINT_COST} pts each · tap any word`;
+  }
+
+  async function onWordClick(e) {
+    e.stopPropagation();
+    const span = e.currentTarget;
+    const word = span.dataset.word;
+    const langCode = span.dataset.lang;
+    if (!word || answered) return;
+
+    closeHintPopover();
+
+    // Show loading popover immediately
+    const pop = document.createElement("div");
+    pop.className = "hint-pop";
+    pop.innerHTML = `<span class="hint-word-title">${word}</span><span class="hint-loading">looking up…</span>`;
+    document.body.appendChild(pop);
+    activePopover = pop;
+    positionPopover(pop, span);
+
+    document.addEventListener("click", closeHintPopover, { once: true });
+
+    let def;
+    const cacheKey = `${langCode}:${word.toLowerCase()}`;
+    if (hintCache[cacheKey]) {
+      def = hintCache[cacheKey];
+    } else {
+      def = await fetchDefinition(word, langCode);
+      if (def) hintCache[cacheKey] = def;
+    }
+
+    if (!activePopover || activePopover !== pop) return; // closed while loading
+
+    // Deduct points (after first fetch so we don't penalise failed lookups)
+    if (def) {
+      if (hintsUsed >= HINTS_FREE) {
+        score = Math.max(0, score - PTS_HINT_COST);
+        updateHud();
+      }
+      hintsUsed++;
+      updateHintBar();
+    }
+
+    const wiktInfo = WIKT[langCode] || { dir: 'ltr' };
+    pop.innerHTML = `
+      <span class="hint-word-title">${word}</span>
+      ${def
+        ? `<span class="hint-def" dir="${wiktInfo.dir}">${def}</span>`
+        : `<span class="hint-loading hint-miss">no definition found</span>`}
+      ${def && hintsUsed > HINTS_FREE ? `<span class="hint-cost">−${PTS_HINT_COST} pts</span>` : ""}
+    `;
+    positionPopover(pop, span);
+  }
+
+  function positionPopover(pop, anchor) {
+    const r = anchor.getBoundingClientRect();
+    const pw = 260;
+    let left = r.left + window.scrollX + r.width / 2 - pw / 2;
+    left = Math.max(8, Math.min(left, window.innerWidth - pw - 8));
+    const top = r.bottom + window.scrollY + 8;
+    pop.style.cssText = `left:${left}px;top:${top}px;width:${pw}px`;
+  }
+
+  async function fetchDefinition(word, langCode) {
+    const wikt = WIKT[langCode];
+    if (!wikt) return null;
+    const sub = wikt.sub;
+    // Fetch full plaintext extract — Wiktionary has no "intro" so exintro gives nothing
+    const url = `https://${sub}.wiktionary.org/w/api.php?action=query&titles=${encodeURIComponent(word)}&prop=extracts&explaintext=1&exsectionformat=plain&format=json&origin=*`;
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(7000) });
+      const json = await res.json();
+      const pages = json.query?.pages;
+      if (!pages) return null;
+      const page = Object.values(pages)[0];
+      if (page.missing !== undefined || !page.extract) return null;
+      return parseWiktionaryDef(page.extract, word);
+    } catch { return null; }
+  }
+
+  // Parse a Wiktionary plaintext extract to find the first real definition line.
+  // Structure: == Language == > === Etymology === / === Noun === / etc.
+  // Definition lines follow the POS header and a pronunciation line.
+  function parseWiktionaryDef(text, word) {
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    let skipEtym = false;
+
+    for (const line of lines) {
+      // Section headers
+      if (/^===/.test(line)) {
+        // Skip etymology, pronunciation, references sections
+        skipEtym = /étymol|etymolog|pronunc|pronúnc|origin|herkunft|aussprache|prononciation|référence|anmerkung|notes|see also|synonym/i.test(line);
+        continue;
+      }
+      if (/^==/.test(line)) { skipEtym = false; continue; } // language header resets
+      if (skipEtym) continue;
+
+      // Skip the headword line (often: "word \pronunciation\ gender")
+      if (line.startsWith(word) || new RegExp('^' + word, 'i').test(line)) continue;
+
+      // Skip lines that are just IPA/pronunciation notation
+      if (/^[\\\/\[\/]/.test(line) || /^\(Prononciation/.test(line)) continue;
+
+      // Skip quote lines and example attributions
+      if (/^[—–\-―]/.test(line)) continue;
+
+      // Skip very short or parenthetical-only lines like "(see above)"
+      if (line.length < 14) continue;
+
+      // Skip lines that look like cross-references or just a category tag
+      if (/^\(→/.test(line)) continue;
+
+      // This looks like a definition — take up to 200 chars
+      const clean = line.replace(/\s+/g, ' ').trim();
+      return clean.length > 200 ? clean.slice(0, 200) + '…' : clean;
+    }
+    return null;
   }
 
   function askMeaning(p) {

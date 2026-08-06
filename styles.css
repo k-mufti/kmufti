@@ -38,13 +38,13 @@ a {
 
 /* ---------- The DVD screensaver ---------------------------------------- */
 /* Lives inside the mounting board and is driven by JS, so it bounces within
-   the white panel rather than the whole page. z-index 0 keeps it behind the
-   tiles, so it slides under them and reappears in the gaps. */
+   the white panel rather than the whole page. It rides on top of everything
+   in the board; pointer-events:none means it never intercepts a tile click. */
 .dvd {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 0;
+  z-index: 5;
   pointer-events: none;
   user-select: none;
   will-change: transform;
