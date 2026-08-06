@@ -37,27 +37,41 @@ a {
 }
 
 /* ---------- The DVD screensaver ---------------------------------------- */
-/* Fixed to the viewport and driven by JS; z-index 0 keeps it on the wall,
-   behind the mounting board and the footer, so it slides under the tiles. */
+/* Lives inside the mounting board and is driven by JS, so it bounces within
+   the white panel rather than the whole page. z-index 0 keeps it behind the
+   tiles, so it slides under them and reappears in the gaps. */
 .dvd {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   z-index: 0;
   pointer-events: none;
   user-select: none;
   will-change: transform;
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  font-size: 34px;
-  letter-spacing: 3px;
-  line-height: 1;
-  padding: 6px 2px;
-  color: #ff4400;
-  transition: color 0.25s ease;
+  line-height: 0;
 }
 
-.dvd span { display: inline-block; }
+/* The logo is a white-on-black PNG used as an alpha mask, so the wordmark can
+   be painted in whatever colour the bounce is currently cycling through. */
+.dvd span {
+  display: block;
+  width: 168px;
+  height: 56px;
+  background-color: #ff4400;
+  -webkit-mask-image: url("images/kmufti-logo.png?v=1");
+  mask-image: url("images/kmufti-logo.png?v=1");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  transition: background-color 0.25s ease;
+}
+
+@media (max-width: 620px) {
+  .dvd span { width: 116px; height: 39px; }
+}
 
 /* The legendary exact-corner hit. */
 @keyframes dvd-corner {
@@ -105,8 +119,6 @@ a {
 
 /* ---------- The launcher: centered app grid ----------------------------- */
 .hub {
-  position: relative;
-  z-index: 1;
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
@@ -117,6 +129,8 @@ a {
 }
 
 .hub-tagline {
+  position: relative;
+  z-index: 1;
   margin: 0;
   font-family: "JetBrains Mono", monospace;
   font-size: 12.5px;
@@ -129,6 +143,8 @@ a {
    the tiles (and the tagline) a clean, protected margin, so a drawing that
    covers the whole canvas stops at this frame instead of crowding the tiles. */
 .app-board {
+  position: relative;   /* positioning context for the screensaver */
+  overflow: hidden;     /* keeps it inside the rounded panel */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -142,6 +158,8 @@ a {
 }
 
 .apps {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -223,7 +241,6 @@ a {
 /* ---------- Deep space: the footer below the launcher ------------------ */
 .deep-space {
   position: relative;
-  z-index: 1;
   flex: 0 0 auto; /* a section below the frame; scroll down to reach it */
   min-height: 340px;
   overflow: hidden;

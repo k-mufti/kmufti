@@ -47,8 +47,9 @@
      under the tiles and reappears on the other side.
      Hitting an exact corner is, as ever, the whole point. */
   const dvd = document.getElementById("dvd");
-  const dvdText = document.getElementById("dvd-text");
-  if (dvd) {
+  const dvdText = document.getElementById("dvd-mark");
+  const board = document.getElementById("app-board");
+  if (dvd && board) {
     // The canvas palette, so the logo belongs to the rest of the site.
     const COLORS = [
       "#fb0000", "#ff4400", "#ffaf0d", "#ffde00", "#bbff00", "#62d42d",
@@ -63,20 +64,20 @@
     let vx = SPEED, vy = SPEED;
     let corners = 0;
 
+    // Bounds are the mounting board's inner box, not the viewport, so the logo
+    // stays inside the white panel where the tiles live.
     function measure() {
       const r = dvd.getBoundingClientRect();
-      w = r.width || 150; h = r.height || 44;
-      // Fall back through to sane numbers so a zero-sized viewport (some
-      // embedded/offscreen contexts report 0) can't collapse the bounds.
-      W = window.innerWidth || document.documentElement.clientWidth || 1024;
-      H = window.innerHeight || document.documentElement.clientHeight || 768;
+      w = r.width || 168; h = r.height || 56;
+      W = board.clientWidth || 800;
+      H = board.clientHeight || 400;
       x = Math.min(x, Math.max(0, W - w));
       y = Math.min(y, Math.max(0, H - h));
     }
 
     function recolor() {
       ci = (ci + 1 + ((Math.random() * (COLORS.length - 1)) | 0)) % COLORS.length;
-      dvd.style.color = COLORS[ci];
+      dvdText.style.backgroundColor = COLORS[ci];
     }
 
     measure();
@@ -84,7 +85,7 @@
     y = Math.random() * Math.max(1, H - h);
     vx = Math.random() < 0.5 ? -SPEED : SPEED;
     vy = Math.random() < 0.5 ? -SPEED : SPEED;
-    dvd.style.color = COLORS[ci];
+    dvdText.style.backgroundColor = COLORS[ci];
 
     let last = 0;
     function step(ts) {
