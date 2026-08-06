@@ -304,6 +304,21 @@ a {
   color: rgba(255, 255, 255, 0.4);
 }
 
+/* The quiet part, said out loud. */
+.deep-wink {
+  margin-top: -4px;
+  color: rgba(255, 255, 255, 0.26);
+}
+
+.deep-wink a {
+  color: rgba(255, 255, 255, 0.45);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s ease;
+}
+
+.deep-wink a:hover { color: rgba(255, 255, 255, 0.85); }
+
 @media (max-width: 620px) {
   .hub { padding: 36px 14px 56px; }
   .app-board { padding: 20px 16px 24px; border-radius: 20px; }
