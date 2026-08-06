@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=1" />
+  <link rel="stylesheet" href="styles.css?v=2" />
 </head>
 <body>
   <header class="site-header">
@@ -27,12 +27,24 @@
   <section class="screen active" id="start-screen">
     <div class="start-inner">
       <h1>Lost in Translation</h1>
-      <p class="lede">You get a phrase in a mystery language.<br />Guess what it means — and which language it is.</p>
-      <div class="difficulty" id="difficulty">
-        <button class="diff-btn active" data-tier="0">All languages</button>
-        <button class="diff-btn" data-tier="1">Easy · distinct scripts</button>
-        <button class="diff-btn" data-tier="3">Hard · lookalikes</button>
+      <p class="lede">A phrase appears in the translator.<br />Work out what it means.</p>
+
+      <div class="modes" id="modes">
+        <button class="mode-card active" data-mode="random">
+          <span class="mode-title">Completely random</span>
+          <span class="mode-sub">Any language. Name it yourself in the dropdown for bonus points.</span>
+        </button>
+        <button class="mode-card" data-mode="pick">
+          <span class="mode-title">Choose the language</span>
+          <span class="mode-sub">Every phrase comes from one language you pick.</span>
+        </button>
       </div>
+
+      <div class="lang-picker hidden" id="lang-picker">
+        <p class="picker-label">Pick a language</p>
+        <div class="lang-grid" id="lang-grid"></div>
+      </div>
+
       <button class="primary-btn" id="btn-start">Start</button>
       <p class="attrib">Phrases from <a href="https://tatoeba.org" target="_blank" rel="noopener">Tatoeba</a> · CC-BY 2.0 FR</p>
     </div>
@@ -44,9 +56,7 @@
       <!-- source pane -->
       <div class="pane">
         <div class="pane-head">
-          <span class="lang-tab active" id="src-lang">Detect language</span>
-          <span class="lang-tab muted">Spanish</span>
-          <span class="lang-tab muted">French</span>
+          <select id="src-select" class="lang-select" aria-label="Source language"></select>
         </div>
         <div class="pane-body">
           <p class="phrase" id="phrase"></p>
@@ -63,8 +73,6 @@
       <div class="pane target">
         <div class="pane-head">
           <span class="lang-tab active">English</span>
-          <span class="lang-tab muted">Spanish</span>
-          <span class="lang-tab muted">French</span>
         </div>
         <div class="pane-body">
           <p class="prompt-label" id="q-label">What does it mean?</p>
@@ -73,7 +81,6 @@
       </div>
     </div>
 
-    <div class="feedback" id="feedback"></div>
     <button class="primary-btn hidden" id="btn-next">Next phrase</button>
   </section>
 
@@ -87,6 +94,6 @@
     </div>
   </section>
 
-  <script src="app.js?v=1"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>
