@@ -79,15 +79,12 @@ const ARTWORK = {
           <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.5"/>
         </filter>
       </defs>
-      <rect width="320" height="200" fill="url(#mc-bg)"/>
-      <!-- The real 3D figure, pose 2 — rendered straight from figures/pose2.glb
-           with the game's own renderer, so the tile shows the actual model. -->
-      <image href="images/meccha-pose2.png" x="196" y="-8" width="121" height="208"
-             preserveAspectRatio="xMidYMid meet" opacity="0.95"/>
-      <!-- FIND MECCHA — Anton, red, filling the tile -->
-      <g fill="#e23b2e" font-family="Anton, sans-serif" text-anchor="middle" filter="url(#mc-tsh)">
-        <text x="160" y="84" font-size="54" textLength="150" lengthAdjust="spacingAndGlyphs">FIND</text>
-        <text x="160" y="170" font-size="84" textLength="306" lengthAdjust="spacingAndGlyphs">MECCHA</text>
+      <rect width="320" height="200" fill="#000000"/>
+      <!-- The real 3D figure (pose 2), exported straight from the game's own
+           renderer, laid on its side across the tile. -->
+      <g transform="rotate(90 160 100)">
+        <image href="images/meccha-pose2.png" x="60" y="-40" width="200" height="280"
+               preserveAspectRatio="xMidYMid meet"/>
       </g>
     </svg>`,
 
