@@ -138,6 +138,8 @@
 
     // Sample lighting from the photo around the placement area
     const lighting = FIGURE3D.sampleLighting(baseData, CW, CH, spot.fx, spot.fy, figW, figH);
+    // Derive the light balance from the patch's texture/brightness.
+    FIGURE3D.applyAutoTune(baseData, CW, CH, spot.fx, spot.fy, figW, figH);
 
     // Render 3D figure
     let figImg;
@@ -158,6 +160,7 @@
       if (attempt > 0) {
         // Re-render figure for new spot's lighting
         const lit = FIGURE3D.sampleLighting(baseData, CW, CH, s.fx, s.fy, figW, figH);
+        FIGURE3D.applyAutoTune(baseData, CW, CH, s.fx, s.fy, figW, figH);
         try {
           const model = await FIGURE3D.getModel(poseIdx);
           figImg = FIGURE3D.render(model, figW, figH, lit, rot);
