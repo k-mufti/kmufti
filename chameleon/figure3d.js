@@ -551,6 +551,7 @@ window.FIGURE3D = (function () {
       <label>Color <input type="color" id="f3d-color" value="#c8c8c0"></label>
       <label>Rotation <input type="range" id="f3d-rot" min="-45" max="45" value="0"> <span class="val" id="f3d-rot-v">0&deg;</span></label>
       <div><button id="f3d-render">Render Both</button> <button id="f3d-copy">Copy</button> <button id="f3d-close">X</button></div>
+      <div><button id="f3d-save">⤓ Save PNG (transparent)</button></div>
       <div class="preview-row">
         <div><div style="color:#aaa;font-size:10px;text-align:center;">A: Procedural</div><canvas id="f3d-prevA" width="120" height="240"></canvas></div>
         <div><div style="color:#aaa;font-size:10px;text-align:center;">B: Relief</div><canvas id="f3d-prevB" width="120" height="240"></canvas></div>
@@ -664,6 +665,40 @@ window.FIGURE3D = (function () {
     $('f3d-pose').addEventListener('change', queueRender);
     $('f3d-close').addEventListener('click', () => panel.remove());
     $('f3d-render').addEventListener('click', queueRender);
+
+    // Render the CURRENT pose + settings at high resolution and download it.
+    // Square canvas + the bbox-fitting camera means no pose or rotation gets
+    // clipped. Background stays transparent so it can be dropped on any colour.
+    $('f3d-save').addEventListener('click', async () => {
+      const btn = $('f3d-save');
+      const label = btn.textContent;
+      btn.textContent = 'rendering…';
+      try {
+        const poseIdx = parseInt($('f3d-pose').value);
+        const rot = parseInt($('f3d-rot').value) * Math.PI / 180;
+        const lighting = {
+          lightDir: [0.4, 0.5, 1],
+          lightColor: [1, 1, 1],
+          ambientColor: [0.35, 0.41, 0.50],
+        };
+        const S = 900;
+        const src = CFG.mode === 'procedural'
+          ? (() => { const f = buildProceduralFigure(poseIdx); f.__procedural = true; return f; })()
+          : await loadPose(POSE_PATHS[poseIdx % POSE_PATHS.length]);
+        const canv = render(src, S, S, lighting, rot);
+        const a = document.createElement('a');
+        a.href = canv.toDataURL('image/png');
+        a.download = `meccha-pose${poseIdx + 1}-rot${$('f3d-rot').value}.png`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        btn.textContent = 'saved ✓';
+      } catch (e) {
+        console.error(e);
+        btn.textContent = 'failed';
+      }
+      setTimeout(() => { btn.textContent = label; }, 1400);
+    });
 
     // Copy the current tuning values as text, to share. Proportions are left
     // out on purpose (procedural-mode only). Includes the compositing settings
