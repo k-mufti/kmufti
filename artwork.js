@@ -85,7 +85,7 @@ const ARTWORK = {
       <!-- Square box centred on the tile so the 90° rotation can't clip it:
            the figure's long axis ends up spanning the tile's width. -->
       <g transform="rotate(90 160 100)">
-        <image href="images/meccha-pose2.png" x="-5" y="-65" width="330" height="330"
+        <image href="images/meccha-pose2.png?v=2" x="-5" y="-65" width="330" height="330"
                preserveAspectRatio="xMidYMid meet"/>
       </g>
     </svg>`,
