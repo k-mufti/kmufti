@@ -40,4 +40,14 @@ const PROJECTS = [
     href: "white-canvas/",
     status: "live",
   },
+  {
+    slug: "translate",
+    title: "Lost in Translation",
+    description: "A phrase in a mystery language. Guess what it means \u2014 and which language it is.",
+    tags: ["game", "language", "js"],
+    accent: "#1a73e8",
+    accentBg: "linear-gradient(135deg, #ffffff 0%, #e8f0fe 100%)",
+    href: "translate/",
+    status: "live",
+  },
 ];

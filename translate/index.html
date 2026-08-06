@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lost in Translation — kmufti.com</title>
+  <meta name="description" content="Guess what the phrase means — and what language it's in." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=1" />
+</head>
+<body>
+  <header class="site-header">
+    <span class="header-left">
+      <a class="brand" href="../">kmufti.com</a>
+      <span class="crumb">/ lost in translation</span>
+    </span>
+    <div class="scoreboard">
+      <span class="score-item"><b id="score">0</b> pts</span>
+      <span class="score-item"><b id="streak">0</b> streak</span>
+      <span class="score-item"><b id="progress">1</b>/<span id="total">10</span></span>
+    </div>
+  </header>
+
+  <!-- ---------- Start screen ---------- -->
+  <section class="screen active" id="start-screen">
+    <div class="start-inner">
+      <h1>Lost in Translation</h1>
+      <p class="lede">You get a phrase in a mystery language.<br />Guess what it means — and which language it is.</p>
+      <div class="difficulty" id="difficulty">
+        <button class="diff-btn active" data-tier="0">All languages</button>
+        <button class="diff-btn" data-tier="1">Easy · distinct scripts</button>
+        <button class="diff-btn" data-tier="3">Hard · lookalikes</button>
+      </div>
+      <button class="primary-btn" id="btn-start">Start</button>
+      <p class="attrib">Phrases from <a href="https://tatoeba.org" target="_blank" rel="noopener">Tatoeba</a> · CC-BY 2.0 FR</p>
+    </div>
+  </section>
+
+  <!-- ---------- Game screen: the translator ---------- -->
+  <section class="screen" id="game-screen">
+    <div class="translator">
+      <!-- source pane -->
+      <div class="pane">
+        <div class="pane-head">
+          <span class="lang-tab active" id="src-lang">Detect language</span>
+          <span class="lang-tab muted">Spanish</span>
+          <span class="lang-tab muted">French</span>
+        </div>
+        <div class="pane-body">
+          <p class="phrase" id="phrase"></p>
+        </div>
+        <div class="pane-foot">
+          <span class="icon-btn" title="Listen">&#9654;</span>
+          <span class="char-count" id="char-count"></span>
+        </div>
+      </div>
+
+      <div class="swap" aria-hidden="true">&#8644;</div>
+
+      <!-- target pane -->
+      <div class="pane target">
+        <div class="pane-head">
+          <span class="lang-tab active">English</span>
+          <span class="lang-tab muted">Spanish</span>
+          <span class="lang-tab muted">French</span>
+        </div>
+        <div class="pane-body">
+          <p class="prompt-label" id="q-label">What does it mean?</p>
+          <div class="choices" id="choices"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+    <button class="primary-btn hidden" id="btn-next">Next phrase</button>
+  </section>
+
+  <!-- ---------- End screen ---------- -->
+  <section class="screen" id="end-screen">
+    <div class="start-inner">
+      <h1>Results</h1>
+      <div class="final-score" id="final-score"></div>
+      <div class="breakdown" id="breakdown"></div>
+      <button class="primary-btn" id="btn-again">Play again</button>
+    </div>
+  </section>
+
+  <script src="app.js?v=1"></script>
+</body>
+</html>

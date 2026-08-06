@@ -156,4 +156,32 @@ const ARTWORK = {
         <rect x="120" y="176" width="10" height="10" fill="#ffde00"/>
       </g>
     </svg>`,
+
+  /* Lost in Translation — the two-pane translator, mystery phrase on the left,
+     a question mark where the meaning should be. */
+  translate: `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <rect width="320" height="200" fill="#f1f3f4"/>
+      <rect x="22" y="30" width="276" height="140" rx="10" fill="#ffffff" stroke="#dadce0"/>
+      <line x1="160" y1="30" x2="160" y2="170" stroke="#dadce0"/>
+      <line x1="22" y1="62" x2="298" y2="62" stroke="#dadce0"/>
+      <!-- active tab underlines -->
+      <rect x="36" y="59" width="62" height="3" fill="#1a73e8"/>
+      <rect x="174" y="59" width="46" height="3" fill="#1a73e8"/>
+      <g font-family="Inter, sans-serif" font-size="9" fill="#5f6368">
+        <text x="36" y="52">Detect language</text>
+        <text x="174" y="52">English</text>
+      </g>
+      <!-- mystery phrase (script-ish glyph blocks) -->
+      <g fill="#202124">
+        <rect x="36" y="80" width="30" height="9" rx="2"/>
+        <rect x="70" y="80" width="46" height="9" rx="2"/>
+        <rect x="36" y="97" width="52" height="9" rx="2"/>
+        <rect x="92" y="97" width="26" height="9" rx="2"/>
+        <rect x="36" y="114" width="38" height="9" rx="2"/>
+      </g>
+      <!-- the unknown meaning -->
+      <text x="212" y="122" font-family="Inter, sans-serif" font-size="64"
+            font-weight="300" fill="#1a73e8" text-anchor="middle">?</text>
+    </svg>`,
 };
