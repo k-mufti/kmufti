@@ -72,6 +72,14 @@
   }
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
+  // Cutout size is a fraction of the canvas width. The board was later widened
+  // (1120 -> 1680) to give more room to drag, which silently scaled every
+  // cutout up with it. Cap the SIZING basis at the original width so items are
+  // exactly the size they always were, while the extra width still counts for
+  // positioning and dragging.
+  const SIZE_BASIS = 1120;
+  const itemWidthPx = (item, W) => clamp(item.fw * Math.min(W, SIZE_BASIS), 90, 260);
+
   // ---------- Fasteners: each cutout is held to the board by washi tape or a
   // push-pin (chosen once per item, then remembered). ----------
   const justAddedIds = new Set(); // transient: which items should play the drop-in
@@ -116,7 +124,7 @@
     item.fw = 0.13 + Math.random() * 0.07; // ~13–20% of canvas width
     item.rot = (Math.random() * 2 - 1) * 13;
 
-    const rPx = (item.fw * W) / 2;
+    const rPx = itemWidthPx(item, W) / 2;
     const placed = items.filter((it) => it !== item && it.fx != null);
 
     // First item: start near the top-center, not scattered across the board.
@@ -147,7 +155,7 @@
         const yPx = loY + Math.random() * Math.max(1, hiY - loY);
         let overlap = 0;
         for (const o of placed) {
-          const oR = (o.fw * W) / 2;
+          const oR = itemWidthPx(o, W) / 2;
           const dist = Math.hypot(cxPx - o.fx * W, yPx - o.ypx);
           overlap += Math.max(0, rPx + oR - dist);
         }
@@ -187,7 +195,7 @@
     collage.querySelectorAll(".item").forEach((node) => {
       const item = items.find((it) => it.id === node.dataset.id);
       if (!item) return;
-      const wPx = clamp(item.fw * W, 90, 260);
+      const wPx = itemWidthPx(item, W);
       node.style.left = item.fx * W + "px";
       node.style.top = item.ypx + "px";
       node.style.width = wPx + "px";
