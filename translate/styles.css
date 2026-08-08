@@ -327,6 +327,25 @@ h1 {
   color: var(--blue);
   font-weight: 500;
 }
+/* A blue check confirms the player picked it, not just that it was right. */
+.choice.correct.picked {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.choice.correct.picked::after {
+  content: "";
+  flex: none;
+  margin-left: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--blue);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='5 13 10 18 19 7'/%3E%3C/svg%3E");
+  background-size: 12px 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 .choice.chosen-wrong {
   background: var(--wall);
   border-color: var(--line);

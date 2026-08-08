@@ -393,7 +393,11 @@
 
     wrap.querySelectorAll(".choice").forEach((b) => {
       b.disabled = true;
-      if (b.textContent === correct) b.classList.add("correct");
+      if (b.textContent === correct) {
+        b.classList.add("correct");
+        // Only badge it when the player actually got there themselves.
+        if (picked === correct) b.classList.add("picked");
+      }
       else if (b.textContent === picked) b.classList.add("chosen-wrong");
       else b.classList.add("dim");
     });
