@@ -115,9 +115,7 @@ button { font-family: inherit; cursor: pointer; }
   text-align: center;
 }
 .bookmarklet {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+  display: inline-block;
   padding: 3px 10px;
   margin: 0 2px;
   background: var(--ink);
@@ -128,12 +126,23 @@ button { font-family: inherit; cursor: pointer; }
   cursor: grab;
   transition: opacity 0.15s ease;
 }
+/* A bookmarklet has no favicon (it points at a javascript: URL, not a site),
+   so the browser shows a generic globe in the bookmarks bar. The one thing we
+   can control is the bookmark's NAME, which the browser takes from this
+   anchor's text — so a star emoji rides along in the text, invisible on the
+   page, and lands in the bar where an icon would be. */
+.bm-emoji {
+  font-size: 0;
+  line-height: 0;
+}
+
 /* The wish star, matching the site's tab icon. */
 .bookmarklet-star {
   width: 11px;
   height: 11px;
+  margin-right: 4px;
+  vertical-align: -1px;
   fill: #6fc79a;
-  flex: none;
 }
 .bookmarklet:hover { opacity: 0.85; }
 .bookmarklet:active { cursor: grabbing; }
