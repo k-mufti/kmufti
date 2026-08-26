@@ -12,3 +12,8 @@ Almost entirely static. The only server-side piece is the wishlist backend
 See [DEPLOY.md](DEPLOY.md) for hosting on a VPS with nginx.
 
 
+
+
+
+
+
