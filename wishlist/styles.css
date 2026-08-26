@@ -115,7 +115,9 @@ button { font-family: inherit; cursor: pointer; }
   text-align: center;
 }
 .bookmarklet {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: 3px 10px;
   margin: 0 2px;
   background: var(--ink);
@@ -125,6 +127,13 @@ button { font-family: inherit; cursor: pointer; }
   letter-spacing: 0.5px;
   cursor: grab;
   transition: opacity 0.15s ease;
+}
+/* The wish star, matching the site's tab icon. */
+.bookmarklet-star {
+  width: 11px;
+  height: 11px;
+  fill: #6fc79a;
+  flex: none;
 }
 .bookmarklet:hover { opacity: 0.85; }
 .bookmarklet:active { cursor: grabbing; }

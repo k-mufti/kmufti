@@ -841,7 +841,7 @@
     });
     if (bmv !== CURRENT_BMV) {
       setStatusMsg(
-        'added — but your "+ wish" is OUTDATED (v' + (bmv || "0") + '). Reload this page, then drag a fresh "+ wish" to your bookmarks bar (delete the old one) so prices come out right.',
+        'added — but your "wish" bookmark is OUTDATED (v' + (bmv || "0") + '). Reload this page, then drag a fresh "wish" to your bookmarks bar (delete the old one) so prices come out right.',
         "error"
       );
     } else if (!newItem.price) {
