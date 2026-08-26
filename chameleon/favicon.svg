@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="10" fill="#0b0a0e"/>
+  <!-- the blank figure, hiding -->
+  <g fill="#ffffff">
+    <circle cx="32" cy="17" r="7"/>
+    <path d="M32 25 c-7 0 -11 4 -11 10 l0 12 c0 2 2 3 4 3 l14 0 c2 0 4 -1 4 -3 l0 -12 c0 -6 -4 -10 -11 -10 Z"/>
+    <rect x="24" y="50" width="6" height="10" rx="2"/>
+    <rect x="34" y="50" width="6" height="10" rx="2"/>
+  </g>
+  <!-- the reticle: he's been found -->
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#e23b2e" stroke-width="4" opacity="0.9"/>
+</svg>
