@@ -1,0 +1,560 @@
+/* =========================================================================
+   The Table — a shared jigsaw puzzle.
+   A dark wooden table in a dark room, and nothing else on the page. Every
+   bit of chrome that isn't the puzzle stays off until the puzzle is right.
+   ========================================================================= */
+:root {
+  --ink: #efe6d8;
+  --ink-dim: rgba(239, 230, 216, 0.55);
+  --ink-faint: rgba(239, 230, 216, 0.3);
+  --room: #100c09;      /* the dark room around the table */
+  --amber: #d8a45c;     /* lamp light */
+}
+
+/* The display face for this game only — Super Stamped, a free dafont face,
+   served from the repo rather than Google Fonts. */
+@font-face {
+  font-family: "Super Stamped";
+  src: url("fonts/super-stamped.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+* { box-sizing: border-box; }
+
+html { overflow-x: hidden; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  background: var(--room);
+  color: var(--ink);
+  font-family: "Instrument Sans", sans-serif;
+  font-weight: 400;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ---------- Header ------------------------------------------------------ */
+.site-header {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 28px 4px;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: lowercase;
+}
+
+.header-left { display: inline-flex; align-items: baseline; gap: 14px; min-width: 0; }
+.brand { color: var(--ink); font-weight: 500; }
+.crumb { color: var(--ink-faint); }
+.presence { color: var(--amber); font-size: 12px; letter-spacing: 1px; }
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 9px;
+}
+
+.header-link { color: var(--ink-dim); transition: color 0.15s ease; }
+.header-link:hover { color: var(--ink); }
+
+/* ---------- Title ------------------------------------------------------- */
+.hero { flex: 0 0 auto; text-align: center; padding: 10px 20px 6px; }
+
+.hero h1 {
+  margin: 0;
+  font-family: "Super Stamped", Georgia, serif;
+  font-weight: normal;   /* a display face: never synthesise bold or italic */
+  font-style: normal;
+  font-size: clamp(34px, 5.4vw, 58px);
+  letter-spacing: 1px;
+}
+
+/* ---------- The table --------------------------------------------------- */
+.table-area {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 14px 12px 10px;
+}
+
+/* Width is driven by the height left over on screen so the whole table fits
+   without scrolling on a normal laptop (1.532 = 1900/1240) — but never shrink
+   below 560px just because the window is short; on a squat window it is far
+   better to scroll than to squint at thumbnail-sized pieces. */
+.table-wrap {
+  /* 240px is the rest of the first screen: header, title, and the shelf
+     button underneath. Keeping that budget means the button is on-screen
+     without scrolling. */
+  width: min(calc(100% - 8px), max(calc((100vh - 240px) * 1.532), 560px));
+  max-width: 1560px;
+}
+
+.table {
+  position: relative;
+  aspect-ratio: 1900 / 1240;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 34px 80px rgba(0, 0, 0, 0.75);
+}
+
+.table #stage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Dark oak. Three layers do the work: fine grain lines, wider cathedral
+     banding across them, and a soft pool of lamp light near the middle so
+     the surface isn't a flat colour. */
+  background:
+    radial-gradient(115% 85% at 50% 40%, rgba(255, 206, 140, 0.075) 0%, rgba(255, 206, 140, 0) 62%),
+    repeating-linear-gradient(
+      91deg,
+      rgba(255, 233, 200, 0.017) 0 2px,
+      rgba(0, 0, 0, 0.028) 2px 5px,
+      rgba(255, 233, 200, 0.009) 5px 9px,
+      rgba(0, 0, 0, 0.022) 9px 13px,
+      rgba(255, 233, 200, 0.013) 13px 18px
+    ),
+    repeating-linear-gradient(
+      89.3deg,
+      rgba(0, 0, 0, 0.06) 0 1px,
+      rgba(0, 0, 0, 0) 1px 34px,
+      rgba(0, 0, 0, 0.045) 34px 35px,
+      rgba(0, 0, 0, 0) 35px 91px
+    ),
+    linear-gradient(174deg, #332215 0%, #241709 46%, #1a1109 74%, #120c06 100%);
+  box-shadow: 0 0 90px rgba(0, 0, 0, 0.7) inset;
+  touch-action: none;   /* we handle dragging ourselves */
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Somebody set a mug down on the corner of the table once. */
+.table::after {
+  content: "";
+  position: absolute;
+  left: 4.5%;
+  bottom: 6%;
+  width: 7.5%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid rgba(74, 38, 14, 0.4);
+  box-shadow: 0 0 0 3px rgba(74, 38, 14, 0.11);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Covers the table until the first snapshot lands, and again if we drop. */
+.table-veil {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 7, 4, 0.86);
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--ink-dim);
+  transition: opacity 0.4s ease;
+}
+.table-veil.gone { opacity: 0; pointer-events: none; }
+
+/* ---------- Pieces ------------------------------------------------------ */
+/* Remote pieces glide between the 50ms server ticks so a drag you're
+   watching reads as a hand moving, not a piece teleporting.
+
+   No resting shadow: an SVG filter on every piece means a separate offscreen
+   buffer per piece, which a 200-piece table cannot afford. Only the one or two
+   pieces actually in someone's hands get the lift. */
+.piece {
+  transition: transform 70ms linear;
+  cursor: grab;
+}
+/* The piece under YOUR pointer answers instantly — no smoothing, no lag. */
+.piece.dragging { transition: none; filter: url(#lift); cursor: grabbing; }
+/* Somebody else has this one. It lifts too, and you can't take it. */
+.piece.held { filter: url(#lift); pointer-events: none; }
+/* Home. Permanent. Sits flat with no handle. */
+.piece.placed { transition: none; pointer-events: none; cursor: default; }
+
+.pc-hit { fill: #000; fill-opacity: 0; pointer-events: all; }
+/* Seams: enough to read as a cut edge, not enough to draw a grid over the
+   picture. The dark line does the work; the highlight is a whisper. */
+.pc-edge { fill: none; stroke: rgba(12, 7, 3, 0.42); stroke-width: 1.1; pointer-events: none; }
+.pc-bevel { fill: none; stroke: rgba(255, 255, 255, 0.13); stroke-width: 1.8; pointer-events: none; }
+/* The halo showing whose hands are on a piece; colour is set per holder. */
+.pc-hold { fill: none; stroke-width: 5; opacity: 0.95; pointer-events: none; }
+
+/* The empty slot the picture goes into — a scored outline on the wood. */
+.board-slot {
+  fill: rgba(0, 0, 0, 0.22);
+  stroke: rgba(255, 224, 176, 0.14);
+  stroke-width: 2;
+  stroke-dasharray: 16 12;
+}
+.board-grid { stroke: rgba(255, 224, 176, 0.05); stroke-width: 1; }
+
+/* The moment a piece goes home. */
+@keyframes thunk {
+  0%   { transform: scale(1.1); }
+  60%  { transform: scale(0.988); }
+  100% { transform: scale(1); }
+}
+.snap-flash { animation: thunk 260ms ease-out; transform-box: fill-box; transform-origin: center; }
+
+/* ---------- Cursors ----------------------------------------------------- */
+.cursor { transition: transform 90ms linear; pointer-events: none; }
+.cursor-arrow { stroke: rgba(0, 0, 0, 0.55); stroke-width: 1.5; stroke-linejoin: round; }
+.cursor-tag { rx: 5; opacity: 0.95; }
+.cursor-name {
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 19px;
+  fill: #170f06;
+  dominant-baseline: middle;
+}
+
+/* ---------- Solved ------------------------------------------------------ */
+.finale {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 20px;
+  background: radial-gradient(60% 60% at 50% 45%, rgba(22, 14, 6, 0.72), rgba(6, 4, 2, 0.94));
+  animation: fade-in 0.6s ease both;
+}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+.finale h2 {
+  margin: 0;
+  font-family: "Super Stamped", Georgia, serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: clamp(22px, 3.2vw, 38px);
+  letter-spacing: 1px;
+  color: var(--amber);
+}
+
+/* The time is the headline of this screen, not a footnote. Scoped under
+   .finale so it outranks the small `.finale p` rule below. */
+.finale .finale-time {
+  margin: 2px 0 0;
+  font-family: "Super Stamped", Georgia, serif;
+  font-size: clamp(46px, 8.5vw, 104px);
+  line-height: 1;
+  letter-spacing: 2px;
+  color: var(--ink);
+}
+.finale p {
+  margin: 0;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 12px;
+  letter-spacing: 1.2px;
+  color: var(--ink-dim);
+}
+.finale .finale-next { color: var(--ink-faint); margin-top: 10px; }
+
+/* The finished picture takes a bow, then slides off the table. */
+.solved-lift { animation: bow 1.6s ease-in-out both; transform-box: view-box; transform-origin: 50% 50%; }
+@keyframes bow {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.035); }
+  100% { transform: scale(1); }
+}
+.slide-off { animation: slide-off 0.9s cubic-bezier(0.5, 0, 0.85, 0.3) both; transform-box: view-box; }
+@keyframes slide-off { to { transform: translate(0, 1500px) rotate(7deg); opacity: 0.2; } }
+.drop-in { animation: drop-in 0.6s cubic-bezier(0.2, 1.1, 0.4, 1) both; transform-box: view-box; }
+@keyframes drop-in {
+  from { transform: translate(0, -1300px); opacity: 0.3; }
+  to   { transform: translate(0, 0); opacity: 1; }
+}
+
+/* Phones: the header carries five things and has only ~360px to do it in, so
+   drop the breadcrumb and tighten everything until it stays on one line. */
+@media (max-width: 560px) {
+  .site-header { padding: 14px 12px 4px; font-size: 10px; letter-spacing: 0.6px; }
+  .header-left { gap: 8px; }
+  .crumb { display: none; }
+  .presence { font-size: 10px; letter-spacing: 0.4px; white-space: nowrap; }
+  .header-right { gap: 6px; }
+  .you-name { width: 78px; font-size: 10.5px; padding: 1px 4px; }
+  .you-icon { width: 11px; height: 11px; }
+  .hero { padding: 6px 12px 4px; }
+  .shelf-area { padding: 30vh 14px 60px; }
+  .shelf { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px 16px; }
+}
+
+@media (max-width: 720px) {
+  .site-header { padding: 16px 16px 4px; font-size: 11px; letter-spacing: 1.4px; }
+  .table-wrap { width: calc(100% - 8px); }
+}
+
+/* ---------- Under the table: your name, and the way down --------------- */
+.under-table {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  padding: 2px 22px 16px;
+}
+
+/* Small and quiet, tucked under the back link. Brightens when you go near it. */
+.you {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+.you:hover, .you:focus-within { opacity: 1; }
+
+/* A plain person mark rather than an emoji, so it can wear your colour. */
+.you-icon { width: 13px; height: 13px; flex: 0 0 auto; display: block; }
+
+.you-name {
+  width: 116px;
+  text-align: right;
+  padding: 2px 6px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--ink-dim);
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: none;
+}
+.you-name:hover { border-color: rgba(239, 230, 216, 0.12); }
+.you-name:focus {
+  outline: none;
+  color: var(--ink);
+  border-color: rgba(239, 230, 216, 0.28);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.shelf-jump {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 20px 6px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink-dim);
+  font-family: "Super Stamped", Georgia, serif;
+  font-size: 22px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: color 0.18s ease, transform 0.18s ease;
+}
+.shelf-jump:hover { color: var(--amber); transform: translateY(2px); }
+.shelf-jump svg { width: 22px; height: 13px; }
+
+/* ---------- The shelf --------------------------------------------------- */
+/* A deliberate gulf. Someone at the table should never catch a glimpse of
+   the shelf below - you go there on purpose, via the button, or not at all. */
+.shelf-area {
+  flex: 1 0 auto;
+  max-width: 1560px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 46vh 22px 80px;
+}
+
+.shelf {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  align-items: end;
+  gap: 30px 26px;
+}
+
+.shelf-empty {
+  grid-column: 1 / -1;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 12.5px;
+  letter-spacing: 1px;
+  color: var(--ink-faint);
+  padding: 28px 0 40px;
+  text-align: center;
+}
+
+/* A finished puzzle on the shelf is JUST the puzzle - no card, no caption. */
+.box {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  line-height: 0;
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.62));
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.box:hover { transform: translateY(-6px) scale(1.02); filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.72)); }
+.box svg { width: 100%; height: auto; display: block; }
+
+.seam { fill: none; stroke: rgba(10, 6, 2, 0.5); stroke-width: 1.2; }
+.seam-lit { fill: none; stroke: rgba(255, 255, 255, 0.12); stroke-width: 1.6; }
+
+/* ---------- The zoomed puzzle ------------------------------------------ */
+.box-view {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 46px 24px 34px;
+  background: rgba(7, 5, 3, 0.975);
+  animation: fade-in 0.22s ease both;
+}
+.box-view[hidden] { display: none; }
+
+.box-close {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink-dim);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.box-close:hover { background: rgba(255, 255, 255, 0.12); color: var(--ink); }
+
+/* Shrinks to the picture's width so the text below can line up with its
+   left and right edges. */
+.box-frame {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 100%;
+}
+
+.box-stage {
+  line-height: 0;
+  filter: drop-shadow(0 24px 44px rgba(0, 0, 0, 0.7));
+}
+.box-stage svg {
+  display: block;
+  max-width: min(78vw, 900px);
+  max-height: 60vh;
+  width: auto;
+  height: auto;
+}
+
+/* Pieces waiting for the replay to reach them. */
+/* The empty board a replay fills in, so an unplaced piece is a dark slot
+   rather than a window onto the page behind. */
+.box-slot { fill: #0d0906; stroke: rgba(255, 224, 176, 0.1); stroke-width: 2; }
+
+.rp-piece { transition: opacity 0.18s ease; }
+.rp-piece.pending { opacity: 0; }
+@keyframes land {
+  0%   { transform: scale(1.16); }
+  65%  { transform: scale(0.985); }
+  100% { transform: scale(1); }
+}
+.rp-piece.landing { animation: land 240ms ease-out; transform-box: fill-box; transform-origin: center; }
+
+/* A quick flare in the colour of whoever placed that piece. */
+.rp-flash {
+  fill: none;
+  stroke: none;
+  stroke-width: 3;
+  opacity: 0;
+  transition: opacity 420ms ease;
+  pointer-events: none;
+}
+
+.box-info {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  min-height: 46px;
+}
+.box-left { text-align: left; max-width: 42%; }
+.box-right { text-align: right; max-width: 42%; }
+/* Centred on the picture itself, not on whatever the side columns weigh. */
+.box-mid {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.box-title {
+  margin: 0 0 5px;
+  font-family: "Super Stamped", Georgia, serif;
+  font-size: clamp(18px, 2.2vw, 27px);
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+
+.box-meta {
+  margin: 0;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.8px;
+  line-height: 1.75;
+  color: rgba(239, 230, 216, 0.72);
+}
+.box-last {
+  margin: 0 0 5px;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.8px;
+  color: rgba(239, 230, 216, 0.72);
+}
+.box-last b { color: var(--amber); font-weight: 500; }
+
+/* No dots: a contributor's own colour IS their name. */
+.box-crew {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 12px;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+.crew-name { font-weight: 500; }
+.crew-count { color: rgba(239, 230, 216, 0.5); margin-left: 5px; }
+
+.replay-btn {
+  padding: 9px 26px 7px;
+  border: 1px solid rgba(239, 230, 216, 0.2);
+  border-radius: 24px;
+  background: transparent;
+  color: var(--ink);
+  font-family: "Super Stamped", Georgia, serif;
+  font-size: 19px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: border-color 0.16s ease, color 0.16s ease;
+}
+.replay-btn:hover:not(:disabled) { border-color: var(--amber); color: var(--amber); }
+.replay-btn:disabled { opacity: 0.45; cursor: default; }

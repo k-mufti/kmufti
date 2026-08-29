@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b1055"/>
+      <stop offset="0.35" stop-color="#a63a5a"/>
+      <stop offset="0.62" stop-color="#e8703a"/>
+      <stop offset="1" stop-color="#ffc46b"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fff3c4" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#ffd27a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="640" cy="430" r="230" fill="url(#glow)"/>
+  <circle cx="640" cy="430" r="96" fill="#fff0bd"/>
+  <g fill="#ffffff" opacity="0.7">
+    <circle cx="150" cy="90" r="3"/><circle cx="320" cy="52" r="2.4"/><circle cx="520" cy="120" r="2"/>
+    <circle cx="880" cy="70" r="3"/><circle cx="1060" cy="140" r="2.4"/><circle cx="990" cy="40" r="2"/>
+    <circle cx="240" cy="180" r="2"/><circle cx="720" cy="46" r="2.2"/>
+  </g>
+  <path d="M0 470 C 180 420 300 500 460 486 C 640 470 760 410 940 440 C 1060 460 1140 500 1200 486 L1200 800 L0 800 Z" fill="#c9663a"/>
+  <path d="M0 560 C 160 512 320 596 500 578 C 700 558 820 500 1000 540 C 1100 562 1160 590 1200 578 L1200 800 L0 800 Z" fill="#a04b2f"/>
+  <path d="M0 660 C 200 616 380 690 560 676 C 760 660 900 606 1080 648 C 1140 662 1180 678 1200 672 L1200 800 L0 800 Z" fill="#733226"/>
+  <path d="M0 742 C 240 706 420 764 640 754 C 860 744 1000 712 1200 738 L1200 800 L0 800 Z" fill="#4a1e1c"/>
+  <g fill="#2a1013" transform="translate(300 636) scale(0.85)">
+    <path d="M0 40 l6 -18 6 18 z"/>
+    <path d="M-14 40 c2 -16 8 -26 20 -26 c12 0 18 10 20 26 l-6 0 l-2 -12 l-4 12 l-16 0 l-4 -12 l-2 12 z"/>
+    <rect x="-12" y="40" width="4" height="16"/><rect x="0" y="40" width="4" height="16"/>
+    <rect x="10" y="40" width="4" height="16"/><rect x="20" y="40" width="4" height="16"/>
+  </g>
+  <g fill="#2a1013" transform="translate(372 648) scale(0.7)">
+    <path d="M-14 40 c2 -16 8 -26 20 -26 c12 0 18 10 20 26 l-6 0 l-2 -12 l-4 12 l-16 0 l-4 -12 l-2 12 z"/>
+    <rect x="-12" y="40" width="4" height="16"/><rect x="0" y="40" width="4" height="16"/>
+    <rect x="10" y="40" width="4" height="16"/><rect x="20" y="40" width="4" height="16"/>
+  </g>
+</svg>

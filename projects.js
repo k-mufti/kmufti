@@ -1,6 +1,16 @@
 // Add a new project by adding one object here — the card renders automatically.
 const PROJECTS = [
   {
+    slug: "puzzle",
+    title: "Jigsaw",
+    description: "One jigsaw puzzle that everybody shares. Watch other people move the pieces in real time, and when it's finished a new one drops on the table.",
+    tags: ["game", "realtime", "js"],
+    accent: "#d8a45c",
+    accentBg: "linear-gradient(135deg, #332215 0%, #150e07 100%)",
+    href: "puzzle/",
+    status: "live",
+  },
+  {
     slug: "jeoprady",
     title: "Larprady!",
     description: "A multi-team Jeopardy game with 600 real episodes, a custom board builder, and a growing library of original modern/nostalgia categories.",

@@ -1,0 +1,29 @@
+# systemd unit for Jigsaw, the shared puzzle table (WebSocket + archive).
+# Install:
+#   sudo mkdir -p /var/lib/kmufti-puzzle && sudo chown www-data:www-data /var/lib/kmufti-puzzle
+#   sudo cp deploy/kmufti-puzzle.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now kmufti-puzzle
+#
+# After changing puzzle/server.js on the box:  sudo systemctl restart kmufti-puzzle
+# Adding a puzzle needs NO restart - the manifest is re-read at each changeover.
+
+[Unit]
+Description=kmufti Jigsaw (shared puzzle table)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/kmufti-hub/puzzle
+ExecStart=/usr/bin/node server.js
+Environment=PORT=8023
+# The table in progress and the shelf of finished puzzles live outside the
+# repo so a git pull can never clobber them.
+Environment=PUZZLE_DATA=/var/lib/kmufti-puzzle/table.json
+Environment=PUZZLE_ARCHIVE=/var/lib/kmufti-puzzle/shelf.json
+Restart=always
+RestartSec=3
+User=www-data
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Jigsaw — kmufti.com</title>
+  <link rel="icon" href="favicon.svg?v=1" type="image/svg+xml" />
+  <meta name="description" content="One jigsaw puzzle, shared by everyone. Work on it together in real time and watch each other move the pieces." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=14" />
+</head>
+<body>
+  <header class="site-header">
+    <span class="header-left">
+      <a class="brand" href="../">kmufti.com</a>
+      <span class="crumb">/ jigsaw</span>
+      <span class="presence" id="presence"></span>
+    </span>
+    <span class="header-right">
+      <a class="header-link" href="../">&larr; back</a>
+      <label class="you">
+        <svg class="you-icon" id="youIcon" viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="8" cy="4.9" r="3.1"/>
+          <path d="M1.7 15.2 a6.3 6.3 0 0 1 12.6 0 z"/>
+        </svg>
+        <input class="you-name" id="youName" maxlength="18" spellcheck="false" aria-label="your name at the table" />
+      </label>
+    </span>
+  </header>
+
+  <section class="hero">
+    <h1 id="puzzleTitle">The&nbsp;Table</h1>
+  </section>
+
+  <!-- The table. Everything inside the SVG is drawn in fixed "stage" units
+       (1900x1240) and scaled as a single unit, so a piece sits in the same
+       place for everyone regardless of screen size. -->
+  <section class="table-area">
+    <div class="table-wrap">
+      <div class="table" id="table">
+        <svg id="stage" viewBox="0 0 1900 1240" preserveAspectRatio="xMidYMid meet">
+          <defs id="defs">
+            <filter id="lift" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000" flood-opacity="0.55"/>
+            </filter>
+          </defs>
+          <g id="boardOutline"></g>
+          <g id="placedLayer"></g>
+          <g id="looseLayer"></g>
+          <g id="cursorLayer"></g>
+        </svg>
+        <div class="table-veil" id="veil"><span id="veilText">finding the table&hellip;</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Under the table: your name on the left, the way down to the shelf in
+       the middle. Nothing else. -->
+  <div class="under-table">
+    <button class="shelf-jump" id="shelfJump">
+      <span>the shelf</span>
+      <svg viewBox="0 0 24 14" aria-hidden="true"><path d="M2 2 L12 12 L22 2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <!-- Every puzzle this table has finished: just the pictures. Click one to
+       open it. -->
+  <section class="shelf-area" id="shelfArea">
+    <div class="shelf" id="shelf"></div>
+  </section>
+
+  <!-- The zoomed puzzle: bigger, plus who solved it and the replay. -->
+  <div class="box-view" id="boxView" hidden>
+    <button class="box-close" id="boxClose" aria-label="close">&times;</button>
+    <div class="box-frame">
+      <div class="box-stage" id="boxStage"></div>
+      <div class="box-info" id="boxInfo"></div>
+    </div>
+  </div>
+
+  <script src="app.js?v=12"></script>
+</body>
+</html>

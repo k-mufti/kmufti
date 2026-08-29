@@ -17,3 +17,9 @@ jeoprady/JEOPARDY_CSV.csv
 # Drawing canvas runtime state (server-side, not source)
 draw/canvas.bin
 draw/canvas.bin.tmp
+
+# Jigsaw runtime state (lives in /var/lib/kmufti-puzzle in production, but a
+# local dev run writes it here).
+puzzle/table.json
+puzzle/shelf.json
+puzzle/*.tmp

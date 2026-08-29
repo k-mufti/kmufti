@@ -5,6 +5,50 @@
    simple gradient tile automatically — so custom art is optional.
    ========================================================================= */
 const ARTWORK = {
+  /* Jigsaw — the word on the table it's played on: dark oak, a pool of lamp
+     light, and the game's own display face in white. */
+  puzzle: `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="pz-wood" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3a2717"/>
+          <stop offset="0.48" stop-color="#26180b"/>
+          <stop offset="1" stop-color="#140d06"/>
+        </linearGradient>
+        <radialGradient id="pz-lamp" cx="0.5" cy="0.44" r="0.62">
+          <stop offset="0" stop-color="#ffce8c" stop-opacity="0.16"/>
+          <stop offset="1" stop-color="#ffce8c" stop-opacity="0"/>
+        </radialGradient>
+        <pattern id="pz-grain" width="7" height="200" patternUnits="userSpaceOnUse">
+          <rect x="0" y="0" width="1" height="200" fill="#000000" opacity="0.2"/>
+          <rect x="3" y="0" width="1" height="200" fill="#ffe9c8" opacity="0.035"/>
+        </pattern>
+        <filter id="pz-drop" x="-40%" y="-40%" width="180%" height="180%">
+          <feDropShadow dx="0" dy="2" stdDeviation="2.2" flood-color="#000000" flood-opacity="0.55"/>
+        </filter>
+        <!-- Two loose pieces, cut with the same knob geometry the real game
+             uses: one interior piece and one edge piece with a flat top. -->
+        <path id="pz-pc-a" d="M0,0C5.6,0 14,1.23 12.32,1.23C8.96,1.23 8.96,5.88 14,5.88C19.04,5.88 19.04,1.23 15.68,1.23C14,1.23 22.4,0 28,0C28,5.6 29.23,14 29.23,12.32C29.23,8.96 33.88,8.96 33.88,14C33.88,19.04 29.23,19.04 29.23,15.68C29.23,14 28,22.4 28,28C22.4,28 14,29.23 15.68,29.23C19.04,29.23 19.04,33.88 14,33.88C8.96,33.88 8.96,29.23 12.32,29.23C14,29.23 5.6,28 0,28C0,22.4 1.23,14 1.23,15.68C1.23,19.04 5.88,19.04 5.88,14C5.88,8.96 1.23,8.96 1.23,12.32C1.23,14 0,5.6 0,0Z"/>
+        <path id="pz-pc-b" d="M0,0C9.33,0 18.67,0 28,0C28,5.6 26.77,14 26.77,12.32C26.77,8.96 22.12,8.96 22.12,14C22.12,19.04 26.77,19.04 26.77,15.68C26.77,14 28,22.4 28,28C22.4,28 14,26.77 15.68,26.77C19.04,26.77 19.04,22.12 14,22.12C8.96,22.12 8.96,26.77 12.32,26.77C14,26.77 5.6,28 0,28C0,22.4 -1.23,14 -1.23,15.68C-1.23,19.04 -5.88,19.04 -5.88,14C-5.88,8.96 -1.23,8.96 -1.23,12.32C-1.23,14 0,5.6 0,0Z"/>
+      </defs>
+      <rect width="320" height="200" fill="url(#pz-wood)"/>
+      <rect width="320" height="200" fill="url(#pz-grain)"/>
+      <rect width="320" height="200" fill="url(#pz-lamp)"/>
+      <text x="160" y="112" text-anchor="middle" fill="#ffffff"
+            font-family="'Super Stamped', Georgia, serif" font-size="54" letter-spacing="1">Jigsaw</text>
+      <!-- Two pieces left lying on the table, bottom left. -->
+      <g filter="url(#pz-drop)">
+        <g transform="translate(16,124) rotate(-13) scale(1.5)">
+          <use href="#pz-pc-a" fill="#efe6d8"/>
+          <use href="#pz-pc-a" fill="none" stroke="#160d05" stroke-opacity="0.38" stroke-width="0.8"/>
+        </g>
+        <g transform="translate(84,152) rotate(27) scale(1.15)">
+          <use href="#pz-pc-b" fill="#c9b99f"/>
+          <use href="#pz-pc-b" fill="none" stroke="#160d05" stroke-opacity="0.38" stroke-width="1"/>
+        </g>
+      </g>
+    </svg>`,
+
   /* Larprady — a Jeopardy-style game board: gold values on deep blue. */
   jeoprady: `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">

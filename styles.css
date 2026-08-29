@@ -1,3 +1,12 @@
+/* Borrowed from the Jigsaw project for its launcher tile art. */
+@font-face {
+  font-family: "Super Stamped";
+  src: url("puzzle/fonts/super-stamped.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --ink: #111111;
   --ink-dim: rgba(17, 17, 17, 0.55);

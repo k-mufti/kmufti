@@ -1,0 +1,59 @@
+{
+  "_comment": "The queue, played in order, wrapping when it reaches the end. To add a puzzle: drop the image in images/ and add a row here. The image name may omit its extension (.png/.jpg/.svg all work). Pixel size and a piece grid are worked out from the file itself; set cols/rows or pieces to override. An entry whose image isn't there yet is skipped until it is, and the manifest is re-read at every changeover, so a live table picks up new puzzles without a restart.",
+  "queue": [
+    {
+      "id": "tiger",
+      "title": "Tiger",
+      "image": "images/tiger",
+      "pieces": 50
+    },
+    {
+      "id": "darknight",
+      "title": "Dark Night",
+      "image": "images/dark-night",
+      "pieces": 50
+    },
+    {
+      "id": "pastel",
+      "title": "Pastel",
+      "image": "images/pastel",
+      "pieces": 100
+    },
+    {
+      "id": "chicago",
+      "title": "Chicago",
+      "image": "images/chicago",
+      "pieces": 200
+    },
+    {
+      "id": "dunes",
+      "title": "Long Way Home",
+      "image": "images/dunes"
+    },
+    {
+      "id": "bauhaus",
+      "title": "Shapes, Assembled",
+      "image": "images/bauhaus"
+    },
+    {
+      "id": "cabin",
+      "title": "Somebody's Up",
+      "image": "images/cabin"
+    },
+    {
+      "id": "orchard",
+      "title": "Slow Morning",
+      "image": "images/orchard"
+    },
+    {
+      "id": "harbor",
+      "title": "Still Awake",
+      "image": "images/harbor"
+    },
+    {
+      "id": "reef",
+      "title": "Down There",
+      "image": "images/reef"
+    }
+  ]
+}

@@ -12,6 +12,7 @@ wishlist both persist in the visitor's browser (`localStorage`).
 | Larprady (`/jeoprady/`) | static | loads `boards.json`, `categories.json`, `modern_categories.json` |
 | Wishlist frontend (`/wishlist/`) | static | |
 | Wishlist backend | **Node** (`wishlist/server.js`) | serves `/wishlist/api/unfurl` + `/wishlist/api/img` on port 8021 |
+| Jigsaw (`/puzzle/`) | static + **Node** (`puzzle/server.js`) | WebSocket table on port 8023; state in `/var/lib/kmufti-puzzle/` |
 
 ## One-time server setup
 
@@ -34,7 +35,15 @@ wishlist both persist in the visitor's browser (`localStorage`).
    sudo systemctl status kmufti-wishlist   # should be "active (running)"
    ```
 
-4. **nginx**:
+4. **Jigsaw service** (the shared puzzle table):
+   ```bash
+   sudo mkdir -p /var/lib/kmufti-puzzle && sudo chown www-data:www-data /var/lib/kmufti-puzzle
+   sudo cp /var/www/kmufti-hub/deploy/kmufti-puzzle.service /etc/systemd/system/
+   sudo systemctl daemon-reload
+   sudo systemctl enable --now kmufti-puzzle
+   ```
+
+5. **nginx**:
    ```bash
    sudo cp /var/www/kmufti-hub/deploy/nginx.conf /etc/nginx/sites-available/kmufti
    # edit server_name / root to match yours
@@ -42,12 +51,12 @@ wishlist both persist in the visitor's browser (`localStorage`).
    sudo nginx -t && sudo systemctl reload nginx
    ```
 
-5. **HTTPS** (Let's Encrypt):
+6. **HTTPS** (Let's Encrypt):
    ```bash
    sudo certbot --nginx -d kmufti.com -d www.kmufti.com
    ```
 
-6. **DNS**: point `kmufti.com` (and `www`) at your VPS IP (A / AAAA records).
+7. **DNS**: point `kmufti.com` (and `www`) at your VPS IP (A / AAAA records).
 
 ## Updating (your git-pull workflow)
 
@@ -56,6 +65,9 @@ cd /var/www/kmufti-hub
 sudo git pull
 # ONLY if wishlist/server.js changed:
 sudo systemctl restart kmufti-wishlist
+# ONLY if puzzle/server.js changed (NOT needed to add a puzzle - the manifest
+# is re-read at every changeover):
+sudo systemctl restart kmufti-puzzle
 ```
 
 Static changes are live immediately. When you edit a CSS/JS file, bump its
@@ -69,5 +81,10 @@ Static changes are live immediately. When you edit a CSS/JS file, bump its
   `/wishlist/api/`.
 - The unfurl endpoint falls back to **Microlink** (a free external API with
   rate limits) when its own scrape is blocked.
+- **Jigsaw needs the WebSocket block in `deploy/nginx.conf`.** Without the
+  `Upgrade`/`Connection` headers on `/puzzle/api/socket` the table never
+  connects and every visitor sits on "reconnecting…".
+- The live table and the shelf are written to `/var/lib/kmufti-puzzle/`, outside
+  the repo, so a `git pull` can't wipe a puzzle in progress.
 - `jeoprady/JEOPARDY_CSV.csv` is **git-ignored** — it's only used by
   `build_boards.py` to regenerate the JSON, which the live site doesn't need.
