@@ -139,6 +139,16 @@ a {
   text-align: center;
 }
 
+/* The quiet part, said out loud. */
+.hub-wink a {
+  color: var(--ink-dim);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s ease;
+}
+
+.hub-wink a:hover { color: var(--ink); }
+
 /* A "mounting board" behind the posters: an opaque matte with a border gives
    the tiles (and the tagline) a clean, protected margin, so a drawing that
    covers the whole canvas stops at this frame instead of crowding the tiles. */
@@ -304,20 +314,6 @@ a {
   color: rgba(255, 255, 255, 0.4);
 }
 
-/* The quiet part, said out loud. */
-.deep-wink {
-  margin-top: -4px;
-  color: rgba(255, 255, 255, 0.26);
-}
-
-.deep-wink a {
-  color: rgba(255, 255, 255, 0.45);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  transition: color 0.15s ease;
-}
-
-.deep-wink a:hover { color: rgba(255, 255, 255, 0.85); }
 
 @media (max-width: 620px) {
   .hub { padding: 36px 14px 56px; }
