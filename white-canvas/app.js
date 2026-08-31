@@ -271,7 +271,6 @@
     es.addEventListener("init", (e) => { try { onInit(JSON.parse(e.data)); } catch {} });
     es.addEventListener("px", (e) => { try { applyDelta(JSON.parse(e.data)); } catch {} });
     es.addEventListener("presence", (e) => { try { setPresence(JSON.parse(e.data).count); } catch {} });
-    es.addEventListener("clear", () => { cells.fill(EMPTY); glow.clear(); ctx.clearRect(0, 0, STAGE_W, STAGE_H); });
     // EventSource auto-reconnects; on reconnect the server re-sends "init".
   }
 

@@ -2,11 +2,14 @@
 //
 //   GET  /api/stream        Server-Sent Events: sends an "init" event (config +
 //                           palette + full snapshot), then live "px" deltas,
-//                           "presence" counts, and "clear" events.
+//                           "presence" counts.
 //   POST /api/paint         { id, cells:[[index,color],...] } -> applies cells
 //                           (rate-limited by a per-client token bucket) and
 //                           broadcasts them. Returns the client's meter state.
-//   POST /api/clear         { key } -> admin-only wipe (DRAW_ADMIN_KEY).
+//
+// There is deliberately NO wipe route. The wall is permanent: nothing the
+// server exposes can blank the grid, so no misconfiguration can lose it. To
+// reset it, stop the service and delete the canvas file by hand.
 //
 // Production: nginx serves the static hub and proxies /draw/api/* here. A
 // leading "/draw" is stripped below so the same routes work whether the request
@@ -18,7 +21,6 @@ const fs = require("fs");
 const path = require("path");
 
 const PORT = process.env.PORT || 8022;
-const ADMIN_KEY = process.env.DRAW_ADMIN_KEY || "changeme";
 
 // Must match the client (app.js): STAGE 1440x2400, CELL 8.
 const CELL = 8;
@@ -213,20 +215,6 @@ const server = http.createServer((req, res) => {
       if (accepted) scheduleSave();
       res.writeHead(200);
       res.end(JSON.stringify({ left, cooldownMs, clip: CLIP, accepted }));
-    });
-    return;
-  }
-
-  // --- Admin clear ---
-  if (pathname === "/api/clear" && req.method === "POST") {
-    cors(res);
-    readJson(req, (err, body) => {
-      res.setHeader("Content-Type", "application/json");
-      if (!body || body.key !== ADMIN_KEY) { res.writeHead(403); return res.end(JSON.stringify({ error: "forbidden" })); }
-      grid.fill(EMPTY);
-      saveSync();
-      broadcast("clear", {});
-      res.writeHead(200); res.end(JSON.stringify({ ok: true }));
     });
     return;
   }
