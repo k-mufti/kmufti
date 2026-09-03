@@ -206,6 +206,13 @@ function saveShelf() {
 // needed for a solve replay and would bloat every page load.
 function shelfCard(e) {
   const { order, ...rest } = e;
+  // A card keeps the image path it was solved with, so renaming a file would
+  // otherwise leave a hole on the shelf. The id is the thing that lasts: if
+  // the stored path has gone, take whatever the queue calls that puzzle now.
+  if (!resolveImage(rest.image)) {
+    const live = QUEUE.find((q) => q.id === e.id);
+    if (live) rest.image = live.image;
+  }
   return rest;
 }
 
