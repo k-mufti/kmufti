@@ -32,6 +32,7 @@
 
   <section class="hero">
     <h1 id="puzzleTitle">The&nbsp;Table</h1>
+    <div class="running" id="running"></div>
   </section>
 
   <!-- The table. Everything inside the SVG is drawn in fixed "stage" units
@@ -74,12 +75,14 @@
   <!-- The zoomed puzzle: bigger, plus who solved it and the replay. -->
   <div class="box-view" id="boxView" hidden>
     <button class="box-close" id="boxClose" aria-label="close">&times;</button>
+    <button class="box-step box-prev" id="boxPrev" aria-label="previous puzzle">&#8249;</button>
+    <button class="box-step box-next" id="boxNext" aria-label="next puzzle">&#8250;</button>
     <div class="box-frame">
       <div class="box-stage" id="boxStage"></div>
       <div class="box-info" id="boxInfo"></div>
     </div>
   </div>
 
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=13"></script>
 </body>
 </html>

@@ -148,6 +148,20 @@ function chooseGrid(w, h, target) {
 
 const DEFAULT_PIECES = Number(process.env.PUZZLE_PIECES || 50);
 
+// A filename can carry the piece count and the title: "images/red-canyon-100"
+// is Red Canyon at about 100 pieces. It saves repeating in the manifest what
+// the file already says. Anything set explicitly on the entry still wins, and
+// a name with no trailing number just falls back to the default.
+function fromFilename(spec) {
+  const base = path.basename(spec).replace(/\.[^.]+$/, "");
+  const m = /^(.*?)[-_ ]+(\d{1,4})$/.exec(base);
+  const words = (m ? m[1] : base).replace(/[-_]+/g, " ").trim();
+  return {
+    pieces: m ? Number(m[2]) : null,
+    title: words.replace(/\b\w/g, (c) => c.toUpperCase()),
+  };
+}
+
 // Read the manifest and keep only the entries that are actually playable.
 // Called again at every changeover, so a puzzle added to a running table joins
 // the rotation without a restart.
@@ -163,9 +177,12 @@ function loadQueue() {
     if (!image) { waiting.push(def.id); continue; }
     const size = imageSize(path.join(__dirname, image)) || { w: 1200, h: 800 };
     const w = def.imageW || size.w, h = def.imageH || size.h;
+    const named = fromFilename(image);
+    const pieces = def.pieces || named.pieces || DEFAULT_PIECES;
     const grid = def.cols && def.rows ? { cols: def.cols, rows: def.rows }
-                                      : chooseGrid(w, h, def.pieces || DEFAULT_PIECES);
-    ready.push({ ...def, image, imageW: w, imageH: h, cols: grid.cols, rows: grid.rows });
+                                      : chooseGrid(w, h, pieces);
+    ready.push({ ...def, title: def.title || named.title, image,
+                 imageW: w, imageH: h, cols: grid.cols, rows: grid.rows });
   }
   if (waiting.length) console.log(`waiting on an image: ${waiting.join(", ")}`);
   for (const d of ready) {

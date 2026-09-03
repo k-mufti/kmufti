@@ -72,6 +72,7 @@
   const veilText = document.getElementById("veilText");
   const titleEl = document.getElementById("puzzleTitle");
   const presenceEl = document.getElementById("presence");
+  const runningEl = document.getElementById("running");
   const youIcon = document.getElementById("youIcon");
   const youName = document.getElementById("youName");
   const shelfJump = document.getElementById("shelfJump");
@@ -82,6 +83,8 @@
   const boxFrame = document.querySelector(".box-frame");
   const boxInfo = document.getElementById("boxInfo");
   const boxClose = document.getElementById("boxClose");
+  const boxPrev = document.getElementById("boxPrev");
+  const boxNext = document.getElementById("boxNext");
 
   const SVGNS = "http://www.w3.org/2000/svg";
   const el = (name, attrs) => {
@@ -491,8 +494,22 @@
   let boxPieces = [];   // the clipped piece groups in the zoom view
   let replayTimer = null;
 
+  // Where the open puzzle sits on the shelf, so the arrows know what's either
+  // side of it. -1 when nothing is open.
+  let boxIndex = -1;
+
+  function stepBox(delta) {
+    if (boxIndex < 0) return;
+    const i = boxIndex + delta;
+    if (i < 0 || i >= shelfList.length) return;
+    openBox(shelfList[i]);
+  }
+
   function openBox(e) {
     stopReplay();
+    boxIndex = shelfList.indexOf(e);
+    boxPrev.disabled = boxIndex <= 0;
+    boxNext.disabled = boxIndex < 0 || boxIndex >= shelfList.length - 1;
     const geo = boxGeo(e), edges = entryEdges(e);
     const depth = 0.21 * Math.min(geo.pw, geo.ph);
 
@@ -591,6 +608,7 @@
 
   function closeBox() {
     stopReplay();
+    boxIndex = -1;
     window.removeEventListener("resize", fitFrame);
     boxFrame.style.width = "";
     boxView.hidden = true;
@@ -656,7 +674,15 @@
 
   boxClose.addEventListener("click", closeBox);
   boxView.addEventListener("click", (e) => { if (e.target === boxView) closeBox(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !boxView.hidden) closeBox(); });
+  boxPrev.addEventListener("click", () => stepBox(-1));
+  boxNext.addEventListener("click", () => stepBox(1));
+  document.addEventListener("keydown", (e) => {
+    if (boxView.hidden) return;
+    if (e.key === "Escape") closeBox();
+    // Newest is leftmost on the shelf, so left goes back towards it.
+    else if (e.key === "ArrowLeft") stepBox(-1);
+    else if (e.key === "ArrowRight") stepBox(1);
+  });
   shelfJump.addEventListener("click", () => shelfArea.scrollIntoView({ behavior: "smooth", block: "start" }));
 
   /* ---------- Your name (the colour stays whatever you were dealt) ------- */
@@ -676,16 +702,33 @@
 
   /* ---------- How long it took, for the solved card ----------------------- */
   // Clock style, so a solve reads as a time and not a rounded-off label:
-  // 0:07, 2:31, 1:04:22. Hours keep counting past a day rather than wrapping,
-  // since a puzzle left overnight should say so.
+  // 0:07, 2:31, 1:04:22. Past a day the hours roll into a day count —
+  // "2d 3:04:22" reads better than a bare 51:04:22.
   function fmtClock(ms) {
     const total = Math.max(0, Math.round(ms / 1000));
-    const h = Math.floor(total / 3600);
+    const d = Math.floor(total / 86400);
+    const h = Math.floor((total % 86400) / 3600);
     const m = Math.floor((total % 3600) / 60);
     const sec = total % 60;
     const pad = (n) => String(n).padStart(2, "0");
+    if (d) return `${d}d ${h}:${pad(m)}:${pad(sec)}`;
     return h ? `${h}:${pad(m)}:${pad(sec)}` : `${m}:${pad(sec)}`;
   }
+
+  /* ---------- The running clock, under the title -------------------------- */
+  // A table can stay up for days, so the header carries how long this one has
+  // been going. It freezes the moment the puzzle is solved: after that the
+  // number belongs to the finished picture, not to a clock still ticking.
+  let tableStartedAt = null;
+  let tableSolvedAt = 0;
+
+  function paintRunning() {
+    if (!tableStartedAt) { runningEl.textContent = ""; return; }
+    const end = tableSolvedAt || Date.now();
+    const t = fmtClock(end - tableStartedAt);
+    runningEl.textContent = tableSolvedAt ? `solved in ${t}` : `${t} on the table`;
+  }
+  setInterval(paintRunning, 1000);
 
   /* =========================================================================
      The last piece
@@ -832,6 +875,9 @@
     switch (m.t) {
       case "init": {
         const isNewPuzzle = board && m.puzzle.id !== titleEl.dataset.id;
+        tableStartedAt = m.startedAt || Date.now();
+        tableSolvedAt = m.solvedAt || 0;
+        paintRunning();
         peers.clear();
         cursorLayer.textContent = "";
         for (const p of m.peers) addPeer(p);
@@ -938,6 +984,8 @@
       }
 
       case "solved":
+        tableSolvedAt = m.entry.finishedAt || Date.now();
+        paintRunning();
         celebrate(m.entry, m.nextIn);
         break;
     }

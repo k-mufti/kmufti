@@ -1,23 +1,17 @@
 {
-  "_comment": "The queue, played in order, wrapping when it reaches the end. To add a puzzle: drop the image in images/ and add a row here. The image name may omit its extension (.png/.jpg/.svg all work). Pixel size and a piece grid are worked out from the file itself; set cols/rows or pieces to override. An entry whose image isn't there yet is skipped until it is, and the manifest is re-read at every changeover, so a live table picks up new puzzles without a restart.",
+  "_comment": "The queue, played in order, wrapping when it reaches the end. To add a puzzle: drop the image in images/ and add a row here. Name the file after the piece with its piece count on the end - \"images/red-canyon-100\" is Red Canyon at about 100 pieces - and the row needs nothing but an id and the image. The extension may be left off (.png/.jpg/.webp/.svg all work). Anything set on the row wins over the filename: title, pieces, or an exact cols/rows. Pixel size is read from the file itself. An entry whose image isn't there yet is skipped until it is, and the manifest is re-read at every changeover, so a live table picks up new puzzles without a restart. Keep an id stable once it has played: the shelf archive is keyed on it.",
   "queue": [
     {
       "id": "tiger",
-      "title": "Tiger",
-      "image": "images/tiger",
-      "pieces": 50
+      "image": "images/tiger-100"
     },
     {
       "id": "darknight",
-      "title": "Dark Night",
-      "image": "images/dark-night",
-      "pieces": 50
+      "image": "images/dark-night-200"
     },
     {
       "id": "pastel",
-      "title": "Pastel",
-      "image": "images/pastel",
-      "pieces": 100
+      "image": "images/pastel-100"
     },
     {
       "id": "chicago",
@@ -28,32 +22,86 @@
     {
       "id": "dunes",
       "title": "Long Way Home",
-      "image": "images/dunes"
+      "image": "images/dunes-50"
     },
     {
       "id": "bauhaus",
       "title": "Shapes, Assembled",
-      "image": "images/bauhaus"
+      "image": "images/bauhaus-50"
     },
     {
       "id": "cabin",
       "title": "Somebody's Up",
-      "image": "images/cabin"
-    },
-    {
-      "id": "orchard",
-      "title": "Slow Morning",
-      "image": "images/orchard"
+      "image": "images/cabin-50"
     },
     {
       "id": "harbor",
       "title": "Still Awake",
-      "image": "images/harbor"
+      "image": "images/harbor-50"
     },
     {
-      "id": "reef",
-      "title": "Down There",
-      "image": "images/reef"
+      "id": "lumez",
+      "image": "images/1000-lumez-150"
+    },
+    {
+      "id": "fpm120",
+      "image": "images/120-FPM-100"
+    },
+    {
+      "id": "coolingoff",
+      "image": "images/Cooling-Off-100"
+    },
+    {
+      "id": "dream",
+      "title": "Dream a Little Dream",
+      "image": "images/Dream-a-little-dream-109"
+    },
+    {
+      "id": "dradle",
+      "image": "images/Elaphants-Dradle-150"
+    },
+    {
+      "id": "gallop",
+      "image": "images/Gallop-Orange-50"
+    },
+    {
+      "id": "generic",
+      "image": "images/She-Called-Me-Generic-150"
+    },
+    {
+      "id": "standstill",
+      "image": "images/Standstill-100"
+    },
+    {
+      "id": "yourway",
+      "title": "Your Way St.",
+      "image": "images/Your-Way-St-150"
+    },
+    {
+      "id": "stars",
+      "title": "Among the Stars",
+      "image": "images/among-the-stars-200"
+    },
+    {
+      "id": "coffee",
+      "image": "images/coffee-records-300"
+    },
+    {
+      "id": "lightyears",
+      "image": "images/light-years-300"
+    },
+    {
+      "id": "meow",
+      "image": "images/meow-libre-100"
+    },
+    {
+      "id": "rodeo",
+      "image": "images/rodeo-roper-50"
+    },
+    {
+      "id": "apple",
+      "title": "This Is Not an Apple?",
+      "image": "images/this-is-not-an-apple-50"
     }
   ]
 }
