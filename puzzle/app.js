@@ -471,17 +471,6 @@
     return svg;
   }
 
-  // How a puzzle is hung: a width somewhere short of its column, and which
-  // edge it sits against. Both come from the id alone, so the wall looks the
-  // same to everyone and never rearranges itself between visits.
-  const HANG_W = [1, 0.78, 0.92, 0.68, 1, 0.84];
-  const HANG_SIDE = ["center", "flex-start", "flex-end", "center"];
-  function hangStyle(b, e) {
-    const h = hashSeed(`hang:${e.id}`);
-    b.style.setProperty("--hang-w", `${(HANG_W[h % HANG_W.length] * 100).toFixed(1)}%`);
-    b.style.setProperty("--hang-side", HANG_SIDE[(h >>> 8) % HANG_SIDE.length]);
-  }
-
   // Wide enough that the seams still read at the narrowest a column gets.
   const COL_TARGET = 300;
   function shelfCols() {
@@ -502,10 +491,10 @@
       shelfEl.appendChild(p);
       return;
     }
-    // Hung oldest-first into columns by turn, then each column stacks upward
-    // (column-reverse). Puzzle number 30 always lands in the same column at
-    // the same height as it did the day it was finished; the newest ones are
-    // simply the ones along the top.
+    // Oldest first, each one going to whichever column is shortest so far,
+    // and every column stacking upward (column-reverse). Packing in that
+    // order is what keeps the wall still: a new puzzle only ever lands on
+    // top of a column, so puzzle number 30 sits where it has always sat.
     const cols = shelfCols();
     shelfCount = cols;
     const colEls = [];
@@ -515,15 +504,20 @@
       colEls.push(d);
       shelfEl.appendChild(d);
     }
+    // Column heights in units of column width - the pictures all render at
+    // the same width, so their aspect ratios are all the comparison needs.
+    const fill = new Array(cols).fill(0);
     const oldestFirst = list.slice().reverse();
-    oldestFirst.forEach((e, i) => {
+    oldestFirst.forEach((e) => {
+      let c = 0;
+      for (let j = 1; j < cols; j++) if (fill[j] < fill[c]) c = j;
+      fill[c] += (e.boardH || 560) / (e.boardW || 840) + 0.1;
       const b = document.createElement("button");
       b.className = "box";
       b.title = e.title;
-      hangStyle(b, e);
       b.appendChild(shelfThumb(e));
       b.addEventListener("click", () => openBox(e));
-      colEls[i % cols].appendChild(b);
+      colEls[c].appendChild(b);
     });
   }
 

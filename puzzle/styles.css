@@ -431,7 +431,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .shelf-empty {
-  grid-column: 1 / -1;
+  width: 100%;
   font-family: "Instrument Sans", sans-serif;
   font-size: 12.5px;
   letter-spacing: 1px;
@@ -443,6 +443,7 @@ a { color: inherit; text-decoration: none; }
 /* A finished puzzle on the shelf is JUST the puzzle - no card, no caption. */
 .box {
   display: block;
+  width: 100%;
   padding: 0;
   border: 0;
   background: none;
@@ -451,16 +452,12 @@ a { color: inherit; text-decoration: none; }
   filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.62));
   transition: transform 0.2s ease, filter 0.2s ease;
 }
-.box:hover { transform: translateY(-6px) scale(1.02); filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.72)); }
+.box:hover {
+  transform: translateY(-6px) scale(1.02);
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.72));
+}
 .box svg { width: 100%; height: auto; display: block; }
 
-/* The sizes are the point. A puzzle is hung at its own width - some near the
-   full column, some well short of it, some pushed to one side - so the wall
-   reads as pictures someone put up rather than cells in a table. The numbers
-   come from the puzzle's own id, so a picture is hung the same way for
-   everyone, every time. */
-.box { width: var(--hang-w, 100%); }
-.shelf-col > .box { align-self: var(--hang-side, center); }
 
 .seam { fill: none; stroke: rgba(10, 6, 2, 0.5); stroke-width: 1.2; }
 .seam-lit { fill: none; stroke: rgba(255, 255, 255, 0.12); stroke-width: 1.6; }
