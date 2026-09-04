@@ -9,12 +9,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@1,600;1,700&family=Inter:wght@100;200;300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=18" />
+  <link rel="stylesheet" href="styles.css?v=19" />
 </head>
 <body>
   <header class="site-header">
     <span class="header-left">
       <span class="brand">kmufti.com</span>
+      <!-- Filled in by app.js from the counter; stays out of the way if the
+           backend is down. -->
+      <span class="header-users" id="visitCount" hidden></span>
     </span>
     <a class="header-link" href="https://kareemmuftee.com">kareemmuftee.com &rarr;</a>
   </header>
@@ -41,13 +44,10 @@
       <a href="https://www.linkedin.com/in/kareem-muftee/" target="_blank" rel="noopener">linkedin</a>
     </nav>
     <p class="deep-caption">made by kareem muftee</p>
-    <!-- Filled in by app.js from the counter; stays out of the way if the
-         backend is down. -->
-    <p class="deep-count" id="visitCount" hidden></p>
   </footer>
 
   <script src="projects.js?v=10"></script>
   <script src="artwork.js?v=22"></script>
-  <script src="app.js?v=15"></script>
+  <script src="app.js?v=16"></script>
 </body>
 </html>

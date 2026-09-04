@@ -144,7 +144,7 @@
     .then((r) => (r.ok ? r.json() : null))
     .then((d) => {
       if (!d || typeof d.visits !== "number") return;
-      el.textContent = `opened ${d.visits.toLocaleString()} times`;
+      el.textContent = `${d.visits.toLocaleString()} users`;
       el.hidden = false;
     })
     .catch(() => { /* no counter today */ });
