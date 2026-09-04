@@ -553,8 +553,10 @@
   function openBox(e) {
     stopReplay();
     boxIndex = shelfList.indexOf(e);
-    boxPrev.disabled = boxIndex <= 0;
-    boxNext.disabled = boxIndex < 0 || boxIndex >= shelfList.length - 1;
+    // The list runs newest first, but the arrows follow the wall: left goes
+    // back through the older puzzles, right comes forward to the newer ones.
+    boxPrev.disabled = boxIndex < 0 || boxIndex >= shelfList.length - 1;
+    boxNext.disabled = boxIndex <= 0;
     const geo = boxGeo(e), edges = entryEdges(e);
     const depth = 0.21 * Math.min(geo.pw, geo.ph);
 
@@ -719,14 +721,14 @@
 
   boxClose.addEventListener("click", closeBox);
   boxView.addEventListener("click", (e) => { if (e.target === boxView) closeBox(); });
-  boxPrev.addEventListener("click", () => stepBox(-1));
-  boxNext.addEventListener("click", () => stepBox(1));
+  boxPrev.addEventListener("click", () => stepBox(1));
+  boxNext.addEventListener("click", () => stepBox(-1));
   document.addEventListener("keydown", (e) => {
     if (boxView.hidden) return;
     if (e.key === "Escape") closeBox();
-    // The shelf runs oldest to newest, so left steps back towards the newest.
-    else if (e.key === "ArrowLeft") stepBox(-1);
-    else if (e.key === "ArrowRight") stepBox(1);
+    // Left goes back towards the oldest, right forward towards the newest.
+    else if (e.key === "ArrowLeft") stepBox(1);
+    else if (e.key === "ArrowRight") stepBox(-1);
   });
   shelfJump.addEventListener("click", () => shelfArea.scrollIntoView({ behavior: "smooth", block: "start" }));
 
