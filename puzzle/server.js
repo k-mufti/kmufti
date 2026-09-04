@@ -14,6 +14,7 @@
 //   {t:"grab", p}                  ask to pick up piece p
 //   {t:"move", x, y}               drag the piece you're holding
 //   {t:"drop", x, y}               let go - server decides if it snaps home
+//   {t:"shuffle"}                  tip the loose pieces back out across the table
 //
 // Protocol, server -> client:
 //   {t:"init", ...}                whole world: puzzle, pieces, peers, shelf
@@ -627,6 +628,31 @@ function finish(lastPeer) {
   setTimeout(nextPuzzle, CELEBRATE_MS);
 }
 
+// Tip the loose pieces back out. Placed ones are permanent and never move,
+// and a piece somebody is holding stays in their hand rather than being
+// yanked out of it. One shuffle at a time for the whole room: it is a shared
+// table, and a held-down button would make it unplayable for everyone else.
+let lastShuffle = 0;
+const SHUFFLE_GAP_MS = 4000;
+
+function onShuffle(peer) {
+  const now = Date.now();
+  if (table.solvedAt || now - lastShuffle < SHUFFLE_GAP_MS) return;
+  lastShuffle = now;
+
+  const pos = [];
+  for (let i = 0; i < table.pieces.length; i++) {
+    const p = table.pieces[i];
+    if (p.placed || holderOf(i)) continue;
+    const s = scatter(table.pw, table.ph, table.board);
+    p.x = s.x; p.y = s.y;
+    pos.push([i, Math.round(p.x), Math.round(p.y)]);
+  }
+  if (!pos.length) return;
+  scheduleSave();
+  broadcast({ t: "shuffled", pos, by: peer.name });
+}
+
 function nextPuzzle() {
   const currentId = table.def.id;
   const fresh = loadQueue();
@@ -667,6 +693,7 @@ function handle(peer, raw) {
     case "grab": onGrab(peer, m.p | 0); break;
     case "move": onMove(peer, m.x, m.y); break;
     case "drop": onDrop(peer, m.x, m.y); break;
+    case "shuffle": onShuffle(peer); break;
     case "name":
       peer.name = cleanName(m.name);
       peer.color = cleanColor(m.color);

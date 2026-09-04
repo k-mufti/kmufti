@@ -76,6 +76,7 @@
   const youIcon = document.getElementById("youIcon");
   const youName = document.getElementById("youName");
   const shelfJump = document.getElementById("shelfJump");
+  const shuffleBtn = document.getElementById("shuffleBtn");
   const shelfArea = document.getElementById("shelfArea");
   const shelfEl = document.getElementById("shelf");
   const boxView = document.getElementById("boxView");
@@ -685,6 +686,14 @@
   });
   shelfJump.addEventListener("click", () => shelfArea.scrollIntoView({ behavior: "smooth", block: "start" }));
 
+  // The server keeps its own gap between shuffles; greying the button out for
+  // the same stretch just means you can see that rather than guess at it.
+  shuffleBtn.addEventListener("click", () => {
+    send({ t: "shuffle" });
+    shuffleBtn.disabled = true;
+    setTimeout(() => { shuffleBtn.disabled = false; }, 4000);
+  });
+
   /* ---------- Your name (the colour stays whatever you were dealt) ------- */
   youName.value = myName;
   youIcon.setAttribute("fill", myColor);
@@ -934,6 +943,17 @@
           pieces[i].x = x; pieces[i].y = y;
           applyPiece(i);
         }
+        break;
+      }
+
+      case "shuffled": {
+        for (const [i, x, y] of m.pos) {
+          if (drag && drag.i === i) continue;     // your own hand wins locally
+          if (!pieces[i] || pieces[i].placed) continue;
+          pieces[i].x = x; pieces[i].y = y;
+          applyPiece(i);
+        }
+        play("click", 0.4);
         break;
       }
 
