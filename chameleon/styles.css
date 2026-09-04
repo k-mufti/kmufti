@@ -216,29 +216,6 @@ a { color: inherit; text-decoration: none; }
 .mc-title .green   { --c: #22b24c; }
 .mc-title span { color: var(--c); }
 
-/* Flat colour on a face this big reads as vinyl, so there is a little grain
-   in the paint. The tile is tuned so its mean pixel lands on mid-grey, which
-   is the whole trick: overlay leaves mid-grey alone, so the letters keep
-   their own colour and brightness and gain only a surface. Measured, not
-   guessed - #5a5a5a under noise at 0.8 comes out mean 129, spread 12. Plain
-   noise with no grey under it averages far darker and the title goes muddy,
-   which is exactly what it did the first time.
-
-   Guarded, because the trick rests on background-clip:text - where that is
-   missing the letters keep their plain colour instead of going transparent
-   and disappearing. */
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  .mc-title span {
-    color: transparent;
-    background-color: var(--c);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' fill='%235a5a5a'/%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.8'/%3E%3C/svg%3E");
-    background-size: 180px 180px;
-    background-blend-mode: overlay;
-    -webkit-background-clip: text;
-    background-clip: text;
-  }
-}
-
 .mc-sub { margin: 0; color: var(--ink-dim); font-size: 14px; line-height: 1.5; }
 .mc-fineprint { margin: 4px 0 0; font-size: 12px; color: var(--ink-dim); }
 .mc-fineprint b { color: var(--ink); font-weight: 600; }
