@@ -331,7 +331,21 @@ function restoreTable() {
   };
 }
 
-table = restoreTable() || newTable(0);
+// Which puzzle to put out when there's no table to carry on from. Walking
+// forward to the first one nobody has finished yet beats always starting at
+// the top of the queue and handing the room a picture it has already solved.
+// Once the whole wall has been played there is nothing to skip to, so it
+// falls back to the next in line and the queue simply comes round again.
+function pickPuzzle(from) {
+  const played = new Set(shelf.map((e) => e.id));
+  for (let k = 0; k < QUEUE.length; k++) {
+    const i = (from + k) % QUEUE.length;
+    if (!played.has(QUEUE[i].id)) return i;
+  }
+  return from % QUEUE.length;
+}
+
+table = restoreTable() || newTable(pickPuzzle(0));
 console.log(`table: ${table.def.id} - ${table.placedCount}/${table.pieces.length} placed`);
 
 process.on("SIGTERM", () => { saveTable(); process.exit(0); });
@@ -618,7 +632,7 @@ function nextPuzzle() {
   const fresh = loadQueue();
   if (fresh.length) QUEUE = fresh;
   const at = QUEUE.findIndex((q) => q.id === currentId);
-  table = newTable((at < 0 ? table.queueIndex : at) + 1);
+  table = newTable(pickPuzzle((at < 0 ? table.queueIndex : at) + 1));
   for (const p of peers) p.holding = null;
   saveTable();
   console.log(`next puzzle: ${table.def.id} (${table.pieces.length} pieces)`);
