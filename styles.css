@@ -313,6 +313,18 @@ a {
   color: #fff;
 }
 
+/* The front-door count, under the byline. Quieter than the caption: it is a
+   small thing to notice, not something to read. */
+.deep-count {
+  position: relative;
+  z-index: 1;
+  margin: 6px 0 0;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.26);
+}
+
 .deep-caption {
   position: relative;
   z-index: 1;

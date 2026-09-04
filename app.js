@@ -128,3 +128,24 @@
     });
   }
 })();
+
+/* =========================================================================
+   The front-door count — how many times kmufti.com has been opened.
+
+   Counted by the Jigsaw backend, which is the one nginx already forwards
+   /puzzle/api/ to. POSTing is what adds this open; the reply carries the
+   new total. If the backend is down the line simply never appears — the
+   hub is static and has no business breaking over a number.
+   ========================================================================= */
+(function frontDoorCount() {
+  const el = document.getElementById("visitCount");
+  if (!el) return;
+  fetch("/puzzle/api/visits", { method: "POST" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((d) => {
+      if (!d || typeof d.visits !== "number") return;
+      el.textContent = `opened ${d.visits.toLocaleString()} times`;
+      el.hidden = false;
+    })
+    .catch(() => { /* no counter today */ });
+})();

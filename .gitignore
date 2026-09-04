@@ -23,3 +23,6 @@ draw/canvas.bin.tmp
 puzzle/table.json
 puzzle/shelf.json
 puzzle/*.tmp
+
+# Jigsaw backend also keeps the hub visit count (prod: /var/lib/kmufti-puzzle).
+puzzle/visits.json

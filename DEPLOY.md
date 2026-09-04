@@ -17,6 +17,14 @@ persists in the visitor's browser (`localStorage`).
 | White Canvas (`/white-canvas/`) | static + **Node** (`draw/server.js`) | SSE stream on port 8022; grid in `/var/lib/kmufti-draw/canvas.bin` |
 | Jigsaw (`/puzzle/`) | static + **Node** (`puzzle/server.js`) | WebSocket table on port 8023; state in `/var/lib/kmufti-puzzle/` |
 
+The hub's visit count is served by the **Jigsaw** backend (`GET`/`POST`
+`/puzzle/api/visits`) rather than a service of its own: nginx already forwards
+`/puzzle/api/` there, so the counter needed no fourth port and no new proxy
+rule. The total lives in `visits.json` next to the shelf — in production that
+is `/var/lib/kmufti-puzzle/visits.json`, outside the repo. It counts opens,
+not people, and records nothing about a visitor. If that backend is down the
+hub simply doesn't show the line.
+
 The White Canvas backend lives in `draw/` — the canvas used to sit behind the
 launcher tiles before it became its own project, and the folder name stuck.
 

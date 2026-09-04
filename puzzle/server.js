@@ -196,6 +196,37 @@ let QUEUE = loadQueue();
 
 let shelf = []; // finished puzzles, newest first
 try { shelf = JSON.parse(fs.readFileSync(ARCHIVE_FILE, "utf8")) || []; } catch { /* first run */ }
+
+/* ------------------------------------------------------------------------
+   The hub's front-door count: how many times anyone has opened kmufti.com.
+   Every open counts, the same person coming back included - it is a tally of
+   visits, not of people, and nothing about a visitor is recorded.
+
+   It lives in this backend because nginx already forwards /puzzle/api/ here,
+   so the hub gets a counter without a fourth service or a new proxy rule.
+   The file sits next to the shelf, which in production means it is outside
+   the repo in /var/lib/kmufti-puzzle and survives a git pull.
+   ------------------------------------------------------------------------ */
+const VISITS_FILE = process.env.PUZZLE_VISITS ||
+  path.join(path.dirname(ARCHIVE_FILE), "visits.json");
+let visits = 0;
+try { visits = JSON.parse(fs.readFileSync(VISITS_FILE, "utf8")).visits || 0; } catch { /* first run */ }
+
+// Opens arrive in bursts and the number is nobody's idea of critical, so it
+// is written at most once every few seconds rather than on every hit.
+let visitsDirty = false;
+function saveVisits() {
+  if (!visitsDirty) return;
+  visitsDirty = false;
+  try {
+    const tmp = VISITS_FILE + ".tmp";
+    fs.writeFileSync(tmp, JSON.stringify({ visits }));
+    fs.renameSync(tmp, VISITS_FILE);
+  } catch (e) { console.error("visits save failed:", e.message); }
+}
+setInterval(saveVisits, 5000).unref();
+process.on("SIGTERM", () => { saveVisits(); process.exit(0); });
+process.on("SIGINT", () => { saveVisits(); process.exit(0); });
 function saveShelf() {
   const tmp = ARCHIVE_FILE + ".tmp";
   try {
@@ -750,6 +781,19 @@ const server = http.createServer((req, res) => {
       "Cache-Control": "no-cache",
     });
     return res.end(JSON.stringify(entry ? { order: entry.order } : { error: "no such solve" }));
+  }
+
+  // The hub calls this once on load (POST to add this open, GET to just read
+  // the total). CORS is open like the other read routes - the number is on
+  // the front page anyway.
+  if (apiPath === "/api/visits" && (req.method === "GET" || req.method === "POST")) {
+    if (req.method === "POST") { visits++; visitsDirty = true; }
+    res.writeHead(200, {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Cache-Control": "no-cache",
+    });
+    return res.end(JSON.stringify({ visits }));
   }
 
   if (apiPath === "/api/archive" && req.method === "GET") {
