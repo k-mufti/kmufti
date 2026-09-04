@@ -471,24 +471,74 @@
     return svg;
   }
 
+  // How a puzzle is hung: a width somewhere short of its column, and which
+  // edge it sits against. Both come from the id alone, so the wall looks the
+  // same to everyone and never rearranges itself between visits.
+  const HANG_W = [1, 0.78, 0.92, 0.68, 1, 0.84];
+  const HANG_SIDE = ["center", "flex-start", "flex-end", "center"];
+  function hangStyle(b, e) {
+    const h = hashSeed(`hang:${e.id}`);
+    b.style.setProperty("--hang-w", `${(HANG_W[h % HANG_W.length] * 100).toFixed(1)}%`);
+    b.style.setProperty("--hang-side", HANG_SIDE[(h >>> 8) % HANG_SIDE.length]);
+  }
+
+  // Wide enough that the seams still read at the narrowest a column gets.
+  const COL_TARGET = 300;
+  function shelfCols() {
+    const w = shelfEl.clientWidth || window.innerWidth;
+    return Math.max(1, Math.min(6, Math.round(w / COL_TARGET)));
+  }
+
+  let shelfCount = 0;
+
   function renderShelf(list) {
     shelfList = list;
     shelfEl.textContent = "";
     if (!list.length) {
+      shelfCount = 0;
       const p = document.createElement("p");
       p.className = "shelf-empty";
       p.textContent = "nothing finished yet";
       shelfEl.appendChild(p);
       return;
     }
-    for (const e of list) {
+    // Hung oldest-first into columns by turn, then each column stacks upward
+    // (column-reverse). Puzzle number 30 always lands in the same column at
+    // the same height as it did the day it was finished; the newest ones are
+    // simply the ones along the top.
+    const cols = shelfCols();
+    shelfCount = cols;
+    const colEls = [];
+    for (let c = 0; c < cols; c++) {
+      const d = document.createElement("div");
+      d.className = "shelf-col";
+      colEls.push(d);
+      shelfEl.appendChild(d);
+    }
+    const oldestFirst = list.slice().reverse();
+    oldestFirst.forEach((e, i) => {
       const b = document.createElement("button");
       b.className = "box";
       b.title = e.title;
+      hangStyle(b, e);
       b.appendChild(shelfThumb(e));
       b.addEventListener("click", () => openBox(e));
-      shelfEl.appendChild(b);
-    }
+      colEls[i % cols].appendChild(b);
+    });
+  }
+
+  // Only when the number of columns actually changes - a few pixels of width
+  // should not reshuffle the wall. Watching the shelf itself rather than the
+  // window also covers the case where it is measured before the first layout
+  // has settled and comes back as a single column.
+  if (window.ResizeObserver) {
+    new ResizeObserver(() => {
+      if (shelfList.length && shelfCols() !== shelfCount) renderShelf(shelfList);
+    }).observe(shelfEl);
+  } else {
+    window.addEventListener("resize", () => {
+      if (shelfList.length && shelfCols() !== shelfCount) renderShelf(shelfList);
+    });
   }
 
   /* ---------- One puzzle, zoomed, with who solved it and a replay -------- */
@@ -680,7 +730,7 @@
   document.addEventListener("keydown", (e) => {
     if (boxView.hidden) return;
     if (e.key === "Escape") closeBox();
-    // Newest is leftmost on the shelf, so left goes back towards it.
+    // The shelf runs oldest to newest, so left steps back towards the newest.
     else if (e.key === "ArrowLeft") stepBox(-1);
     else if (e.key === "ArrowRight") stepBox(1);
   });
