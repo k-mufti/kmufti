@@ -314,7 +314,9 @@ function restoreTable() {
   const want = fitBoard(def.imageW || 1200, def.imageH || 800);
   // Piece positions are absolute table coordinates, so a resized desk or a
   // bigger board would leave every placed piece sitting off its slot.
-  if (snap.boardW && (snap.boardW !== want.w || snap.boardH !== want.h)) return null;
+  // A snapshot from before the board was recorded can't be checked, and the
+  // desk has changed size since, so it goes too rather than restoring wrong.
+  if (snap.boardW !== want.w || snap.boardH !== want.h) return null;
   if (!Array.isArray(snap.pieces) || snap.pieces.length !== snap.cols * snap.rows) return null;
   const board = fitBoard(def.imageW || 1200, def.imageH || 800);
   return {
