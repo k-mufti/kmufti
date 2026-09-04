@@ -100,20 +100,20 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* Width is driven by the height left over on screen so the whole table fits
-   without scrolling on a normal laptop (1.532 = 1900/1240) — but never shrink
+   without scrolling on a normal laptop (1.774 = 2200/1240) — but never shrink
    below 560px just because the window is short; on a squat window it is far
    better to scroll than to squint at thumbnail-sized pieces. */
 .table-wrap {
   /* 240px is the rest of the first screen: header, title, and the shelf
      button underneath. Keeping that budget means the button is on-screen
      without scrolling. */
-  width: min(calc(100% - 8px), max(calc((100vh - 240px) * 1.532), 560px));
-  max-width: 1560px;
+  width: min(calc(100% - 8px), max(calc((100vh - 240px) * 1.774), 560px));
+  max-width: 1760px;
 }
 
 .table {
   position: relative;
-  aspect-ratio: 1900 / 1240;
+  aspect-ratio: 2200 / 1240;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 34px 80px rgba(0, 0, 0, 0.75);
@@ -383,7 +383,7 @@ a { color: inherit; text-decoration: none; }
    the shelf below - you go there on purpose, via the button, or not at all. */
 .shelf-area {
   flex: 1 0 auto;
-  max-width: 1560px;
+  max-width: 1760px;
   width: 100%;
   margin: 0 auto;
   padding: 46vh 22px 80px;

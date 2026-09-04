@@ -37,13 +37,13 @@ const crypto = require("crypto");
 const PORT = process.env.PORT || 8023;
 
 /* ---------- Table geometry - MUST match app.js ---------- */
-const STAGE_W = 1900;
+const STAGE_W = 2200;
 const STAGE_H = 1240;
 // The biggest the assembled picture is allowed to get. Each puzzle's board is
 // its own image's aspect fitted inside this box and centred, so a square or a
 // panorama both sit correctly. The margin left over is the scatter zone - a
 // tipped-out box needs somewhere to land.
-const MAX_BOARD = { w: 980, h: 660 };
+const MAX_BOARD = { w: 1180, h: 800 };
 
 // Fit w:h inside MAX_BOARD, centred on the table.
 function fitBoard(w, h) {
@@ -296,6 +296,7 @@ function saveTable() {
   const snap = {
     id: table.def.id, queueIndex: table.queueIndex,
     cols: table.cols, rows: table.rows, edges: table.edges,
+    boardW: table.board.w, boardH: table.board.h,
     pieces: table.pieces, placedCount: table.placedCount,
     startedAt: table.startedAt, contributors: table.contributors, order: table.order,
   };
@@ -310,6 +311,10 @@ function restoreTable() {
   if (idx < 0) return null; // that puzzle left the queue - start fresh
   const def = QUEUE[idx];
   if (def.cols !== snap.cols || def.rows !== snap.rows) return null; // re-cut since
+  const want = fitBoard(def.imageW || 1200, def.imageH || 800);
+  // Piece positions are absolute table coordinates, so a resized desk or a
+  // bigger board would leave every placed piece sitting off its slot.
+  if (snap.boardW && (snap.boardW !== want.w || snap.boardH !== want.h)) return null;
   if (!Array.isArray(snap.pieces) || snap.pieces.length !== snap.cols * snap.rows) return null;
   const board = fitBoard(def.imageW || 1200, def.imageH || 800);
   return {

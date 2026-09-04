@@ -14,12 +14,12 @@
        - A placed piece is permanent. Nobody can pull it back out, which is
          what makes the table safe to leave unattended overnight.
 
-     Everything is drawn in fixed stage units (1900x1240) and scaled as one
+     Everything is drawn in fixed stage units (2200x1240) and scaled as one
      unit, so a piece is in the same spot for everyone. The stage size and
      board rect below MUST match the constants in server.js.
      ========================================================================= */
 
-  const STAGE_W = 1900;
+  const STAGE_W = 2200;
   const STAGE_H = 1240;
 
   const isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
