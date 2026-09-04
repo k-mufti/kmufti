@@ -203,17 +203,38 @@ a { color: inherit; text-decoration: none; }
 /* The title is the chameleon: every letter a different colour, named one by
    one in the markup rather than cycled, so each stays the colour it was
    picked to be. */
-.mc-title .lime    { color: #a8e10c; }
-.mc-title .pink    { color: #ff4fa3; }
-.mc-title .red     { color: #e8342a; }
-.mc-title .sky     { color: #58c4f0; }
-.mc-title .magenta { color: #e5189c; }
-.mc-title .navy    { color: #2f57d8; }
-.mc-title .orange  { color: #ff8a1f; }
-.mc-title .yellow  { color: #ffd21f; }
-.mc-title .purple  { color: #8b45d6; }
-.mc-title .ink     { color: #1b2a8f; }
-.mc-title .green   { color: #22b24c; }
+.mc-title .lime    { --c: #a8e10c; }
+.mc-title .pink    { --c: #ff4fa3; }
+.mc-title .red     { --c: #e8342a; }
+.mc-title .sky     { --c: #58c4f0; }
+.mc-title .magenta { --c: #e5189c; }
+.mc-title .navy    { --c: #2f57d8; }
+.mc-title .orange  { --c: #ff8a1f; }
+.mc-title .yellow  { --c: #ffd21f; }
+.mc-title .purple  { --c: #8b45d6; }
+.mc-title .ink     { --c: #1b2a8f; }
+.mc-title .green   { --c: #22b24c; }
+.mc-title span { color: var(--c); }
+
+/* Flat colour on a face this big reads as vinyl. The letters are painted
+   instead: fractal noise blended into the colour and clipped to the glyphs,
+   so the paint looks laid on rather than filled in.
+
+   Guarded, because the whole trick rests on background-clip:text - where
+   that is missing the letters keep their plain colour instead of going
+   transparent and disappearing. */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .mc-title span {
+    color: transparent;
+    background-color: var(--c);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    background-blend-mode: overlay;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+
 .mc-sub { margin: 0; color: var(--ink-dim); font-size: 14px; line-height: 1.5; }
 .mc-fineprint { margin: 4px 0 0; font-size: 12px; color: var(--ink-dim); }
 .mc-fineprint b { color: var(--ink); font-weight: 600; }
