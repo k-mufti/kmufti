@@ -61,6 +61,7 @@
   // End state + actions
   const resultBar = $('resultBar');
   const shareBtn = $('shareBtn'), practiceBtn = $('practiceBtn'), practiceRow = $('practiceRow');
+  const photoCredit = $('photoCredit');
 
   // Start screen
   const startOverlay = $('startOverlay'), startBtn = $('startBtn');
@@ -114,12 +115,41 @@
     if (params.has('debug')) window.__mc = { round, isHit };
   }
 
+  // ---- practice photos ----------------------------------------------------
+  // Practice would run through the photos in the repo in a handful of rounds,
+  // so it asks the backend for one instead: Pexels, fetched and cached there,
+  // served same-origin so the pixel sampling below still works. Anything at
+  // all going wrong - no key, no network, no pool yet - falls back to the
+  // photos we ship, which is why none of this throws.
+  async function practicePhoto() {
+    try {
+      const r = await fetch('/puzzle/api/photo', { cache: 'no-cache' });
+      if (!r.ok) return null;
+      const j = await r.json();
+      return j.src ? j : null;
+    } catch (_) { return null; }
+  }
+
+  function showCredit(photo) {
+    if (!photoCredit) return;
+    if (!photo) { photoCredit.hidden = true; return; }
+    photoCredit.innerHTML = '';
+    photoCredit.append('photo by ');
+    const a = document.createElement('a');
+    a.href = photo.link || 'https://www.pexels.com';
+    a.target = '_blank'; a.rel = 'noopener';
+    a.textContent = photo.by || 'unknown';
+    photoCredit.append(a, ' on Pexels');
+    photoCredit.hidden = false;
+  }
+
   // Auto (deterministic) placement for practice + un-curated days.
   // Uses 3D rendered figure (FIGURE3D) when available, falls back to SVG.
-  async function buildAuto(seedStr) {
+  async function buildAuto(seedStr, photo) {
     stopReveal();
     const rng = rngFrom(seedStr);
-    const img = await MECHA.loadImage(IMAGES[Math.floor(rng() * IMAGES.length) % IMAGES.length]);
+    const src = photo ? photo.src : IMAGES[Math.floor(rng() * IMAGES.length) % IMAGES.length];
+    const img = await MECHA.loadImage(src);
     const { CW, CH } = MECHA.sizeFor(img, MECHA.DEFAULTS);
     const figH = Math.round(CH * lerp(0.085, 0.115, rng()));
     const figW = Math.round(figH * MECHA.FIG_ASPECT);
@@ -469,7 +499,9 @@
 
   practiceBtn.addEventListener('click', async () => {
     mode = 'practice'; resultBar.hidden = true; hudEnd.hidden = true; practiceRow.hidden = true;
-    await buildAuto('practice-' + Math.random().toString(36).slice(2));
+    const photo = await practicePhoto();
+    showCredit(photo);
+    await buildAuto('practice-' + Math.random().toString(36).slice(2), photo);
     startGame();
   });
 
@@ -500,7 +532,7 @@
     } else {
       const entry = DAILY[todayUTCKey()];
       if (entry) await buildFromEntry(entry);
-      else await buildAuto('daily-' + todayUTCKey());
+      else { showCredit(null); await buildAuto('daily-' + todayUTCKey()); }
     }
 
     if (mode === 'daily' && !NO_LOCK && !FORCE_SEED) {

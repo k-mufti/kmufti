@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=23" />
+  <link rel="stylesheet" href="styles.css?v=24" />
 </head>
 <body>
   <div class="mc-app">
@@ -51,6 +51,10 @@
         </div>
       </div>
 
+      <!-- Whose photo this is. Practice photos come from Pexels, which asks
+           for the credit; the daily ones are ours, so it stays hidden. -->
+      <p class="mc-credit" id="photoCredit" hidden></p>
+
       <!-- Practice link — below the photo, not overlapping it -->
       <div class="mc-practice-row" id="practiceRow" hidden>
         <button class="mc-practice-btn" id="practiceBtn">Play again (very buggy, under construction)</button>
@@ -64,6 +68,6 @@
   <script src="GLTFLoader.js"></script>
   <script src="mecha.js?v=3"></script>
   <script src="figure3d.js?v=16"></script>
-  <script src="game.js?v=39"></script>
+  <script src="game.js?v=40"></script>
 </body>
 </html>

@@ -25,6 +25,24 @@ is `/var/lib/kmufti-puzzle/visits.json`, outside the repo. It counts opens,
 not people, and records nothing about a visitor. If that backend is down the
 hub simply doesn't show the line.
 
+**Meccha Chameleon's practice photos** also come from that backend
+(`/puzzle/api/photo`). The daily photo stays in the repo, hand-picked; practice
+is what burns through a pool, so it pulls from Pexels. Photos are downloaded
+once and cached in `/var/lib/kmufti-puzzle/photos` (capped, oldest evicted),
+and served from our own origin rather than hotlinked - the game reads pixels
+off the photo to blend the figure, and a cross-origin image would taint the
+canvas and break it.
+
+To turn it on, put a Pexels API key in the service file and restart:
+
+```bash
+sudo systemctl edit --full kmufti-puzzle   # uncomment PEXELS_KEY, paste the key
+sudo systemctl restart kmufti-puzzle
+```
+
+Without a key nothing breaks: the endpoint returns 503 and the game falls back
+to the photos in `chameleon/images/`.
+
 The White Canvas backend lives in `draw/` — the canvas used to sit behind the
 launcher tiles before it became its own project, and the folder name stuck.
 

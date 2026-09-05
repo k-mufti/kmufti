@@ -21,6 +21,14 @@ Environment=PORT=8023
 # repo so a git pull can never clobber them.
 Environment=PUZZLE_DATA=/var/lib/kmufti-puzzle/table.json
 Environment=PUZZLE_ARCHIVE=/var/lib/kmufti-puzzle/shelf.json
+# Meccha Chameleon's practice photos come from Pexels. Without a key the
+# endpoint says so and the game falls back to the photos in the repo, so this
+# is optional - drop your key in and restart to turn it on.
+#Environment=PEXELS_KEY=your-pexels-api-key
+# Photos are cached beside the puzzle state; the cap bounds the disk they use
+# (200 x ~200KB is roughly 40MB).
+#Environment=PHOTO_CACHE=/var/lib/kmufti-puzzle/photos
+#Environment=PHOTO_CAP=200
 Restart=always
 RestartSec=3
 User=www-data

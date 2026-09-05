@@ -227,6 +227,84 @@ function saveVisits() {
 setInterval(saveVisits, 5000).unref();
 process.on("SIGTERM", () => { saveVisits(); process.exit(0); });
 process.on("SIGINT", () => { saveVisits(); process.exit(0); });
+
+/* ------------------------------------------------------------------------
+   Meccha Chameleon's practice photos.
+
+   The daily photo stays in the repo, hand-picked and hand-placed. Practice
+   is the mode that burns through a photo pool - a few rounds and you have
+   seen all of them - so it draws from Pexels instead.
+
+   Two things shape this. The game samples pixels off the photo to light and
+   blend the figure, and a cross-origin image taints the canvas and makes
+   getImageData throw, so photos are served from here rather than hotlinked.
+   And an API has rate limits, so every photo fetched is kept: the pool grows
+   toward a cap, evicts the oldest, and most rounds are served from it
+   without touching Pexels at all.
+
+   No key configured means no upstream fetch; the endpoint says so and the
+   game falls back to the photos in the repo.
+   ------------------------------------------------------------------------ */
+const PHOTO_DIR = process.env.PHOTO_CACHE || path.join(path.dirname(ARCHIVE_FILE), "photos");
+const PHOTO_CAP = Number(process.env.PHOTO_CAP || 200);   // ~40MB at Pexels "large"
+const PEXELS_KEY = process.env.PEXELS_KEY || "";
+
+let photos = [];   // [{ id, by, link, at }], oldest first
+try { photos = JSON.parse(fs.readFileSync(path.join(PHOTO_DIR, "index.json"), "utf8")) || []; }
+catch { /* first run */ }
+
+function savePhotoIndex() {
+  try { fs.writeFileSync(path.join(PHOTO_DIR, "index.json"), JSON.stringify(photos)); }
+  catch (e) { console.error("photo index save failed:", e.message); }
+}
+
+// One upstream call at a time, and never two in the same breath - a burst of
+// practice rounds should come off the pool, not out of the rate limit.
+let photoFetching = false;
+let lastPhotoFetch = 0;
+
+async function fetchPhoto() {
+  if (!PEXELS_KEY || photoFetching || Date.now() - lastPhotoFetch < 1500) return null;
+  photoFetching = true;
+  lastPhotoFetch = Date.now();
+  const stop = AbortSignal.timeout(8000);
+  try {
+    // Curated is the editorial feed; a random page of it is a cheap way to
+    // land somewhere different every time.
+    const page = 1 + Math.floor(Math.random() * 400);
+    const r = await fetch(`https://api.pexels.com/v1/curated?per_page=1&page=${page}`,
+                          { headers: { Authorization: PEXELS_KEY }, signal: stop });
+    if (!r.ok) throw new Error("pexels " + r.status);
+    const p = (await r.json()).photos?.[0];
+    if (!p) throw new Error("no photo in reply");
+
+    // Only ever download from Pexels' own CDN, whatever the reply says.
+    const src = p.src?.large;
+    if (!src || new URL(src).hostname !== "images.pexels.com") throw new Error("unexpected image host");
+
+    const img = await fetch(src, { signal: stop });
+    if (!img.ok) throw new Error("image " + img.status);
+    const bytes = Buffer.from(await img.arrayBuffer());
+
+    fs.mkdirSync(PHOTO_DIR, { recursive: true });
+    const id = String(p.id);
+    fs.writeFileSync(path.join(PHOTO_DIR, id + ".jpg"), bytes);
+    photos = photos.filter((q) => q.id !== id);
+    photos.push({ id, by: p.photographer || "unknown", link: p.url || "", at: Date.now() });
+
+    while (photos.length > PHOTO_CAP) {
+      const gone = photos.shift();
+      try { fs.unlinkSync(path.join(PHOTO_DIR, gone.id + ".jpg")); } catch { /* already gone */ }
+    }
+    savePhotoIndex();
+    return photos[photos.length - 1];
+  } catch (e) {
+    console.error("photo fetch failed:", e.message);
+    return null;
+  } finally {
+    photoFetching = false;
+  }
+}
 function saveShelf() {
   const tmp = ARCHIVE_FILE + ".tmp";
   try {
@@ -766,7 +844,7 @@ function stripPrefix(pathname) {
   return pathname.startsWith("/puzzle/") ? pathname.slice(7) : pathname;
 }
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   const pathname = new URL(req.url, "http://x").pathname;
   // API routes are matched with the proxy prefix stripped; static files are
   // served from the real path so /puzzle/ still finds puzzle/index.html.
@@ -781,6 +859,35 @@ const server = http.createServer((req, res) => {
       "Cache-Control": "no-cache",
     });
     return res.end(JSON.stringify(entry ? { order: entry.order } : { error: "no such solve" }));
+  }
+
+  // A photo for a practice round. Fills the pool while it is thin, then
+  // mostly serves what it already has; the reply carries the credit Pexels
+  // asks for. 503 means no photo to give - the game falls back to the
+  // photos in the repo.
+  if (apiPath === "/api/photo" && req.method === "GET") {
+    const hungry = photos.length < 40 || Math.random() < 0.3;
+    const fresh = hungry ? await fetchPhoto() : null;
+    const pick = fresh || (photos.length ? photos[Math.floor(Math.random() * photos.length)] : null);
+    res.writeHead(pick ? 200 : 503, {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Cache-Control": "no-cache",
+    });
+    return res.end(JSON.stringify(pick
+      ? { src: `/puzzle/api/photo/${pick.id}.jpg`, by: pick.by, link: pick.link }
+      : { error: PEXELS_KEY ? "no photos yet" : "no key configured" }));
+  }
+
+  // The bytes themselves, same-origin so the game can read pixels off them.
+  const photoFile = apiPath.match(/^\/api\/photo\/(\d+)\.jpg$/);
+  if (photoFile && req.method === "GET") {
+    fs.readFile(path.join(PHOTO_DIR, photoFile[1] + ".jpg"), (err, data) => {
+      if (err) { res.writeHead(404); return res.end("not found"); }
+      res.writeHead(200, { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=86400" });
+      res.end(data);
+    });
+    return;
   }
 
   // The hub calls this once on load (POST to add this open, GET to just read
