@@ -19,6 +19,7 @@ each tile is a self-contained app living in its own folder.
 | **`/white-canvas/`** | **White Canvas** — a shared r/place-style pixel wall. Everyone draws on the same 180×300 grid, live, and every pixel stays. |
 | **`/translate/`** | **Lost in Translation** — a phrase appears in a mystery language. Guess what it means, and name the language for bonus points. |
 
+
 ## Architecture
 
 Mostly static files. Three small zero-dependency Node backends do the live bits:
