@@ -256,6 +256,8 @@ function confirmTeamSetup() {
   state.activeTeam = 0;
   if (state.pendingMode === "random") {
     startRandomGame();
+  } else if (state.pendingMode === "built") {
+    startBuiltGame();
   } else {
     openCustomPicker();
   }
@@ -323,11 +325,14 @@ async function boot() {
     $("loading-status").textContent = "";
     $("btn-new-game").disabled = false;
     $("btn-custom-game").disabled = false;
+    $("btn-build-game").disabled = false;
   } catch (err) {
     $("loading-status").textContent =
       "Failed to load data. Serve this folder over HTTP (e.g. `python3 -m http.server`).";
     $("btn-new-game").disabled = true;
     $("btn-custom-game").disabled = true;
+    // The builder writes its own clues, so it works without the question bank.
+    $("btn-build-game").disabled = false;
     console.error(err);
   }
 }
@@ -1143,6 +1148,7 @@ function randomizePicker() {
 document.addEventListener("DOMContentLoaded", () => {
   $("btn-new-game").disabled = true;
   $("btn-custom-game").disabled = true;
+  $("btn-build-game").disabled = true;
   showScreen("start-screen");
   boot();
 

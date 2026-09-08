@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Oswald:wght@500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=6" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
@@ -20,7 +20,8 @@
       <p class="tagline" id="start-tagline">Answer in the form of a question.</p>
       <div class="start-buttons" id="start-buttons">
         <button id="btn-new-game" class="primary-btn">Random Episode</button>
-        <button id="btn-custom-game" class="primary-btn secondary">Custom Board</button>
+        <button id="btn-custom-game" class="primary-btn secondary">Pick Categories</button>
+        <button id="btn-build-game" class="primary-btn secondary">Build Your Own</button>
       </div>
       <p id="loading-status" class="loading">Loading question bank&hellip;</p>
     </div>
@@ -102,6 +103,132 @@
       </div>
     </div>
   </section>
+
+  <!-- Builder: saved board library -->
+  <section id="builder-library" class="screen">
+    <canvas id="canvas-lib" class="start-canvas"></canvas>
+    <div class="custom-inner builder-inner">
+      <div class="custom-header">
+        <h2>My Boards</h2>
+        <button id="btn-lib-back" class="text-btn">&larr; Back</button>
+      </div>
+      <p class="custom-help">Boards you have written yourself. Saved in this browser.</p>
+
+      <div class="lib-actions">
+        <button id="btn-lib-new" class="primary-btn">+ New Board</button>
+        <button id="btn-lib-import" class="primary-btn secondary">Import JSON</button>
+        <button id="btn-lib-paste" class="primary-btn secondary">Paste from Sheet</button>
+        <input id="lib-file-input" type="file" accept="application/json,.json" class="hidden" />
+      </div>
+
+      <div class="lib-grid" id="lib-grid"></div>
+      <p class="lib-empty hidden" id="lib-empty">No boards yet. Hit <strong>New Board</strong> and start writing.</p>
+    </div>
+  </section>
+
+  <!-- Builder: grid editor -->
+  <section id="builder-editor" class="screen">
+    <canvas id="canvas-edit" class="start-canvas"></canvas>
+    <div class="custom-inner builder-inner">
+      <div class="custom-header">
+        <input id="editor-name" class="editor-name" type="text" placeholder="Untitled Board" maxlength="60" />
+        <button id="btn-editor-back" class="text-btn">&larr; My Boards</button>
+      </div>
+
+      <div class="editor-toolbar">
+        <span id="editor-progress" class="editor-progress"></span>
+        <div class="editor-toolbar-btns">
+          <button id="btn-editor-preview" class="text-btn small">Preview</button>
+          <button id="btn-editor-scatter" class="text-btn small">Scatter Daily Doubles</button>
+          <button id="btn-editor-final" class="text-btn small">Final Jeopardy</button>
+          <button id="btn-editor-export" class="text-btn small">Export</button>
+          <button id="btn-editor-share" class="text-btn small">Share Link</button>
+        </div>
+      </div>
+
+      <div class="editor-grid-scroll">
+        <div class="editor-grid" id="editor-grid"></div>
+      </div>
+
+      <div id="editor-preview-wrap" class="editor-preview-wrap hidden">
+        <div class="board" id="editor-preview-board"></div>
+      </div>
+
+      <div id="editor-issues" class="editor-issues"></div>
+
+      <div class="custom-actions">
+        <button id="btn-editor-delete" class="text-btn">Delete Board</button>
+        <button id="btn-editor-play" class="primary-btn">Play This Board</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Builder: single cell editor modal -->
+  <div id="cell-modal" class="modal hidden">
+    <div class="clue-card cell-card">
+      <div class="clue-header">
+        <span id="cell-modal-cat"></span>
+        <span id="cell-modal-value"></span>
+      </div>
+      <div class="cell-form">
+        <label for="cell-question">Clue <span class="cell-hint">(what you read out loud)</span></label>
+        <textarea id="cell-question" rows="3" placeholder="This 1975 film made people afraid of the water."></textarea>
+        <label for="cell-answer">Answer <span class="cell-hint">(the response)</span></label>
+        <textarea id="cell-answer" rows="2" placeholder="Jaws"></textarea>
+        <label class="cell-dd-row">
+          <input id="cell-dd" type="checkbox" /> <span>Daily Double</span>
+        </label>
+      </div>
+      <div class="cell-actions">
+        <button id="btn-cell-clear" class="text-btn">Clear</button>
+        <div class="cell-nav">
+          <button id="btn-cell-prev" class="text-btn small">&larr; Prev</button>
+          <button id="btn-cell-next" class="text-btn small">Next &rarr;</button>
+        </div>
+        <button id="btn-cell-save" class="primary-btn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Builder: Final Jeopardy editor modal -->
+  <div id="final-edit-modal" class="modal hidden">
+    <div class="clue-card cell-card">
+      <div class="clue-header"><span>Final Jeopardy</span><span class="cell-hint">Optional</span></div>
+      <div class="cell-form">
+        <label for="fe-category">Category</label>
+        <textarea id="fe-category" rows="1" placeholder="AMERICAN AUTHORS"></textarea>
+        <label for="fe-question">Clue</label>
+        <textarea id="fe-question" rows="3"></textarea>
+        <label for="fe-answer">Answer</label>
+        <textarea id="fe-answer" rows="2"></textarea>
+        <p class="cell-hint">Leave blank and a random real Final Jeopardy clue is used instead.</p>
+      </div>
+      <div class="cell-actions">
+        <button id="btn-fe-clear" class="text-btn">Clear</button>
+        <button id="btn-fe-save" class="primary-btn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Builder: paste importer modal -->
+  <div id="paste-modal" class="modal hidden">
+    <div class="clue-card cell-card">
+      <div class="clue-header"><span>Paste from a Spreadsheet</span></div>
+      <div class="cell-form">
+        <p class="cell-hint">
+          One row per clue, three columns: <strong>Category</strong>, <strong>Clue</strong>, <strong>Answer</strong>.
+          Separate with tabs (paste straight from Sheets/Excel) or commas. Rows are filled top to bottom
+          within each category, in the order the categories first appear.
+        </p>
+        <textarea id="paste-input" rows="10" placeholder="MOVIES&#9;This 1975 film made people afraid of the water&#9;Jaws"></textarea>
+        <p id="paste-error" class="wager-error"></p>
+      </div>
+      <div class="cell-actions">
+        <button id="btn-paste-cancel" class="text-btn">Cancel</button>
+        <button id="btn-paste-go" class="primary-btn">Build Board</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Round intro overlay -->
   <section id="round-intro" class="screen">
@@ -212,12 +339,13 @@
   <!-- Score adjust popup -->
   <div id="score-adjust-popup" class="score-adjust-popup hidden"></div>
 
-  <script src="game.js?v=10"></script>
+  <script src="game.js?v=11"></script>
+  <script src="builder.js?v=1"></script>
   <script>
   // ---------- Hex canvas background for all screens ----------
   (function () {
 
-    const canvasIds = ['canvas-start', 'canvas-team', 'canvas-custom', 'canvas-round', 'canvas-game', 'canvas-final', 'canvas-end'];
+    const canvasIds = ['canvas-start', 'canvas-team', 'canvas-custom', 'canvas-lib', 'canvas-edit', 'canvas-round', 'canvas-game', 'canvas-final', 'canvas-end'];
     const canvases = canvasIds.map(id => document.getElementById(id)).filter(c => c);
     const contexts = canvases.map(c => c.getContext('2d'));
     const hexGrids = canvases.map(() => []);
