@@ -49,7 +49,7 @@ const ARTWORK = {
       </g>
     </svg>`,
 
-  /* Larprady — a Jeopardy-style game board: gold values on deep blue. */
+  /* Jeoprady — a Jeopardy-style game board: gold values on deep blue. */
   jeoprady: `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>

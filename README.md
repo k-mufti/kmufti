@@ -13,7 +13,7 @@ each tile is a self-contained app living in its own folder.
 |------|------------|
 | **`/`** | The launcher: tiles on a mounting board, with a DVD-screensaver bouncing behind them. |
 | **`/puzzle/`** | **Jigsaw** — one shared jigsaw puzzle. Everyone works the same table at once, you watch each other drag pieces, and a finished puzzle is shelved and replaced automatically. |
-| **`/jeoprady/`** | **Larprady!** — a multi-team Jeopardy game with 600 real episodes plus a custom board builder and a library of original modern/nostalgia categories. |
+| **`/jeoprady/`** | **Jeoprady!** — a multi-team Jeopardy game with 600 real episodes plus a custom board builder and a library of original modern/nostalgia categories. |
 | **`/wishlist/`** | **Wishlist** — paste a product link (or use the **+ wish** bookmarklet) and it unfurls into a draggable cutout on a scrapbook board, with a shopping cart and a shareable list. |
 | **`/chameleon/`** | **Meccha Chameleon** — a blank figure is hiding in today's photo, blended into it. Find it fast; your time and click count are the only score. One a day. |
 | **`/white-canvas/`** | **White Canvas** — a shared r/place-style pixel wall. Everyone draws on the same 180×300 grid, live, and every pixel stays. |

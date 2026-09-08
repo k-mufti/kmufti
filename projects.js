@@ -12,7 +12,7 @@ const PROJECTS = [
   },
   {
     slug: "jeoprady",
-    title: "Larprady!",
+    title: "Jeoprady!",
     description: "A multi-team Jeopardy game with 600 real episodes, a custom board builder, and a growing library of original modern/nostalgia categories.",
     tags: ["game", "trivia", "js"],
     accent: "#ffcc00",

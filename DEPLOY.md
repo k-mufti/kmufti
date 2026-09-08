@@ -10,7 +10,7 @@ persists in the visitor's browser (`localStorage`).
 | Part | Type | Notes |
 |------|------|-------|
 | Hub (`/`) | static | the launcher board |
-| Larprady (`/jeoprady/`) | static | loads `boards.json`, `categories.json`, `modern_categories.json` |
+| Jeoprady (`/jeoprady/`) | static | loads `boards.json`, `categories.json`, `modern_categories.json` |
 | Meccha Chameleon (`/chameleon/`) | static | daily puzzle from `daily.json` |
 | Lost in Translation (`/translate/`) | static | pre-built `puzzles.json` |
 | Wishlist (`/wishlist/`) | static + **Node** (`wishlist/server.js`) | `/wishlist/api/unfurl` + `/wishlist/api/img` on port 8021 |
