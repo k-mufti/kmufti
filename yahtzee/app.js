@@ -162,6 +162,24 @@ function render() {
 
 const say = (msg) => { $("note").textContent = msg; };
 
+// A pick is worth calling out, but only for a moment -- the line underneath
+// goes straight back to saying whose turn it is, and used to overwrite this
+// before anyone could read it.
+let toastTimer = null;
+function toast(text, kind = "") {
+  const el = $("toast");
+  el.textContent = text;
+  el.className = `toast show ${kind}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = `toast ${kind}`; }, 2600);
+}
+
+// "Kareem took Full house - 25", or "Kareem scratched Yahtzee".
+function pickLine(who, cat, pts, bonus) {
+  if (bonus) return `${who} rolled another YAHTZEE — +100`;
+  return pts > 0 ? `${who} took ${R.LABELS[cat]} — ${pts}` : `${who} scratched ${R.LABELS[cat]}`;
+}
+
 function onPick(e) {
   const td = e.target.closest("td.pick");
   if (!td || state.busy || !myTurn()) return;
@@ -214,8 +232,9 @@ async function commitSolo(cat) {
   const gotBonus = R.earnsYahtzeeBonus(state.dice, state.cards[seat]);
   state.cards[seat] = R.applyScore(state.cards[seat], cat, state.dice);
   flash(cat);
-  say(`${state.names[seat]} scored ${state.cards[seat][cat]} in ${R.LABELS[cat]}` +
-      (gotBonus ? " — and another YAHTZEE, +100!" : ""));
+  const pts = state.cards[seat][cat];
+  toast(pickLine(state.names[seat], cat, pts, gotBonus),
+        gotBonus ? "big" : pts === 0 ? "zero" : "");
   state.busy = true;
   render();
   await sleep(gotBonus ? 1400 : 700);
@@ -339,9 +358,8 @@ function onNet(m) {
     case "scored": {
       flash(m.cat);
       const who = m.seat === state.mySeat ? "You" : state.names[m.seat];
-      say(`${who} scored ${m.pts} in ${R.LABELS[m.cat]}` +
-          (m.yahtzeeBonus ? " — another YAHTZEE, +100!" : "") +
-          (m.auto ? " (ran out of time)" : ""));
+      toast(pickLine(who, m.cat, m.pts, m.yahtzeeBonus) + (m.auto ? " (out of time)" : ""),
+            m.yahtzeeBonus ? "big" : m.pts === 0 ? "zero" : "");
       return;
     }
     case "over": {

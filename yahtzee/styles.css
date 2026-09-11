@@ -241,3 +241,17 @@ tr.just-scored td { animation: flash .9s ease-out; }
 @media (max-width: 460px) {
   .modes { grid-template-columns: 1fr; }
 }
+
+/* ---------- the pick, called out for a moment ---------- */
+.toast {
+  position: absolute; left: 0; right: 0; bottom: 34px;
+  text-align: center; pointer-events: none;
+  font-size: 15px; font-weight: 600; letter-spacing: .01em;
+  color: var(--live);
+  text-shadow: 0 1px 4px rgba(0,0,0,.85), 0 0 18px rgba(0,0,0,.5);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .22s ease, transform .22s ease;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.zero { color: #f0be14; }                  /* a box given up costs something */
+.toast.big  { color: var(--gold); font-size: 18px; letter-spacing: .03em; }
