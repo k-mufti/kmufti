@@ -1,6 +1,16 @@
 // Add a new project by adding one object here — the card renders automatically.
 const PROJECTS = [
   {
+    slug: "yahtzee",
+    title: "Yahtzee",
+    description: "Five dice on green felt, thrown with real physics \u2014 they bounce for themselves. Play a full scorecard against the bot.",
+    tags: ["game", "3d", "js"],
+    accent: "#7dffb4",
+    accentBg: "linear-gradient(135deg, #177a4c 0%, #083b25 100%)",
+    href: "yahtzee/",
+    status: "live",
+  },
+  {
     slug: "puzzle",
     title: "Jigsaw",
     description: "One jigsaw puzzle that everybody shares. Watch other people move the pieces in real time, and when it's finished a new one drops on the table.",

@@ -228,4 +228,61 @@ const ARTWORK = {
       <text x="212" y="122" font-family="Inter, sans-serif" font-size="64"
             font-weight="300" fill="#1a73e8" text-anchor="middle">?</text>
     </svg>`,
+
+  /* Yahtzee — the table it's played on: green felt lit from above, one die
+     resting beside the word. Anton is already loaded for the hub, and its
+     heavy condensed caps read like table signage. */
+  yahtzee: `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="yz-felt" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#177a4c"/>
+          <stop offset="0.55" stop-color="#0f5c39"/>
+          <stop offset="1" stop-color="#083b25"/>
+        </linearGradient>
+        <radialGradient id="yz-lamp" cx="0.42" cy="0.4" r="0.72">
+          <stop offset="0" stop-color="#d7ffe8" stop-opacity="0.2"/>
+          <stop offset="1" stop-color="#d7ffe8" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="yz-ivory" x1="0.2" y1="0" x2="0.8" y2="1">
+          <stop offset="0" stop-color="#fdfbf5"/>
+          <stop offset="1" stop-color="#ddd7c8"/>
+        </linearGradient>
+        <!-- felt nap: fine noise, knocked back to a whisper -->
+        <filter id="yz-nap" x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="7"/>
+          <feColorMatrix type="saturate" values="0"/>
+        </filter>
+        <filter id="yz-drop" x="-45%" y="-45%" width="190%" height="190%">
+          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#04180e" flood-opacity="0.6"/>
+        </filter>
+      </defs>
+
+      <rect width="320" height="200" fill="url(#yz-felt)"/>
+      <rect width="320" height="200" filter="url(#yz-nap)" opacity="0.11"/>
+      <rect width="320" height="200" fill="url(#yz-lamp)"/>
+      <!-- stitched table edge -->
+      <rect x="9" y="9" width="302" height="182" rx="9" fill="none"
+            stroke="#eafff2" stroke-opacity="0.16" stroke-width="1.4"
+            stroke-dasharray="7 6"/>
+
+      <!-- one die, showing five -->
+      <g filter="url(#yz-drop)" transform="translate(44,70) rotate(-9 29 29)">
+        <rect width="58" height="58" rx="13" fill="url(#yz-ivory)"/>
+        <rect x="0.7" y="0.7" width="56.6" height="56.6" rx="12.4" fill="none"
+              stroke="#ffffff" stroke-opacity="0.55" stroke-width="1.4"/>
+        <g fill="#15191b">
+          <circle cx="16" cy="16" r="5.2"/><circle cx="42" cy="16" r="5.2"/>
+          <circle cx="29" cy="29" r="5.2"/>
+          <circle cx="16" cy="42" r="5.2"/><circle cx="42" cy="42" r="5.2"/>
+        </g>
+      </g>
+
+      <!-- the word, with its own shadow on the cloth -->
+      <text x="130" y="122" font-family="Anton, Impact, sans-serif" font-size="66"
+            letter-spacing="2.5" fill="#04180e" fill-opacity="0.42"
+            transform="translate(2.5,3.5)">DICE</text>
+      <text x="130" y="122" font-family="Anton, Impact, sans-serif" font-size="66"
+            letter-spacing="2.5" fill="#f6f4ec">DICE</text>
+    </svg>`,
 };
