@@ -392,19 +392,25 @@ export class DiceTable {
         d.body.mass = 1;
         d.body.updateMassProperties();
         const n = loose.indexOf(i);
-        // Seat 0 throws from the +z edge, seat 1 from -z: a 180 degree turn of
-        // the same throw, so it always leaves from in front of whoever rolled.
-        const f = fromSeat === 1 ? 1 : -1;
+        // Seat 0 sits at the +z edge, seat 1 at -z. The throw runs down the
+        // LENGTH of the table, away from whoever rolled: the sideways part is
+        // small and random scatter, not the main motion. Get that balance
+        // wrong and it reads as a throw in from the wings rather than from a
+        // player's own side.
+        const dir = fromSeat === 1 ? -1 : 1;
+        // Spaced wider than a die (1.0) so they do not spawn inside one
+        // another. Overlapping bodies get shoved apart on the first step,
+        // which reads as a little explosion before the throw even starts.
         d.body.position.set(
-          f * (-TRAY.w / 2 + 0.9 + n * 0.42),
-          1.7 + rnd() * 1.1,
-          f * (-TRAY.d / 2 + 0.8 + rnd() * 0.5)
+          (n - (loose.length - 1) / 2) * 1.25 + (rnd() - 0.5) * 0.2,
+          1.6 + rnd() * 1.4,
+          dir * (TRAY.d / 2 - 0.7 + rnd() * 0.3)
         );
         d.body.quaternion.setFromEuler(rnd() * 6.28, rnd() * 6.28, rnd() * 6.28);
         d.body.velocity.set(
-          f * (6.2 + rnd() * 3.2),
+          (rnd() - 0.5) * 3.6,
           -0.5 + rnd() * 1.2,
-          f * (3.0 + rnd() * 4.4)
+          -dir * (5.6 + rnd() * 3.4)
         );
         d.body.angularVelocity.set((rnd() - 0.5) * 26, (rnd() - 0.5) * 26, (rnd() - 0.5) * 26);
         d.body.wakeUp();
