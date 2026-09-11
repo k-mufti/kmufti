@@ -1,0 +1,134 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>dice3d test bench</title>
+<style>
+  body{margin:0;background:#15171a;color:#e8e6e1;font:14px/1.5 ui-sans-serif,system-ui,sans-serif}
+  main{max-width:900px;margin:0 auto;padding:18px}
+  h1{font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:#8a8f98;margin:0 0 12px}
+  #stage{width:100%;aspect-ratio:13/9;border-radius:12px;overflow:hidden;background:#0c0e10}
+  canvas{width:100%;height:100%;display:block}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+  button{background:#22262b;color:#e8e6e1;border:1px solid #343a41;border-radius:8px;
+         padding:7px 13px;font:inherit;cursor:pointer}
+  button:hover{background:#2b3037}
+  button:disabled{opacity:.45;cursor:default}
+  input[type=text]{background:#0e1013;color:#e8e6e1;border:1px solid #343a41;border-radius:8px;
+         padding:7px 10px;font:inherit;width:120px}
+  .holds{display:flex;gap:6px}
+  .holds label{display:flex;flex-direction:column;align-items:center;gap:3px;
+         background:#1b1f24;border:1px solid #343a41;border-radius:8px;padding:5px 11px;cursor:pointer}
+  .holds b{font-size:18px;font-variant-numeric:tabular-nums}
+  .holds input{margin:0}
+  #log{margin-top:12px;background:#0e1013;border:1px solid #23272d;border-radius:8px;
+       padding:10px 12px;font:12px/1.6 ui-monospace,monospace;white-space:pre-wrap;
+       max-height:220px;overflow:auto;color:#9fb3a5}
+  .bad{color:#ff8a7a}
+</style>
+<main>
+  <h1>dice3d test bench</h1>
+  <div id="stage"><canvas id="cv"></canvas></div>
+  <div class="row">
+    <button id="roll">Roll</button>
+    <input type="text" id="want" placeholder="e.g. 5,5,5,5,5">
+    <button id="rollWant">Roll those</button>
+    <button id="verify">Verify 300 rolls</button>
+    <button id="clear">Clear holds</button>
+  </div>
+  <div class="row holds" id="holds"></div>
+  <div id="log">loading…</div>
+</main>
+
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
+  "cannon-es":"https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"
+}}
+</script>
+<script type="module">
+import { DiceTable } from "./dice3d.js";
+
+const logEl = document.getElementById("log");
+const log = (s, bad) => {
+  logEl.insertAdjacentHTML("afterbegin", `<div${bad ? ' class="bad"' : ""}>${s}</div>`);
+};
+const COUNT = 5;
+const rnd5 = () => Array.from({ length: COUNT }, () => 1 + Math.floor(Math.random() * 6));
+
+let table;
+try {
+  const t0 = performance.now();
+  table = await DiceTable.create({ canvas: document.getElementById("cv"), count: COUNT });
+  logEl.textContent = "";
+  log(`table ready in ${(performance.now() - t0).toFixed(0)}ms`);
+} catch (e) {
+  logEl.textContent = "FAILED: " + e.message;
+  throw e;
+}
+
+/* hold checkboxes */
+const holds = document.getElementById("holds");
+for (let i = 0; i < COUNT; i++) {
+  const l = document.createElement("label");
+  l.innerHTML = `<b data-v="${i}">1</b><input type="checkbox" data-i="${i}"> hold`;
+  holds.append(l);
+}
+holds.addEventListener("change", (e) => {
+  table.setHeld(+e.target.dataset.i, e.target.checked);
+});
+const paint = (v) => v.forEach((n, i) => (holds.querySelector(`b[data-v="${i}"]`).textContent = n));
+paint(table.values);
+window.table = table;   // test bench only -- lets the browser console poke at it
+
+/* rolling */
+const buttons = [...document.querySelectorAll("button")];
+async function go(values) {
+  buttons.forEach((b) => (b.disabled = true));
+  const t0 = performance.now();
+  const seed = (Math.random() * 1e9) | 0;
+  const got = await table.roll({ values, seed });
+  paint(got);
+  log(`asked ${values.join(" ")}   got ${got.join(" ")}   seed ${seed}   ${(performance.now() - t0).toFixed(0)}ms`);
+  buttons.forEach((b) => (b.disabled = false));
+}
+
+document.getElementById("roll").onclick = () => go(rnd5());
+document.getElementById("rollWant").onclick = () => {
+  const v = document.getElementById("want").value.split(/[\s,]+/).filter(Boolean).map(Number);
+  if (v.length !== COUNT || v.some((n) => !(n >= 1 && n <= 6)))
+    return log(`need ${COUNT} numbers 1-6`, true);
+  go(v);
+};
+document.getElementById("clear").onclick = () => {
+  holds.querySelectorAll("input").forEach((c) => { c.checked = false; });
+  for (let i = 0; i < COUNT; i++) table.setHeld(i, false);
+};
+
+/* the real test: does the die ever show something other than what was asked? */
+document.getElementById("verify").onclick = async () => {
+  buttons.forEach((b) => (b.disabled = true));
+  const N = 300;
+  let bad = 0, worst = 1;
+  const t0 = performance.now();
+  for (let n = 0; n < N; n++) {
+    // random holds too, so the held-dice-as-obstacles path gets exercised
+    for (let i = 0; i < COUNT; i++) table.setHeld(i, Math.random() < 0.25);
+    const want = rnd5();
+    await table.roll({ values: want, instant: true });
+    // Read what the dice actually show. Comparing roll()'s return value to the
+    // values we passed in would just be comparing an array to itself.
+    const shown = table.readFaces();
+    for (let i = 0; i < COUNT; i++) {
+      if (table.held[i]) continue;
+      if (shown[i].value !== want[i]) bad++;
+      worst = Math.min(worst, shown[i].flatness);
+    }
+  }
+  const ms = performance.now() - t0;
+  paint(table.values);
+  log(`${N} rolls in ${ms.toFixed(0)}ms (${(ms / N).toFixed(2)}ms each) — ${bad} wrong face${bad === 1 ? "" : "s"}, worst flatness ${worst.toFixed(3)}`, bad > 0 || worst < 0.98);
+  for (let i = 0; i < COUNT; i++) table.setHeld(i, false);
+  holds.querySelectorAll("input").forEach((c) => { c.checked = false; });
+  buttons.forEach((b) => (b.disabled = false));
+};
+</script>

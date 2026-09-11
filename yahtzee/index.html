@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Yahtzee — kmufti.com</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <meta name="description" content="Yahtzee on a green felt tray, with real dice physics." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=1" />
+  <script type="importmap">
+  {"imports":{
+    "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+    "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
+    "cannon-es":"https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"
+  }}
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <span class="header-left">
+      <a class="brand" href="../">kmufti.com</a>
+      <span class="crumb">/ yahtzee</span>
+    </span>
+    <span class="header-right">
+      <button class="ghost" id="new-game">New game</button>
+    </span>
+  </header>
+
+  <main id="game">
+    <section class="table-side">
+      <div class="tray">
+        <canvas id="tray"></canvas>
+        <!-- status lives in the tray so it can never shove the Roll button around -->
+        <div class="tray-note" id="note">Roll to start.</div>
+      </div>
+
+      <!-- the same five dice, flat and readable, and clickable like the 3D ones -->
+      <div class="dice-strip" id="strip"></div>
+
+      <div class="controls">
+        <span></span>
+        <button id="roll" class="roll">Roll</button>
+        <span class="rolls" id="rolls-left">3 rolls left</span>
+      </div>
+    </section>
+
+    <section class="card-side">
+      <table class="scorecard">
+        <thead>
+          <tr>
+            <th class="cat"></th>
+            <th class="who" id="th-you">You</th>
+            <th class="who" id="th-bot">Bot</th>
+          </tr>
+        </thead>
+        <tbody id="upper"></tbody>
+        <tbody class="subtotal">
+          <tr>
+            <td class="cat">Bonus <em id="bonus-note">63 to go</em></td>
+            <td class="val" id="bonus-you">—</td>
+            <td class="val" id="bonus-bot">—</td>
+          </tr>
+        </tbody>
+        <tbody id="lower"></tbody>
+        <tbody class="subtotal">
+          <tr>
+            <td class="cat">Yahtzee bonus</td>
+            <td class="val" id="yb-you">—</td>
+            <td class="val" id="yb-bot">—</td>
+          </tr>
+          <tr class="grand">
+            <td class="cat">Total</td>
+            <td class="val" id="total-you">0</td>
+            <td class="val" id="total-bot">0</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <div class="overlay" id="overlay" hidden>
+    <div class="dialog">
+      <h2 id="ov-title">Game over</h2>
+      <p id="ov-body"></p>
+      <button class="roll" id="ov-again">Play again</button>
+    </div>
+  </div>
+
+  <script type="module" src="app.js?v=1"></script>
+</body>
+</html>
