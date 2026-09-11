@@ -15,10 +15,10 @@
 // with max-age=3600 - so a new app.js would run against up-to-an-hour-old
 // copies of these four. Bump every one of them, and app.js in index.html, in
 // the same commit.
-import { DiceTable } from "./dice3d.js?v=6";
-import * as R from "./rules.js?v=6";
-import * as BOT from "./bot.js?v=6";
-import { Net, loadName, saveName } from "./net.js?v=6";
+import { DiceTable } from "./dice3d.js?v=7";
+import * as R from "./rules.js?v=7";
+import * as BOT from "./bot.js?v=7";
+import { Net, loadName, saveName } from "./net.js?v=7";
 
 const $ = (id) => document.getElementById(id);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

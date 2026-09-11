@@ -408,11 +408,11 @@ export class DiceTable {
         );
         d.body.quaternion.setFromEuler(rnd() * 6.28, rnd() * 6.28, rnd() * 6.28);
         d.body.velocity.set(
-          (rnd() - 0.5) * 3.6,
-          -0.5 + rnd() * 1.2,
-          -dir * (5.6 + rnd() * 3.4)
+          (rnd() - 0.5) * 5.2,
+          -0.2 + rnd() * 1.4,
+          -dir * (9.0 + rnd() * 5.0)
         );
-        d.body.angularVelocity.set((rnd() - 0.5) * 26, (rnd() - 0.5) * 26, (rnd() - 0.5) * 26);
+        d.body.angularVelocity.set((rnd() - 0.5) * 38, (rnd() - 0.5) * 38, (rnd() - 0.5) * 38);
         d.body.wakeUp();
       });
 
