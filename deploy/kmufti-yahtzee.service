@@ -1,0 +1,33 @@
+# systemd unit for Yahtzee, the 1v1 dice table (WebSocket).
+# Install:
+#   sudo cp deploy/kmufti-yahtzee.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now kmufti-yahtzee
+#
+# After changing yahtzee/server.js on the box:  sudo systemctl restart kmufti-yahtzee
+#
+# Nothing here is persisted. A match lives in memory for as long as it is being
+# played; a restart drops games in progress, which is the right trade for a
+# fifteen-minute game and no database. Scorecards are never stored.
+
+[Unit]
+Description=kmufti Yahtzee (1v1 dice table)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/kmufti-hub/yahtzee
+ExecStart=/usr/bin/node server.js
+Environment=PORT=8024
+# How long a player gets before the bot plays the turn for them. Long enough to
+# think, short enough that an abandoned tab doesn't strand the other person.
+#Environment=TURN_MS=45000
+# Pacing for a bot's own turn, so it reads as play rather than a state dump.
+#Environment=BOT_THINK_MS=800
+#Environment=ROLL_WATCH_MS=2200
+Restart=always
+RestartSec=3
+User=www-data
+
+[Install]
+WantedBy=multi-user.target

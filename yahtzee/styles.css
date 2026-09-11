@@ -187,3 +187,57 @@ tr.just-scored td { animation: flash .9s ease-out; }
 }
 .dialog h2 { margin: 0 0 8px; font-size: 24px; letter-spacing: .01em; }
 .dialog p { margin: 0 0 20px; color: var(--ink-dim); line-height: 1.6; }
+
+/* ---------- lobby & online chrome ---------- */
+.header-right { display: flex; align-items: center; gap: 12px; }
+.conn, .clock {
+  font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px;
+  color: var(--live); letter-spacing: .06em;
+}
+.conn.bad { color: #ff8a7a; }
+.clock {
+  color: var(--gold); min-width: 34px; text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.clock.urgent { color: #ff8a7a; }
+
+.dialog.wide { max-width: 440px; }
+.dialog-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+.field { display: block; text-align: left; margin: 0 0 16px; }
+.field span {
+  display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--ink-faint); margin-bottom: 5px;
+}
+.field input, .joinbox input {
+  width: 100%; background: #0d1210; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 9px;
+  padding: 9px 12px; font: inherit;
+}
+.field input:focus, .joinbox input:focus { outline: none; border-color: var(--live); }
+
+.modes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.modes .roll { min-width: 0; padding: 13px 10px; }
+.modes em {
+  display: block; font-style: normal; font-size: 10px; letter-spacing: .12em;
+  opacity: .7; margin-top: 2px;
+}
+
+.friend {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  justify-content: center; padding-top: 14px; border-top: 1px solid var(--line);
+}
+.friend .or { color: var(--ink-faint); font-size: 12px; }
+.joinbox { display: flex; gap: 6px; }
+.joinbox input {
+  width: 96px; text-align: center; letter-spacing: .22em; text-transform: uppercase;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+.lobby-note { margin: 16px 0 0; min-height: 20px; font-size: 13px; }
+.lobby-note b {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  color: var(--gold); letter-spacing: .18em; font-size: 17px;
+}
+@media (max-width: 460px) {
+  .modes { grid-template-columns: 1fr; }
+}

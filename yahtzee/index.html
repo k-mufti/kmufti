@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=1" />
+  <link rel="stylesheet" href="styles.css?v=2" />
   <script type="importmap">
   {"imports":{
     "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
@@ -25,6 +25,8 @@
       <span class="crumb">/ yahtzee</span>
     </span>
     <span class="header-right">
+      <span class="conn" id="conn" hidden></span>
+      <span class="clock" id="clock" hidden></span>
       <button class="ghost" id="new-game">New game</button>
     </span>
   </header>
@@ -85,10 +87,42 @@
     <div class="dialog">
       <h2 id="ov-title">Game over</h2>
       <p id="ov-body"></p>
-      <button class="roll" id="ov-again">Play again</button>
+      <div class="dialog-row">
+        <button class="roll" id="ov-again">Play again</button>
+        <button class="ghost" id="ov-lobby">Back to menu</button>
+      </div>
     </div>
   </div>
 
-  <script type="module" src="app.js?v=1"></script>
+  <div class="overlay" id="lobby">
+    <div class="dialog wide">
+      <h2>Yahtzee</h2>
+      <p>Five dice, thirteen boxes. Play the bot, or take on a stranger.</p>
+
+      <label class="field">
+        <span>Your name</span>
+        <input type="text" id="name" maxlength="18" placeholder="anon" autocomplete="nickname">
+      </label>
+
+      <div class="modes">
+        <button class="roll" id="m-solo">Play the bot</button>
+        <button class="roll" id="m-quick">Quick match <em>1v1</em></button>
+      </div>
+
+      <div class="friend">
+        <button class="ghost" id="m-create">Create a private room</button>
+        <span class="or">or</span>
+        <form class="joinbox" id="joinform">
+          <input type="text" id="code" maxlength="4" placeholder="CODE"
+                 autocapitalize="characters" autocomplete="off" spellcheck="false">
+          <button class="ghost" type="submit">Join</button>
+        </form>
+      </div>
+
+      <p class="lobby-note" id="lobby-note"></p>
+    </div>
+  </div>
+
+  <script type="module" src="app.js?v=2"></script>
 </body>
 </html>
