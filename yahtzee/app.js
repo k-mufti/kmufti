@@ -10,10 +10,15 @@
 // rules.js owns scoring - the server imports that very same file, so a box is
 // worth the same on both ends of the wire. bot.js is the local opponent.
 
-import { DiceTable } from "./dice3d.js";
-import * as R from "./rules.js";
-import * as BOT from "./bot.js";
-import { Net, loadName, saveName } from "./net.js";
+// The ?v= on these is not decoration. index.html cache-busts app.js, but an
+// ES module's imports carry no version of their own, and nginx hands out .js
+// with max-age=3600 - so a new app.js would run against up-to-an-hour-old
+// copies of these four. Bump every one of them, and app.js in index.html, in
+// the same commit.
+import { DiceTable } from "./dice3d.js?v=5";
+import * as R from "./rules.js?v=5";
+import * as BOT from "./bot.js?v=5";
+import { Net, loadName, saveName } from "./net.js?v=5";
 
 const $ = (id) => document.getElementById(id);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
