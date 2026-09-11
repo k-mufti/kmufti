@@ -16,6 +16,7 @@ persists in the visitor's browser (`localStorage`).
 | Wishlist (`/wishlist/`) | static + **Node** (`wishlist/server.js`) | `/wishlist/api/unfurl` + `/wishlist/api/img` on port 8021 |
 | White Canvas (`/white-canvas/`) | static + **Node** (`draw/server.js`) | SSE stream on port 8022; grid in `/var/lib/kmufti-draw/canvas.bin` |
 | Jigsaw (`/puzzle/`) | static + **Node** (`puzzle/server.js`) | WebSocket table on port 8023; state in `/var/lib/kmufti-puzzle/` |
+| Yahtzee (`/yahtzee/`) | static + **Node** (`yahtzee/server.js`) | 1v1 matches over a WebSocket on port 8024. Nothing persisted — a match lives in memory, and solo-vs-bot works with the backend down |
 
 The hub's visit count is served by the **Jigsaw** backend (`GET`/`POST`
 `/puzzle/api/visits`) rather than a service of its own: nginx already forwards
@@ -83,20 +84,34 @@ launcher tiles before it became its own project, and the folder name stuck.
    sudo systemctl enable --now kmufti-puzzle
    ```
 
-6. **nginx**:
+6. **Yahtzee service** (the 1v1 dice table):
+   ```bash
+   sudo cp /var/www/kmufti-hub/deploy/kmufti-yahtzee.service /etc/systemd/system/
+   sudo systemctl daemon-reload
+   sudo systemctl enable --now kmufti-yahtzee
+   curl -s localhost:8024/api/health     # {"ok":true,...}
+   ```
+   No data directory: matches are in memory and a restart drops games in
+   progress. That is the right trade for a fifteen-minute game and no database.
+
+7. **nginx**:
    ```bash
    sudo cp /var/www/kmufti-hub/deploy/nginx.conf /etc/nginx/sites-available/kmufti
    # edit server_name / root to match yours
+   # CAREFUL on an existing box: certbot rewrites the live file when it installs
+   # HTTPS, so copying this one over the top discards those edits. To add a new
+   # backend to a server that is already running, paste just the new `location`
+   # blocks into the live file instead.
    sudo ln -s /etc/nginx/sites-available/kmufti /etc/nginx/sites-enabled/
    sudo nginx -t && sudo systemctl reload nginx
    ```
 
-7. **HTTPS** (Let's Encrypt):
+8. **HTTPS** (Let's Encrypt):
    ```bash
    sudo certbot --nginx -d kmufti.com -d www.kmufti.com
    ```
 
-8. **DNS**: point `kmufti.com` (and `www`) at your VPS IP (A / AAAA records).
+9. **DNS**: point `kmufti.com` (and `www`) at your VPS IP (A / AAAA records).
 
 ## Updating (your git-pull workflow)
 
