@@ -19,6 +19,7 @@ each tile is a self-contained app living in its own folder.
 | **`/chameleon/`** | **Meccha Chameleon** — a blank figure is hiding in today's photo, blended into it. Find it fast; your time and click count are the only score. One a day. |
 | **`/white-canvas/`** | **White Canvas** — a shared r/place-style pixel wall. Everyone draws on the same 180×300 grid, live, and every pixel stays. |
 | **`/translate/`** | **Lost in Translation** — a phrase appears in a mystery language. Guess what it means, and name the language for bonus points. |
+| **`/yahtzee/`** | **Yahtzee** — five dice on a green felt tray, thrown with real physics. Play the bot, or a stranger 1v1 over a socket. |
 
 
 ## Architecture
@@ -30,12 +31,13 @@ Mostly static files. Three small zero-dependency Node backends do the live bits:
 | `wishlist/server.js` | 8021 | Link unfurling (title/image/price scrape) + an image proxy, with an SSRF guard. |
 | `draw/server.js` | 8022 | The White Canvas pixel wall — authoritative grid, snapshot + deltas over Server-Sent Events. Read/paint only; there is no wipe route, so the wall is permanent. |
 | `puzzle/server.js` | 8023 | The Jigsaw table — piece positions and presence over a hand-rolled WebSocket. |
+| `yahtzee/server.js` | 8024 | The Yahtzee table — 1v1 matchmaking and every dice roll, so no client can invent a number. Nothing persisted; a match lives in memory. |
 
 `draw/server.js` is the backend for `/white-canvas/` — the canvas used to live
 behind the launcher tiles, and the folder name stuck.
 
 In production nginx serves the static files and proxies `/wishlist/api/`,
-`/draw/api/` and `/puzzle/api/` to those three. Runtime state lives outside the
+`/draw/api/`, `/puzzle/api/` and `/yahtzee/api/` to those four. Runtime state lives outside the
 repo (`/var/lib/kmufti-puzzle/`) so a `git pull` can't wipe a puzzle in
 progress. Everything else that persists — wishlist boards, game stats — is in
 the visitor's `localStorage`.

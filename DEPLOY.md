@@ -98,13 +98,21 @@ launcher tiles before it became its own project, and the folder name stuck.
    ```bash
    sudo cp /var/www/kmufti-hub/deploy/nginx.conf /etc/nginx/sites-available/kmufti
    # edit server_name / root to match yours
-   # CAREFUL on an existing box: certbot rewrites the live file when it installs
-   # HTTPS, so copying this one over the top discards those edits. To add a new
-   # backend to a server that is already running, paste just the new `location`
-   # blocks into the live file instead.
    sudo ln -s /etc/nginx/sites-available/kmufti /etc/nginx/sites-enabled/
    sudo nginx -t && sudo systemctl reload nginx
    ```
+
+   **On the box as it actually stands**, this file is *not* what nginx is
+   serving. The live config is `/etc/nginx/sites-available/default` (the only
+   thing in `sites-enabled/`), and certbot has rewritten it to add the TLS
+   listeners and the kareemmuftee.com blocks. `deploy/nginx.conf` is the
+   reference copy, kept in step by hand.
+
+   So to add a backend to the running server, do **not** copy this file over
+   the top - that would throw away certbot's work. Paste the new `location`
+   blocks into the kmufti.com server block in `default`, next to the other
+   backends, then `sudo nginx -t && sudo systemctl reload nginx`. Take a dated
+   backup of `default` first; `nginx -t` tells you before a reload can hurt.
 
 8. **HTTPS** (Let's Encrypt):
    ```bash
