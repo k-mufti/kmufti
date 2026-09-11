@@ -202,12 +202,12 @@ $("tray").addEventListener("click", (e) => {
 
 // Play a throw the tray was handed. Any server state that lands mid-throw is
 // held back until the dice stop, or the board would jump ahead of the picture.
-async function playRoll(values, seed) {
+async function playRoll(values, seed, fromSeat) {
   animating = true;
   state.busy = true;
   render();
   state.dice = values.slice();
-  await table.roll({ values, seed });
+  await table.roll({ values, seed, fromSeat });
   animating = false;
   if (pendingState) { const s = pendingState; pendingState = null; applyState(s); }
   else { state.busy = false; render(); }
@@ -222,7 +222,7 @@ async function soloRoll() {
   const values = rollValues(state.held);
   state.rollsLeft--;
   state.rolledThisTurn = true;
-  await playRoll(values, (Math.random() * 1e9) | 0);
+  await playRoll(values, (Math.random() * 1e9) | 0, 0);
   say(state.rollsLeft ? "Click dice to keep them, or pick a box." : "Pick a box.");
   render();
 }
@@ -263,7 +263,7 @@ async function soloBotTurn() {
     const values = rollValues(state.held);
     state.rollsLeft = roll - 1;
     state.rolledThisTurn = true;
-    await playRoll(values, (Math.random() * 1e9) | 0);
+    await playRoll(values, (Math.random() * 1e9) | 0, 1);
     state.busy = true;
     if (state.rollsLeft === 0) break;
     await sleep(420);
@@ -341,6 +341,7 @@ function onNet(m) {
       state.mode = "online";
       state.mySeat = m.seat;
       state.names = m.names;
+      table.setViewSeat(m.seat);        // watch from your own side of the table
       state.over = false;
       $("lobby").hidden = true;
       $("overlay").hidden = true;
@@ -354,7 +355,7 @@ function onNet(m) {
       state.held = m.held.slice();
       syncHolds();
       if (m.by !== state.mySeat) say(`${state.names[m.by]} rolls…`);
-      return void playRoll(m.values, m.seed);
+      return void playRoll(m.values, m.seed, m.by);
     case "scored": {
       flash(m.cat);
       const who = m.seat === state.mySeat ? "You" : state.names[m.seat];
@@ -499,6 +500,7 @@ function newSoloGame() {
   clearInterval(clockTimer);
   $("clock").hidden = true;
   $("overlay").hidden = true;
+  table.setViewSeat(0);
   table.clearHolds();
   table.setValues(state.dice);
   say("Your turn. Roll.");

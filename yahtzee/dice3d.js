@@ -169,8 +169,6 @@ export class DiceTable {
 
     const scene = (this.scene = new THREE.Scene());
     const cam = (this.camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100));
-    cam.position.set(0, 9.4, 7.5);
-    cam.lookAt(0, 0, 0);
 
     // A room environment gives the dice something to reflect. Without it they
     // read as matte plastic no matter how good the model is.
@@ -178,8 +176,7 @@ export class DiceTable {
     scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 
     scene.add(new THREE.AmbientLight(0xffffff, 0.34));
-    const key = new THREE.DirectionalLight(0xfff4e6, 1.85);
-    key.position.set(3, 14, 6);
+    const key = (this._key = new THREE.DirectionalLight(0xfff4e6, 1.85));
     key.castShadow = true;
     key.shadow.mapSize.set(2048, 2048);
     key.shadow.radius = 3;
@@ -188,9 +185,9 @@ export class DiceTable {
     sc.left = -7; sc.right = 7; sc.top = 6; sc.bottom = -6; sc.near = 1; sc.far = 30;
     sc.updateProjectionMatrix();
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0xbfd8ff, 0.45);
-    fill.position.set(-7, 6, -5);
+    const fill = (this._fill = new THREE.DirectionalLight(0xbfd8ff, 0.45));
     scene.add(fill);
+    this.setViewSeat(0);           // places the camera and swings the lamp with it
 
     this._buildTray();
     this._buildWorld();
@@ -336,18 +333,35 @@ export class DiceTable {
     this.layoutRow();
   }
 
+  /* ----- where you are sitting ----- */
+
+  // Two chairs at one table. Seat 0 is the +z edge, seat 1 the -z edge --
+  // literally the chair opposite. Only the camera moves: the simulation is
+  // identical on every machine, so two players watch the same throw from their
+  // own side rather than watching two different throws.
+  setViewSeat(seat) {
+    this.viewSeat = seat === 1 ? 1 : 0;
+    const s = this.viewSeat === 1 ? -1 : 1;
+    this.camera.position.set(0, 9.4, 7.5 * s);
+    this.camera.lookAt(0, 0, 0);
+    // The lamp swings round with the chair. Left where it was, the far seat
+    // gets every shadow thrown toward it and the dice read as cut-outs.
+    this._key.position.set(3 * s, 14, 6 * s);
+    this._fill.position.set(-7 * s, 6, -5 * s);
+  }
+
   /* ----- rolling ----- */
 
   // values: array of 1-6, one per die (held dice are ignored and keep theirs).
   // seed:   any integer; the same seed gives the same throw, everywhere.
   // Resolves when the animation finishes.
-  async roll({ values, seed = (Math.random() * 1e9) | 0, instant = false } = {}) {
+  async roll({ values, seed = (Math.random() * 1e9) | 0, instant = false, fromSeat = 0 } = {}) {
     const loose = this.dice.map((_, i) => i).filter((i) => !this.held[i]);
     if (!loose.length) return this.values.slice();
     if (!values || values.length !== this.count)
       throw new Error("dice3d: roll() needs one value per die");
 
-    const take = this._simulate(loose, seed, values);
+    const take = this._simulate(loose, seed, values, fromSeat);
     for (const i of loose) this.values[i] = values[i];
     this._offsets = take.offsets;
     this.dice.forEach((d, i) => d.mesh.quaternion.copy(take.offsets[i]));
@@ -366,7 +380,7 @@ export class DiceTable {
   // Throw, step to a standstill, and record it -- all before anything is drawn.
   // Retries with a nudged seed if a die ends up leaning on another one, since
   // a tilted die has no face pointing up to relabel.
-  _simulate(loose, seed, values) {
+  _simulate(loose, seed, values, fromSeat = 0) {
     const DT = 1 / 120, MAX = 720, EVERY = 2, MAX_FRAMES = 132;
     for (let attempt = 0; attempt < 10; attempt++) {
       const rnd = mulberry32(seed + attempt * 7919);
@@ -378,9 +392,20 @@ export class DiceTable {
         d.body.mass = 1;
         d.body.updateMassProperties();
         const n = loose.indexOf(i);
-        d.body.position.set(-TRAY.w / 2 + 0.9 + n * 0.42, 1.7 + rnd() * 1.1, -TRAY.d / 2 + 0.8 + rnd() * 0.5);
+        // Seat 0 throws from the +z edge, seat 1 from -z: a 180 degree turn of
+        // the same throw, so it always leaves from in front of whoever rolled.
+        const f = fromSeat === 1 ? 1 : -1;
+        d.body.position.set(
+          f * (-TRAY.w / 2 + 0.9 + n * 0.42),
+          1.7 + rnd() * 1.1,
+          f * (-TRAY.d / 2 + 0.8 + rnd() * 0.5)
+        );
         d.body.quaternion.setFromEuler(rnd() * 6.28, rnd() * 6.28, rnd() * 6.28);
-        d.body.velocity.set(6.2 + rnd() * 3.2, -0.5 + rnd() * 1.2, 3.0 + rnd() * 4.4);
+        d.body.velocity.set(
+          f * (6.2 + rnd() * 3.2),
+          -0.5 + rnd() * 1.2,
+          f * (3.0 + rnd() * 4.4)
+        );
         d.body.angularVelocity.set((rnd() - 0.5) * 26, (rnd() - 0.5) * 26, (rnd() - 0.5) * 26);
         d.body.wakeUp();
       });
@@ -436,7 +461,7 @@ export class DiceTable {
     const frame = this.dice.map((d, i) => {
       const flat = new THREE.Quaternion();
       if (!this.held[i]) {
-        d.body.position.set((i - (this.count - 1) / 2) * 1.5, DIE / 2, 1.2);
+        d.body.position.set((i - (this.count - 1) / 2) * 1.5, DIE / 2, 0);
         d.body.quaternion.set(0, 0, 0, 1);
         offsets[i] = offsetShowing(flat, values[i], Math.random);
       }
@@ -583,7 +608,7 @@ export class DiceTable {
         this._offsets[i] = offsetShowing(flat, this.values[i], mulberry32(i * 977 + this.values[i]));
         d.mesh.quaternion.copy(this._offsets[i]);
       });
-    lay(this.dice.map((_, i) => i), 0.2);   // index order, so dice never swap places
+    lay(this.dice.map((_, i) => i), 0);   // index order, so dice never swap places
   }
 
   /* ----- plumbing ----- */
