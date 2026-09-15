@@ -125,7 +125,7 @@
   async function practicePhoto() {
     try {
       const q = seenPhotos.length ? '?seen=' + seenPhotos.slice(-40).join(',') : '';
-      const r = await fetch('/puzzle/api/photo' + q, { cache: 'no-cache' });
+      const r = await fetch('/chameleon/api/photo' + q, { cache: 'no-cache' });
       if (!r.ok) return null;
       const j = await r.json();
       if (!j.src) return null;

@@ -27,5 +27,5 @@ puzzle/*.tmp
 # Jigsaw backend also keeps the hub visit count (prod: /var/lib/kmufti-puzzle).
 puzzle/visits.json
 
-# Cached practice photos for Meccha Chameleon (prod: /var/lib/kmufti-puzzle).
-puzzle/photos/
+# Cached practice photos for Meccha Chameleon (prod: /var/lib/kmufti-chameleon).
+chameleon/photos/

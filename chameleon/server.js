@@ -1,0 +1,243 @@
+// Zero-dependency Node backend for Meccha Chameleon.
+//
+// It does one job: hand out photographs for practice rounds.
+//
+// The daily photo is not its business. That one lives in the repo, hand-picked
+// and hand-placed in build.html, and the game reads it straight off disk.
+// Practice is the mode that empties a photo pool - a few rounds and you have
+// seen all of them - so it draws from Pexels instead.
+//
+//   GET  /api/photo?seen=id,id   a photo for a round, as JSON + credit
+//   GET  /api/photo/<id>.jpg     the bytes, from our own cache
+//   GET  /api/photo/stats        how full the pool is
+//
+// Two things shape the design.
+//
+// The game samples pixels off the photo to light and blend the figure into it.
+// A cross-origin image taints the canvas and makes getImageData throw, so
+// photos are downloaded here and served from our own origin rather than
+// hotlinked - which also keeps the API key off the front end.
+//
+// And an API has a rate limit. So every photo fetched is kept: the pool fills
+// itself on a timer, evicts its oldest at a cap, and a practice round is
+// served from what is already there. Being told to wait by Pexels costs
+// nobody a round.
+//
+// No key configured means no upstream call at all: the endpoint says so and
+// the game falls back to the photos in chameleon/images/.
+
+const http = require("http");
+const fs = require("fs");
+const path = require("path");
+
+const PORT = process.env.PORT || 8025;
+const PHOTO_DIR = process.env.PHOTO_CACHE || path.join(__dirname, "photos");
+const PHOTO_CAP = Number(process.env.PHOTO_CAP || 200);   // ~40MB at Pexels "large"
+const PEXELS_KEY = process.env.PEXELS_KEY || "";
+// Overridable so the fetching can be pointed at a stub and tested for real
+// rather than against the live API and its rate limit.
+const PEXELS_API = process.env.PEXELS_API || "https://api.pexels.com/v1";
+const PEXELS_IMG_HOST = process.env.PEXELS_IMG_HOST || "images.pexels.com";
+
+// A photo has to be big enough to hide a figure in and roughly the shape of a
+// screen. Panoramas and postage stamps make bad rounds.
+const PHOTO_MIN_EDGE = 900;
+const PHOTO_MAX_RATIO = 2.2;
+
+let photos = [];   // [{ id, by, link, at }], oldest first
+try { photos = JSON.parse(fs.readFileSync(path.join(PHOTO_DIR, "index.json"), "utf8")) || []; }
+catch { /* first run */ }
+
+function savePhotoIndex() {
+  try {
+    fs.mkdirSync(PHOTO_DIR, { recursive: true });
+    fs.writeFileSync(path.join(PHOTO_DIR, "index.json"), JSON.stringify(photos));
+  } catch (e) { console.error("photo index save failed:", e.message); }
+}
+
+// The index is the authority on what the pool holds. Anything else in the
+// directory is a leftover - a crash between writing the file and saving the
+// index, or an index that went missing - and would otherwise sit there
+// forever, quietly making the cap a lie.
+(function sweepOrphanPhotos() {
+  let found = [];
+  try { found = fs.readdirSync(PHOTO_DIR); } catch { return; }
+  const known = new Set(photos.map((p) => p.id + ".jpg"));
+  let gone = 0;
+  for (const f of found) {
+    if (f === "index.json" || known.has(f)) continue;
+    try { fs.unlinkSync(path.join(PHOTO_DIR, f)); gone++; } catch { /* leave it */ }
+  }
+  if (gone) console.log(`photo cache: swept ${gone} orphan${gone === 1 ? "" : "s"}`);
+})();
+
+// One upstream call at a time, and never two in the same breath - a burst of
+// practice rounds should come off the pool, not out of the rate limit. A 429
+// backs all of it off for a while: the pool is there precisely so that being
+// told to wait costs nobody a round.
+let photoFetching = false;
+let lastPhotoFetch = 0;
+let photoBackoffUntil = 0;
+
+async function fetchPhoto() {
+  if (!PEXELS_KEY || photoFetching) return null;
+  if (Date.now() < photoBackoffUntil || Date.now() - lastPhotoFetch < 1500) return null;
+  photoFetching = true;
+  lastPhotoFetch = Date.now();
+  const stop = AbortSignal.timeout(8000);
+  try {
+    // Curated is the editorial feed; a random page of it is a cheap way to
+    // land somewhere different every time.
+    const page = 1 + Math.floor(Math.random() * 400);
+    const r = await fetch(`${PEXELS_API}/curated?per_page=1&page=${page}`,
+                          { headers: { Authorization: PEXELS_KEY }, signal: stop });
+    if (r.status === 429) {
+      photoBackoffUntil = Date.now() + 15 * 60 * 1000;
+      throw new Error("rate limited - backing off 15m");
+    }
+    if (!r.ok) throw new Error("pexels " + r.status);
+    const p = (await r.json()).photos?.[0];
+    if (!p) throw new Error("no photo in reply");
+
+    const w = p.width || 0, h = p.height || 0;
+    if (Math.min(w, h) < PHOTO_MIN_EDGE) throw new Error(`too small (${w}x${h})`);
+    if (Math.max(w, h) / Math.min(w, h) > PHOTO_MAX_RATIO) throw new Error(`odd shape (${w}x${h})`);
+
+    // Only ever download from the image CDN, whatever the reply says.
+    const src = p.src?.large;
+    if (!src || new URL(src).hostname !== PEXELS_IMG_HOST) throw new Error("unexpected image host");
+
+    const img = await fetch(src, { signal: stop });
+    if (!img.ok) throw new Error("image " + img.status);
+    const bytes = Buffer.from(await img.arrayBuffer());
+
+    fs.mkdirSync(PHOTO_DIR, { recursive: true });
+    const id = String(p.id);
+    fs.writeFileSync(path.join(PHOTO_DIR, id + ".jpg"), bytes);
+    photos = photos.filter((q) => q.id !== id);
+    photos.push({ id, by: p.photographer || "unknown", link: p.url || "", at: Date.now() });
+
+    while (photos.length > PHOTO_CAP) {
+      const gone = photos.shift();
+      try { fs.unlinkSync(path.join(PHOTO_DIR, gone.id + ".jpg")); } catch { /* already gone */ }
+    }
+    savePhotoIndex();
+    return photos[photos.length - 1];
+  } catch (e) {
+    console.error("photo fetch failed:", e.message);
+    return null;
+  } finally {
+    photoFetching = false;
+  }
+}
+
+// Fill the pool in the background rather than off the back of someone's
+// round: a photo a minute, only while there is room, so the first people to
+// play practice are not the ones paying for the fetch. Pexels' free tier is
+// 200 an hour, and this asks for 60.
+if (PEXELS_KEY) {
+  setInterval(() => { if (photos.length < PHOTO_CAP) fetchPhoto(); }, 60000).unref();
+  setTimeout(() => fetchPhoto(), 3000).unref();
+}
+
+// Pick a photo the player has not just had. `seen` is whatever ids the game
+// remembers from this session; with a full pool that is the difference
+// between a fresh photo every round and the occasional repeat.
+function pickPhoto(seen) {
+  if (!photos.length) return null;
+  const fresh = photos.filter((p) => !seen.has(p.id));
+  const from = fresh.length ? fresh : photos;
+  return from[Math.floor(Math.random() * from.length)];
+}
+
+/* ========================================================================
+   HTTP
+   ======================================================================== */
+// nginx forwards /chameleon/api/ here with the prefix intact, so it is
+// stripped the same way the other backends do it.
+function stripPrefix(pathname) {
+  return pathname.startsWith("/chameleon/") ? pathname.slice(10) : pathname;
+}
+
+const server = http.createServer(async (req, res) => {
+  const url = new URL(req.url, "http://x");
+  const apiPath = stripPrefix(url.pathname);
+
+  // A photo for a practice round. Served from the pool, which the timer keeps
+  // topped up; only an empty pool waits on the API. `seen` is the ids this
+  // player has already had, so a full pool means a different photo every
+  // time. 503 means no photo to give - the game falls back to the photos in
+  // the repo.
+  if (apiPath === "/api/photo" && req.method === "GET") {
+    const seen = new Set((url.searchParams.get("seen") || "")
+      .split(",").filter(Boolean).slice(0, 200));
+    const pick = pickPhoto(seen) || await fetchPhoto();
+    res.writeHead(pick ? 200 : 503, {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Cache-Control": "no-cache",
+    });
+    return res.end(JSON.stringify(pick
+      ? { id: pick.id, src: `/chameleon/api/photo/${pick.id}.jpg`, by: pick.by, link: pick.link }
+      : { error: PEXELS_KEY ? "no photos yet" : "no key configured" }));
+  }
+
+  // How the pool is doing, for when you want to know whether it is filling.
+  if (apiPath === "/api/photo/stats" && req.method === "GET") {
+    res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-cache" });
+    return res.end(JSON.stringify({
+      pool: photos.length, cap: PHOTO_CAP, key: Boolean(PEXELS_KEY),
+      backingOff: Date.now() < photoBackoffUntil,
+      oldest: photos[0]?.at || null, newest: photos[photos.length - 1]?.at || null,
+    }));
+  }
+
+  // The bytes themselves, same-origin so the game can read pixels off them.
+  const file = apiPath.match(/^\/api\/photo\/(\d+)\.jpg$/);
+  if (file && req.method === "GET") {
+    fs.readFile(path.join(PHOTO_DIR, file[1] + ".jpg"), (err, data) => {
+      if (err) { res.writeHead(404); return res.end("not found"); }
+      res.writeHead(200, { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=86400" });
+      res.end(data);
+    });
+    return;
+  }
+
+  // Dev only: in production nginx serves the static site and only forwards
+  // /chameleon/api/ here. Locally there is no nginx, so the same process
+  // hands out the page as well - otherwise the game and its API would sit on
+  // different origins and the photos would taint the canvas, which is the one
+  // thing this backend exists to avoid.
+  if (req.method === "GET") return serveStatic(req, res, url.pathname);
+
+  res.writeHead(404, { "Content-Type": "text/plain" });
+  res.end("not found");
+});
+
+const STATIC_DIR = path.join(__dirname, "..");
+const MIME = {
+  ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
+  ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8",
+  ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon",
+  ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp", ".gif": "image/gif",
+  ".glb": "model/gltf-binary", ".stl": "model/stl", ".ttf": "font/ttf",
+};
+function serveStatic(req, res, pathname) {
+  let rel = decodeURIComponent(pathname.replace(/^\/+/, ""));
+  if (rel === "" || rel.endsWith("/")) rel += "index.html";
+  const filePath = path.join(STATIC_DIR, rel);
+  if (!filePath.startsWith(STATIC_DIR)) { res.writeHead(403); return res.end(); }
+  fs.readFile(filePath, (err, data) => {
+    if (err) { res.writeHead(404); return res.end("not found"); }
+    res.writeHead(200, {
+      "Content-Type": MIME[path.extname(filePath)] || "application/octet-stream",
+      "Cache-Control": "no-cache",
+    });
+    res.end(data);
+  });
+}
+
+server.listen(PORT, () => {
+  console.log(`chameleon server on http://localhost:${PORT} - pool ${photos.length}/${PHOTO_CAP}` +
+              (PEXELS_KEY ? "" : " (no PEXELS_KEY: practice falls back to the repo photos)"));
+});

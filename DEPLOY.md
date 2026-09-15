@@ -11,7 +11,7 @@ persists in the visitor's browser (`localStorage`).
 |------|------|-------|
 | Hub (`/`) | static | the launcher board |
 | Jeoprady (`/jeoprady/`) | static | loads `boards.json`, `categories.json`, `modern_categories.json` |
-| Meccha Chameleon (`/chameleon/`) | static | daily puzzle from `daily.json` |
+| Meccha Chameleon (`/chameleon/`) | static + **Node** (`chameleon/server.js`) | daily puzzle from `daily.json` (static, in the repo); practice photos from Pexels on port 8025, cached in `/var/lib/kmufti-chameleon/photos` |
 | Lost in Translation (`/translate/`) | static | pre-built `puzzles.json` |
 | Wishlist (`/wishlist/`) | static + **Node** (`wishlist/server.js`) | `/wishlist/api/unfurl` + `/wishlist/api/img` on port 8021 |
 | White Canvas (`/white-canvas/`) | static + **Node** (`draw/server.js`) | SSE stream on port 8022; grid in `/var/lib/kmufti-draw/canvas.bin` |
@@ -26,34 +26,7 @@ is `/var/lib/kmufti-puzzle/visits.json`, outside the repo. It counts opens,
 not people, and records nothing about a visitor. If that backend is down the
 hub simply doesn't show the line.
 
-**Meccha Chameleon's practice photos** also come from that backend
-(`/puzzle/api/photo`). The daily photo stays in the repo, hand-picked; practice
-is what burns through a pool, so it pulls from Pexels. Photos are downloaded
-once and cached in `/var/lib/kmufti-puzzle/photos` (capped, oldest evicted),
-and served from our own origin rather than hotlinked - the game reads pixels
-off the photo to blend the figure, and a cross-origin image would taint the
-canvas and break it.
 
-To turn it on, put a Pexels API key in the service file and restart:
-
-```bash
-sudo systemctl edit --full kmufti-puzzle   # uncomment PEXELS_KEY, paste the key
-sudo systemctl restart kmufti-puzzle
-```
-
-Without a key nothing breaks: the endpoint returns 503 and the game falls back
-to the photos in `chameleon/images/`.
-
-The pool fills itself in the background - one photo a minute while there is
-room, against a free tier of 200 an hour - so a practice round is served from
-what is already cached rather than waiting on Pexels. A 429 backs the fetching
-off for fifteen minutes, which costs nobody a round. `GET
-/puzzle/api/photo/stats` says how full the pool is and whether it is backed
-off:
-
-```bash
-curl -s https://kmufti.com/puzzle/api/photo/stats
-```
 
 The White Canvas backend lives in `draw/` — the canvas used to sit behind the
 launcher tiles before it became its own project, and the folder name stuck.
@@ -87,7 +60,36 @@ launcher tiles before it became its own project, and the folder name stuck.
    sudo systemctl enable --now kmufti-draw
    ```
 
-5. **Jigsaw service** (the shared puzzle table):
+5. **Meccha Chameleon service** (practice photos):
+   ```bash
+   sudo mkdir -p /var/lib/kmufti-chameleon/photos && sudo chown -R www-data:www-data /var/lib/kmufti-chameleon
+   sudo cp /var/www/kmufti-hub/deploy/kmufti-chameleon.service /etc/systemd/system/
+   sudo systemctl daemon-reload
+   sudo systemctl enable --now kmufti-chameleon
+   ```
+
+   Photos come from Pexels, so the feature is off until a key is set. Put one
+   in the unit (`sudo systemctl edit --full kmufti-chameleon`, uncomment
+   `PEXELS_KEY`) and restart. Without a key there is no upstream call at all:
+   the endpoint returns 503 and practice falls back to the photos in
+   `chameleon/images/`. The **daily** photo never touches this service - it is
+   in the repo, hand-picked and hand-placed - so the daily puzzle works even
+   with the backend down.
+
+   The pool fills itself in the background: a photo a minute while there is
+   room, against a free tier of 200 an hour, so a practice round is served
+   from what is already cached rather than waiting on the API. A 429 backs the
+   fetching off for fifteen minutes. To see how it is doing:
+
+   ```bash
+   curl -s https://kmufti.com/chameleon/api/photo/stats
+   ```
+
+   Photos are served from our own origin rather than hotlinked, because the
+   game samples pixels off the photo to blend the figure in and a cross-origin
+   image would taint the canvas.
+
+6. **Jigsaw service** (the shared puzzle table):
    ```bash
    sudo mkdir -p /var/lib/kmufti-puzzle && sudo chown www-data:www-data /var/lib/kmufti-puzzle
    sudo cp /var/www/kmufti-hub/deploy/kmufti-puzzle.service /etc/systemd/system/
@@ -95,7 +97,7 @@ launcher tiles before it became its own project, and the folder name stuck.
    sudo systemctl enable --now kmufti-puzzle
    ```
 
-6. **Yahtzee service** (the 1v1 dice table):
+7. **Yahtzee service** (the 1v1 dice table):
    ```bash
    sudo cp /var/www/kmufti-hub/deploy/kmufti-yahtzee.service /etc/systemd/system/
    sudo systemctl daemon-reload
@@ -105,7 +107,7 @@ launcher tiles before it became its own project, and the folder name stuck.
    No data directory: matches are in memory and a restart drops games in
    progress. That is the right trade for a fifteen-minute game and no database.
 
-7. **nginx**:
+8. **nginx**:
    ```bash
    sudo cp /var/www/kmufti-hub/deploy/nginx.conf /etc/nginx/sites-available/kmufti
    # edit server_name / root to match yours
@@ -125,12 +127,12 @@ launcher tiles before it became its own project, and the folder name stuck.
    backends, then `sudo nginx -t && sudo systemctl reload nginx`. Take a dated
    backup of `default` first; `nginx -t` tells you before a reload can hurt.
 
-8. **HTTPS** (Let's Encrypt):
+9. **HTTPS** (Let's Encrypt):
    ```bash
    sudo certbot --nginx -d kmufti.com -d www.kmufti.com
    ```
 
-9. **DNS**: point `kmufti.com` (and `www`) at your VPS IP (A / AAAA records).
+10. **DNS**: point `kmufti.com` (and `www`) at your VPS IP (A / AAAA records).
 
 ## Updating (your git-pull workflow)
 
@@ -148,6 +150,7 @@ Then restart a service **only** if its own `server.js` changed:
 sudo systemctl restart kmufti-wishlist   # wishlist/server.js
 sudo systemctl restart kmufti-draw       # draw/server.js
 sudo systemctl restart kmufti-puzzle     # puzzle/server.js
+sudo systemctl restart kmufti-chameleon  # chameleon/server.js
 ```
 
 Adding a puzzle needs no restart — `puzzle/puzzles.json` is re-read at every

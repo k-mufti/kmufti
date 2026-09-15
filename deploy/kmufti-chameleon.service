@@ -1,0 +1,35 @@
+# systemd unit for Meccha Chameleon's photo backend.
+# Install:
+#   sudo cp deploy/kmufti-chameleon.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now kmufti-chameleon
+#
+# After changing chameleon/server.js on the box:  sudo systemctl restart kmufti-chameleon
+#
+# This serves practice photos only. The daily photo is in the repo, hand-picked
+# and hand-placed, and the game reads it straight off disk - so if this service
+# is down, the daily is untouched and practice falls back to the repo photos.
+
+[Unit]
+Description=kmufti Meccha Chameleon (practice photos)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/kmufti-hub/chameleon
+ExecStart=/usr/bin/node server.js
+Environment=PORT=8025
+# Photos come from Pexels. Without a key there is no upstream call at all and
+# practice uses the photos in chameleon/images/ - so this is what turns the
+# feature on.
+#Environment=PEXELS_KEY=your-pexels-api-key
+# Cached photos live outside the repo so a git pull can't wipe the pool. The
+# cap bounds the disk they use: 200 x ~200KB is roughly 40MB.
+Environment=PHOTO_CACHE=/var/lib/kmufti-chameleon/photos
+#Environment=PHOTO_CAP=200
+Restart=always
+RestartSec=3
+User=www-data
+
+[Install]
+WantedBy=multi-user.target
