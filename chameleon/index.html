@@ -38,14 +38,15 @@
 
         <!-- End state: Share button bottom-right of photo -->
         <div class="mc-resultbar" id="resultBar" hidden>
-          <button class="mc-share-btn" id="shareBtn">SHARE</button>
-          <!-- Hold to see the figure without the blend that hid it. -->
-          <button class="mc-eye" id="peekBtn" aria-label="hold to see the figure unblended" title="hold to see it plainly">
+          <!-- Hold to see the round as it was, before the reveal painted the
+               answer over it. Sits left of SHARE. -->
+          <button class="mc-eye" id="peekBtn" aria-label="hold to see the photo as it was" title="hold to see it as it was">
             <svg viewBox="0 0 24 16" aria-hidden="true">
               <path d="M1 8s4-6 11-6 11 6 11 6-4 6-11 6S1 8 1 8z" fill="none" stroke="currentColor" stroke-width="1.6"/>
               <circle cx="12" cy="8" r="3" fill="currentColor"/>
             </svg>
           </button>
+          <button class="mc-share-btn" id="shareBtn">SHARE</button>
         </div>
 
         <!-- Start screen -->
