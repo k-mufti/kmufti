@@ -153,6 +153,9 @@ a { color: inherit; text-decoration: none; }
    something. */
 .mc-eye {
   appearance: none;
+  /* The bar above is pointer-events:none so clicks fall through to the photo;
+     anything meant to be pressed has to opt back in, exactly as SHARE does. */
+  pointer-events: all;
   display: inline-flex;
   align-items: center;
   justify-content: center;
