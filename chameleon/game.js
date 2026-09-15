@@ -111,7 +111,7 @@
       CW: o.CW, CH: o.CH, fx: o.fx, fy: o.fy, figW: o.figW, figH: o.figH,
       cx: o.fx + o.figW / 2, cy: o.fy + o.figH / 2, rot: o.rot,
       blend: o.blend, opacity: o.opacity, shadow: o.shadow,
-      _figImg: figImg, _photo: o.img, _won: false,
+      _figImg: figImg, _won: false,
     };
     ctx.drawImage(scene, 0, 0);
     if (params.has('debug')) window.__mc = { round, isHit };
@@ -220,7 +220,7 @@
       cx: bestSpot.fx + figW / 2, cy: bestSpot.fy + figH / 2, rot,
       blend: MECHA.DEFAULTS.blend, opacity: bestResult.opacity,
       shadow: MECHA.DEFAULTS.shadow,
-      _figImg: figImg, _photo: img, _won: false,
+      _figImg: figImg, _won: false,
       _rebuild: { img, baseData, poseIdx, spot: bestSpot, rot },
     };
     ctx.drawImage(scene, 0, 0);
@@ -372,23 +372,17 @@
   }
   function stopReveal() { cancelAnimationFrame(revealRAF); revealRAF = 0; }
 
-  /* ---- hold the eye to see the figure as it really is ---------------------
-     In the round the figure is pressed into the photo - multiplied in, at
-     part opacity, blurred at the edge - which is the whole difficulty. This
-     redraws it plainly on the same spot: same pose, same size, same tilt, no
-     blend. It answers the question you actually have when a round ends, which
-     is not where it was but what it looked like sitting there. */
+  /* ---- hold the eye to see the round as it was ---------------------------
+     Once a round ends the answer is painted over it: a coloured silhouette,
+     the pulsing circles, the verdict across the top. All useful, and all of
+     it hides the thing you actually want to look at - the photo exactly as
+     you were staring at it, with the figure blended in and still hiding.
+     Holding the eye puts that back, untouched, for as long as you hold it. */
   let peeking = false;
 
   function drawPeek() {
-    const { CW, CH, cx, cy, figW, figH, rot, _photo, _figImg } = round;
-    if (!_photo || !_figImg) return;
-    ctx.drawImage(_photo, 0, 0, CW, CH);
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate(rot);
-    ctx.drawImage(_figImg, -figW / 2, -figH / 2, figW, figH);
-    ctx.restore();
+    if (!scene) return;
+    ctx.drawImage(scene, 0, 0);
   }
 
   function peekOn(e) {
