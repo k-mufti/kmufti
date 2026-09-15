@@ -44,6 +44,17 @@ sudo systemctl restart kmufti-puzzle
 Without a key nothing breaks: the endpoint returns 503 and the game falls back
 to the photos in `chameleon/images/`.
 
+The pool fills itself in the background - one photo a minute while there is
+room, against a free tier of 200 an hour - so a practice round is served from
+what is already cached rather than waiting on Pexels. A 429 backs the fetching
+off for fifteen minutes, which costs nobody a round. `GET
+/puzzle/api/photo/stats` says how full the pool is and whether it is backed
+off:
+
+```bash
+curl -s https://kmufti.com/puzzle/api/photo/stats
+```
+
 The White Canvas backend lives in `draw/` — the canvas used to sit behind the
 launcher tiles before it became its own project, and the folder name stuck.
 

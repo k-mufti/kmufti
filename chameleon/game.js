@@ -121,12 +121,16 @@
   // served same-origin so the pixel sampling below still works. Anything at
   // all going wrong - no key, no network, no pool yet - falls back to the
   // photos we ship, which is why none of this throws.
+  const seenPhotos = [];   // ids this session has already been shown
   async function practicePhoto() {
     try {
-      const r = await fetch('/puzzle/api/photo', { cache: 'no-cache' });
+      const q = seenPhotos.length ? '?seen=' + seenPhotos.slice(-40).join(',') : '';
+      const r = await fetch('/puzzle/api/photo' + q, { cache: 'no-cache' });
       if (!r.ok) return null;
       const j = await r.json();
-      return j.src ? j : null;
+      if (!j.src) return null;
+      if (j.id) seenPhotos.push(j.id);
+      return j;
     } catch (_) { return null; }
   }
 
