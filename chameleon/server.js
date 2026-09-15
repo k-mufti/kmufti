@@ -32,7 +32,7 @@ const path = require("path");
 
 const PORT = process.env.PORT || 8025;
 const PHOTO_DIR = process.env.PHOTO_CACHE || path.join(__dirname, "photos");
-const PHOTO_CAP = Number(process.env.PHOTO_CAP || 200);   // ~40MB at Pexels "large"
+const PHOTO_CAP = Number(process.env.PHOTO_CAP || 120);   // ~60MB at Pexels "large2x"
 const PEXELS_KEY = process.env.PEXELS_KEY || "";
 // Overridable so the fetching can be pointed at a stub and tested for real
 // rather than against the live API and its rate limit.
@@ -41,8 +41,32 @@ const PEXELS_IMG_HOST = process.env.PEXELS_IMG_HOST || "images.pexels.com";
 
 // A photo has to be big enough to hide a figure in and roughly the shape of a
 // screen. Panoramas and postage stamps make bad rounds.
+//
+// PHOTO_MIN_EDGE is checked twice, and the second one is the one that counts:
+// the API reports the dimensions of the ORIGINAL, but what we download is one
+// of its variants. "large" turns out to be 650px on the long edge - fine for a
+// thumbnail, half of what this game draws at - so the file is measured after
+// it lands and thrown away if it is too small to play on.
 const PHOTO_MIN_EDGE = 900;
 const PHOTO_MAX_RATIO = 2.2;
+const PHOTO_MIN_STORED = 1000;   // the game's canvas is 1200 tall
+
+// Enough of a JPEG reader to get the dimensions: walk the markers to the first
+// SOF frame header. (Same trick the Jigsaw backend uses on its puzzle images.)
+function jpegSize(buf) {
+  if (buf.length < 4 || buf[0] !== 0xff || buf[1] !== 0xd8) return null;
+  let i = 2;
+  while (i + 9 < buf.length) {
+    if (buf[i] !== 0xff) { i++; continue; }
+    const m = buf[i + 1];
+    if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) {
+      return { h: buf.readUInt16BE(i + 5), w: buf.readUInt16BE(i + 7) };
+    }
+    if (m === 0xd8 || (m >= 0xd0 && m <= 0xd9)) { i += 2; continue; }
+    i += 2 + buf.readUInt16BE(i + 2);
+  }
+  return null;
+}
 
 let photos = [];   // [{ id, by, link, at }], oldest first
 try { photos = JSON.parse(fs.readFileSync(path.join(PHOTO_DIR, "index.json"), "utf8")) || []; }
@@ -59,6 +83,24 @@ function savePhotoIndex() {
 // directory is a leftover - a crash between writing the file and saving the
 // index, or an index that went missing - and would otherwise sit there
 // forever, quietly making the cap a lie.
+// Photos already in the pool that predate a rule change - the 650px ones that
+// got in while the size was only checked against the API's numbers - are
+// dropped on the way past, so the pool converges on what is playable rather
+// than keeping whatever was true when it was fetched.
+(function dropUnplayablePhotos() {
+  const before = photos.length;
+  photos = photos.filter((p) => {
+    let buf;
+    try { buf = fs.readFileSync(path.join(PHOTO_DIR, p.id + ".jpg")); } catch { return false; }
+    const got = jpegSize(buf);
+    if (got && Math.max(got.w, got.h) >= PHOTO_MIN_STORED) return true;
+    try { fs.unlinkSync(path.join(PHOTO_DIR, p.id + ".jpg")); } catch { /* already gone */ }
+    return false;
+  });
+  const gone = before - photos.length;
+  if (gone) { console.log(`photo cache: dropped ${gone} too small to play on`); savePhotoIndex(); }
+})();
+
 (function sweepOrphanPhotos() {
   let found = [];
   try { found = fs.readdirSync(PHOTO_DIR); } catch { return; }
@@ -103,13 +145,21 @@ async function fetchPhoto() {
     if (Math.min(w, h) < PHOTO_MIN_EDGE) throw new Error(`too small (${w}x${h})`);
     if (Math.max(w, h) / Math.min(w, h) > PHOTO_MAX_RATIO) throw new Error(`odd shape (${w}x${h})`);
 
+    // large2x is ~1880px on the long edge, which still has something to give
+    // at the 1200 the game draws at; large is 650 and does not.
     // Only ever download from the image CDN, whatever the reply says.
-    const src = p.src?.large;
+    const src = p.src?.large2x || p.src?.original || p.src?.large;
     if (!src || new URL(src).hostname !== PEXELS_IMG_HOST) throw new Error("unexpected image host");
 
     const img = await fetch(src, { signal: stop });
     if (!img.ok) throw new Error("image " + img.status);
     const bytes = Buffer.from(await img.arrayBuffer());
+
+    const got = jpegSize(bytes);
+    if (!got) throw new Error("not a readable jpeg");
+    if (Math.max(got.w, got.h) < PHOTO_MIN_STORED) {
+      throw new Error(`variant too small (${got.w}x${got.h})`);
+    }
 
     fs.mkdirSync(PHOTO_DIR, { recursive: true });
     const id = String(p.id);

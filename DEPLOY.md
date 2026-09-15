@@ -89,6 +89,17 @@ launcher tiles before it became its own project, and the folder name stuck.
    game samples pixels off the photo to blend the figure in and a cross-origin
    image would taint the canvas.
 
+   Two things that bit on the way in, both worth knowing if you add a backend
+   that serves files:
+
+   - The photo location needs `^~`. The static-asset rule in the live config
+     matches `.jpg`, and an nginx regex location beats a plain prefix one - so
+     without it the JSON routes work (no extension) while the image bytes 404,
+     which looks like a broken backend rather than a routing rule.
+   - Pexels' `large` variant is 650px on the long edge, against a canvas that
+     draws at 1200. The API reports the size of the *original*, so the file is
+     measured after it lands and thrown away if it is too small to play on.
+
 6. **Jigsaw service** (the shared puzzle table):
    ```bash
    sudo mkdir -p /var/lib/kmufti-puzzle && sudo chown www-data:www-data /var/lib/kmufti-puzzle
