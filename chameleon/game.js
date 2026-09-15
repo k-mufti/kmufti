@@ -60,6 +60,7 @@
 
   // End state + actions
   const resultBar = $('resultBar');
+  const peekBtn = $('peekBtn');
   const shareBtn = $('shareBtn'), practiceBtn = $('practiceBtn'), practiceRow = $('practiceRow');
   const photoCredit = $('photoCredit');
 
@@ -109,7 +110,8 @@
     round = {
       CW: o.CW, CH: o.CH, fx: o.fx, fy: o.fy, figW: o.figW, figH: o.figH,
       cx: o.fx + o.figW / 2, cy: o.fy + o.figH / 2, rot: o.rot,
-      blend: o.blend, opacity: o.opacity, shadow: o.shadow, _figImg: figImg, _won: false,
+      blend: o.blend, opacity: o.opacity, shadow: o.shadow,
+      _figImg: figImg, _photo: o.img, _won: false,
     };
     ctx.drawImage(scene, 0, 0);
     if (params.has('debug')) window.__mc = { round, isHit };
@@ -218,7 +220,7 @@
       cx: bestSpot.fx + figW / 2, cy: bestSpot.fy + figH / 2, rot,
       blend: MECHA.DEFAULTS.blend, opacity: bestResult.opacity,
       shadow: MECHA.DEFAULTS.shadow,
-      _figImg: figImg, _won: false,
+      _figImg: figImg, _photo: img, _won: false,
       _rebuild: { img, baseData, poseIdx, spot: bestSpot, rot },
     };
     ctx.drawImage(scene, 0, 0);
@@ -370,6 +372,52 @@
   }
   function stopReveal() { cancelAnimationFrame(revealRAF); revealRAF = 0; }
 
+  /* ---- hold the eye to see the figure as it really is ---------------------
+     In the round the figure is pressed into the photo - multiplied in, at
+     part opacity, blurred at the edge - which is the whole difficulty. This
+     redraws it plainly on the same spot: same pose, same size, same tilt, no
+     blend. It answers the question you actually have when a round ends, which
+     is not where it was but what it looked like sitting there. */
+  let peeking = false;
+
+  function drawPeek() {
+    const { CW, CH, cx, cy, figW, figH, rot, _photo, _figImg } = round;
+    if (!_photo || !_figImg) return;
+    ctx.drawImage(_photo, 0, 0, CW, CH);
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rot);
+    ctx.drawImage(_figImg, -figW / 2, -figH / 2, figW, figH);
+    ctx.restore();
+  }
+
+  function peekOn(e) {
+    if (!round || resultBar.hidden || peeking) return;
+    if (e) e.preventDefault();
+    peeking = true;
+    peekBtn.classList.add('held');
+    stopReveal();
+    drawPeek();
+  }
+
+  function peekOff() {
+    if (!peeking) return;
+    peeking = false;
+    peekBtn.classList.remove('held');
+    // Put the round back right now rather than waiting on a frame: in a
+    // background tab rAF never fires, and letting go should never leave the
+    // answer sitting there.
+    ctx.drawImage(scene, 0, 0);
+    drawVerdict(round._won, elapsed, clicks);
+    revealStart = 0;
+    cancelAnimationFrame(revealRAF);
+    revealRAF = requestAnimationFrame(revealLoop);
+  }
+
+  // ?debug lets the peek be driven without a pointer - handy on a machine
+  // where the canvas has no layout, and for checking what it actually draws.
+  if (params.has('debug')) window.__peek = { on: peekOn, off: peekOff, draw: drawPeek };
+
   function revealLoop(now) {
     if (!revealStart) revealStart = now;
     const t = (now - revealStart) / 1000;
@@ -500,6 +548,18 @@
       await navigator.clipboard.writeText(txt); toast('Copied to clipboard');
     } catch (_) { toast('Copy failed'); }
   });
+
+  // Hold, don't click: letting go always puts the round back, so there is no
+  // state to get stuck in.
+  peekBtn.addEventListener('pointerdown', peekOn);
+  peekBtn.addEventListener('pointerup', peekOff);
+  peekBtn.addEventListener('pointercancel', peekOff);
+  peekBtn.addEventListener('pointerleave', peekOff);
+  peekBtn.addEventListener('contextmenu', (e) => e.preventDefault());
+  // Space or Enter while it has focus, for anyone not using a pointer.
+  peekBtn.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') peekOn(e); });
+  peekBtn.addEventListener('keyup', (e) => { if (e.key === ' ' || e.key === 'Enter') peekOff(); });
+  window.addEventListener('blur', peekOff);
 
   practiceBtn.addEventListener('click', async () => {
     mode = 'practice'; resultBar.hidden = true; hudEnd.hidden = true; practiceRow.hidden = true;
