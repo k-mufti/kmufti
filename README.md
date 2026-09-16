@@ -24,7 +24,7 @@ each tile is a self-contained app living in its own folder.
 
 ## Architecture
 
-Mostly static files. Three small zero-dependency Node backends do the live bits:
+Mostly static files. A few small zero-dependency Node backends do the live bits:
 
 | Backend | Port | Does |
 |---------|------|------|
@@ -32,14 +32,16 @@ Mostly static files. Three small zero-dependency Node backends do the live bits:
 | `draw/server.js` | 8022 | The White Canvas pixel wall — authoritative grid, snapshot + deltas over Server-Sent Events. Read/paint only; there is no wipe route, so the wall is permanent. |
 | `puzzle/server.js` | 8023 | The Jigsaw table — piece positions and presence over a hand-rolled WebSocket. |
 | `yahtzee/server.js` | 8024 | The Yahtzee table — 1v1 matchmaking and every dice roll, so no client can invent a number. Nothing persisted; a match lives in memory. |
+| `chameleon/server.js` | 8025 | Practice photos for Meccha Chameleon, fetched from Pexels and cached on our own origin so the game can read pixels off them. The daily puzzle needs none of it. |
+| `admin/server.js` | 8026 | The private ops dashboard at `/admin/` — uptime, visitor numbers read out of the nginx log, host health. Bound to localhost, password on the nginx side, not linked from anywhere. |
 
 `draw/server.js` is the backend for `/white-canvas/` — the canvas used to live
 behind the launcher tiles, and the folder name stuck.
 
-In production nginx serves the static files and proxies `/wishlist/api/`,
-`/draw/api/`, `/puzzle/api/` and `/yahtzee/api/` to those four. Runtime state lives outside the
-repo (`/var/lib/kmufti-puzzle/`) so a `git pull` can't wipe a puzzle in
-progress. Everything else that persists — wishlist boards, game stats — is in
+In production nginx serves the static files and proxies each `/<project>/api/`
+to its backend. Runtime state lives outside the
+repo (`/var/lib/kmufti-puzzle/`, `/var/lib/kmufti-admin/`) so a `git pull` can't wipe a puzzle in
+progress or the uptime history. Everything else that persists — wishlist boards, game stats — is in
 the visitor's `localStorage`.
 
 ## Repo layout
@@ -50,7 +52,8 @@ projects.js                      the tile list (one object per project)
 artwork.js                       tile artwork, drawn in code
 <project>/                       one folder per app, each self-contained
 draw/server.js                   white-canvas backend (no frontend of its own)
-deploy/                          nginx.conf + three systemd units
+admin/                           the private ops dashboard (not linked from the hub)
+deploy/                          nginx.conf + the systemd units
 deploy.sh                        commit, push, pull on the VPS
 ```
 
@@ -69,7 +72,15 @@ the backends on their own ports, so start whichever ones you need:
 node wishlist/server.js   # 8021
 node draw/server.js       # 8022
 node puzzle/server.js     # 8023
+node yahtzee/server.js    # 8024
+node chameleon/server.js  # 8025
+node admin/server.js      # 8026 — then open http://localhost:8026/admin/
 ```
+
+The dashboard is the one that serves its own page, because it is the only page
+here that must never be reachable without going through nginx. Locally there is
+no access log to read and no systemd to ask, so it shows what it can (the
+backends you started, the box, the git commit) and says so about the rest.
 
 Node 16+ is plenty — there is nothing to `npm install`.
 

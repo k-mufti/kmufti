@@ -17,6 +17,7 @@ persists in the visitor's browser (`localStorage`).
 | White Canvas (`/white-canvas/`) | static + **Node** (`draw/server.js`) | SSE stream on port 8022; grid in `/var/lib/kmufti-draw/canvas.bin` |
 | Jigsaw (`/puzzle/`) | static + **Node** (`puzzle/server.js`) | WebSocket table on port 8023; state in `/var/lib/kmufti-puzzle/` |
 | Yahtzee (`/yahtzee/`) | static + **Node** (`yahtzee/server.js`) | 1v1 matches over a WebSocket on port 8024. Nothing persisted — a match lives in memory, and solo-vs-bot works with the backend down |
+| Ops dashboard (`/admin/`) | static + **Node** (`admin/server.js`) | **private.** Uptime, traffic and host health on port 8026, bound to localhost and behind an nginx password. History in `/var/lib/kmufti-admin` |
 
 The hub's visit count is served by the **Jigsaw** backend (`GET`/`POST`
 `/puzzle/api/visits`) rather than a service of its own: nginx already forwards
@@ -118,7 +119,55 @@ launcher tiles before it became its own project, and the folder name stuck.
    No data directory: matches are in memory and a restart drops games in
    progress. That is the right trade for a fifteen-minute game and no database.
 
-8. **nginx**:
+8. **Ops dashboard** (the private page at `/admin/`):
+   ```bash
+   sudo cp /var/www/kmufti-hub/deploy/kmufti-admin.service /etc/systemd/system/
+   sudo systemctl daemon-reload
+   sudo systemctl enable --now kmufti-admin
+   ```
+
+   Then give it a password — this is the only thing standing between the
+   dashboard and the internet, so do it *before* the nginx step below:
+
+   ```bash
+   sudo apt install apache2-utils          # for htpasswd, once
+   sudo htpasswd -c /etc/nginx/.kmufti-admin kareem
+   sudo chown root:www-data /etc/nginx/.kmufti-admin && sudo chmod 640 /etc/nginx/.kmufti-admin
+   ```
+
+   After nginx is reloaded, **check the lock actually works**:
+
+   ```bash
+   curl -s -o /dev/null -w '%{http_code}\n' https://kmufti.com/admin/          # 401
+   curl -s -o /dev/null -w '%{http_code}\n' https://kmufti.com/admin/admin.js  # 401, not 200
+   ```
+
+   The second one is the one that catches a mistake: without `^~` on the
+   location, the static-asset regex wins and hands out the page's JS with no
+   password (the same nginx rule that bit the chameleon photos). Two 401s and
+   you're done.
+
+   The service runs as `www-data` in the `adm` and `systemd-journal` groups,
+   which is what lets it read the nginx access log and the units' journals.
+   Drop either group and the dashboard still runs — it just says on the page
+   that it can't see traffic, or that the **log** button is unavailable.
+
+   The **restart** buttons on the service cards are off twice over. To turn
+   them on, uncomment `ADMIN_ALLOW_RESTART=1` in the unit *and* allow exactly
+   those five restarts, nothing else:
+
+   ```bash
+   sudo visudo -f /etc/sudoers.d/kmufti-admin
+   # www-data ALL=(root) NOPASSWD: /usr/bin/systemctl restart kmufti-wishlist, \
+   #   /usr/bin/systemctl restart kmufti-draw, /usr/bin/systemctl restart kmufti-puzzle, \
+   #   /usr/bin/systemctl restart kmufti-yahtzee, /usr/bin/systemctl restart kmufti-chameleon
+   ```
+
+   Leaving it off is a perfectly good choice: `ssh` and `systemctl restart` is
+   two lines of typing, and a web button that can restart services is a much
+   bigger thing to get wrong than one that can only read.
+
+9. **nginx**:
    ```bash
    sudo cp /var/www/kmufti-hub/deploy/nginx.conf /etc/nginx/sites-available/kmufti
    # edit server_name / root to match yours
@@ -138,12 +187,12 @@ launcher tiles before it became its own project, and the folder name stuck.
    backends, then `sudo nginx -t && sudo systemctl reload nginx`. Take a dated
    backup of `default` first; `nginx -t` tells you before a reload can hurt.
 
-9. **HTTPS** (Let's Encrypt):
+10. **HTTPS** (Let's Encrypt):
    ```bash
    sudo certbot --nginx -d kmufti.com -d www.kmufti.com
    ```
 
-10. **DNS**: point `kmufti.com` (and `www`) at your VPS IP (A / AAAA records).
+11. **DNS**: point `kmufti.com` (and `www`) at your VPS IP (A / AAAA records).
 
 ## Updating (your git-pull workflow)
 
@@ -162,6 +211,7 @@ sudo systemctl restart kmufti-wishlist   # wishlist/server.js
 sudo systemctl restart kmufti-draw       # draw/server.js
 sudo systemctl restart kmufti-puzzle     # puzzle/server.js
 sudo systemctl restart kmufti-chameleon  # chameleon/server.js
+sudo systemctl restart kmufti-admin      # admin/server.js
 ```
 
 Adding a puzzle needs no restart — `puzzle/puzzles.json` is re-read at every
@@ -171,6 +221,24 @@ Static changes are live immediately. When you edit a CSS/JS file, bump its
 `?v=` in the referencing HTML so browsers fetch the new one.
 
 ## Notes / gotchas
+
+- **The dashboard cannot tell you the site is down.** It runs on the box it
+  watches, so if the box or its network goes, the dashboard goes with it and
+  the last thing it ever showed you was green. Pair it with something outside:
+  a free [Healthchecks.io](https://healthchecks.io) or
+  [UptimeRobot](https://uptimerobot.com) monitor pointed at `https://kmufti.com/`
+  every five minutes, mailing you when it stops answering. That one is the
+  pager; `/admin/` is what you open *after* it goes off, to find out which
+  part broke.
+- **`/admin/` is not linked from anywhere** and nginx sends `X-Robots-Tag:
+  noindex` for it. There is deliberately no `robots.txt` rule — a
+  `Disallow: /admin/` line is a public sign saying the page exists, and the
+  password already keeps crawlers out with a 401.
+- **The dashboard stores no visitor data.** It reads the access log nginx
+  writes anyway and turns each IP into an 8-character hash with a salt that is
+  regenerated nightly, so "how many different people came today" is countable
+  and nothing else is. Requests to `/admin/` are skipped entirely, except the
+  401s — somebody else trying the door shows up under Errors.
 
 - **The wishlist `/api/*` routes are open endpoints.** They fetch arbitrary
   URLs on the visitor's behalf. `server.js` has an SSRF guard (blocks

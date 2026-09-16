@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>ops · kmufti</title>
+<link rel="icon" href="../favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="admin.css?v=1" />
+</head>
+<body>
+  <header class="bar">
+    <div class="bar-left">
+      <span class="wordmark">ops</span>
+      <span class="sub">kmufti.com</span>
+    </div>
+    <div class="bar-right">
+      <span id="polled" class="polled">connecting…</span>
+      <button id="refresh" class="ghost" title="Refresh now">↻</button>
+    </div>
+  </header>
+
+  <div id="banner" class="banner banner-wait">Asking the box…</div>
+
+  <main>
+    <section id="numbers" class="numbers"></section>
+
+    <section class="panel">
+      <h2>Front door <small>the public URL, over the real certificate</small></h2>
+      <div id="front"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Backends <small>each one probed on its own cheapest route, every 30s</small></h2>
+      <div id="services" class="services"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Visitors <small>from the nginx log — crawlers counted separately, never mixed in</small></h2>
+      <div id="chart"></div>
+      <div id="today-hours"></div>
+    </section>
+
+    <section class="cols">
+      <div class="panel">
+        <h2>Where they went <small>30 days</small></h2>
+        <div id="pages"></div>
+      </div>
+      <div class="panel">
+        <h2>How they got here <small>30 days</small></h2>
+        <div id="refs"></div>
+      </div>
+      <div class="panel">
+        <h2>What they used <small>30 days</small></h2>
+        <div id="agents"></div>
+      </div>
+      <div class="panel">
+        <h2>Errors served <small>30 days</small></h2>
+        <div id="errors"></div>
+      </div>
+    </section>
+
+    <section class="cols wide">
+      <div class="panel">
+        <h2>Right now <small>the last 25 page views</small></h2>
+        <div id="recent"></div>
+      </div>
+      <div class="panel">
+        <h2>The box</h2>
+        <div id="host"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Incidents <small>a service missing two checks in a row opens one</small></h2>
+      <div id="incidents"></div>
+    </section>
+
+    <p class="fineprint">
+      This page runs <em>on</em> the server, so it can never tell you the server
+      itself is down — if the box or the network goes, this goes with it. That
+      is what an outside pinger is for (see DEPLOY.md). No visitor is tracked
+      here: an IP becomes an 8-character hash with a salt that is thrown away
+      every night, and only ever gets counted.
+    </p>
+  </main>
+
+  <div id="sheet" class="sheet" hidden>
+    <div class="sheet-inner">
+      <div class="sheet-head"><strong id="sheet-title"></strong><button id="sheet-close" class="ghost">✕</button></div>
+      <pre id="sheet-body"></pre>
+    </div>
+  </div>
+
+<script src="admin.js?v=1"></script>
+</body>
+</html>

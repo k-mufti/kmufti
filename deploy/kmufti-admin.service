@@ -1,0 +1,45 @@
+# systemd unit for the ops dashboard - the private page at /admin/.
+# Install:
+#   sudo cp deploy/kmufti-admin.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now kmufti-admin
+#
+# After changing admin/server.js on the box:  sudo systemctl restart kmufti-admin
+#
+# It binds 127.0.0.1 only, so nothing reaches it except through nginx - which
+# is where the password lives (see DEPLOY.md). Two group memberships are what
+# make it useful rather than blind:
+#
+#   adm             read /var/log/nginx/access.log  (the visitor numbers)
+#   systemd-journal read `journalctl -u kmufti-*`   (the "log" button on a card)
+#
+# Without them the dashboard still runs; it just says so on the page instead of
+# showing traffic or logs.
+
+[Unit]
+Description=kmufti ops dashboard (uptime + traffic, private)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/kmufti-hub/admin
+ExecStart=/usr/bin/node server.js
+Environment=PORT=8026
+# Uptime history and the rolling traffic totals. StateDirectory= creates
+# /var/lib/kmufti-admin with the right owner on first start, so there is no
+# mkdir/chown step for this one.
+StateDirectory=kmufti-admin
+Environment=ADMIN_STATE=/var/lib/kmufti-admin
+# The URL it checks from the outside in, certificate and all.
+#Environment=ADMIN_PUBLIC_URL=https://kmufti.com/
+#Environment=ADMIN_ACCESS_LOG=/var/log/nginx/access.log
+# Restart buttons on the service cards. Off unless this is 1 AND the sudoers
+# line in DEPLOY.md is in place - both, deliberately.
+#Environment=ADMIN_ALLOW_RESTART=1
+SupplementaryGroups=adm systemd-journal
+Restart=always
+RestartSec=3
+User=www-data
+
+[Install]
+WantedBy=multi-user.target
