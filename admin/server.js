@@ -28,6 +28,7 @@
 const http = require("http");
 const https = require("https");
 const fs = require("fs");
+const zlib = require("zlib");
 const path = require("path");
 const os = require("os");
 const crypto = require("crypto");
@@ -304,6 +305,13 @@ function ingestLine(line) {
   if (/\/api\//.test(p)) { d.api++; return; }
   if (ASSET.test(p)) return;                         // an asset isn't a visit
 
+  // Nor is a page that was never served. Scanners rattling /.git, /wp-admin
+  // and /.env are the single loudest thing in the log, and counting their
+  // 404s as page views puts them straight to the top of "where they went".
+  // They are all still in Errors, which is where a probe belongs.
+  // 304 stays: HTML is sent no-cache, so a revalidated page is a real visit.
+  if (status !== 200 && status !== 304) return;
+
   // A visitor is somebody who asked for a page. Counting them off every
   // request instead would count the stylesheet and the logo as people, and
   // "visitors" would come out higher than "page views" - which is how you can
@@ -339,15 +347,46 @@ function ingestFile(file, from) {
   });
 }
 
+// The rotated logs, oldest first. logrotate keeps about two weeks of them and
+// gzips everything past yesterday's, which would otherwise be two weeks of
+// history the charts never see. zlib is in Node, so reading them costs nothing
+// but the few seconds this takes once, on the very first start.
+async function ingestArchive() {
+  const dir = path.dirname(ACCESS_LOG), base = path.basename(ACCESS_LOG);
+  let names = [];
+  try { names = fs.readdirSync(dir); } catch { return; }
+  const rotated = names
+    .map((f) => ({ f, n: parseInt((f.match(new RegExp("^" + base.replace(/\./g, "\\.") + "\\.(\\d+)")) || [])[1], 10) }))
+    .filter((x) => Number.isFinite(x.n))
+    .sort((a, b) => b.n - a.n);                      // .14 first, .1 last
+  for (const { f } of rotated) {
+    pending = "";
+    await (f.endsWith(".gz") ? ingestGz(path.join(dir, f)) : ingestFile(path.join(dir, f), 0));
+  }
+  pending = "";
+}
+
+function ingestGz(file) {
+  return new Promise((resolve) => {
+    const stream = fs.createReadStream(file).pipe(zlib.createGunzip());
+    stream.setEncoding("utf8");
+    stream.on("data", (chunk) => {
+      const lines = (pending + chunk).split("\n");
+      pending = lines.pop();
+      for (const l of lines) ingestLine(l);
+    });
+    stream.on("error", () => resolve());             // a half-written rotation: skip it
+    stream.on("end", () => { if (pending) ingestLine(pending); resolve(); });
+  });
+}
+
 async function scanLog() {
   if (!fs.existsSync(ACCESS_LOG)) return false;
-  // First run on a box: read yesterday's rotated log too, so the dashboard
-  // opens with history instead of a blank chart. Gzipped ones are left alone.
+  // First run on a box: read everything logrotate still has, so the dashboard
+  // opens with the last two weeks rather than with today.
   if (!traffic.cursor.seeded) {
     traffic.cursor.seeded = true;
-    pending = "";
-    await ingestFile(ACCESS_LOG + ".1", 0);
-    pending = "";
+    await ingestArchive();
   }
   let size = 0;
   try { size = fs.statSync(ACCESS_LOG).size; } catch { return false; }
@@ -412,11 +451,15 @@ async function slowFacts() {
     return { dir: path.basename(dir), kb: +kb };
   }).filter((s) => s.kb) : [];
 
-  const log = await run("git", ["-C", REPO, "log", "-1", "--format=%h%x00%s%x00%ct%x00%an"]);
+  // -c safe.directory, because this runs as www-data and the checkout belongs
+  // to ubuntu; without it git refuses the repo as "dubious ownership" and the
+  // dashboard just shows no commit. Set on the command, not in a global config.
+  const gitArgs = ["-c", "safe.directory=" + REPO, "-C", REPO];
+  const log = await run("git", [...gitArgs, "log", "-1", "--format=%h%x00%s%x00%ct%x00%an"]);
   let git = null;
   if (log) {
     const [hash, subject, ct, author] = log.trim().split("\0");
-    const dirty = await run("git", ["-C", REPO, "status", "--porcelain"]);
+    const dirty = await run("git", [...gitArgs, "status", "--porcelain"]);
     git = { hash, subject, at: +ct * 1000, author, dirty: Boolean(dirty && dirty.trim()) };
   }
   slow = { disk, state, git, at: Date.now() };

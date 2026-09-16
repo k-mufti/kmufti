@@ -222,6 +222,16 @@ Static changes are live immediately. When you edit a CSS/JS file, bump its
 
 ## Notes / gotchas
 
+- **The web root is a git checkout, so `/.git/` must be denied.** Without the
+  dotfile `location` block in `deploy/nginx.conf`, `https://kmufti.com/.git/config`
+  returns 200 and anyone can walk the whole history - and `/.git` is the single
+  most-requested path in the access log, ahead of the hub itself. The rule
+  excludes `.well-known` so certbot can still renew. Check it with:
+
+  ```bash
+  curl -s -o /dev/null -w '%{http_code}\n' https://kmufti.com/.git/config   # 403
+  ```
+
 - **The dashboard cannot tell you the site is down.** It runs on the box it
   watches, so if the box or its network goes, the dashboard goes with it and
   the last thing it ever showed you was green. Pair it with something outside:
