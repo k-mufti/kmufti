@@ -38,6 +38,14 @@ function bytes(b) {
 }
 const clock = (ms) => new Date(ms).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
+// "2026-09-16" is a calendar day, not an instant. new Date() would read it as
+// UTC midnight, which in Chicago renders as the day before - so build it as a
+// local date instead and the labels line up with the buckets.
+const dayLabel = (str) => {
+  const [y, m, d] = str.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString([], { month: "short", day: "numeric" });
+};
+
 /* ---------- the bars strip: one box an hour, three days of them ---------- */
 function barsHtml(bars) {
   const cells = bars.map((b) => {
@@ -175,12 +183,12 @@ function render(s) {
     $("chart").innerHTML = `
       <div class="chart">${t.series.map((d) => {
         const h = (d.views / max) * 100, u = Math.min(h, (d.uniq / max) * 100);
-        const label = `${new Date(d.day).toLocaleDateString([], { month: "short", day: "numeric" })} — ${d.views} views, ${d.uniq} visitors (${d.fresh} of them new), ${d.bots} crawler hits`;
+        const label = `${dayLabel(d.day)} — ${d.views} views, ${d.uniq} visitors (${d.fresh} of them new), ${d.bots} crawler hits`;
         return `<div class="col" title="${esc(label)}">
           <div class="v" style="height:${(h - u).toFixed(1)}%"></div>
           <div class="u" style="height:${u.toFixed(1)}%"></div></div>`;
       }).join("")}</div>
-      <div class="axis"><span>${esc(t.series[0].day)}</span><span>today</span></div>
+      <div class="axis"><span>${esc(dayLabel(t.series[0].day))}</span><span>today</span></div>
       <div class="chart-key">
         <span><i style="background:var(--up)"></i>visitors</span>
         <span><i style="background:var(--ink);opacity:.78"></i>page views on top</span>
@@ -190,13 +198,16 @@ function render(s) {
     const hmax = Math.max(1, ...t.today.hours);
     $("today-hours").innerHTML = `
       <div class="chart hours" style="height:54px;margin-top:16px">
-        ${t.today.hours.map((v, i) => `<div class="col" title="${String(i).padStart(2, "0")}:00 UTC — ${v} hits">
+        ${t.today.hours.map((v, i) => `<div class="col" title="${String(i).padStart(2, "0")}:00 — ${v} hits">
           <div class="v" style="height:${(v / hmax * 100).toFixed(1)}%"></div></div>`).join("")}
       </div>
-      <div class="axis"><span>00:00 UTC today</span><span>${n(t.today.hits)} hits · ${n(t.today.api)} API calls</span><span>23:00</span></div>`;
+      <div class="axis"><span>midnight, ${esc((s.flags.tz || "").split("/").pop().replace(/_/g, " "))}</span><span>${n(t.today.hits)} hits · ${n(t.today.api)} API calls</span><span>23:00</span></div>`;
   }
 
-  $("pages").innerHTML = rows(t.top.pages);
+  $("pages").innerHTML = rows(t.top.pages) + (s.flags.hosted ? "" :
+    `<p class="users-foot">No hostnames in the log yet, so all of this is counted as kmufti.com —
+     including anyone who was really on karimmufti.com or kareemmuftee.com. Add the
+     <code>log_format</code> line from DEPLOY.md and the split starts from that moment.</p>`);
   $("refs").innerHTML = t.top.refs.length ? rows(t.top.refs)
     : `<p class="empty">Nobody arrived from another site — all direct, or the referrer was stripped.</p>`;
   $("agents").innerHTML = rows(t.top.agents) + `<div style="height:10px"></div>` + rows(t.top.os);

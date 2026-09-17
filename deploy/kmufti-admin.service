@@ -30,6 +30,9 @@ Environment=PORT=8026
 # mkdir/chown step for this one.
 StateDirectory=kmufti-admin
 Environment=ADMIN_STATE=/var/lib/kmufti-admin
+# Which midnight ends a day. The box runs UTC, which would roll "today" over at
+# 7pm in Chicago and put the whole evening on tomorrow's chart.
+Environment=ADMIN_TZ=America/Chicago
 # The URL it checks from the outside in, certificate and all.
 #Environment=ADMIN_PUBLIC_URL=https://kmufti.com/
 #Environment=ADMIN_ACCESS_LOG=/var/log/nginx/access.log

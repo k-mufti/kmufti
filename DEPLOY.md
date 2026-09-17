@@ -222,6 +222,27 @@ Static changes are live immediately. When you edit a CSS/JS file, bump its
 
 ## Notes / gotchas
 
+- **All three domains share one access log**, so the dashboard cannot tell a
+  kmufti.com visitor from a kareemmuftee.com one until nginx writes the
+  hostname down. One line in the `http` block of `/etc/nginx/nginx.conf` fixes
+  it - a format that is `combined` with `$host` in front:
+
+  ```nginx
+  log_format hosted '$host $remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" "$http_user_agent"';
+  access_log /var/log/nginx/access.log hosted;
+  ```
+
+  The dashboard reads both shapes, so nothing breaks in the changeover and the
+  rotated `.gz` archive still parses - those older lines just have no host and
+  are counted as kmufti.com, which is what they were being counted as anyway.
+  After it, "where they went" lists kmufti's own projects by name and the other
+  two domains by domain.
+- **Days end at your midnight, not the box's.** The server runs UTC; `ADMIN_TZ`
+  in the unit (default `America/Chicago`) is the zone every traffic day and
+  hour is bucketed in, so "today" means since midnight where you are rather
+  than since 7pm yesterday.
+
 - **To rebuild the dashboard's traffic history, stop it before deleting the
   file.** The service writes its state on the way down, so `rm traffic.json &&
   systemctl restart` loses the race - the dying process puts the old file back

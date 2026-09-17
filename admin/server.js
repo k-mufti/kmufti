@@ -46,6 +46,10 @@ const FAILS_TO_OPEN = 2;                        // misses before it counts as an
 const KEEP_DAYS = 60;                           // traffic history
 const KEEP_HOURS = 24 * 90;                     // uptime history
 const UA_SELF = "kmufti-admin/1 (health check)"; // so our own pings don't count as traffic
+// The box runs UTC, which would end the day at 7pm in Chicago - "today" would
+// reset over dinner and the evening's visitors would land on tomorrow. Every
+// traffic day and hour is bucketed in this zone instead.
+const TZ = process.env.ADMIN_TZ || "America/Chicago";
 
 // State lives outside the repo in production, next to the script in dev, so a
 // git pull can't wipe the uptime history and a laptop run needs no setup.
@@ -72,10 +76,34 @@ const SERVICES = [
     method: "GET",     probe: "/api/photo/stats", href: "/chameleon/" },
 ];
 
+// What actually exists in the web root, which is the only honest answer to
+// "is that a page of this site?". Anything else - /wp-admin, /vendor, /.env,
+// /config - is a probe for somebody else's software and was never a page here,
+// whatever status it came back with.
+//
+// This matters more than it sounds. /.git DID exist in the web root and served
+// 200s for weeks before the deny rule went in, so status alone cannot tell a
+// scanner from a reader: 14,631 successful requests for /.git/config would
+// otherwise be the most-read "page" on the site, and any scanner that asked
+// twice would be counted as a person. Dotfiles are excluded for exactly that
+// reason - the checkout's own .git is in there.
+//
+// Read from disk, so adding a project needs nothing here; re-read every few
+// minutes so a deploy is noticed without a restart.
+let SITE_PATHS = new Set();
+function readSitePaths() {
+  try { SITE_PATHS = new Set(fs.readdirSync(REPO).filter((f) => !f.startsWith("."))); } catch { /* keep the last list */ }
+}
+readSitePaths();
+const isSitePage = (p) => {
+  const seg = p.split("/").filter(Boolean)[0];
+  return !seg || SITE_PATHS.has(seg);
+};
+
 // Pretty names for the top-level paths, so the traffic table reads like the
 // hub rather than like a log file.
 const PROJECT_NAMES = {
-  "": "Hub", "index.html": "Hub",
+  "": "kmufti", "index.html": "kmufti",
   yahtzee: "Yahtzee", puzzle: "Jigsaw", jeoprady: "Jeoprady!", wishlist: "Wishlist",
   chameleon: "Meccha Chameleon", "white-canvas": "White Canvas", translate: "Lost in Translation",
   draw: "White Canvas", admin: "Admin", images: "Assets",
@@ -99,8 +127,31 @@ function writeJson(file, value) {
     fs.renameSync(tmp, file);                    // atomic: a crash can't truncate history
   } catch (e) { /* no state dir - the dashboard still works, it just forgets */ }
 }
+// Uptime keeps UTC hour buckets - they are only ever rendered as local time in
+// the browser, so the zone doesn't enter into it.
 const hourKey = (d) => new Date(d).toISOString().slice(0, 13);   // 2026-09-15T13
-const dayKey  = (d) => new Date(d).toISOString().slice(0, 10);   // 2026-09-15
+
+// Traffic is bucketed in TZ. Intl is the only thing that knows when a zone's
+// offset changed, but it is far too slow to call per log line, so the answer
+// is cached per UTC hour - which is the finest granularity either result can
+// change at, and turns 140,000 lookups into a few hundred.
+const zoneFmt = new Intl.DateTimeFormat("en-CA", {
+  timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hour12: false,
+});
+const zoneCache = new Map();
+function zoned(ms) {
+  const slot = Math.floor(ms / 3600000);
+  let z = zoneCache.get(slot);
+  if (!z) {
+    const g = {};
+    for (const part of zoneFmt.formatToParts(new Date(slot * 3600000))) g[part.type] = part.value;
+    z = { day: `${g.year}-${g.month}-${g.day}`, hour: Number(g.hour) % 24 };
+    if (zoneCache.size > 20000) zoneCache.clear();
+    zoneCache.set(slot, z);
+  }
+  return z;
+}
+const dayKey = (d) => zoned(+d).day;                             // 2026-09-15, in TZ
 const bump = (obj, key, by = 1) => { obj[key] = (obj[key] || 0) + by; };
 const topOf = (obj, n = 8) => Object.entries(obj)
   .sort((a, b) => b[1] - a[1]).slice(0, n).map(([k, v]) => ({ k, v }));
@@ -223,6 +274,7 @@ function pruneUptime() {
 const traffic = readJson(path.join(STATE_DIR, "traffic.json"), { days: {}, cursor: { offset: 0, seeded: false } });
 const recent = [];                 // last 200 page views, memory only
 let pending = "";                  // a half-written final line waits here for the rest
+let seenHosted = false;            // has any line arrived with a hostname on it
 
 let salt = crypto.randomBytes(16).toString("hex");
 let saltDay = dayKey(Date.now());
@@ -354,7 +406,15 @@ for (const d of Object.values(traffic.days)) {
   }
 }
 
-const LINE = /^(\S+) \S+ \S+ \[([^\]]+)\] "(\S+) ([^"]*?) [^"]*" (\d{3}) (\d+|-) "([^"]*)" "([^"]*)"/;
+// Two shapes. HOSTED is nginx's `combined` with $host prepended, which is what
+// the box writes once the log_format in DEPLOY.md is in place; COMBINED is the
+// default, and every line written before that - and every rotated .gz - is in
+// it. Those older lines simply have no host, and are counted as kmufti.com
+// because that is what the dashboard was reporting all along.
+const HOSTED   = /^(\S+) (\S+) \S+ \S+ \[([^\]]+)\] "(\S+) ([^"]*?) [^"]*" (\d{3}) (\d+|-) "([^"]*)" "([^"]*)"/;
+const COMBINED = /^(\S+) \S+ \S+ \[([^\]]+)\] "(\S+) ([^"]*?) [^"]*" (\d{3}) (\d+|-) "([^"]*)" "([^"]*)"/;
+const HOME = "kmufti.com";
+const siteOf = (h) => (!h || h === "-" ? null : h.replace(/^www\./i, "").toLowerCase());
 const MONTHS = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
 const BOT = /bot|crawl|spider|slurp|curl|wget|python-|headless|monitor|scan|fetch|preview|facebookexternalhit|semrush|ahrefs|bingpreview|uptime|zgrab|go-http-client|masscan|nmap|censys|\+http/i;
 const ASSET = /\.(css|js|mjs|json|png|jpe?g|svg|ico|woff2?|ttf|webp|gif|glb|stl|map|txt|csv|bin)$/i;
@@ -384,13 +444,25 @@ function osOf(ua) {
 }
 function projectOf(p) {
   const seg = p.split("?")[0].split("/").filter(Boolean)[0] || "";
-  return PROJECT_NAMES[seg] || (seg ? "/" + seg : "Hub");
+  return PROJECT_NAMES[seg] || (seg ? "/" + seg : "kmufti");
 }
 
+// Where somebody went, across all three sites: a page of kmufti.com by its
+// project name, anything on the other domains by the domain itself. One list,
+// so "did they read Jeoprady or did they land on kareemmuftee" is one glance.
+const wentTo = (site, p) => (site && site !== HOME ? site : projectOf(p));
+
 function ingestLine(line) {
-  const m = LINE.exec(line);
-  if (!m) return;
-  const [, ip, stamp, method, rawPath, statusStr, bytesStr, ref, ua] = m;
+  let host = null, ip, stamp, method, rawPath, statusStr, bytesStr, ref, ua;
+  let m = HOSTED.exec(line);
+  if (m) [, host, ip, stamp, method, rawPath, statusStr, bytesStr, ref, ua] = m;
+  else {
+    m = COMBINED.exec(line);
+    if (!m) return;
+    [, ip, stamp, method, rawPath, statusStr, bytesStr, ref, ua] = m;
+  }
+  const site = siteOf(host);
+  if (site && !seenHosted) seenHosted = true;       // the log carries hostnames now
   if (ua.includes("kmufti-admin")) return;          // our own front-door check
   const at = logTime(stamp);
   if (!at) return;
@@ -414,7 +486,7 @@ function ingestLine(line) {
   bump(d.status, statusStr);
   if (status >= 400) bump(d.errors, status + " " + p.slice(0, 80));
   if (bot) { d.bots++; return; }                    // people-numbers exclude crawlers
-  d.hours[new Date(at).getUTCHours()]++;
+  d.hours[zoned(at).hour]++;
 
   if (/\/api\//.test(p)) { d.api++; return; }
 
@@ -426,7 +498,13 @@ function ingestLine(line) {
   if (status !== 200 && status !== 304) return;
 
   const who = visitorId(ip);
-  const info = { at, browser: browserOf(ua), os: osOf(ua), page: projectOf(p) };
+  // Not a path this site has ever had: a probe, not a reader. It is already
+  // counted in hits and, if it 404'd, in Errors. Only kmufti.com is checked
+  // this way - the other two domains are served from a root this process
+  // cannot see, so they lean on the 200-and-behaved-like-a-browser test alone.
+  if ((!site || site === HOME) && !isSitePage(p)) return;
+
+  const info = { at, browser: browserOf(ua), os: osOf(ua), page: wentTo(site, p) };
   const firstEver = (crossed) => {
     if (crossed && allTimeAdd(ip, at, day) && d.seen[who]) d.seen[who].n = true;
   };
@@ -434,13 +512,13 @@ function ingestLine(line) {
   firstEver(mark(day, d, who, 0, info));
 
   d.views++;
-  bump(d.pages, projectOf(p));
+  bump(d.pages, wentTo(site, p));
   bump(d.agents, browserOf(ua));
   bump(d.os, osOf(ua));
   if (ref && ref !== "-" && !/kmufti\.com/.test(ref)) {
     try { bump(d.refs, new URL(ref).hostname); } catch { bump(d.refs, ref.slice(0, 40)); }
   }
-  recent.push({ at, who, page: projectOf(p), path: p.slice(0, 60), status,
+  recent.push({ at, who, page: wentTo(site, p), path: p.slice(0, 60), status,
                 browser: browserOf(ua), os: osOf(ua),
                 fresh: allTime.first[stableId(ip)] === day });   // never been here before today
   if (recent.length > 200) recent.shift();
@@ -580,6 +658,7 @@ async function slowFacts() {
   // to ubuntu; without it git refuses the repo as "dubious ownership" and the
   // dashboard just shows no commit. Set on the command, not in a global config.
   const gitArgs = ["-c", "safe.directory=" + REPO, "-C", REPO];
+  readSitePaths();                                   // a deploy may have added a project
   const log = await run("git", [...gitArgs, "log", "-1", "--format=%h%x00%s%x00%ct%x00%an"]);
   let git = null;
   if (log) {
@@ -694,7 +773,7 @@ async function snapshot() {
       ...i, name: i.service === "front" ? "Front door" : (SERVICES.find((s) => s.id === i.service)?.name || i.service),
     })),
     flags: { restart: ALLOW_RESTART, log: last.logOk, logPath: ACCESS_LOG, systemd: Boolean(last.systemd),
-             state: STATE_DIR },
+             state: STATE_DIR, tz: TZ, hosted: seenHosted },
   };
 }
 
