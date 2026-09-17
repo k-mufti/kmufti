@@ -63,6 +63,11 @@
       </div>
     </section>
 
+    <section class="panel">
+      <h2>Unique users today <small>one row per person, newest first</small></h2>
+      <div id="users"></div>
+    </section>
+
     <section class="cols wide">
       <div class="panel">
         <h2>Right now <small>the last 25 page views</small></h2>
@@ -82,9 +87,13 @@
     <p class="fineprint">
       This page runs <em>on</em> the server, so it can never tell you the server
       itself is down — if the box or the network goes, this goes with it. That
-      is what an outside pinger is for (see DEPLOY.md). No visitor is tracked
-      here: an IP becomes an 8-character hash with a salt that is thrown away
-      every night, and only ever gets counted.
+      is what an outside pinger is for (see DEPLOY.md). Nothing here stores an
+      address: an IP becomes a short one-way hash and is only ever counted,
+      never shown. Two salts do that — a nightly one, thrown away at midnight,
+      behind every daily and 30-day figure, so those cannot be linked from one
+      day to the next; and one permanent salt behind <em>unique viewers, all
+      time</em>, which is the only number here that can tell a returning
+      visitor from a new one, and the only reason that salt is kept.
     </p>
   </main>
 

@@ -221,7 +221,6 @@ function pruneUptime() {
    the aggregates are kept; no line is stored.
    ====================================================================== */
 const traffic = readJson(path.join(STATE_DIR, "traffic.json"), { days: {}, cursor: { offset: 0, seeded: false } });
-const uniqSets = {};               // day -> Set of hashed IPs, rebuilt from disk at boot
 const recent = [];                 // last 200 page views, memory only
 let pending = "";                  // a half-written final line waits here for the rest
 
@@ -233,15 +232,131 @@ function visitorId(ip) {
   return crypto.createHash("sha256").update(salt + ip).digest("hex").slice(0, 8);
 }
 
+/* ----------------------------------------------------------------------
+   All-time visitors
+   ----------------------------------------------------------------------
+   "How many different people, ever" needs an identifier that survives the
+   night - which is exactly what the daily salt refuses to be. So this keeps a
+   second one: a permanent random salt, generated once and stored, that turns
+   an address into a 10-character hash. Still one-way, still never displayed,
+   and the only question ever asked of it is "seen this before?".
+   That is a real trade and worth naming: the daily numbers stay unlinkable
+   night to night, but this one set can tell that somebody came back in March
+   and again in September. Delete visitors.json and the count starts over.
+
+   It lives in its own file because the traffic history is derived from the
+   logs and gets thrown away freely, and this cannot be rebuilt from anything
+   once it is gone. Re-reading the same logs hashes to the same ids, so a
+   rebuild adds nothing - it just re-confirms what is already there.
+   ---------------------------------------------------------------------- */
+const ALLTIME_FILE = path.join(STATE_DIR, "visitors.json");
+const allTime = readJson(ALLTIME_FILE, null) ||
+  { salt: crypto.randomBytes(16).toString("hex"), since: null, first: {} };
+// `first` is stable id -> the day that person first turned up, which is what
+// makes "new" answerable: a visitor is new on exactly one day, ever. An older
+// file that kept a plain list of ids still loads - those people are simply
+// known, with no first day, so they count as returning.
+if (Array.isArray(allTime.ids)) { allTime.first = {}; for (const id of allTime.ids) allTime.first[id] = null; }
+delete allTime.ids;
+allTime.first ||= {};
+const ALLTIME_CAP = 200000;
+let allTimeDirty = false;
+let allTimeN = Object.keys(allTime.first).length;
+
+const stableId = (ip) =>
+  crypto.createHash("sha256").update(allTime.salt + ip).digest("hex").slice(0, 10);
+
+// Returns true if this is the first time this address has ever been seen.
+function allTimeAdd(ip, at, day) {
+  if (at && (!allTime.since || at < allTime.since)) { allTime.since = at; allTimeDirty = true; }
+  const id = stableId(ip);
+  if (id in allTime.first) return false;
+  if (allTimeN >= ALLTIME_CAP) return false;
+  allTime.first[id] = day;
+  allTimeN++;
+  allTimeDirty = true;
+  return true;
+}
+
 const emptyDay = () => ({
-  hits: 0, bytes: 0, views: 0, api: 0, bots: 0, uniq: [],
+  hits: 0, bytes: 0, views: 0, api: 0, bots: 0, seen: {},
   pages: {}, refs: {}, agents: {}, os: {}, status: {}, errors: {}, hours: new Array(24).fill(0),
 });
-for (const [day, d] of Object.entries(traffic.days)) uniqSets[day] = new Set(d.uniq || []);
+
+// `seen` is hashed address -> [pages, assets], and it exists to answer one
+// question: was that a person?
+//
+// A user-agent can't answer it. Half the addresses hitting this site claim to
+// be Chrome on a Mac and are a scanner in a rented rack - the same fake string
+// arriving from seven addresses at once. Behaviour answers it. A browser asks
+// for the page and then goes and gets the stylesheet, the script and the
+// images; a scanner takes the HTML and leaves. So an address counts as a
+// visitor once it has fetched an asset, or read a second page - and one that
+// asked for `/` exactly once and nothing else never does.
+//
+// It undercounts in one case: someone coming back inside the hour, whose
+// assets are still cached (max-age=3600) and who reads a single page. That is
+// the right way round - a number that says "people" should be a floor, not a
+// hopeful guess.
+const SEEN_CAP = 20000;
+const seenN = {};                                   // day -> size, so the cap costs nothing
+
+// One entry per address per day:
+//   p pages  a assets  f first seen  l last seen  b browser  o os
+//   g the pages they looked at (capped)  n true if never here before
+// It is a few hundred bytes a person, which buys the "unique users today"
+// list: the counting and the listing come from the same record, so the list
+// can never disagree with the number above it.
+function mark(day, d, who, asset, info) {
+  const seen = (d.seen ||= {});
+  let e = seen[who];
+  if (!e) {
+    const n = (seenN[day] ??= Object.keys(seen).length);
+    if (n >= SEEN_CAP) return false;                // a flood can't grow the file
+    e = seen[who] = { p: 0, a: 0, f: info.at, l: info.at, b: info.browser, o: info.os, g: [] };
+    seenN[day] = n + 1;
+  }
+  const was = qualifies(e);
+  if (asset) e.a++;
+  else { e.p++; if (e.g.length < 8 && !e.g.includes(info.page)) e.g.push(info.page); }
+  if (info.at < e.f) e.f = info.at;
+  if (info.at > e.l) e.l = info.at;
+  if (info.browser !== "other") { e.b = info.browser; e.o = info.os; }
+  return !was && qualifies(e);                      // true on the crossing only
+}
+
+// Read a page, and then behaved like a browser about it: went back for an
+// asset, or read a second page. Both halves matter. Without the first, a
+// stray request for a favicon counts as a person who never visited; without
+// the second, every scanner that grabs the homepage and leaves does.
+const qualifies = (e) => e.p > 0 && (e.a > 0 || e.p >= 2);
+const visitors = (d) => { let n = 0; for (const k in d.seen || {}) if (qualifies(d.seen[k])) n++; return n; };
+const addresses = (d) => Object.keys(d.seen || {}).length;
+
+// Today's people, most recent first - the list behind the section.
+function usersOf(d) {
+  const out = [];
+  for (const who in d.seen || {}) {
+    const e = d.seen[who];
+    if (!qualifies(e)) continue;                    // scanners are not users
+    out.push({ who, first: e.f, last: e.l, views: e.p, assets: e.a,
+               pages: e.g, browser: e.b, os: e.o, fresh: Boolean(e.n) });
+  }
+  return out.sort((a, b) => b.last - a.last);
+}
+
+// A state file written by an older build kept [pages, assets] pairs; keep the
+// counts and let the detail fill in from here on rather than throwing the day away.
+for (const d of Object.values(traffic.days)) {
+  for (const who in d.seen || {}) {
+    const e = d.seen[who];
+    if (Array.isArray(e)) d.seen[who] = { p: e[0] || 0, a: e[1] || 0, f: 0, l: 0, b: "other", o: "other", g: [] };
+  }
+}
 
 const LINE = /^(\S+) \S+ \S+ \[([^\]]+)\] "(\S+) ([^"]*?) [^"]*" (\d{3}) (\d+|-) "([^"]*)" "([^"]*)"/;
 const MONTHS = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
-const BOT = /bot|crawl|spider|slurp|curl|wget|python-|headless|monitor|scan|fetch|preview|facebookexternalhit|semrush|ahrefs|bingpreview|uptime/i;
+const BOT = /bot|crawl|spider|slurp|curl|wget|python-|headless|monitor|scan|fetch|preview|facebookexternalhit|semrush|ahrefs|bingpreview|uptime|zgrab|go-http-client|masscan|nmap|censys|\+http/i;
 const ASSET = /\.(css|js|mjs|json|png|jpe?g|svg|ico|woff2?|ttf|webp|gif|glb|stl|map|txt|csv|bin)$/i;
 
 function logTime(s) {                       // 15/Sep/2026:13:45:12 +0000
@@ -282,7 +397,6 @@ function ingestLine(line) {
 
   const day = dayKey(at);
   const d = (traffic.days[day] ||= emptyDay());
-  const set = (uniqSets[day] ||= new Set());
   const p = rawPath.split("?")[0];
   const status = Number(statusStr);
   const bytes = bytesStr === "-" ? 0 : Number(bytesStr);
@@ -303,21 +417,21 @@ function ingestLine(line) {
   d.hours[new Date(at).getUTCHours()]++;
 
   if (/\/api\//.test(p)) { d.api++; return; }
-  if (ASSET.test(p)) return;                         // an asset isn't a visit
 
-  // Nor is a page that was never served. Scanners rattling /.git, /wp-admin
-  // and /.env are the single loudest thing in the log, and counting their
-  // 404s as page views puts them straight to the top of "where they went".
-  // They are all still in Errors, which is where a probe belongs.
+  // A page that was never served is not a page view. Scanners rattling /.git,
+  // /wp-admin and /.env are the loudest thing in the log, and counting their
+  // 404s put them straight to the top of "where they went". They are all still
+  // in Errors, which is where a probe belongs.
   // 304 stays: HTML is sent no-cache, so a revalidated page is a real visit.
   if (status !== 200 && status !== 304) return;
 
-  // A visitor is somebody who asked for a page. Counting them off every
-  // request instead would count the stylesheet and the logo as people, and
-  // "visitors" would come out higher than "page views" - which is how you can
-  // tell an analytics number is measuring the wrong thing.
   const who = visitorId(ip);
-  if (set.size < 20000) set.add(who);                // a cap, so a crawl can't grow the file
+  const info = { at, browser: browserOf(ua), os: osOf(ua), page: projectOf(p) };
+  const firstEver = (crossed) => {
+    if (crossed && allTimeAdd(ip, at, day) && d.seen[who]) d.seen[who].n = true;
+  };
+  if (ASSET.test(p)) { firstEver(mark(day, d, who, 1, info)); return; }  // evidence of a browser
+  firstEver(mark(day, d, who, 0, info));
 
   d.views++;
   bump(d.pages, projectOf(p));
@@ -327,7 +441,8 @@ function ingestLine(line) {
     try { bump(d.refs, new URL(ref).hostname); } catch { bump(d.refs, ref.slice(0, 40)); }
   }
   recent.push({ at, who, page: projectOf(p), path: p.slice(0, 60), status,
-                browser: browserOf(ua), os: osOf(ua) });
+                browser: browserOf(ua), os: osOf(ua),
+                fresh: allTime.first[stableId(ip)] === day });   // never been here before today
   if (recent.length > 200) recent.shift();
 }
 
@@ -393,27 +508,32 @@ async function scanLog() {
   if (size < traffic.cursor.offset) { traffic.cursor.offset = 0; pending = ""; }  // rotated under us
   if (size === traffic.cursor.offset) return true;
   traffic.cursor.offset = await ingestFile(ACCESS_LOG, traffic.cursor.offset);
-  for (const [day, set] of Object.entries(uniqSets)) {
-    if (traffic.days[day]) traffic.days[day].uniq = [...set];
-  }
   return true;
 }
 
 function pruneTraffic() {
   const cutoff = dayKey(Date.now() - KEEP_DAYS * 86400000);
-  for (const day of Object.keys(traffic.days)) if (day < cutoff) { delete traffic.days[day]; delete uniqSets[day]; }
+  for (const day of Object.keys(traffic.days)) if (day < cutoff) { delete traffic.days[day]; delete seenN[day]; }
+}
+
+// How many people turned up for the very first time on each day.
+function firstsByDay() {
+  const out = {};
+  for (const id in allTime.first) { const d = allTime.first[id]; if (d) out[d] = (out[d] || 0) + 1; }
+  return out;
 }
 
 function trafficView(days = 30) {
+  const firsts = firstsByDay();
   const series = [], totals = { pages: {}, refs: {}, agents: {}, os: {}, errors: {} };
   let views = 0, people = 0, bots = 0, bytes = 0;
   for (let i = days - 1; i >= 0; i--) {
     const day = dayKey(Date.now() - i * 86400000);
     const d = traffic.days[day];
-    series.push({ day, views: d?.views || 0, uniq: d ? (uniqSets[day]?.size ?? d.uniq.length) : 0,
-                  bots: d?.bots || 0, hits: d?.hits || 0 });
+    series.push({ day, views: d?.views || 0, uniq: d ? visitors(d) : 0,
+                  fresh: firsts[day] || 0, bots: d?.bots || 0, hits: d?.hits || 0 });
     if (!d) continue;
-    views += d.views; people += uniqSets[day]?.size ?? d.uniq.length; bots += d.bots; bytes += d.bytes;
+    views += d.views; people += visitors(d); bots += d.bots; bytes += d.bytes;
     for (const key of ["pages", "refs", "agents", "os", "errors"]) {
       for (const [k, v] of Object.entries(d[key])) bump(totals[key], k, v);
     }
@@ -421,14 +541,19 @@ function trafficView(days = 30) {
   const today = traffic.days[dayKey(Date.now())] || emptyDay();
   const fiveMin = Date.now() - 5 * 60000;
   const liveSet = new Set(recent.filter((r) => r.at > fiveMin).map((r) => r.who));
+  const td = traffic.days[dayKey(Date.now())] || emptyDay();
   return {
     series,
     window: { days, views, people, bots, bytes },
-    today: { views: today.views, uniq: uniqSets[dayKey(Date.now())]?.size || 0, bots: today.bots,
+    today: { views: today.views, uniq: visitors(td), addresses: addresses(td),
+             fresh: firsts[dayKey(Date.now())] || 0, bots: today.bots,
              hits: today.hits, api: today.api, bytes: today.bytes, hours: today.hours },
     top: { pages: topOf(totals.pages), refs: topOf(totals.refs, 6),
            agents: topOf(totals.agents, 5), os: topOf(totals.os, 5), errors: topOf(totals.errors, 6) },
     live: { visitors: liveSet.size, recent: recent.slice(-25).reverse() },
+    users: usersOf(td),
+    allTime: { visitors: allTimeN, since: allTime.since,
+               fresh30: series.reduce((a, x) => a + x.fresh, 0) },
   };
 }
 
@@ -508,19 +633,27 @@ async function systemdFacts() {
    The poll loop
    ====================================================================== */
 let last = { services: {}, front: null, systemd: null, at: 0, logOk: false };
+let pollN = 0;
 
 async function poll() {
   const results = await Promise.all(SERVICES.map(probe));
   SERVICES.forEach((svc, i) => { record(svc.id, results[i].up, results[i].ms); last.services[svc.id] = results[i]; });
 
-  const front = await probeFrontDoor();
-  record("front", front.up, front.ms);
-  last.front = front;
+  // The front-door check leaves the box and comes back, so nginx logs it like
+  // any visitor. Every 30s that is 2,880 lines a day - more than the site
+  // itself gets - which buries the real traffic and rotates the archive out
+  // faster. Every fourth poll is two minutes, which is still a fine pager.
+  if (pollN % 4 === 0) {
+    const front = await probeFrontDoor();
+    record("front", front.up, front.ms);
+    last.front = front;
+  }
 
   last.systemd = await systemdFacts();
   last.logOk = await scanLog();
   last.at = Date.now();
 
+  pollN++;
   if (Date.now() - slow.at > 5 * 60000) await slowFacts();
   pruneUptime(); pruneTraffic();
   save();
@@ -532,6 +665,7 @@ function save() {
   saveTimer = setTimeout(() => {
     writeJson(path.join(STATE_DIR, "uptime.json"), uptime);
     writeJson(path.join(STATE_DIR, "traffic.json"), traffic);
+    if (allTimeDirty) { writeJson(ALLTIME_FILE, allTime); allTimeDirty = false; }
   }, 2000);
 }
 
@@ -639,6 +773,7 @@ function serveStatic(req, res, pathname) {
 for (const sig of ["SIGTERM", "SIGINT"]) process.on(sig, () => {
   writeJson(path.join(STATE_DIR, "uptime.json"), uptime);
   writeJson(path.join(STATE_DIR, "traffic.json"), traffic);
+  writeJson(ALLTIME_FILE, allTime);
   process.exit(0);
 });
 

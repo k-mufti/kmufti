@@ -222,6 +222,22 @@ Static changes are live immediately. When you edit a CSS/JS file, bump its
 
 ## Notes / gotchas
 
+- **To rebuild the dashboard's traffic history, stop it before deleting the
+  file.** The service writes its state on the way down, so `rm traffic.json &&
+  systemctl restart` loses the race - the dying process puts the old file back
+  and the new one starts from it. In this order it works:
+
+  ```bash
+  sudo systemctl stop kmufti-admin
+  sudo rm -f /var/lib/kmufti-admin/traffic.json
+  sudo systemctl start kmufti-admin
+  ```
+
+  Traffic totals are only ever derived from the nginx logs, so throwing the
+  file away costs nothing - it re-reads the whole archive on the next start.
+  `uptime.json` is the file that matters: nothing can rebuild a record of when
+  the site was down, so leave that one alone.
+
 - **The web root is a git checkout, so `/.git/` must be denied.** Without the
   dotfile `location` block in `deploy/nginx.conf`, `https://kmufti.com/.git/config`
   returns 200 and anyone can walk the whole history - and `/.git` is the single
@@ -245,9 +261,13 @@ Static changes are live immediately. When you edit a CSS/JS file, bump its
   `Disallow: /admin/` line is a public sign saying the page exists, and the
   password already keeps crawlers out with a 401.
 - **The dashboard stores no visitor data.** It reads the access log nginx
-  writes anyway and turns each IP into an 8-character hash with a salt that is
-  regenerated nightly, so "how many different people came today" is countable
-  and nothing else is. Requests to `/admin/` are skipped entirely, except the
+  writes anyway and turns each IP into a short one-way hash, which is only ever
+  counted. Two salts: a **nightly** one behind every daily and 30-day figure,
+  thrown away at midnight so one day's numbers cannot be linked to the next -
+  and one **permanent** salt, in `/var/lib/kmufti-admin/visitors.json`, behind
+  the single *unique viewers, all time* number, which cannot be counted at all
+  without an identifier that outlives the night. Delete that file and the
+  all-time count starts over; nothing else is affected. Requests to `/admin/` are skipped entirely, except the
   401s — somebody else trying the door shows up under Errors.
 
 - **The wishlist `/api/*` routes are open endpoints.** They fetch arbitrary

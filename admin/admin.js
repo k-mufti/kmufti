@@ -91,10 +91,17 @@ function render(s) {
   const hubOpens = s.services.find((x) => x.id === "puzzle")?.data?.visits;
   $("numbers").innerHTML = [
     { v: `<em>${n(t.live.visitors)}</em>`, l: "here in the last 5 min" },
-    { v: n(t.today.uniq), l: "visitors today" },
+    { v: `<em>${n(t.today.fresh)}</em>`, l: "new today",
+      title: "people who had never been to the site before today — the number that tells you whether anyone new is finding it" },
+    { v: n(t.today.uniq), l: "visitors today",
+      title: `${t.today.addresses} addresses touched the site today; ${t.today.uniq} of them behaved like a browser (fetched a page's assets, or read a second page). The rest asked for one page and left - that is a scanner, whatever its user-agent claims.` },
     { v: n(t.today.views), l: "page views today" },
     { v: n(t.window.people), l: "visitors, 30 days", title: "the daily counts added up — someone who came twice on two days counts twice" },
-    { v: n(hubOpens), l: "hub opens, all time" },
+    { v: `<em>${n(t.allTime.visitors)}</em>`, l: "unique viewers, all time",
+      title: t.allTime.since
+        ? `distinct people since ${new Date(t.allTime.since).toLocaleDateString([], { month: "long", day: "numeric", year: "numeric" })} — as far back as the logs went when this started watching; ${t.allTime.fresh30} of them arrived for the first time in the last 30 days. This is the one number kept with a permanent salt rather than a nightly one, because counting somebody once across months is impossible otherwise.`
+        : "nobody counted yet" },
+    { v: n(hubOpens), l: "hub opens, all time", title: "page loads of the hub, not people — your existing counter" },
     { v: n(t.today.bots), l: "crawler hits today" },
   ].map((x) => `<div class="num"${x.title ? ` title="${esc(x.title)}"` : ""}><b>${x.v}</b><span>${x.l}</span></div>`).join("");
 
@@ -168,7 +175,7 @@ function render(s) {
     $("chart").innerHTML = `
       <div class="chart">${t.series.map((d) => {
         const h = (d.views / max) * 100, u = Math.min(h, (d.uniq / max) * 100);
-        const label = `${new Date(d.day).toLocaleDateString([], { month: "short", day: "numeric" })} — ${d.views} views, ${d.uniq} visitors, ${d.bots} crawler hits`;
+        const label = `${new Date(d.day).toLocaleDateString([], { month: "short", day: "numeric" })} — ${d.views} views, ${d.uniq} visitors (${d.fresh} of them new), ${d.bots} crawler hits`;
         return `<div class="col" title="${esc(label)}">
           <div class="v" style="height:${(h - u).toFixed(1)}%"></div>
           <div class="u" style="height:${u.toFixed(1)}%"></div></div>`;
@@ -177,7 +184,7 @@ function render(s) {
       <div class="chart-key">
         <span><i style="background:var(--up)"></i>visitors</span>
         <span><i style="background:var(--ink);opacity:.78"></i>page views on top</span>
-        <span>${n(t.window.views)} views · ${n(t.window.people)} visitors · ${bytes(t.window.bytes)} served in 30 days</span>
+        <span>${n(t.window.views)} views · ${n(t.window.people)} visitors · ${n(t.allTime.fresh30)} of them here for the first time · ${bytes(t.window.bytes)} served in 30 days</span>
       </div>`;
 
     const hmax = Math.max(1, ...t.today.hours);
@@ -196,11 +203,30 @@ function render(s) {
   $("errors").innerHTML = t.top.errors.length ? rows(t.top.errors)
     : `<p class="empty">No 4xx or 5xx in 30 days.</p>`;
 
+  /* --- today's people, one row each --- */
+  const users = t.users || [];
+  $("users").innerHTML = users.length ? `
+    <div class="users">${users.map((u) => `
+      <div class="user">
+        <span class="uid">${esc(u.who)}</span>
+        <span class="uwhen">${clock(u.first)}${u.last - u.first > 60000 ? " → " + clock(u.last) : ""}</span>
+        <span class="uviews">${u.views} view${u.views === 1 ? "" : "s"}</span>
+        <span class="upages" title="${esc(u.pages.join(", "))}">${u.pages.map(esc).join(", ")}</span>
+        <span class="uua">${esc(u.browser)} · ${esc(u.os)}</span>
+        ${u.fresh ? '<span class="tag-new" title="first time ever on the site">new</span>' : '<span class="tag-old">seen before</span>'}
+      </div>`).join("")}</div>
+    <p class="users-foot">${users.length} ${users.length === 1 ? "person" : "people"} today${
+      t.today.addresses > users.length
+        ? ` · ${t.today.addresses - users.length} other address${t.today.addresses - users.length === 1 ? " was" : "es were"} dropped as scanners — one page, no assets, never came back`
+        : ""}</p>`
+    : `<p class="empty">Nobody today yet — or nobody who behaved like a browser.</p>`;
+
   /* --- the live feed --- */
   $("recent").innerHTML = t.live.recent.length ? `<div class="feed">${t.live.recent.map((r) => `
     <div><span class="t">${clock(r.at)}</span><span class="who">${esc(r.who)}</span>
     <span class="p ${r.status >= 400 ? "bad" : ""}" title="${esc(r.path)}">${esc(r.page)}</span>
-    <span class="t">${esc(r.browser)} · ${esc(r.os)}</span></div>`).join("")}</div>`
+    <span class="t">${esc(r.browser)} · ${esc(r.os)}</span>
+    ${r.fresh ? '<span class="tag-new" title="never seen before today">new</span>' : ""}</div>`).join("")}</div>`
     : `<p class="empty">Nothing since this service started.</p>`;
 
   /* --- the box --- */
