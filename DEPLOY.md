@@ -16,6 +16,7 @@ persists in the visitor's browser (`localStorage`).
 | Wishlist (`/wishlist/`) | static + **Node** (`wishlist/server.js`) | `/wishlist/api/unfurl` + `/wishlist/api/img` on port 8021 |
 | White Canvas (`/white-canvas/`) | static + **Node** (`draw/server.js`) | SSE stream on port 8022; grid in `/var/lib/kmufti-draw/canvas.bin` |
 | Jigsaw (`/puzzle/`) | static + **Node** (`puzzle/server.js`) | WebSocket table on port 8023; state in `/var/lib/kmufti-puzzle/` |
+| Infinite Kitchen (`/infinite-kitchen/`) | static + **Node** (`infinite-kitchen/server.js`) | recipes in `recipes.json` (static, in the repo); the list of pairs tried with no recipe on port 8027, in `/var/lib/kmufti-kitchen/missing.json` |
 | Yahtzee (`/yahtzee/`) | static + **Node** (`yahtzee/server.js`) | 1v1 matches over a WebSocket on port 8024. Nothing persisted — a match lives in memory, and solo-vs-bot works with the backend down |
 | Ops dashboard (`/admin/`) | static + **Node** (`admin/server.js`) | **private.** Uptime, traffic and host health on port 8026, bound to localhost and behind an nginx password. History in `/var/lib/kmufti-admin` |
 
@@ -119,7 +120,20 @@ launcher tiles before it became its own project, and the folder name stuck.
    No data directory: matches are in memory and a restart drops games in
    progress. That is the right trade for a fifteen-minute game and no database.
 
-8. **Ops dashboard** (the private page at `/admin/`):
+8. **Infinite Kitchen service** (the list of untried pairs):
+   ```bash
+   sudo mkdir -p /var/lib/kmufti-kitchen && sudo chown www-data:www-data /var/lib/kmufti-kitchen
+   sudo cp /var/www/kmufti-hub/deploy/kmufti-kitchen.service /etc/systemd/system/
+   sudo systemctl daemon-reload
+   sudo systemctl enable --now kmufti-kitchen
+   curl -s localhost:8027/api/health     # {"ok":true,"recipes":470,...}
+   curl -s localhost:8027/api/missing    # pairs players tried with no recipe, most-tried first
+   ```
+   The game is static and plays without this. New recipes need no restart:
+   the server re-reads `infinite-kitchen/recipes.json` when it changes, and
+   pairs that got a recipe drop off the list.
+
+9. **Ops dashboard** (the private page at `/admin/`):
    ```bash
    sudo cp /var/www/kmufti-hub/deploy/kmufti-admin.service /etc/systemd/system/
    sudo systemctl daemon-reload
@@ -167,7 +181,7 @@ launcher tiles before it became its own project, and the folder name stuck.
    two lines of typing, and a web button that can restart services is a much
    bigger thing to get wrong than one that can only read.
 
-9. **nginx**:
+10. **nginx**:
    ```bash
    sudo cp /var/www/kmufti-hub/deploy/nginx.conf /etc/nginx/sites-available/kmufti
    # edit server_name / root to match yours
@@ -187,12 +201,12 @@ launcher tiles before it became its own project, and the folder name stuck.
    backends, then `sudo nginx -t && sudo systemctl reload nginx`. Take a dated
    backup of `default` first; `nginx -t` tells you before a reload can hurt.
 
-10. **HTTPS** (Let's Encrypt):
+11. **HTTPS** (Let's Encrypt):
    ```bash
    sudo certbot --nginx -d kmufti.com -d www.kmufti.com
    ```
 
-11. **DNS**: point `kmufti.com` (and `www`) at your VPS IP (A / AAAA records).
+12. **DNS**: point `kmufti.com` (and `www`) at your VPS IP (A / AAAA records).
 
 ## Updating (your git-pull workflow)
 
@@ -211,6 +225,7 @@ sudo systemctl restart kmufti-wishlist   # wishlist/server.js
 sudo systemctl restart kmufti-draw       # draw/server.js
 sudo systemctl restart kmufti-puzzle     # puzzle/server.js
 sudo systemctl restart kmufti-chameleon  # chameleon/server.js
+sudo systemctl restart kmufti-kitchen    # infinite-kitchen/server.js
 sudo systemctl restart kmufti-admin      # admin/server.js
 ```
 

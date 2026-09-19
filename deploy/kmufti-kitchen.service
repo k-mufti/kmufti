@@ -1,0 +1,30 @@
+# systemd unit for Infinite Kitchen's backend.
+# Install:
+#   sudo mkdir -p /var/lib/kmufti-kitchen && sudo chown www-data:www-data /var/lib/kmufti-kitchen
+#   sudo cp deploy/kmufti-kitchen.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now kmufti-kitchen
+#
+# After changing infinite-kitchen/server.js on the box:  sudo systemctl restart kmufti-kitchen
+# (A new recipes.json needs no restart - the server re-reads it when it changes.)
+#
+# The game itself is static and plays fine with this down. What this keeps is
+# the list of pairs players tried that have no recipe yet.
+
+[Unit]
+Description=kmufti Infinite Kitchen (untried-pair list)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/kmufti-hub/infinite-kitchen
+ExecStart=/usr/bin/node server.js
+Environment=PORT=8027
+# Outside the repo, so a git pull can't wipe the list.
+Environment=KITCHEN_DATA=/var/lib/kmufti-kitchen
+Restart=always
+RestartSec=3
+User=www-data
+
+[Install]
+WantedBy=multi-user.target

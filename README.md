@@ -19,6 +19,7 @@ each tile is a self-contained app living in its own folder.
 | **`/chameleon/`** | **Meccha Chameleon** — a blank figure is hiding in today's photo, blended into it. Find it fast; your time and click count are the only score. One a day. |
 | **`/white-canvas/`** | **White Canvas** — a shared r/place-style pixel wall. Everyone draws on the same 180×300 grid, live, and every pixel stays. |
 | **`/translate/`** | **Lost in Translation** — a phrase appears in a mystery language. Guess what it means, and name the language for bonus points. |
+| **`/infinite-kitchen/`** | **Infinite Kitchen** — combine ingredients, techniques and cuisines to cook your way to every dish. Every recipe is hand-written in `recipes.json` for now. |
 | **`/yahtzee/`** | **Yahtzee** — five dice on a green felt tray, thrown with real physics. Play the bot, or a stranger 1v1 over a socket. |
 
 
@@ -33,6 +34,7 @@ Mostly static files. A few small zero-dependency Node backends do the live bits:
 | `puzzle/server.js` | 8023 | The Jigsaw table — piece positions and presence over a hand-rolled WebSocket. |
 | `yahtzee/server.js` | 8024 | The Yahtzee table — 1v1 matchmaking and every dice roll, so no client can invent a number. Nothing persisted; a match lives in memory. |
 | `chameleon/server.js` | 8025 | Practice photos for Meccha Chameleon, fetched from Pexels and cached on our own origin so the game can read pixels off them. The daily puzzle needs none of it. |
+| `infinite-kitchen/server.js` | 8027 | Infinite Kitchen's to-do list: every pair a player tried that has no recipe yet, so the next batch can be written. |
 | `admin/server.js` | 8026 | The private ops dashboard at `/admin/` — uptime, visitor numbers read out of the nginx log, host health. Bound to localhost, password on the nginx side, not linked from anywhere. |
 
 `draw/server.js` is the backend for `/white-canvas/` — the canvas used to live
@@ -74,6 +76,7 @@ node draw/server.js       # 8022
 node puzzle/server.js     # 8023
 node yahtzee/server.js    # 8024
 node chameleon/server.js  # 8025
+node infinite-kitchen/server.js  # 8027
 node admin/server.js      # 8026 — then open http://localhost:8026/admin/
 ```
 

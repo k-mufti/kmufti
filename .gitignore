@@ -33,3 +33,7 @@ chameleon/photos/
 # The ops dashboard keeps its uptime/traffic history here on a laptop run
 # (prod: /var/lib/kmufti-admin).
 admin/state/
+
+# Infinite Kitchen: untried-pair list from a laptop run
+# (prod: /var/lib/kmufti-kitchen).
+infinite-kitchen/data/

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Infinite Kitchen — kmufti.com</title>
+  <link rel="icon" href="favicon.svg?v=1" type="image/svg+xml" />
+  <meta name="description" content="Combine ingredients, techniques and cuisines to cook your way to every dish." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=1" />
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="../">kmufti.com</a>
+    <h1>Infinite Kitchen</h1>
+    <nav class="top-actions">
+      <button type="button" id="bookBtn">Recipes</button>
+      <button type="button" id="notebookBtn">Notebook <span class="pill" id="missingCount" hidden></span></button>
+      <button type="button" id="clearBtn" title="Clear the counter">Clear</button>
+    </nav>
+  </header>
+
+  <main class="kitchen">
+    <!-- The counter: drag things here and drop one onto another to combine. -->
+    <section class="counter" id="counter" aria-label="Counter">
+      <p class="counter-hint" id="hint">Drag two things onto each other to combine them.</p>
+    </section>
+
+    <aside class="pantry" id="pantry" aria-label="Pantry">
+      <input class="search" id="search" type="search" placeholder="Search…" autocomplete="off" />
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" data-tab="ingredient" aria-selected="true">Ingredients <span></span></button>
+        <button type="button" role="tab" data-tab="dish">Dishes <span></span></button>
+        <button type="button" role="tab" data-tab="technique">Techniques <span></span></button>
+        <button type="button" role="tab" data-tab="cuisine">Cuisines <span></span></button>
+      </div>
+      <div class="shelf" id="shelf"></div>
+    </aside>
+  </main>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <dialog class="sheet" id="bookDialog">
+    <header><h2>Recipe book</h2><button type="button" class="close" data-close>&times;</button></header>
+    <input class="search" id="bookSearch" type="search" placeholder="Find a recipe…" autocomplete="off" />
+    <p class="sheet-sub" id="bookSummary"></p>
+    <ol class="book" id="bookList"></ol>
+  </dialog>
+
+  <dialog class="sheet" id="notebookDialog">
+    <header><h2>Notebook</h2><button type="button" class="close" data-close>&times;</button></header>
+    <p class="sheet-sub">Pairs you tried that nobody has written a recipe for yet. They are sent to the kitchen, too, so they can be filled in.</p>
+    <div class="sheet-actions">
+      <button type="button" id="copyMissing">Copy as JSON</button>
+      <a id="allMissing" target="_blank" rel="noopener">Everyone's list</a>
+    </div>
+    <ol class="notebook" id="missingList"></ol>
+  </dialog>
+
+  <script src="app.js?v=1"></script>
+</body>
+</html>
