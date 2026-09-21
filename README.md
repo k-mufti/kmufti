@@ -19,7 +19,7 @@ each tile is a self-contained app living in its own folder.
 | **`/chameleon/`** | **Meccha Chameleon** — a blank figure is hiding in today's photo, blended into it. Find it fast; your time and click count are the only score. One a day. |
 | **`/white-canvas/`** | **White Canvas** — a shared r/place-style pixel wall. Everyone draws on the same 180×300 grid, live, and every pixel stays. |
 | **`/translate/`** | **Lost in Translation** — a phrase appears in a mystery language. Guess what it means, and name the language for bonus points. |
-| **`/infinite-kitchen/`** | **Infinite Kitchen** — combine ingredients, techniques and cuisines to cook your way to every dish. Every recipe is hand-written in `recipes.json` for now. |
+| **`/infinite-kitchen/`** | **Infinite Kitchen** — combine ingredients, techniques and cuisines to cook your way to every dish. Every recipe is hand-written in `recipes.json`; `rules.js` answers the mechanical pairs (the bin absorbs, overcooking burns, flavours stack), and `PROMPT.md` is the spec whoever writes the next batch follows. |
 | **`/yahtzee/`** | **Yahtzee** — five dice on a green felt tray, thrown with real physics. Play the bot, or a stranger 1v1 over a socket. |
 
 

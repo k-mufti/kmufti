@@ -7,8 +7,6 @@
 //   GET  /api/health     counts, for a quick look
 //   POST /api/missing    {a, b} - a player tried this pair and got nothing
 //   GET  /api/missing    every open pair, most-tried first
-//   GET  /api/review     the recipe review (review.html), from this machine only
-//   POST /api/review     save it
 //
 // Only real items are accepted, and only pairs recipes.json doesn't already
 // have, so the list can't be filled with junk. recipes.json is re-read when it
@@ -78,23 +76,6 @@ function openPairs() {
   return [...missing.values()].sort((x, y) => y.tries - x.tries || x.first - y.first);
 }
 
-/* ---------- the recipe review ----------
-   review.html keeps its ratings here so they can be read straight off disk
-   (data/review.json) when the next batch of edits is made. It is a tool for
-   whoever runs this box, not for players: only a request made on this machine
-   directly is let in. nginx sets X-Real-IP on everything it forwards, so a
-   request from outside never qualifies even though it arrives from loopback. */
-const REVIEW_FILE = path.join(DATA_DIR, "review.json");
-function fromThisMachine(req) {
-  const a = req.socket.remoteAddress || "";
-  const loopback = a === "127.0.0.1" || a === "::1" || a === "::ffff:127.0.0.1";
-  // And from a page on this machine: any website open in the same browser
-  // could otherwise post to localhost:8027 and overwrite the review.
-  const origin = req.headers.origin;
-  const localPage = !origin || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-  return loopback && localPage && !req.headers["x-real-ip"] && !req.headers["x-forwarded-for"];
-}
-
 /* ---------- a small per-IP limit ---------- */
 const hits = new Map();   // ip -> { n, reset }
 function allowed(ip) {
@@ -144,28 +125,6 @@ const server = http.createServer(async (req, res) => {
 
   if (route === "/api/missing" && req.method === "GET") {
     return send(res, 200, openPairs());
-  }
-
-  if (route === "/api/review") {
-    if (!fromThisMachine(req)) return send(res, 403, { error: "local only" });
-    if (req.method === "GET") {
-      try { return send(res, 200, JSON.parse(fs.readFileSync(REVIEW_FILE, "utf8"))); }
-      catch { return send(res, 404, { error: "no review yet" }); }
-    }
-    if (req.method === "POST") {
-      let body;
-      try { body = JSON.parse(await readBody(req, 4 * 1024 * 1024)); }
-      catch { return send(res, 400, { error: "bad body" }); }
-      if (!body || typeof body.reviews !== "object" || !Array.isArray(body.added)) {
-        return send(res, 400, { error: "bad review" });
-      }
-      try {
-        fs.mkdirSync(DATA_DIR, { recursive: true });
-        fs.writeFileSync(REVIEW_FILE + ".tmp", JSON.stringify(body, null, 1));
-        fs.renameSync(REVIEW_FILE + ".tmp", REVIEW_FILE);
-      } catch (e) { return send(res, 500, { error: e.message }); }
-      return send(res, 200, { ok: true });
-    }
   }
 
   if (route === "/api/missing" && req.method === "POST") {

@@ -128,7 +128,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .search:focus { outline: 2px solid var(--ink); outline-offset: -1px; }
 .tabs {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   margin: 0 12px;
   border-bottom: 1px solid var(--line);
 }
@@ -189,6 +189,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
   color: #23452c;
   font-family: Fraunces, Georgia, serif;
   font-weight: 700;
+}
+.item[data-kind="trash"] {
+  background: #e7e3db;
+  border-color: #b9b0a1;
+  color: #5c564c;
+  font-style: italic;
 }
 .item.locked {
   background: var(--locked);

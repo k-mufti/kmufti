@@ -28,6 +28,8 @@
   const RECIPES = new Map();  // "a|b" (sorted) -> result
   const UNLOCKS = new Map();  // signature dish -> cuisine
   let tab = "ingredient";
+  let CTX = null;             // what rules.js needs to know about an item
+  let COOKED = new Set();     // everything a heat technique ever touched
 
   /* ---------- saved state ---------- */
   // found: { name: { from: [a, b] | null, via: string | null, fresh: bool } }
@@ -66,14 +68,17 @@
   /* ---------- discovery ---------- */
   function discover(name, from, via) {
     if (has(name)) return false;
-    S.found[name] = { from: from || null, via: via || null, fresh: true };
+    // The kind travels with it: a name the rules made isn't in recipes.json,
+    // so without this the shelf would forget what it was after a reload.
+    S.found[name] = { from: from || null, via: via || null, fresh: true, k: kindOf(name) };
     return true;
   }
 
   function found(result, a, b) {
     if (!discover(result, [a, b])) return;
     const kind = kindOf(result);
-    const label = { ingredient: "New ingredient", dish: "New dish", technique: "New technique", cuisine: "New cuisine" }[kind];
+    const label = { ingredient: "New ingredient", dish: "New dish", technique: "New technique",
+                    cuisine: "New cuisine", trash: "Into the bin" }[kind];
     toast(`${label}: <strong>${esc(result)}</strong>`);
 
     const cuisine = UNLOCKS.get(result);
@@ -157,9 +162,19 @@
     return best;
   }
 
+  // A written recipe first; failing that, the mechanical rules (rules.js).
+  function resultFor(a, b) {
+    const written = RECIPES.get(key(a, b));
+    if (written) return written;
+    const made = KitchenRules.make(a, b, CTX);
+    if (!made) return null;
+    DATA.items[made.result] = made.kind;      // so the shelf knows what it is
+    return made.result;
+  }
+
   function combine(moving, still) {
     const a = moving.dataset.name, b = still.dataset.name;
-    const result = RECIPES.get(key(a, b));
+    const result = resultFor(a, b);
     if (result) {
       const c = center(still);
       const cr = counter.getBoundingClientRect();
@@ -342,7 +357,7 @@
       const k = b.dataset.tab;
       const total = TOTALS[k];
       const got = Object.keys(S.found).filter((n) => kindOf(n) === k).length;
-      b.querySelector("span").textContent = `${got} / ${total}`;
+      b.querySelector("span").textContent = got > total ? String(got) : `${got} / ${total}`;
     }
   }
   let TOTALS = {};
@@ -436,21 +451,42 @@
   }
 
   /* ---------- start ---------- */
-  fetch("recipes.json?v=1")
+  fetch("recipes.json?v=2")
     .then((r) => r.json())
     .then((data) => {
       DATA = data;
       DATA.techniques = Object.keys(data.items).filter((n) => data.items[n] === "technique");
       for (const [a, b, r] of data.combos) RECIPES.set(key(a, b), r);
       for (const [c, v] of Object.entries(data.cuisines)) UNLOCKS.set(v.unlockedBy, c);
-      TOTALS = { ingredient: 0, dish: 0, technique: 0, cuisine: 0 };
+      TOTALS = { ingredient: 0, dish: 0, technique: 0, cuisine: 0, trash: 0 };
       for (const k of Object.values(data.items)) TOTALS[k]++;
+      // The names recipes.json itself writes, so the rules can tell a dish's
+      // own name from the flavours a player stacked on top of it.
+      const WRITTEN = new Set(Object.keys(data.items));
+      const SPLITS = KitchenRules.splitMap(data.combos, data.items);
+      CTX = {
+        kindOf,
+        isWritten: (n) => WRITTEN.has(n),
+        splitOf: (n) => SPLITS.get(n) || null,
+        isCooked: (n) => COOKED.has(n),
+        // A flavour is something you'd see in front of a dish on a menu - and
+        // it has to be a real item, or a stray pair of words would pass as one.
+        isModifier: (n) => {
+          const k = data.items[n];
+          return (k === "ingredient" || k === "dish") && !KitchenRules.NOT_A_FLAVOUR.has(n);
+        },
+      };
+      COOKED = KitchenRules.cookedSet(data.combos, data.items, data.starters);
 
       load();
       for (const s of data.starters) if (!has(s)) S.found[s] = { from: null, via: null, fresh: false };
-      // Anything saved that recipes.json no longer knows about is dropped
-      // quietly, so renaming an item doesn't leave a ghost on the shelf.
-      for (const n of Object.keys(S.found)) if (!(n in data.items)) delete S.found[n];
+      // Items the rules made are saved with their kind and put back; anything
+      // else recipes.json no longer knows about is dropped quietly, so
+      // renaming an item doesn't leave a ghost on the shelf.
+      for (const [n, f] of Object.entries(S.found)) {
+        if (n in data.items) continue;
+        if (f.k) data.items[n] = f.k; else delete S.found[n];
+      }
       for (const b of S.board) if (b.name in data.items) makeTile(b.name, b.x, b.y);
       keepOnCounter();
       window.addEventListener("resize", keepOnCounter);
