@@ -37,3 +37,7 @@ admin/state/
 # Infinite Kitchen: untried-pair list from a laptop run
 # (prod: /var/lib/kmufti-kitchen).
 infinite-kitchen/data/
+
+# Infinite Kitchen: the old recipe set, kept aside locally until it is deleted.
+infinite-kitchen/_archive/
+infinite-kitchen/_lab/

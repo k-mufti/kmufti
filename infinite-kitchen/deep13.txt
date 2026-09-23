@@ -1,0 +1,199 @@
+# Infinite Kitchen - a world tour of classics, plus more meat, fish, pasta,
+# soups and candy. Each one is made from what it really is made from.
+
+## Meat and fish
+Cow + Stew = Oxtail Stew [dish]
+Oxtail Stew + Peanut = Kare-Kare [dish]
+Meat + Blend = Pâté
+Pâté + Bake = Terrine [dish]
+Ribs + Beef = Short Ribs [dish]
+Ribs + Cow = Short Ribs
+Short Ribs + Korean = Galbi [dish]
+Duck + Duck = Goose
+Hen + Forest = Pheasant !
+Cow + American = Bison
+Fish + Noodles = Eel
+Eel + Teriyaki Sauce = Unagi [dish]
+Seafood + Cactus = Sea Urchin
+Crab + Chili = Chili Crab [dish]
+Bouillabaisse + American = Cioppino [dish]
+Rice + Smoked Salmon = Kedgeree [dish]
+Saltfish + Potato = Bacalhau [dish]
+Brisket + Burnt = Burnt Ends [dish]
+Goose acts like Duck renaming Duck to Goose except Duck
+Pheasant acts like Hen renaming Chicken to Pheasant except Forest
+Bison acts like Cow prefix Bison except American
+Eel acts like Fish renaming Fish to Eel except Noodles, Teriyaki Sauce, Ferment, Salt, Soil
+Sea Urchin acts like Seafood prefix - except Cactus
+
+## Eggs
+Egg + Simmer = Poached Egg [dish]
+Scrambled Eggs + Tomato = Menemen [dish]
+Omelette + Fried Rice = Omurice [dish]
+Poached Egg + Hollandaise = Eggs Benedict
+
+## Pasta
+Pasta + Cut = Penne !
+Pasta + American = Macaroni
+Rice Noodles + Ice = Glass Noodles
+Rice Noodles + Cut = Vermicelli
+Pasta + Rice = Orzo
+Pasta + Black Pepper = Cacio e Pepe [dish]
+Penne + Bake = Baked Ziti [dish]
+Ravioli + Broth = Tortellini [dish]
+Pasta + Beans = Pasta e Fagioli [dish]
+Minestrone + Bread = Ribollita [dish]
+Stale Bread + Tomato = Panzanella [dish]
+Beef + Italian = Carpaccio [dish]
+Veal + Tuna = Vitello Tonnato [dish]
+Veal + Prosciutto = Saltimbocca [dish]
+Roast Pork + Italian = Porchetta [dish]
+Custard + Italian = Zabaglione [dish]
+Puff Pastry + Ricotta = Sfogliatella [dish]
+Doughnut + Italian = Bomboloni [dish]
+Calzone + Salami = Stromboli [dish]
+Macaroni + Cheese = Mac and Cheese
+Penne acts like Pasta prefix - except Cut, Bake
+Macaroni acts like Pasta prefix - except American, Cheese
+Orzo acts like Pasta prefix - except Rice
+Glass Noodles acts like Rice Noodles prefix - except Ice
+Vermicelli acts like Rice Noodles prefix - except Cut
+
+## Soups and salads
+Tomato Soup + Cream = Tomato Bisque [dish]
+Squash + Broth = Butternut Squash Soup [dish]
+Leek + Potato = Vichyssoise [dish]
+Chicken Soup + Lemon = Avgolemono [dish]
+Curry + Broth = Mulligatawny [dish]
+Kale + Potato = Caldo Verde [dish]
+Lettuce + Blue Cheese = Wedge Salad [dish]
+Salad + Ham = Chef Salad [dish]
+Chicken Soup + Dumpling = Chicken and Dumplings [dish]
+
+## Turkey, the Levant, Persia
+Flatbread + Minced Meat = Lahmacun [dish]
+Pizza + Middle Eastern = Pide [dish]
+Kebab + Bread = Doner Kebab [dish]
+Pita Chips + Yogurt = Fatteh [dish]
+Kebab + Chicken = Shish Tawook [dish]
+Pastry Dough + Spinach = Fatayer [dish]
+Wheat + Smoke = Freekeh
+Herbs + Stew = Ghormeh Sabzi [dish]
+Pomegranate + Walnut = Fesenjan [dish]
+Freekeh acts like Wheat except Smoke
+
+## Africa
+Chicken + Injera = Doro Wat [dish]
+Chicken + Puff Pastry = Pastilla [dish]
+Sausage + Harissa = Merguez
+Kebab + Peanut = Suya [dish]
+Pumpkin Seeds + Broth = Egusi [dish]
+Bread + Curry = Bunny Chow [dish]
+Sausage + Coriander = Boerewors
+Merguez acts like Sausage except Harissa
+Boerewors acts like Sausage except Coriander
+
+## Southeast Asia
+Yam + Beet = Ube
+Rice Noodles + Barbecue = Bun Cha [dish]
+Rice + Pork Chop = Com Tam [dish]
+Salad + Peanut Sauce = Gado-Gado [dish]
+Chow Mein + Chili = Mie Goreng [dish]
+Coconut Rice + Anchovy = Nasi Lemak [dish]
+Roti + Curry = Roti Canai [dish]
+Rice Noodles + Beef = Chow Fun [dish]
+Chow Fun + Shrimp = Char Kway Teow [dish]
+Coconut Milk + Egg = Kaya
+Kaya + Toast = Kaya Toast [dish]
+Ube + Ice Cream = Ube Ice Cream [dish]
+Ube acts like Yam except Beet
+Kaya acts like Jam prefix - except Toast
+
+## Japan, Korea, China
+Fried Chicken + Japanese = Karaage [dish]
+Hot Pot + Japanese = Shabu-Shabu [dish]
+Surimi + Broth = Oden [dish]
+Waffle + Fish = Taiyaki [dish]
+Cake + Japanese = Castella [dish]
+Bread + Cantaloupe = Melon Pan [dish]
+Curry + Rice = Curry Rice [dish]
+Soybean + Wait = Natto
+Tofu + Kimchi = Sundubu [dish]
+Chicken + Gochujang = Dakgalbi [dish]
+Noodles + Black Beans = Jajangmyeon [dish]
+Kimchi Stew + Hot Dog = Budae Jjigae [dish]
+Bao + Char Siu = Char Siu Bao [dish]
+Pork Belly + Stir-fry = Twice-Cooked Pork [dish]
+Crêpe + Chinese = Jianbing [dish]
+Bao + Minced Meat = Baozi [dish]
+Mochi + Sesame = Tang Yuan [dish]
+Taiyaki + Red Bean Paste = Taiyaki
+
+## India
+Tandoori Chicken + Cut = Chicken Tikka [dish]
+Lamb Chops + Curry = Rogan Josh [dish]
+Paratha + Potato = Aloo Paratha [dish]
+Hamburger Bun + Curry = Pav Bhaji [dish]
+Rice Cake + Chutney = Bhel Puri [dish]
+Vada + Hamburger Bun = Vada Pav [dish]
+Paneer + Simple Syrup = Rasgulla [dish]
+Fudge + Indian = Barfi [dish]
+Chickpeas + Ghee = Ladoo [dish]
+Semolina + Ghee = Halwa [dish]
+Dosa + Onion = Uttapam [dish]
+Peanut + Jaggery = Chikki [dish]
+
+## The Americas
+Black-Eyed Peas + Rice = Hoppin' John [dish]
+Chili con Carne + Tortilla Chips = Frito Pie [dish]
+Fruit Salad + Marshmallow = Ambrosia [dish]
+Cauliflower + Hot Sauce = Buffalo Cauliflower [dish]
+Chiles Rellenos + Pomegranate = Chiles en Nogada [dish]
+Sandwich + Mexican = Torta [dish]
+Brioche + Mexican = Conchas [dish]
+Popsicle + Mexican = Paletas [dish]
+Mango + Slushie = Mangonada [dish]
+Bread + Refried Beans = Molletes [dish]
+
+## Britain and Europe
+Yorkshire Pudding + Sausage = Toad in the Hole [dish]
+Mashed Potatoes + Cabbage = Bubble and Squeak [dish]
+Pastry Dough + Beef = Cornish Pasty [dish]
+Cheddar + Pickle = Ploughman's Lunch [dish]
+Tart + Molasses = Treacle Tart [dish]
+Bread Pudding + Butter = Bread and Butter Pudding [dish]
+Cake + Jam = Victoria Sponge [dish]
+Batter + Boil = Spätzle [dish]
+Spätzle + Cheese = Käsespätzle [dish]
+Bratwurst + Curry Powder = Currywurst [dish]
+Sausage + Garlic = Kielbasa
+Cabbage + Minced Meat = Cabbage Rolls [dish]
+Chicken + Paprika = Paprikash [dish]
+Potato Salad + Peas = Olivier Salad [dish]
+Dumpling + Sour Cream = Pelmeni [dish]
+Cottage Cheese + Pancake = Syrniki [dish]
+Rye Bread + Smoked Salmon = Smørrebrød [dish]
+Potato + Flatbread = Lefse [dish]
+Crème Brûlée + Cinnamon = Crema Catalana [dish]
+Egg Tart + Torch = Pastel de Nata [dish]
+Grilled Chicken + Hot Sauce = Piri Piri Chicken [dish]
+Kielbasa acts like Sausage except Garlic
+
+## France
+Quiche + Bacon = Quiche Lorraine [dish]
+Flatbread + Crème Fraîche = Tarte Flambée [dish]
+Gratin + French = Gratin Dauphinois [dish]
+Pot Roast + French = Pot-au-feu [dish]
+Cake + Almond = Financier [dish]
+Choux Pastry + Praline = Paris-Brest [dish]
+Choux Pastry + Cheese = Gougères [dish]
+Mashed Potatoes + Cheese = Aligot [dish]
+
+## Candy
+Gummies + Noodles = Gummy Worms [dish]
+Candy + Lemon = Sour Candy [dish]
+Chocolate + Candy Cane = Peppermint Bark [dish]
+Mints + Butter = Butter Mints [dish]
+Ginger + Sugar = Candied Ginger
+Gummies + Juice = Fruit Snacks [dish]
+Gummy Worms + Dirt Cake = Dirt Cake

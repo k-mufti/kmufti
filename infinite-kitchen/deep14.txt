@@ -1,0 +1,57 @@
+# Infinite Kitchen - real mashups. Two finished dishes normally turn to Mush
+# unless one has a flavour to lend; these are the pairs the world actually
+# invented, so they get their real names.
+
+Croissant + Doughnut = Cronut [dish]
+Brownie + Cookie = Brookie [dish]
+Sushi + Burrito = Sushi Burrito [dish]
+Ramen + Burger = Ramen Burger [dish]
+Pizza + Bagel = Pizza Bagel [dish]
+Grilled Cheese + Tomato Soup = Soup and Sandwich [dish]
+Burger + Doughnut = Luther Burger [dish]
+Pizza + Taco = Taco Pizza [dish]
+Cake + Pie = Piecaken [dish]
+Pizza + Burger = Pizza Burger [dish]
+Burger + Grilled Cheese = Patty Melt
+Nachos + Fries = Loaded Fries
+Sushi + Pizza = Sushi Pizza [dish]
+Egg Roll + Pizza = Pizza Roll [dish]
+Mochi + Doughnut = Mochi Donut [dish]
+Croissant + Waffle = Croffle [dish]
+Croissant + Cookie = Crookie [dish]
+Crêpe + Cake = Crêpe Cake [dish]
+Hot Dog + Burger = Mixed Grill
+Taco + Burrito = Burrito
+Pancake + Waffle = Waffle
+Fried Chicken + Doughnut = Chicken and Waffles
+Mac and Cheese + Burger = Cheeseburger
+Mac and Cheese + Hot Dog = Hot Dog
+Ice Cream + Cereal = Cereal Milk [dish]
+Cheesecake + Brownie = Brownie
+Doughnut + Ice Cream = Ice Cream Sandwich
+Churros + Ice Cream = Sundae
+Pizza + Pasta = Lasagna
+Sandwich + Taco = Wrap
+Burrito + Sandwich = Wrap
+Soup + Bread = Soup and Sandwich
+Salad + Sandwich = Soup and Sandwich
+Cookie + Milk = Milk and Cookies [dish]
+Cookie + Hot Chocolate = Milk and Cookies
+Toast + Butter = Toast
+Toast + Jam = Toast
+Fries + Milkshake = Combo Meal
+Pizza + Soda = Combo Meal
+Burger + Soda = Combo Meal
+
+## Fair food and a blowtorch
+Ice Cream + Fry = Fried Ice Cream [dish]
+Ice Cream + Deep-fry = Fried Ice Cream
+Butter + Deep-fry = Fried Butter [dish]
+Candy Bar + Deep-fry = Deep-Fried Candy Bar [dish]
+Candy Bar + Fry = Deep-Fried Candy Bar
+Sushi + Torch = Aburi Sushi [dish]
+Marshmallow + Torch = Toasted Marshmallow
+Crème Brûlée + Torch = Crème Brûlée
+Custard + Torch = Crème Brûlée
+Pizza + Fry = Panzerotti [dish]
+Mac and Cheese + Fry = Arancini

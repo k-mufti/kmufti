@@ -1,0 +1,664 @@
+# Infinite Kitchen - the big expansion: new produce, the cold branch, drinks,
+# pastry, candy, sauces, and each cuisine's own dishes. Every new thing gets
+# its own recipe; a result repeats only where two roads honestly lead there.
+# A trailing "!" replaces an older answer for that pair.
+
+## Bulbs: onion and garlic, at last
+Soil + Flower = Bulb !
+Bulb + Vegetables = Onion
+Bulb + Garden = Onion
+Bulb + Herbs = Garlic
+Bulb + Wait = Flower
+Bulb + Water = Flower
+Onion + Garlic = Shallot
+Onion + Grass = Leek
+Onion + Sprout = Green Onion
+Onion + Beet = Red Onion
+Onion + Cut = Tears
+Tears + Heat = Salt
+Tears + Fruit = Lemon
+Tears + Water = Brine
+Onion + Heat = Caramelized Onions
+Onion + Caramel = Caramelized Onions
+Onion + Vinegar = Pickled Onion
+Onion + Fry = Onion Rings [dish]
+Onion + Batter = Onion Rings
+Onion + Deep-fry = Onion Rings
+Onion + Broth = French Onion Soup
+Onion + Carrot = Mirepoix
+Onion + Chili = Salsa
+Onion + Meat = Kebab
+Onion + Pakora = Onion Bhaji [dish]
+Onion + Flour = Onion Bhaji
+Onion + Tomato = Sofrito
+Onion + Bread = Onion Bread [dish]
+Garlic + Heat = Roasted Garlic
+Garlic + Bread = Garlic Bread [dish]
+Garlic + Butter = Garlic Butter
+Garlic + Oil = Aioli
+Garlic + Mayonnaise = Aioli
+Garlic + Herbs = Chimichurri
+Garlic + Hot Sauce = Sriracha
+Garlic + Shrimp = Scampi
+Garlic + Cut = Garlic
+Garlic + Mince = Garlic
+Garlic + Snail = Escargot
+Garlic + Pasta = Aglio e Olio [dish]
+Garlic + Soy Sauce = Teriyaki Sauce
+Garlic Butter + Bread = Garlic Bread
+Garlic Butter + Shrimp = Scampi
+Garlic Butter acts like Butter prefix - except Heat, Ocean
+Caramelized Onions + Bread = Onion Bread
+Caramelized Onions + Burger = Burger
+Pickled Onion + Taco = Taco
+
+## More vegetables, each from something it resembles
+Potato + Spices = Ginger
+Ginger + Orange = Turmeric
+Radish + Chili = Horseradish
+Horseradish + Grass = Wasabi
+Carrot + Carrot = Pumpkin
+Pumpkin + Garden = Squash
+Cucumber + Squash = Zucchini
+Cabbage + Weeds = Kale
+Lettuce + Kale = Spinach
+Cucumber + Grass = Celery !
+Beans + Grass = Peas
+Beans + Vegetables = Green Beans
+Beans + Hen = Chickpeas
+Beans + Cut = Lentils
+Beans + Milk = Soybean
+Beans + Burnt = Black Beans
+Beans + Fry = Refried Beans [dish]
+Beans + Bake = Baked Beans [dish]
+Soybean + Boil = Edamame [dish]
+Soybean + Water = Soy Milk
+Soy Milk + Wait = Tofu
+Soybean + Salt = Soy Sauce
+Soybean + Ferment = Miso
+Potato + Rainforest = Cassava
+Bell Pepper + Dry = Paprika
+Pumpkin + Heat = Roasted Vegetables
+Pumpkin + Broth = Pumpkin Soup [dish]
+Pumpkin + Cake = Pumpkin Pie [dish]
+Pumpkin + Pie = Pumpkin Pie
+Pumpkin + Cinnamon = Pumpkin Spice
+Pumpkin Spice + Coffee = Pumpkin Spice Latte [dish]
+Pumpkin Spice + Latte = Pumpkin Spice Latte
+Zucchini + Bread = Zucchini Bread [dish]
+Kale + Heat = Kale Chips [dish]
+Kale + Dry = Kale Chips
+Spinach + Cheese = Spinach Dip [dish]
+Celery + Peanut Butter = Ants on a Log [dish]
+Celery + Onion = Mirepoix
+Peas + Broth = Split Pea Soup [dish]
+Peas + Rice = Rice and Peas [dish]
+Green Beans + Heat = Green Bean Casserole [dish]
+Lentils + Boil = Dal [dish]
+Lentils + Broth = Lentil Soup [dish]
+Lentils + Rice = Mujaddara [dish]
+Chickpeas + Fry = Falafel [dish]
+Chickpeas + Blend = Hummus
+Chickpeas + Curry = Chana Masala [dish]
+Black Beans + Rice = Rice and Beans [dish]
+Black Beans + Broth = Black Bean Soup [dish]
+Ginger + Cookie = Gingerbread [dish]
+Ginger + Tea = Ginger Tea [dish]
+Ginger + Sushi = Sushi
+Ginger + Vinegar = Pickled Ginger
+Pickled Ginger + Sushi = Sushi
+Wasabi + Sushi = Sushi
+Horseradish + Beef = Roast Beef
+Tofu + Chili = Mapo Tofu [dish]
+Tofu + Miso = Miso Soup
+Miso + Broth = Miso Soup [dish]
+Miso + Water = Miso Soup
+Miso + Chili = Gochujang
+Edamame + Salt = Edamame
+
+## More fruit
+Fruit + Butter = Avocado !
+Avocado + Mix = Guacamole
+Avocado + Salsa = Guacamole
+Avocado + Toast = Avocado Toast [dish]
+Avocado + Sushi = California Roll [dish]
+Apple + Orange = Peach
+Peach + Rainforest = Mango
+Watermelon + Orange = Cantaloupe
+Mango + Cantaloupe = Papaya
+Apple + Bell Pepper = Pear
+Grapes + Grapes = Plum
+Plum + Dry = Prune
+Dates + Flower = Fig
+Plum + Peach = Apricot
+Strawberry + Blackberry = Raspberry
+Berries + Vinegar = Cranberry !
+Banana + Potato = Plantain
+Plantain + Fry = Tostones [dish]
+Peach + Cobbler = Cobbler
+Peach + Cream = Peach Melba [dish]
+Mango + Rice = Mango Sticky Rice
+Mango + Yogurt = Mango Lassi [dish]
+Mango + Chili = Mango Salsa
+Cranberry + Turkey = Thanksgiving Dinner
+Cranberry + Jam = Cranberry Sauce
+Cranberry + Sugar = Cranberry Sauce
+Cranberry Sauce + Turkey = Thanksgiving Dinner
+Fig + Jam = Fig Jam
+Fig + Cookie = Fig Newton [dish]
+Pear + Heat = Poached Pear [dish]
+Apricot + Jam = Apricot Jam
+Raspberry + Chocolate = Raspberry Truffle
+Banana + Bread = Banana Bread [dish]
+Banana + Pancake = Banana Pancakes [dish]
+Banana + Peanut Butter = Banana Sandwich [dish]
+Coconut + Rice = Coconut Rice [dish]
+Coconut + Shrimp = Coconut Shrimp
+Coconut + Sugar = Macaroon
+Lemon + Pie = Lemon Meringue Pie [dish]
+Lemon + Meringue = Lemon Meringue Pie
+Lemon + Cake = Lemon Drizzle Cake [dish]
+Lemon + Chicken = Lemon Chicken
+Lime + Pie = Key Lime Pie [dish]
+Lime + Soda = Lemon-Lime Soda
+
+## Mushrooms and herbs, through the cuisines where it fits
+Mushroom + Tree = Shiitake !
+Mushroom + Mushroom = Portobello
+Portobello + Burger = Burger
+Shiitake + Broth = Ramen
+Herbs + Italian = Basil
+Herbs + Pizza = Oregano
+Herbs + Lamb = Rosemary
+Herbs + Pickle = Dill
+Herbs + Mexican = Cilantro
+Grass + Thai = Lemongrass
+Herbs + Sesame = Za'atar
+Herbs + Middle Eastern = Parsley
+Basil + Tomato = Caprese
+Basil + Nuts = Pesto
+Basil + Pizza = Pizza
+Cilantro + Salsa = Salsa
+Lemongrass + Broth = Tom Yum
+Za'atar + Flatbread = Manakish [dish]
+Parsley + Bulgur = Tabbouleh
+Rosemary + Potato = Roast Potatoes [dish]
+Dill + Cucumber = Pickle
+Dill + Fish = Gravlax [dish]
+
+## The cold branch: steam rises into cloud, cloud meets mountain as snow
+Water + Steam = Cloud !
+Cloud + Soil = Mountain
+Cloud + Mountain = Snow
+Mountain + Water = Snow
+Cloud + Wait = Rain
+Rain + Tree = Rainforest
+Rain + Soil = Sprout
+Rain + Field = Rice
+Cloud + Sugar = Cotton Candy
+Cloud + Cream = Whipped Cream
+Cloud + Cloud = Rain
+Mountain + Goat = Goat
+Mountain + Snow = Snow
+Mountain + Cow = Buffalo
+Mountain + Grass = Tea Leaves
+Mountain + Tree = Forest
+Snow + Wait = Ice
+Ice + Wait = Freeze [technique]
+Snow + Water = Ice
+Snow + Heat = Water
+Snow + Simple Syrup = Snow Cone [dish]
+Snow + Maple Syrup = Maple Taffy [dish]
+Ice + Heat = Water
+Ice + Water = Water
+Ice + Cut = Shaved Ice [dish]
+Ice + Blend = Shaved Ice
+Freeze + Water = Ice
+Cream + Freeze = Ice Cream [dish]
+Cream + Ice = Ice Cream
+Milk + Freeze = Ice Cream
+Custard + Freeze = Frozen Custard [dish]
+Yogurt + Freeze = Frozen Yogurt [dish]
+Juice + Freeze = Popsicle [dish]
+Juice + Ice = Slushie [dish]
+Fruit + Freeze = Sorbet [dish]
+Fruit + Ice = Sorbet
+Ice Cream + Italian = Gelato [dish]
+Ice Cream + Cookie = Ice Cream Sandwich [dish]
+Ice Cream + Whipped Cream = Sundae [dish]
+Ice Cream + Banana = Banana Split [dish]
+Ice Cream + Mochi = Mochi Ice Cream [dish]
+Ice Cream + Meringue = Baked Alaska [dish]
+Ice Cream + Waffle = Ice Cream Cone [dish]
+Ice Cream + Heat = Milkshake
+Ice Cream + Milk = Milkshake
+Ice Cream + Pie = Pie à la Mode [dish]
+Ice Cream + Brownie = Brownie Sundae [dish]
+Shaved Ice + Beans = Bingsu [dish]
+Shaved Ice + Simple Syrup = Snow Cone
+Gelato acts like Ice Cream prefix - except Italian, Heat
+Frozen Yogurt acts like Ice Cream prefix - except Heat, Milk
+Frozen Custard acts like Ice Cream prefix - except Heat
+
+## Coffee, tea and soda
+Coffee + Water = Black Coffee [dish]
+Coffee + Steam = Espresso [dish]
+Coffee + Italian = Espresso
+Espresso + Milk = Latte [dish]
+Espresso + Milk Foam = Cappuccino [dish]
+Espresso + Cream = Macchiato [dish]
+Espresso + Chocolate = Mocha [dish]
+Espresso + Ice Cream = Affogato [dish]
+Espresso + Cake = Tiramisu [dish]
+Espresso + Water = Black Coffee
+Black Coffee + Ice = Iced Coffee [dish]
+Black Coffee + Milk = Latte
+Iced Coffee + Blend = Frappé [dish]
+Coffee + Middle Eastern = Turkish Coffee [dish]
+Tea Leaves + Steam = Green Tea [dish]
+Tea Leaves + Ferment = Black Tea [dish]
+Tea + Ice = Iced Tea [dish]
+Iced Tea + Condensed Milk = Thai Iced Tea [dish]
+Iced Tea + Thai = Thai Iced Tea
+Water + Ferment = Sparkling Water !
+Sparkling Water + Simple Syrup = Soda [dish]
+Sparkling Water + Sugar = Soda
+Sparkling Water + Juice = Soda
+Soda + Caramel = Cola [dish]
+Soda + Radish = Root Beer [dish]
+Soda + Ginger = Ginger Ale [dish]
+Soda + Lime = Lemon-Lime Soda [dish]
+Soda + Cream = Cream Soda [dish]
+Root Beer + Ice Cream = Root Beer Float [dish]
+Cola + Ice Cream = Root Beer Float
+Cassava + Boil = Tapioca Pearls
+Milk Tea + Tapioca Pearls = Boba [dish]
+Tea + Tapioca Pearls = Boba
+Rice + Blend = Rice Milk
+Rice Milk + Cinnamon = Horchata [dish]
+Juice + Water = Agua Fresca [dish]
+Lemonade + Iced Tea = Arnold Palmer [dish]
+Hot Chocolate + Mexican = Champurrado [dish]
+Chai + Milk = Chai Latte [dish]
+Matcha + Latte = Matcha Latte
+
+## Pastry and baking
+Dough + Butter = Pastry Dough
+Pastry Dough + Knead = Puff Pastry
+Pastry Dough + Fruit = Pie [dish]
+Pastry Dough + Apple = Apple Pie [dish]
+Pastry Dough + Custard = Tart [dish]
+Pastry Dough + Beaten Egg = Quiche [dish]
+Pastry Dough + Egg = Choux Pastry
+Pastry Dough + Ricotta = Cannoli [dish]
+Pastry Dough + Minced Meat = Empanada [dish]
+Pastry Dough + Honey = Baklava [dish]
+Pastry Dough + Heat = Pie Crust
+Pastry Dough + Bake = Pie Crust
+Pie Crust + Fruit = Pie
+Pie Crust + Custard = Tart
+Puff Pastry + Jam = Danish [dish]
+Puff Pastry + Honey = Baklava
+Puff Pastry + Apple = Strudel [dish]
+Puff Pastry + Bake = Croissant [dish]
+Puff Pastry + French = Croissant
+Puff Pastry + Custard = Mille-feuille [dish]
+Puff Pastry + Beef = Beef Wellington [dish]
+Choux Pastry + Chocolate = Éclair [dish]
+Choux Pastry + Ice Cream = Profiterole [dish]
+Choux Pastry + Bake = Profiterole
+Hot Dog + Pastry Dough = Pigs in a Blanket [dish]
+Croissant + Chocolate = Pain au Chocolat [dish]
+Croissant + Ham = Croissant Sandwich [dish]
+Dough + Cream = Scone [dish]
+Scone + American = Biscuit [dish]
+Biscuit + Gravy = Biscuits and Gravy [dish]
+Scone + Jam = Cream Tea [dish]
+Cake + Icing = Cupcake [dish]
+Chocolate + Cake Batter = Brownie [dish]
+Cake Batter + Butter = Pound Cake [dish]
+Cake + French = Madeleine [dish]
+Cake + Condensed Milk = Tres Leches [dish]
+Cake + Carrot = Carrot Cake [dish]
+Cake + Cheese = Cheesecake
+Cake + Beet = Red Velvet Cake [dish]
+Cake + Cherry = Black Forest Cake [dish]
+Cake + Strawberry = Shortcake [dish]
+Cake + Coffee = Coffee Cake [dish]
+Cake + Banana = Banana Bread
+Cake + Honey = Honey Cake [dish]
+Cookie Dough + Butter = Shortbread [dish]
+Dough + Cinnamon Sugar = Churros [dish]
+Doughnut + Cinnamon = Churros
+Bread + French = Baguette [dish]
+Bread + Italian = Ciabatta [dish]
+Cookie + Italian = Biscotti [dish]
+Cookie + Chinese = Fortune Cookie [dish]
+Crackers + Honey = Graham Cracker
+Graham Cracker + Marshmallow = S'mores [dish]
+Doughnut + Simple Syrup = Gulab Jamun [dish]
+Chocolate + Cut = Chocolate Chips
+Cookie Dough + Chocolate Chips = Chocolate Chip Cookie [dish]
+Cookie + Chocolate Chips = Chocolate Chip Cookie
+Pancake + Chocolate Chips = Pancake
+Muffin + Chocolate Chips = Muffin
+Waffle + Fried Chicken = Chicken and Waffles [dish]
+Fried Chicken + Waffle = Chicken and Waffles
+
+## Candy
+Broth + Wait = Gelatin !
+Gelatin + Juice = Jelly [dish]
+Gelatin + Candy = Gummies [dish]
+Gelatin + Sugar = Gummies
+Gelatin + Whip = Marshmallow
+Gelatin + Cream = Panna Cotta [dish]
+Candy + Herbs = Licorice [dish]
+Chocolate + Cream = Ganache
+Ganache + Cut = Chocolate Truffle [dish]
+Ganache + Cake = Chocolate Cake [dish]
+Chocolate + Nougat = Candy Bar [dish]
+Chocolate + Caramel = Candy Bar
+Gummies + Beans = Jelly Beans [dish]
+Nuts + Powdered Sugar = Marzipan
+Gummies + Middle Eastern = Turkish Delight [dish]
+Tahini + Sugar = Halva [dish]
+Candy + Mint = Candy Cane [dish]
+Candy + Tree = Chewing Gum [dish]
+Chocolate + Nut Butter = Chocolate Spread
+Chocolate Spread + Crêpe = Crêpe
+Chocolate Spread + Toast = Toast
+Popcorn + Sugar = Kettle Corn [dish]
+Popcorn + Caramel = Caramel Corn
+Marshmallow + Heat = Toasted Marshmallow [dish]
+Marshmallow + Hot Chocolate = Hot Chocolate
+Marshmallow + Sweet Potato = Sweet Potato Casserole [dish]
+Chocolate + Strawberry = Chocolate-Covered Strawberry [dish]
+Chocolate + Nuts = Candy Bar
+Chocolate + Milk = Hot Chocolate
+Chocolate + Chili = Mole
+Chocolate + Pretzel = Chocolate Pretzel [dish]
+Chocolate + Banana = Chocolate Banana [dish]
+Candy + Candy = Lollipop [dish]
+
+## Sauces and condiments
+Soy Sauce + Sugar = Teriyaki Sauce
+Teriyaki Sauce + Chicken = Teriyaki Chicken [dish]
+Teriyaki Sauce + Fish = Teriyaki Fish
+Ketchup + Smoke = BBQ Sauce
+Ketchup + Honey = BBQ Sauce
+BBQ Sauce + Pork = Pulled Pork
+BBQ Sauce + Meat = Barbecue
+BBQ Sauce + Chicken = BBQ Chicken [dish]
+Mayonnaise + Herbs = Ranch
+Mayonnaise + Pickle = Tartar Sauce
+Mayonnaise + Ketchup = Thousand Island
+Mayonnaise + Chili = Spicy Mayo
+Spicy Mayo + Sushi = Sushi
+Seeds + Vinegar = Mustard
+Mustard + Honey = Honey Mustard
+Mustard + French = Dijon
+Mustard + Hot Dog = Hot Dog
+Peanut Butter + Soy Sauce = Peanut Sauce
+Peanut Butter + Jam = PB&J [dish]
+Soy Sauce + Plum = Hoisin
+Hoisin + Duck = Peking Duck
+Soy Sauce + Seafood = Oyster Sauce
+Vinegar + Anchovy = Worcestershire
+Pickle + Mince = Relish
+Relish + Hot Dog = Hot Dog
+Ranch + Buffalo Wings = Buffalo Wings
+Tartar Sauce + Fried Fish = Fish and Chips
+Thousand Island + Corned Beef = Reuben [dish]
+Sauerkraut + Corned Beef = Reuben
+Soy Sauce + Rice Noodles = Pad See Ew [dish]
+Soy Sauce + Rice = Fried Rice
+Soy Sauce + Egg = Tea Egg
+
+## Mexican
+Tortilla + Meat = Taco [dish]
+Tortilla + Rice = Burrito [dish]
+Tortilla + Sauce = Enchilada [dish]
+Tortilla + Bake = Tostada [dish]
+Tortilla + Fry = Tortilla Chips
+Tortilla Chips + Cheese = Nachos
+Tortilla Chips + Salsa = Chips and Salsa [dish]
+Tortilla Chips + Guacamole = Chips and Salsa
+Burrito + Fry = Chimichanga [dish]
+Burrito + Scrambled Eggs = Breakfast Burrito [dish]
+Taco + Salad = Taco Salad [dish]
+Taco + Fish = Fish Taco
+Taco + Pork = Carnitas
+Corn on the Cob + Mayonnaise = Elote [dish]
+Corn + Mexican = Elote
+Broth + Mexican = Pozole [dish]
+Chili + Mexican = Jalapeño
+Cheese + Mexican = Queso Fresco
+Beans + Mexican = Refried Beans
+Jalapeño + Cream Cheese = Jalapeño Poppers [dish]
+Chili + Cream Cheese = Jalapeño Poppers
+Jalapeño acts like Chili except Mexican
+Queso Fresco acts like Cheese except Mexican
+Chocolate + Mexican = Mole [dish]
+
+## Japanese
+Rice + Japanese = Onigiri [dish]
+Noodles + Japanese = Udon [dish]
+Schnitzel + Japanese = Katsu [dish]
+Dumpling + Japanese = Gyoza [dish]
+Grilled Chicken + Japanese = Yakitori [dish]
+Squid + Batter = Takoyaki [dish]
+Cabbage + Pancake = Okonomiyaki [dish]
+Pancake + Beans = Dorayaki [dish]
+Katsu + Curry = Katsu Curry [dish]
+Katsu + Rice = Katsudon [dish]
+Tea Leaves + Japanese = Matcha
+Soybean + Japanese = Edamame
+Udon + Broth = Udon
+
+## Chinese
+Dumpling + Fry = Potsticker [dish]
+Bean Sprouts + Dough = Spring Roll [dish]
+Spring Roll + Egg = Egg Roll [dish]
+Dumpling + Broth = Wonton Soup [dish]
+Broth + Chinese = Hot Pot [dish]
+Chicken + Orange = Orange Chicken [dish]
+Fried Chicken + Chinese = General Tso's Chicken [dish]
+Dumpling + Tea = Dim Sum [dish]
+Cabbage + Chinese = Bok Choy
+Noodles + Chinese = Lo Mein [dish]
+Tart + Chinese = Egg Tart [dish]
+Bok Choy acts like Vegetables renaming Vegetables to Bok Choy except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden, Chinese
+
+## Korean
+Barbecue + Korean = Korean BBQ [dish]
+Mochi + Chili = Tteokbokki [dish]
+Rice Noodles + Korean = Japchae [dish]
+Sushi + Korean = Kimbap [dish]
+Dumpling + Korean = Mandu [dish]
+Pancake + Korean = Hotteok [dish]
+Kimchi + Broth = Kimchi Stew [dish]
+Kimchi + Fried Rice = Fried Rice
+
+## Thai
+Curry + Thai = Green Curry [dish]
+Curry + Peanut = Massaman Curry [dish]
+Coconut Milk + Broth = Tom Kha [dish]
+Rice Noodles + Thai = Pad Thai
+
+## Indian
+Cheese + Indian = Paneer
+Paneer + Spinach = Palak Paneer [dish]
+Spinach + Curry = Saag [dish]
+Flatbread + Indian = Roti
+Crêpe + Indian = Dosa [dish]
+Rice Pudding + Indian = Kheer [dish]
+Curry + Vinegar = Vindaloo [dish]
+Curry + Cream = Korma [dish]
+Paneer acts like Cheese except Indian
+Roti acts like Bread prefix - except Indian
+
+## Middle Eastern
+Salad + Pita = Fattoush [dish]
+Mutton + Yogurt = Mansaf [dish]
+Lamb Chops + Yogurt = Mansaf
+Rice + Eggplant = Maqluba [dish]
+Cheese + Middle Eastern = Kunafa [dish]
+Chicken + Flatbread = Musakhan [dish]
+Beans + Middle Eastern = Ful Medames [dish]
+Pita + Kebab = Gyro [dish]
+Pita + Falafel = Falafel Wrap [dish]
+Hummus + Pita = Hummus
+
+## French
+Grilled Cheese + Ham = Croque Monsieur [dish]
+Croque Monsieur + Fried Egg = Croque Madame [dish]
+Beans + Sausage = Cassoulet [dish]
+Steak + Fries = Steak Frites [dish]
+Crêpe + Orange = Crêpe Suzette [dish]
+Onion + French = French Onion Soup
+
+## American
+Hot Dog + Batter = Corn Dog [dish]
+Minced Meat + Ketchup = Sloppy Joe [dish]
+Lobster + Bread = Lobster Roll [dish]
+Bacon + Lettuce = BLT [dish]
+Burger + Cheese = Cheeseburger [dish]
+Salad + Bacon = Cobb Salad [dish]
+Fried Chicken + Hot Sauce = Nashville Hot Chicken [dish]
+Burger + Fries = Combo Meal [dish]
+Burger + Fast Food = Combo Meal
+Chicken + Fast Food = Chicken Nuggets
+Potato + Fast Food = Fries
+Pie + American = Apple Pie
+
+## Breakfast, soups and snacks
+Mashed Potatoes + Fry = Hash Browns [dish]
+Bagel + Lox = Bagel and Lox [dish]
+Bagel + Cream Cheese = Bagel and Lox
+Breakfast + Baked Beans = Full English [dish]
+Beef + Paprika = Goulash [dish]
+Fries + Salt = Potato Chips [dish]
+Nuts + Dried Fruit = Trail Mix [dish]
+Pickle + Fry = Fried Pickles [dish]
+Mozzarella + Fry = Mozzarella Sticks [dish]
+Dumpling + Potato = Pierogi [dish]
+Pizza + Dough = Calzone [dish]
+Risotto + Fry = Arancini [dish]
+Pasta + Ricotta = Ravioli [dish]
+Cornmeal + Boil = Polenta [dish]
+Ham + Italian = Prosciutto
+Prosciutto acts like Ham
+Rice + Italian = Risotto
+
+## New staples behave like their family
+Onion acts like Vegetables renaming Vegetables to Onion except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden, Cut
+Shallot acts like Onion
+Leek acts like Onion except Grass
+Green Onion acts like Onion except Sprout
+Red Onion acts like Onion except Beet
+Garlic acts like Vegetables renaming Vegetables to Garlic except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden, Cut, Mince
+Pumpkin acts like Vegetables renaming Vegetables to Pumpkin except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden, Carrot
+Squash acts like Pumpkin except Garden, Cucumber
+Zucchini acts like Vegetables renaming Vegetables to Zucchini except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Kale acts like Vegetables renaming Vegetables to Kale except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden, Dry
+Spinach acts like Vegetables renaming Vegetables to Spinach except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Celery acts like Vegetables renaming Vegetables to Celery except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Peas acts like Vegetables renaming Vegetables to Peas except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Green Beans acts like Vegetables renaming Vegetables to Green Beans except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Cassava acts like Potato except Rainforest, Boil
+Horseradish acts like Radish except Chili, Grass
+Ginger acts like Spices except Orange, Cookie, Tea, Vinegar, Sushi
+Turmeric acts like Spices
+Paprika acts like Spices except Beef
+Za'atar acts like Spices except Flatbread
+Chickpeas acts like Beans except Fry, Blend, Curry
+Lentils acts like Beans except Boil, Broth, Rice
+Black Beans acts like Beans except Rice, Broth
+Soybean acts like Beans except Boil, Water, Salt, Ferment, Japanese
+Soy Milk acts like Milk prefix - except Wait
+Tofu acts like Chicken renaming Chicken to Tofu except Chicken, Wait, Cut, Farm, Egg, Hen, Chili, Miso
+Shiitake acts like Mushroom except Broth
+Portobello acts like Mushroom except Burger
+Basil acts like Herbs except Italian, Tomato, Nuts, Pizza
+Oregano acts like Herbs
+Rosemary acts like Herbs except Potato
+Dill acts like Herbs except Cucumber, Fish
+Cilantro acts like Herbs except Salsa
+Lemongrass acts like Herbs except Broth
+Parsley acts like Herbs except Bulgur
+Avocado acts like Fruit renaming Fruit to Avocado except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Mix, Toast, Sushi, Salsa
+Peach acts like Fruit renaming Fruit to Peach except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Cream
+Mango acts like Fruit renaming Fruit to Mango except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Rice, Yogurt, Chili
+Cantaloupe acts like Fruit renaming Fruit to Cantaloupe except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Papaya acts like Fruit renaming Fruit to Papaya except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Pear acts like Fruit renaming Fruit to Pear except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Heat
+Plum acts like Fruit renaming Fruit to Plum except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Dry, Peach
+Fig acts like Fruit renaming Fruit to Fig except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Jam, Cookie
+Apricot acts like Fruit renaming Fruit to Apricot except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Jam
+Raspberry acts like Fruit renaming Fruit to Raspberry except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Chocolate
+Cranberry acts like Fruit renaming Fruit to Cranberry except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Turkey, Jam, Sugar
+Plantain acts like Banana except Potato, Fry
+Prune acts like Dried Fruit prefix -
+Soda acts like Juice prefix - except techniques, Water, Ice, Freeze
+
+## Fixes from reading a sample
+Beef + Broccoli = Beef and Broccoli
+Cow + Broccoli = Beef and Broccoli
+Seafood + Bee = Honey Walnut Shrimp
+Avocado + Chicken = Cobb Salad
+Avocado + Bacon = Cobb Salad
+Avocado + Tomato = Guacamole
+Avocado + Egg = Avocado Toast
+
+## Heat undoes cold: melting gives back what it was made of
+Sorbet + Heat = Juice
+Popsicle + Heat = Juice
+Slushie + Heat = Juice
+Snow Cone + Heat = Simple Syrup
+Shaved Ice + Heat = Water
+Gelato + Heat = Milkshake
+Frozen Yogurt + Heat = Yogurt
+Frozen Custard + Heat = Custard
+Sundae + Heat = Milkshake
+Ice Cream Sandwich + Heat = Cookie
+Mochi Ice Cream + Heat = Mochi
+Baked Alaska + Heat = Baked Alaska
+Ice Cream Cone + Heat = Waffle
+Banana Split + Heat = Banana
+Bingsu + Heat = Water
+Maple Taffy + Heat = Maple Syrup
+Iced Coffee + Heat = Black Coffee
+Iced Tea + Heat = Tea
+Sorbet + Freeze = Sorbet
+Ice Cream + Freeze = Ice Cream
+Ice + Freeze = Ice
+Snow + Freeze = Ice
+Juice + Snow = Snow Cone
+
+## New staples join their families
+Almond Milk acts like Milk prefix - except Wait, Ferment, Cure, Grass, Field, Farm
+Coconut Milk acts like Milk prefix - except Wait, Ferment, Cure, Grass, Field, Farm
+Rice Milk acts like Milk prefix - except Wait, Ferment, Cure, Grass, Field, Farm, Cinnamon
+Truffle acts like Mushroom
+Deer acts like Beef prefix Venison except techniques, Cut, Wait, Water, Egg, Meat, Soil, Grass, Field, Farm, Desert, Weeds, Forest, Ocean, Island, Oasis, Tree, Bush, Sprout, Seeds, Garden, Flower, Beef, Milk, Mountain
+Relish acts like Pickle prefix -
+Nuoc Cham acts like Fish Sauce prefix -
+Royal Icing acts like Icing prefix -
+Mincemeat acts like Dried Fruit prefix -
+Chutney acts like Jam prefix -
+Crackers acts like Bread prefix - except Water, Heat, Dry, Wait, Honey
+Bouillon acts like Broth prefix - except Water, Boil, Desert, Dry
+Matcha acts like Tea Leaves prefix - except Milk, Water
+Oats acts like Wheat except Water, Milk, Sugar, Honey, Weeds
+Seasoning acts like Spices prefix -
+Stuffing acts like Bread prefix - except Turkey, Chicken, Heat, Bake
+Sparkling Water + Egg = Egg Wash
+Sparkling Water + Lemon = Lemonade
+Sparkling Water + Fruit = Soda
+Sparkling Water + Milk = Egg Cream [dish]
+Sparkling Water + Coffee = Espresso Tonic [dish]
+Sparkling Water + Tea = Kombucha
+Sparkling Water + Salt = Brine
+Sparkling Water + Wait = Water
+Sparkling Water + Heat = Water
+Deer + Cut = Venison

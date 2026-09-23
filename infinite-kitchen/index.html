@@ -6,10 +6,12 @@
   <title>Infinite Kitchen — kmufti.com</title>
   <link rel="icon" href="favicon.svg?v=1" type="image/svg+xml" />
   <meta name="description" content="Combine ingredients, techniques and cuisines to cook your way to every dish." />
+  <!-- Not linked from the hub and not in search: you need the URL. -->
+  <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&family=Caveat:wght@600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=8" />
 </head>
 <body>
   <header class="top">
@@ -18,26 +20,52 @@
     <nav class="top-actions">
       <button type="button" id="bookBtn">Recipes</button>
       <button type="button" id="notebookBtn">Notebook <span class="pill" id="missingCount" hidden></span></button>
-      <button type="button" id="clearBtn" title="Clear the counter">Clear</button>
+      <button type="button" id="clearBtn" title="Clear the cutting board">Clear</button>
+      <button type="button" id="resetBtn" title="Forget every discovery and start over">Reset</button>
     </nav>
   </header>
 
   <main class="kitchen">
-    <!-- The counter: drag things here and drop one onto another to combine. -->
-    <section class="counter" id="counter" aria-label="Counter">
-      <p class="counter-hint" id="hint">Drag two things onto each other to combine them.</p>
+    <!-- The room: a 3D kitchen from one still camera (scene3d.js). The
+         hidden stage below holds the tools, cookbooks and bin as plain
+         elements: app.js sets their state (locked, target...) and the 3D
+         room mirrors it. The board is a layer over the island top. -->
+    <section class="room" id="room" aria-label="Kitchen">
+      <canvas id="view"></canvas>
+      <div class="stage" id="stage" hidden>
+        <div class="cookbooks" id="cookbooks"></div>
+        <button type="button" class="notepad" id="notepad">Notes</button>
+        <div class="tool" data-tech="Ferment" data-label="Jars"></div>
+        <div class="tool" data-tech="Wait" data-label="Clock"></div>
+        <div class="tool" data-tech="Freeze" data-label="Fridge"></div>
+        <div class="tool" data-tech="Heat" data-label="Stove"></div>
+        <div class="tool" data-tech="Boil" data-label="Pot"></div>
+        <div class="tool" data-tech="Fry" data-label="Pan"></div>
+        <div class="tool" data-tech="Grill" data-label="Grill pan"></div>
+        <div class="tool" data-tech="Blend" data-label="Blender"></div>
+        <div class="tool" data-tech="Bake" data-label="Oven"></div>
+        <div class="tool hand" data-tech="Mix" data-label="Bowl"></div>
+        <div class="tool hand" data-tech="Cut" data-label="Knife"></div>
+        <button type="button" class="recipe-book" id="recipeBook">Recipes</button>
+        <button type="button" class="bin" id="bin">Bin</button>
+      </div>
+      <!-- the island top: drag food here, and onto each other -->
+      <section class="counter" id="counter" aria-label="Kitchen island">
+        <p class="counter-hint" id="hint">Drag food onto the island, onto each other, or onto a tool.</p>
+      </section>
+      <p class="spot-label" id="spotLabel" hidden></p>
     </section>
 
     <aside class="pantry" id="pantry" aria-label="Pantry">
-      <input class="search" id="search" type="search" placeholder="Search…" autocomplete="off" />
+      <div class="pantry-crown" aria-hidden="true">Pantry</div>
+      <input class="search" id="search" type="search" placeholder="Search the pantry…" autocomplete="off" />
       <div class="tabs" role="tablist">
         <button type="button" role="tab" data-tab="ingredient" aria-selected="true">Ingredients <span></span></button>
         <button type="button" role="tab" data-tab="dish">Dishes <span></span></button>
-        <button type="button" role="tab" data-tab="technique">Techniques <span></span></button>
-        <button type="button" role="tab" data-tab="cuisine">Cuisines <span></span></button>
         <button type="button" role="tab" data-tab="trash">Bin <span></span></button>
       </div>
       <div class="shelf" id="shelf"></div>
+      <div class="pantry-foot" id="pantryFoot"></div>
     </aside>
   </main>
 
@@ -60,7 +88,11 @@
     <ol class="notebook" id="missingList"></ol>
   </dialog>
 
-  <script src="rules.js?v=2"></script>
-  <script src="app.js?v=2"></script>
+  <script type="importmap">{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+  <script src="rules.js?v=9"></script>
+  <script src="app.js?v=16"></script>
+  <script type="module" src="scene3d.js?v=7"></script>
 </body>
 </html>

@@ -1,0 +1,54 @@
+# Infinite Kitchen - more variants: things that are a form of something
+# more basic. "except techniques" means cooking it works its own way (the
+# rules, or its own lines), not like the raw thing.
+
+## Cured and cooked meats go with food the way their meat does
+Ham acts like Pork except techniques
+Honey Ham acts like Pork prefix Ham except techniques
+Bacon acts like Pork except techniques
+Sausage acts like Pork except techniques
+Salami acts like Pork except techniques
+Corned Beef acts like Beef prefix Corned Beef except techniques
+Jerky acts like Beef prefix - except techniques
+Wagyu acts like Beef
+Minced Meat acts like Beef prefix - except techniques, Egg, Dough
+Meatball acts like Minced Meat prefix - except techniques
+Patty acts like Minced Meat prefix - except techniques
+Smoked Salmon acts like Fillet prefix Salmon except techniques
+Surimi acts like Crab prefix - except techniques
+Turkey Breast acts like Chicken renaming Chicken to Turkey prefix Turkey except techniques
+Duck Breast acts like Chicken renaming Chicken to Duck prefix Duck except techniques
+Drumstick acts like Chicken prefix Chicken except techniques
+Rabbit acts like Chicken renaming Chicken to Rabbit except Cut, Wait, Heat, Simmer
+Caviar acts like Roe prefix -
+
+## Sea things
+Shrimp acts like Crab
+Lobster acts like Crab
+Squid acts like Crab
+
+## Plant things
+Seaweed acts like Vegetables renaming Vegetables to Seaweed except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Mirepoix acts like Vegetables prefix - except techniques, Soil, Tree, Water, Sugar, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Roasted Beet acts like Beet prefix Beet except techniques
+Pickle acts like Cucumber prefix - except techniques, Vinegar
+Compote acts like Fruit prefix - except techniques, Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Jam acts like Compote prefix -
+Dried Fruit acts like Fruit prefix - except techniques, Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Soil
+Fruit Leather acts like Dried Fruit prefix -
+Raisins acts like Dried Fruit prefix -
+Bulgur acts like Wheat prefix - except techniques, Water, Soil, Wait
+Rice Flour acts like Flour prefix - except Water, Egg
+Rice Vinegar acts like Vinegar prefix -
+Palm Tree acts like Tree prefix - except Ocean, Water, Fruit, Soil
+Tea Leaves acts like Herbs prefix - except Water, Boil, Dry, Heat, Soil
+Sugarcane acts like Sugar prefix - except Soil, Water, Meat, Cut, Blend
+
+## Sweet things
+Honeycomb acts like Honey prefix -
+Royal Jelly acts like Honey prefix -
+Condensed Milk acts like Milk prefix - except Wait, Heat, Sugar, Water, Ferment, Cure
+Milk Powder acts like Milk prefix - except Water, Wait, Heat, Ferment
+Milk Foam acts like Milk prefix - except techniques, Water
+Icing acts like Powdered Sugar prefix - except Water
+Fondant acts like Sugar prefix - except Water, Knead

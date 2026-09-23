@@ -1,0 +1,22 @@
+# Infinite Kitchen - fixes after 23 techniques became 11 (knife, bowl,
+# blender, stove, pot, pan, oven, grill, clock, jars, freezer). Where two
+# merged techniques gave different answers, these say which one stands, and
+# give a new road to anything that lost its only one.
+
+Pickle + Cut = Relish !
+Cream + Mix = Whipped Cream !
+Whipped Cream + Mix = Butter !
+Water + Boil = Cloud !
+Fish + Charcoal = Smoked Salmon
+Seafood + Beet = Shrimp
+Fish + Blend = Surimi
+Beaten Egg + Japanese = Chawanmushi
+Dough + Chinese = Bao
+Marshmallow + Powdered Sugar = Fondant
+Salmon + Salt = Lox
+Duck + Oil = Duck Confit
+Warm Milk + Boil = Evaporated Milk
+Boiled Egg + Water = Poached Egg
+Pork + Cut = Pork Chop !
+Tea Leaves + Heat = Green Tea [dish] !
+Potato Chips + Vegetables = Veggie Chips

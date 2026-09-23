@@ -1,0 +1,167 @@
+# Infinite Kitchen - variants. "X acts like Y except A, B" gives X every
+# recipe Y has, except the pairs listed (and any pair written for X by hand,
+# which always wins). Only for things that really are a kind of Y.
+
+## Whole eggs are eggs
+Quail Egg acts like Egg prefix -
+Duck Egg acts like Egg prefix -
+Free-Range Egg acts like Egg prefix -
+Salted Egg acts like Egg prefix - except Wait, Hen, Chick
+Ostrich Egg acts like Egg prefix -
+Quail Egg + Wait = Quail
+Duck Egg + Wait = Duckling
+Duck Egg + Meat = Duck
+Salted Egg + Wait = Salted Egg
+
+## Cracked or beaten eggs are eggs that can't hatch
+Beaten Egg acts like Egg prefix - except Hen, Chick, Duck, Duckling, Quail, Ostrich, Turkey, Weeds, Field, Grass, Bush, Forest, Island, Oasis, Cactus, Garden, Sprout, Seeds, Bee, Snail, Lamb, Watermelon, Fish, Catfish, Meat, Wait
+Egg Wash acts like Egg prefix - except Hen, Chick, Duck, Duckling, Quail, Ostrich, Turkey, Weeds, Field, Grass, Bush, Forest, Island, Oasis, Cactus, Garden, Sprout, Seeds, Bee, Snail, Lamb, Watermelon, Fish, Catfish, Meat, Wait
+Yolk acts like Egg prefix - except Hen, Chick, Duck, Duckling, Quail, Ostrich, Turkey, Weeds, Field, Grass, Bush, Forest, Island, Oasis, Cactus, Garden, Sprout, Seeds, Bee, Snail, Lamb, Watermelon, Fish, Catfish, Meat, Wait
+Beaten Egg + Hen = Oyakodon
+Beaten Egg + Chick = Oyakodon
+Beaten Egg + Fish = Fish Cake
+Beaten Egg + Catfish = Fish Cake
+Beaten Egg + Weeds = Frittata
+Beaten Egg + Grass = Frittata
+Beaten Egg + Garden = Frittata
+Beaten Egg + Sprout = Frittata
+Egg Wash + Fish = Fried Fish
+Egg Wash + Hen = Fried Chicken
+Yolk + Fish = Roe
+Yolk + Hen = Oyakodon
+
+## Young animals, and animals that are a kind of another
+Chick acts like Hen prefix Chicken
+Calf acts like Cow prefix Veal
+Buffalo acts like Cow prefix Buffalo
+Camel acts like Cow prefix Camel except Wait, Knead
+Piglet acts like Pig prefix Pork
+Boar acts like Pig prefix Boar
+Lamb acts like Sheep prefix Lamb
+Goat acts like Sheep prefix Goat
+Duckling acts like Duck prefix Duck
+Tuna acts like Fish renaming Fish to Tuna prefix - except Salt, Soil, Ferment
+Catfish acts like Fish renaming Fish to Catfish prefix - except Salt, Soil, Ferment
+Anchovy acts like Fish renaming Fish to Anchovy prefix - except Salt, Soil, Ferment
+Tuna + Salt = Tuna
+Catfish + Salt = Catfish
+Anchovy + Salt = Anchovy
+Quail + Cut = Quail
+Ostrich + Cut = Drumstick
+Camel + Wait = Camel
+
+## Red meat is red meat
+Mutton acts like Beef
+Veal acts like Beef
+Venison acts like Beef
+Camel Meat acts like Beef
+Cutlet acts like Beef prefix -
+
+## Other milks are milk
+Buffalo Milk acts like Milk prefix -
+Goat Milk acts like Milk prefix -
+Camel Milk acts like Milk prefix -
+
+## Other sugars are sugar
+Sugar Cube acts like Sugar prefix -
+Powdered Sugar acts like Sugar prefix -
+Palm Sugar acts like Sugar prefix -
+Cinnamon Sugar acts like Sugar prefix -
+Simple Syrup acts like Sugar prefix -
+Maple Syrup acts like Sugar prefix -
+Honey acts like Sugar prefix - except Cow
+
+## Every vegetable is a vegetable
+Broccoli acts like Vegetables renaming Vegetables to Broccoli except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Lettuce acts like Vegetables renaming Vegetables to Lettuce except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Cucumber acts like Vegetables renaming Vegetables to Cucumber except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Radish acts like Vegetables renaming Vegetables to Radish except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Eggplant acts like Vegetables renaming Vegetables to Eggplant except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Watercress acts like Vegetables renaming Vegetables to Watercress except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Cabbage acts like Vegetables renaming Vegetables to Cabbage except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Carrot acts like Vegetables renaming Vegetables to Carrot except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Bell Pepper acts like Vegetables renaming Vegetables to Bell Pepper except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Sweet Potato acts like Potato except Sugar
+Beet acts like Vegetables renaming Vegetables to Beet except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden, Meat, Cow
+Dandelion acts like Vegetables renaming Vegetables to Dandelion except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Bean Sprouts acts like Vegetables renaming Vegetables to Bean Sprouts prefix - except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Microgreens acts like Vegetables renaming Vegetables to Microgreens prefix - except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden, Meat
+Broccoli + Heat = Roasted Vegetables
+Lettuce + Heat = Lettuce
+Cucumber + Heat = Cucumber
+Radish + Heat = Roasted Vegetables
+Eggplant + Heat = Roasted Vegetables
+Watercress + Heat = Collard Greens
+Cabbage + Heat = Roasted Vegetables
+Carrot + Heat = Roasted Vegetables
+Bell Pepper + Heat = Roasted Vegetables
+Dandelion + Heat = Collard Greens
+Bean Sprouts + Heat = Chop Suey
+Microgreens + Heat = Microgreens
+Broccoli + Ocean = Seaweed
+Lettuce + Ocean = Seaweed
+Cucumber + Ocean = Sea Cucumber
+Carrot + Soil = Carrot
+Beet + Soil = Radish
+
+## Every fruit is a fruit
+Apple acts like Fruit renaming Fruit to Apple except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Grapes acts like Fruit renaming Fruit to Grapes except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Fruit
+Kiwi acts like Fruit renaming Fruit to Kiwi except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Pineapple acts like Fruit renaming Fruit to Pineapple except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Watermelon acts like Fruit renaming Fruit to Watermelon except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Egg
+Berries acts like Fruit renaming Fruit to Berries except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Fruit
+Strawberry acts like Fruit renaming Fruit to Strawberry except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Blueberry acts like Fruit renaming Fruit to Blueberry except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Blackberry acts like Fruit renaming Fruit to Blackberry except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Banana acts like Fruit renaming Fruit to Banana except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Orange acts like Fruit renaming Fruit to Orange except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Lime acts like Fruit renaming Fruit to Lime except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Grapefruit acts like Fruit renaming Fruit to Grapefruit except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Pomegranate acts like Fruit renaming Fruit to Pomegranate except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Dates acts like Fruit renaming Fruit to Dates except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Meat, Soil, Egg
+Prickly Pear acts like Fruit renaming Fruit to Prickly Pear except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Lemon acts like Fruit renaming Fruit to Lemon except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Coconut acts like Fruit except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Egg, Soil, Meat, Cut, Blend
+Coconut + Cut = Coconut Water
+Coconut + Blend = Coconut Milk
+Lemon + Heat = Lemon
+Lime + Heat = Lime
+
+## Herbs, spices, nuts
+Chives acts like Herbs except Sugar, Ocean
+Mint acts like Herbs except Sugar, Ocean
+Cinnamon acts like Spices
+Black Pepper acts like Spices
+Chili Flakes acts like Spices
+Curry Powder acts like Spices
+Peanut acts like Nuts except Soil, Water
+
+## Breads, cheeses, butters, yogurts
+Brioche acts like Bread prefix -
+Challah acts like Bread prefix -
+Sourdough acts like Bread prefix - except Water, Heat, Bake, Dry, Wait
+Pita acts like Bread prefix -
+Naan acts like Bread prefix -
+Flatbread acts like Bread prefix - except Tomato
+Toast acts like Bread prefix - except Heat
+Parmesan acts like Cheese except Wait
+Blue Cheese acts like Cheese except Ferment
+Mozzarella acts like Cheese
+Goat Cheese acts like Cheese
+Ricotta acts like Cheese
+Cream Cheese acts like Cheese
+Labneh acts like Yogurt prefix - except Wait
+Sour Cream acts like Yogurt prefix -
+Ghee acts like Butter prefix - except Heat
+Salted Butter acts like Butter prefix - except Ocean
+
+## Sweets
+Caramel Sauce acts like Caramel prefix - except Water, Blend
+Dulce de Leche acts like Caramel prefix - except Cow, Water
+Salted Caramel acts like Caramel prefix - except Salt
+Toffee acts like Caramel prefix - except Wait, Dry
+Cajeta acts like Caramel prefix - except Cow
+
+## Rice
+Steamed Rice acts like Rice prefix - except Heat, Boil, Steam, Water, Wait, Soil, Ferment, Cut

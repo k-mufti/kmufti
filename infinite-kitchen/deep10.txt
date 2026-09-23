@@ -1,0 +1,333 @@
+# Infinite Kitchen - rows for the bases the new foods lean on: salsa, gravy,
+# pesto, spices, bread, mushrooms, pasta, potatoes, and the new odd ones out
+# (gelatin, cloud, rainforest). Their variants and named dishes follow.
+
+@ Salsa
+Water = Salsa
+Soil = Compost
+Egg = Huevos Rancheros
+Beaten Egg = Huevos Rancheros
+Fried Egg = Huevos Rancheros
+Sugar = Ketchup
+Meat = Taco
+Minced Meat = Taco
+Tortilla = Taco
+Heat = Sauce
+Blend = Sauce
+Cut = Salsa
+Wait = Rot
+Fish = Fish Taco
+Fillet = Fish Taco
+Shrimp = Fish Taco
+Seafood = Fish Taco
+Hen = Fajitas
+Chicken = Fajitas
+Cow = Carne Asada
+Beef = Carne Asada
+Pig = Carnitas
+Pork = Carnitas
+Rice = Spanish Rice [dish]
+Beans = Burrito
+Black Beans = Burrito
+Refried Beans = Burrito
+Corn = Chips and Salsa
+Crackers = Chips and Salsa
+Cheese = Queso
+Potato = Patatas Bravas [dish]
+Bread = Bruschetta
+Pasta = Arrabbiata
+Vinegar = Hot Sauce
+Chili = Hot Sauce
+Tomato = Salsa
+Onion = Pico de Gallo
+Cilantro = Pico de Gallo !
+Lime = Pico de Gallo
+Mango = Mango Salsa
+Salt = Salsa
+Pico de Gallo acts like Salsa prefix - except Onion, Cilantro, Lime
+
+@ Gravy
+Potato = Mashed Potatoes
+Bread = Biscuits and Gravy
+Turkey = Thanksgiving Dinner
+Stuffing = Thanksgiving Dinner
+Chicken = Roast Chicken
+Beef = Roast Beef
+Meat = Pot Roast
+Rice = Loco Moco
+Water = Broth
+Heat = Gravy
+Flour = Gravy
+Butter = Gravy
+Milk = Gravy
+Sausage = Gravy
+Mushroom = Gravy
+Onion = Gravy
+Meatball = Swedish Meatballs
+Pork = Pork Chop
+Cut = Gravy
+
+@ Pesto
+Bread = Bruschetta
+Chicken = Chicken Kiev
+Potato = Gnocchi
+Tomato = Caprese
+Cheese = Caprese
+Rice = Risotto
+Egg = Omelette
+Fish = Grilled Fish
+Water = Pesto
+Heat = Pesto
+Cut = Pesto
+Wait = Pesto
+Soil = Compost
+Oil = Pesto
+Nuts = Pesto
+Garlic = Pesto
+Flatbread = Focaccia
+Sourdough = Focaccia
+
+@ Spices
+Water = Tea
+Soil = Compost
+Sugar = Cinnamon Sugar
+Heat = Spices
+Wait = Spices
+Desert = Spices
+Fish = Fish Curry
+Caramel = Candy
+Cow = Curry
+Beef = Curry
+Pork = Vindaloo
+Seafood = Curry
+Ferment = Spices
+Salt = Seasoning
+Brine = Pickle
+Vegetables = Curry
+Fruit = Chutney
+Tree = Cinnamon
+Flower = Saffron
+Herbs = Seasoning
+Chives = Seasoning
+Rice = Biryani
+Chili = Curry Powder
+Tomato = Curry
+Vinegar = Pickle
+Nuts = Roasted Nuts
+Mushroom = Curry
+Milk = Chai
+Yogurt = Raita
+Broth = Pho
+Tea Leaves = Chai
+Coconut = Curry
+Coconut Milk = Curry
+Beans = Curry
+Lentils = Dal
+Chickpeas = Chana Masala
+Sparkling Water = Ginger Ale
+Saffron + Rice = Paella
+Saffron + Milk = Kheer
+Saffron acts like Spices prefix - except Rice, Milk, Flower
+
+@ Bread
+Soil = Compost
+Ocean = Mush
+Desert = Stale Bread
+Caramel = Bread Pudding
+Cutlet = Sandwich
+Salt = Pretzel
+Brine = Pretzel
+Vegetables = Sandwich
+Microgreens = Sandwich
+Garden = Sandwich
+Wheat = Bread
+Herbs = Focaccia
+Chives = Focaccia
+Corn = Cornbread
+Salsa = Bruschetta
+Seeds = Multigrain Bread
+Olive = Focaccia
+Cinnamon = Cinnamon Roll
+Turkey = Turkey Sandwich
+Beef = Sandwich
+Veal = Sandwich
+Mutton = Sandwich
+Pork = Cubano [dish]
+Minced Meat = Sloppy Joe
+Meatball = Meatball Sub [dish]
+Bacon = BLT
+Butter = Toast
+Cheese = Grilled Cheese
+Condensed Milk = Bread Pudding
+Milk = Bread Pudding
+Buffalo Milk = Bread Pudding
+Goat Milk = Bread Pudding
+Camel Milk = Bread Pudding
+Almond Milk = Bread Pudding
+Coconut Milk = Bread Pudding
+Rice Milk = Bread Pudding
+Flour = Bread
+Sourdough = Bread
+Brioche = Bread
+Toffee = Bread Pudding
+Caramel Sauce = Bread Pudding
+Salted Caramel = Bread Pudding
+Dulce de Leche = Bread Pudding
+Cajeta = Bread Pudding
+Yeast = Bread
+Broth = French Onion Soup
+Bouillon = French Onion Soup
+Ham = Ham Sandwich
+Honey Ham = Ham Sandwich
+Salami = Sandwich
+Wagyu = Sandwich
+Camel Meat = Sandwich
+Truffle = Toast
+Oasis = Pita
+Sparkling Water = Mush
+Pickle = Reuben
+Corned Beef = Reuben
+Crackers = Breadcrumbs
+Pesto = Bruschetta
+Gravy = Biscuits and Gravy
+Oats = Bread
+Stuffing = Stuffing
+Seasoning = Focaccia
+Nuoc Cham = Bánh Mì [dish]
+Relish = Sandwich
+Multigrain Bread acts like Bread prefix - except Seeds
+
+@ Mushroom
+Herbs = Sautéed Mushrooms
+Chives = Sautéed Mushrooms
+Seasoning = Sautéed Mushrooms
+Tomato = Marinara
+Piglet = Truffle
+Boar = Truffle
+Cheese = Stuffed Mushrooms [dish]
+Pasta = Stroganoff
+Truffle = Truffle
+Rainforest = Mushroom
+Gravy = Gravy
+Stuffing = Stuffing
+Salt = Mushroom
+Water = Mushroom
+Ferment = Soy Sauce
+
+@ Pasta
+Nuts = Pesto Pasta
+Butter = Fettuccine Alfredo
+Truffle = Truffle Pasta [dish]
+Fish Sauce = Pad Thai
+Nuoc Cham = Pad Thai
+Salt = Pasta
+
+@ Potato
+Simple Syrup = Sweet Potato
+Sugar Cube = Sweet Potato
+Powdered Sugar = Sweet Potato
+Honey = Sweet Potato
+Maple Syrup = Sweet Potato
+Toffee = Sweet Potato
+Caramel Sauce = Sweet Potato
+Salted Caramel = Sweet Potato
+Dulce de Leche = Sweet Potato
+Brine = Fries
+Wheat = Gnocchi
+Chili = Patatas Bravas
+Tomato = Patatas Bravas
+Corn = Chowder
+Truffle = Truffle Fries [dish]
+Seasoning = Fries
+
+## Olive, cinnamon, seeds, butter, yogurt, chili, broth
+Olive + Feta = Greek Salad
+Olive + Onion = Tapenade
+Cinnamon + Bread = Cinnamon Roll
+Cinnamon + Apple = Apple Pie
+Seeds + Oats = Granola
+Seeds + Honey = Brittle
+Butter + Truffle = Compound Butter
+Butter + Cinnamon = Compound Butter
+Yogurt + Honey = Parfait
+Yogurt + Oats = Overnight Oats [dish]
+Yogurt + Nuts = Parfait
+Yogurt + Garlic = Tzatziki
+Yogurt + Mint = Tzatziki
+Chili + Garlic = Chili Oil
+Chili + Oil = Chili Oil
+Chili + Honey = Hot Honey
+Hot Honey + Fried Chicken = Nashville Hot Chicken
+Chili Oil + Dumpling = Dumpling
+Chili Oil + Noodles = Dan Dan Noodles [dish]
+Broth + Noodles = Ramen
+Broth + Tofu = Miso Soup
+Broth + Seaweed = Miso Soup
+Broth + Meatball = Italian Wedding Soup [dish]
+Broth + Beans = Minestrone
+
+## Gelatin
+Gelatin + Fruit = Jelly
+Gelatin + Milk = Panna Cotta
+Gelatin + Coffee = Coffee Jelly [dish]
+Gelatin + Heat = Broth
+Gelatin + Wait = Gelatin
+Gelatin + Cut = Gelatin
+Gelatin + Water = Gelatin
+Gelatin + Meat = Aspic [dish]
+Gelatin + Fish = Aspic
+Gelatin + Vegetables = Aspic
+Gelatin + Soda = Jelly
+Gelatin + Chocolate = Chocolate Mousse [dish]
+Gelatin + Yogurt = Panna Cotta
+Gelatin + Mango = Mango Pudding [dish]
+
+## Cloud: whatever is fluffy, rainy or foamy
+Cloud + Egg = Meringue
+Cloud + Milk = Milk Foam
+Cloud + Water = Rain
+Cloud + Heat = Water
+Cloud + Ocean = Rain
+Cloud + Desert = Oasis
+Cloud + Tree = Rainforest
+Cloud + Field = Rice
+Cloud + Garden = Vegetables
+Cloud + Sprout = Grass
+Cloud + Freeze = Snow
+Cloud + Ice = Snow
+Cloud + Candy = Cotton Candy
+Cloud + Coffee = Cappuccino
+Cloud + Cake = Angel Food Cake
+Cloud + Pancake = Soufflé Pancake [dish]
+Cloud + Cheese = Soufflé
+Cloud + Forest = Rainforest
+Cloud + Snow = Snow
+Rain acts like Water prefix - except Steam, Ferment, Meat, Soil, Egg, Tree, Field
+
+## Rainforest, bulbs, turtles, sea cucumbers
+Rainforest + Bee = Honey
+Rainforest + Flower = Vanilla
+Rainforest + Nuts = Cashew
+Rainforest + Grass = Sugarcane
+Rainforest + Water = Rainforest
+Rainforest + Bush = Rainforest
+Rainforest + Tree = Rainforest
+Rainforest + Chili = Chili
+Vanilla + Sugar = Vanilla Sugar
+Vanilla + Custard = Crème Brûlée
+Vanilla + Cream = Ice Cream
+Vanilla + Milk = Milkshake
+Vanilla + Soda = Cream Soda
+Vanilla Sugar acts like Sugar prefix -
+Cashew acts like Nuts except Soil, Water
+Bulb + Soil = Flower
+Bulb + Cut = Bulb
+Bulb + Heat = Roasted Garlic
+Turtle + Water = Turtle
+Turtle + Ocean = Turtle
+Turtle + Heat = Turtle Soup
+Turtle + Simmer = Turtle Soup
+Sea Cucumber acts like Seafood prefix - except Cut, Mince, Noodles, Seafood
+Sparkling Water + Lime = Lemon-Lime Soda
+Sparkling Water + Ice = Sparkling Water
+Sparkling Water + Vanilla = Cream Soda

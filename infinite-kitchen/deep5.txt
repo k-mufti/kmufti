@@ -1,0 +1,313 @@
+# Infinite Kitchen - full rows for vegetables, fruit, caramel and seafood.
+#
+#  - Vegetable + another vegetable or fruit is a Salad; + cheese a Gratin,
+#    + yogurt Raita, + flour Pakora, + pasta Primavera, + cream Chowder.
+#  - Fruit + another fruit is a Fruit Salad; + yogurt a Parfait, + cream a
+#    Fool, + cheese a Charcuterie board, + caramel a Candy Apple.
+#  - Caramel + nuts is Praline, + seeds Brittle, + butter Toffee, + fruit a
+#    Candy Apple, + something sour Sweet and Sour Sauce.
+#  - Seafood + something sweet is Honey Walnut Shrimp, + rice Paella,
+#    + potato or corn a Seafood Boil.
+
+@ Vegetables
+Sprout = Garden
+Field = Garden
+Beet = Borscht
+Desert = Cactus
+Weeds = Salad
+Bee = Fruit
+Caramel = Roasted Vegetables
+Salt = Pickle
+Seaweed = Salad
+Seafood = Gumbo [dish]
+Brine = Pickle
+Microgreens = Salad
+Garden = Garden
+Flower = Salad
+Cactus = Salsa
+Herbs = Ratatouille [dish]
+Chives = Salad
+Rice = Bibimbap
+Potato = Samosa [dish]
+Broccoli = Stir-Fried Vegetables
+Cucumber = Salad
+Lettuce = Salad
+Chili = Salsa
+Eggplant = Ratatouille
+Tomato = Gazpacho [dish]
+Corn = Succotash [dish]
+Apple = Salad
+Watermelon = Salad
+Berries = Salad
+Grapes = Salad
+Olive = Greek Salad [dish]
+Kiwi = Salad
+Jam = Chutney
+Dates = Chutney
+Pineapple = Salsa
+Nuts = Salad
+Forest = Mushroom
+Cinnamon = Curry
+Mushroom = Stir-Fried Vegetables
+Turkey = Stew
+Crab = Gumbo
+Shrimp = Gumbo
+Surimi = Salad
+Cream = Chowder
+Butter = Steamed Vegetables
+Cheese = Gratin [dish]
+Yogurt = Raita [dish]
+Flour = Pakora [dish]
+Pasta = Primavera [dish]
+Sourdough = Sandwich
+Rice Flour = Pakora
+Toffee = Roasted Vegetables
+Caramel Sauce = Roasted Vegetables
+Salted Caramel = Roasted Vegetables
+Dulce de Leche = Roasted Vegetables
+Yeast = Pickle
+Broth = Soup
+Snail = Garden
+Farm = Garden
+Quail = Stew
+Ostrich = Stew
+Fish Sauce = Kimchi
+Oasis = Cactus
+Bush = Garden
+Radish = Salad
+Watercress = Salad
+Bean Sprouts = Chop Suey
+Dandelion = Salad
+Roasted Beet = Borscht
+Mirepoix = Soup
+Pickle = Pickle
+Compote = Chutney
+Dried Fruit = Chutney
+Coconut = Curry
+Chutney + Cheese = Charcuterie
+Chutney + Meat = Curry
+
+@ Fruit
+Sprout = Tree
+Field = Strawberry
+Beet = Juice
+Weeds = Berries
+Meringue = Pavlova
+Bee = Honey
+Caramel = Candy Apple
+Seafood = Ceviche
+Brine = Olive
+Microgreens = Salad
+Garden = Tomato
+Flower = Fruit
+Wheat = Granola [dish]
+Cactus = Prickly Pear
+Herbs = Fruit Salad
+Chives = Salad
+Rice = Mango Sticky Rice [dish]
+Potato = Sweet Potato
+Broccoli = Salad
+Cucumber = Salad
+Lettuce = Salad
+Chili = Salsa
+Eggplant = Salad
+Tomato = Salsa
+Corn = Salsa
+Apple = Fruit Salad
+Seeds = Pomegranate
+Watermelon = Fruit Salad
+Berries = Fruit Salad
+Kiwi = Fruit Salad
+Jam = Jam
+Dates = Dried Fruit
+Pineapple = Fruit Salad
+Nuts = Granola
+Forest = Berries
+Cinnamon = Compote
+Crab = Ceviche
+Shrimp = Ceviche
+Surimi = Ceviche
+Cream = Fool [dish]
+Butter = Jam
+Cheese = Charcuterie
+Yogurt = Parfait [dish]
+Flour = Muffin [dish]
+Sourdough = Fruitcake
+Bread + Fruit = Fruitcake
+Rice Flour = Mochi
+Toffee = Candy Apple
+Caramel Sauce = Candy Apple
+Salted Caramel = Candy Apple
+Dulce de Leche = Candy Apple
+Yeast = Vinegar
+Farm = Apple
+Fish Sauce = Papaya Salad [dish]
+Radish = Salad
+Watercress = Salad
+Tea Leaves = Tea
+Bean Sprouts = Salad
+Dandelion = Salad
+Roasted Beet = Salad
+Mirepoix = Salad
+Pickle = Chutney
+Compote = Compote
+Dried Fruit = Dried Fruit
+Fruit Leather = Fruit Leather
+Coconut = Fruit Salad
+Crumble + Fruit = Cobbler [dish]
+Granola + Yogurt = Parfait
+Granola + Milk = Cereal
+
+@ Caramel
+Ocean = Salted Caramel
+Desert = Caramel Sauce
+Tree = Maple Syrup
+Forest = Maple Syrup
+Flower = Honey
+Sprout = Caramel
+Field = Caramel
+Weeds = Caramel
+Grass = Caramel
+Garden = Caramel
+Bush = Caramel
+Farm = Caramel
+Meringue = Floating Island
+Whip = Caramel Sauce
+Mince = Candy
+Ferment = Caramel
+Caramel = Toffee
+Seafood = Honey Walnut Shrimp [dish]
+Crab = Honey Walnut Shrimp
+Shrimp = Honey Walnut Shrimp
+Surimi = Honey Walnut Shrimp
+Fish Sauce = Caramel Sauce
+Brine = Salted Caramel
+Wheat = Cereal
+Rice = Mochi
+Potato = Sweet Potato
+Chili = Sweet Chili Sauce
+Tomato = Ketchup
+Corn = Caramel Corn [dish]
+Seeds = Brittle
+Vinegar = Sweet and Sour Sauce
+Nuts = Praline
+Cinnamon = Candy
+Butter = Toffee
+Cheese = Cheesecake
+Yogurt = Parfait
+Flour = Cookie
+Sourdough = Bread Pudding
+Rice Flour = Mochi
+Toffee = Toffee
+Caramel Sauce = Caramel Sauce
+Salted Caramel = Salted Caramel
+Dulce de Leche = Dulce de Leche
+Oasis = Dates
+Palm Tree = Palm Sugar
+Tea Leaves = Sweet Tea
+Rice Vinegar = Sweet and Sour Sauce
+Cure = Caramel
+Sweet Chili Sauce + Shrimp = Sweet Chili Shrimp [dish]
+Sweet Chili Sauce + Chicken = Sweet and Sour Chicken
+
+@ Seafood
+Sugar = Honey Walnut Shrimp
+Simple Syrup = Honey Walnut Shrimp
+Sugar Cube = Honey Walnut Shrimp
+Powdered Sugar = Honey Walnut Shrimp
+Maple Syrup = Honey Walnut Shrimp
+Honey = Honey Walnut Shrimp
+Honeycomb = Honey Walnut Shrimp
+Royal Jelly = Honey Walnut Shrimp
+Sugarcane = Honey Walnut Shrimp
+Toffee = Honey Walnut Shrimp
+Caramel Sauce = Honey Walnut Shrimp
+Salted Caramel = Honey Walnut Shrimp
+Dulce de Leche = Honey Walnut Shrimp
+Nuts = Honey Walnut Shrimp
+Heat = Seafood Boil [dish]
+Boil = Seafood Boil
+Simmer = Seafood Boil
+Steam = Seafood Boil
+Potato = Seafood Boil
+Corn = Seafood Boil
+Fry = Tempura
+Deep-fry = Tempura
+Flour = Tempura
+Wheat = Tempura
+Wait = Rot
+Ferment = Fish Sauce
+Cure = Ceviche
+Smoke = Seafood
+Salt = Seafood
+Brine = Seafood
+Seafood = Lobster
+Cheese = Crab Rangoon [dish]
+Pasta = Seafood Pasta [dish]
+Rice = Paella
+Butter = Scampi [dish]
+Vegetables = Gumbo
+Palm Tree = Coconut Shrimp [dish]
+Coconut = Coconut Shrimp
+Olive = Seafood
+Seafood acts like Fish prefix - except Salt, Soil, Farm, Forest, Cut, Mince, Ocean, Fish, Water, Cheese, Pasta, Olive, Brine, Nuts, Butter, Flour, Wheat, Potato, Corn, Vegetables, Rice, Caramel, Toffee, Caramel Sauce, Salted Caramel, Dulce de Leche, Roe
+Crab + Cut = Crab
+Crab acts like Seafood except Cut, Mince, Noodles, Crab
+Shrimp acts like Crab
+Lobster acts like Crab
+Squid acts like Crab
+Surimi acts like Crab prefix - except techniques
+Roe acts like Seafood prefix - except techniques, Salt, Seafood, Rice, Sugar, Simple Syrup, Sugar Cube, Powdered Sugar, Maple Syrup, Honey, Honeycomb, Royal Jelly, Sugarcane, Toffee, Caramel Sauce, Salted Caramel, Dulce de Leche, Nuts
+Roe + Rice = Sushi
+Caviar acts like Roe prefix -
+
+## Everything that follows its base again, now the bases are fuller
+Broccoli acts like Vegetables renaming Vegetables to Broccoli except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Lettuce acts like Vegetables renaming Vegetables to Lettuce except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Cucumber acts like Vegetables renaming Vegetables to Cucumber except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Radish acts like Vegetables renaming Vegetables to Radish except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Eggplant acts like Vegetables renaming Vegetables to Eggplant except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Watercress acts like Vegetables renaming Vegetables to Watercress except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Cabbage acts like Vegetables renaming Vegetables to Cabbage except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Carrot acts like Vegetables renaming Vegetables to Carrot except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Bell Pepper acts like Vegetables renaming Vegetables to Bell Pepper except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Beet acts like Vegetables renaming Vegetables to Beet except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden, Meat, Cow
+Dandelion acts like Vegetables renaming Vegetables to Dandelion except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Bean Sprouts acts like Vegetables renaming Vegetables to Bean Sprouts prefix - except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Microgreens acts like Vegetables renaming Vegetables to Microgreens prefix - except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden, Meat
+Seaweed acts like Vegetables renaming Vegetables to Seaweed except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Mirepoix acts like Vegetables prefix - except techniques, Soil, Tree, Water, Sugar, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Roasted Beet acts like Beet prefix Beet except techniques
+Pickle acts like Cucumber prefix - except techniques, Vinegar
+Apple acts like Fruit renaming Fruit to Apple except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Grapes acts like Fruit renaming Fruit to Grapes except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Fruit
+Kiwi acts like Fruit renaming Fruit to Kiwi except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Pineapple acts like Fruit renaming Fruit to Pineapple except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Watermelon acts like Fruit renaming Fruit to Watermelon except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Egg
+Berries acts like Fruit renaming Fruit to Berries except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Fruit
+Strawberry acts like Fruit renaming Fruit to Strawberry except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Blueberry acts like Fruit renaming Fruit to Blueberry except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Blackberry acts like Fruit renaming Fruit to Blackberry except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Banana acts like Fruit renaming Fruit to Banana except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Orange acts like Fruit renaming Fruit to Orange except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Lime acts like Fruit renaming Fruit to Lime except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Grapefruit acts like Fruit renaming Fruit to Grapefruit except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Pomegranate acts like Fruit renaming Fruit to Pomegranate except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Dates acts like Fruit renaming Fruit to Dates except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Meat, Soil, Egg
+Prickly Pear acts like Fruit renaming Fruit to Prickly Pear except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Lemon acts like Fruit renaming Fruit to Lemon except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Coconut acts like Fruit except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Egg, Soil, Meat, Cut, Blend
+Compote acts like Fruit prefix - except techniques, Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Jam acts like Compote prefix -
+Dried Fruit acts like Fruit prefix - except techniques, Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Soil
+Fruit Leather acts like Dried Fruit prefix -
+Raisins acts like Dried Fruit prefix -
+Caramel Sauce acts like Caramel prefix - except Water, Blend
+Dulce de Leche acts like Caramel prefix - except Cow, Water
+Salted Caramel acts like Caramel prefix - except Salt
+Toffee acts like Caramel prefix - except Wait, Dry
+Cajeta acts like Caramel prefix - except Cow
+Honeycomb acts like Honey prefix -
+Royal Jelly acts like Honey prefix -
+Icing acts like Powdered Sugar prefix - except Water
+Fondant acts like Sugar prefix - except Water, Knead

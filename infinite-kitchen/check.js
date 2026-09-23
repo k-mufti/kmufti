@@ -46,10 +46,14 @@ for (const [c, v] of Object.entries(cuisines)) {
 // count too - Burnt has no written recipe, you get it by overcooking - but
 // only when they land on a name the file already knows, so the walk can't
 // wander off into every stacked name there could ever be.
-const cooked = R.cookedSet(combos, items, starters);
+const cooked = R.cookedSet(combos, items, starters, data.raw);
 const written = new Set(Object.keys(items));
 const splits = R.splitMap(combos, items);
+const recipe = new Map(combos.map(([a, b, r]) => [key(a, b), r]));
 const ctx = {
+  written: (a, b) => recipe.get(key(a, b)),
+  likeOf: (n) => (data.like || {})[n] || null,
+  follows: (n) => (data.follows || {})[n] || null,
   kindOf: (n) => items[n] || "ingredient",
   isWritten: (n) => written.has(n),
   splitOf: (n) => splits.get(n) || null,
@@ -73,7 +77,7 @@ for (let changed = true; changed;) {
   const list = [...have];
   for (let i = 0; i < list.length; i++) {
     for (let j = i; j < list.length; j++) {
-      const m = R.make(list[i], list[j], ctx);
+      const m = R.find(list[i], list[j], ctx);
       if (m && m.result in items && !have.has(m.result)) { have.add(m.result); changed = true; }
     }
   }
@@ -85,6 +89,10 @@ for (const [a, b] of combos) {
 }
 const stuck = [...Object.keys(items)].filter((r) => !have.has(r));
 if (stuck.length) errs.push("can't be reached from the starting pantry: " + stuck.join(", "));
+
+for (const [x, y] of Object.entries(data.like || {})) {
+  if (!(x in items) || !(y in items)) errs.push(`"${x} is ${y}" names something that doesn't exist`);
+}
 
 const count = (k) => Object.values(items).filter((v) => v === k).length;
 if (errs.length) {

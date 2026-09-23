@@ -19,18 +19,17 @@
 "use strict";
 
 (function (root) {
-  const HEAT = ["Heat", "Grill", "Roast", "Bake", "Fry", "Deep-fry", "Smoke", "Torch", "Stir-fry"];
-  const WET = ["Boil", "Simmer", "Steam"];
+  const HEAT = ["Heat", "Grill", "Bake", "Fry"];
+  const WET = ["Boil"];
+  const COOKS = HEAT.concat(WET);      // boiled counts as cooked, too
 
   // When two bin items meet, the worse one wins.
   const BIN_ORDER = ["Leftovers", "Dishwater", "Crumbs", "Husk", "Grease", "Sludge", "Mush", "Burnt", "Mold",
                      "Rot", "Scraps", "Compost", "Soil", "Ash", "Charcoal", "Soap", "Slop", "Poison"];
 
   const PARTICIPLE = {
-    Grill: "Grilled", Fry: "Fried", "Deep-fry": "Deep-Fried", Bake: "Baked", Roast: "Roasted",
-    Smoke: "Smoked", Freeze: "Frozen", Whip: "Whipped", Boil: "Boiled", Steam: "Steamed",
-    Simmer: "Simmered", Mince: "Minced", Cure: "Cured", Dry: "Dried", Blend: "Blended",
-    Knead: "Kneaded", "Stir-fry": "Stir-Fried", Torch: "Torched", Ferment: "Fermented",
+    Grill: "Grilled", Fry: "Fried", Bake: "Baked", Freeze: "Frozen", Boil: "Boiled",
+    Blend: "Blended", Ferment: "Fermented",
   };
 
   // Bulk things with no flavour of their own: nobody orders a Flour Pizza.
@@ -48,7 +47,9 @@
   const MELTS = new Set(["Ice", "Ice Cream", "Snow Cone", "Panna Cotta", "Milk Foam", "Aspic",
     "Soda", "Buttercream", "Compound Butter", "Cultured Butter", "Salted Butter", "Butter",
     "Greek Yogurt", "Yogurt", "Lassi", "Sour Cream", "Hollandaise", "Mayonnaise", "Thousand Island",
-    "Icing", "Cotton Candy", "Rock Candy", "Frozen Yogurt", "Slushie", "Shaved Ice"]);
+    "Icing", "Cotton Candy", "Rock Candy", "Frozen Yogurt", "Slushie", "Shaved Ice", "Snow", "Gelato",
+    "Sorbet", "Popsicle", "Frozen Custard", "Sundae", "Ice Cream Sandwich", "Mochi Ice Cream", "Ice Cream Cone",
+    "Banana Split", "Bingsu", "Maple Taffy", "Iced Coffee", "Iced Tea"]);
 
   // Split a name back into the flavours someone stacked and the dish
   // underneath, so a reload doesn't lose count. The dish underneath has to be
@@ -111,6 +112,9 @@
       return { result: ka === "trash" ? a : b, kind: "trash" };
     }
 
+    // the same thing twice, with nothing written for it: just more of it
+    if (a === b && ka !== "technique") return { result: a, kind: ka };
+
     const tech = ka === "technique" ? a : kb === "technique" ? b : null;
     const thing = tech === a ? b : tech === b ? a : null;
 
@@ -118,10 +122,15 @@
       // 2. cooking what is already cooked, and leaving it out. A stacked name
       // counts as cooked when the dish under it is: Tomato Grilled Cheese is
       // still a grilled cheese.
-      if (ctx.isCooked(thing) || ctx.isCooked(parse(thing, ctx).head)) {
+      // A finished dish counts as cooked whatever made it: a salad left out
+      // is Leftovers, and heating sushi ruins it.
+      if (ctx.isCooked(thing) || ctx.isCooked(parse(thing, ctx).head) || ctx.kindOf(thing) === "dish") {
         if (HEAT.includes(tech)) return { result: "Burnt", kind: "trash" };
         if (WET.includes(tech)) return { result: "Mush", kind: "trash" };
         if (tech === "Wait") return { result: "Leftovers", kind: "trash" };
+        if (tech === "Ferment") return { result: "Mold", kind: "trash" };
+        if (tech === "Blend") return { result: "Sludge", kind: "trash" };
+        if (tech === "Cut") return { result: thing, kind: ctx.kindOf(thing) };   // a slice is still the dish
       }
       // 3. stirring one thing on its own does nothing
       if (tech === "Mix") return { result: thing, kind: ctx.kindOf(thing) };
@@ -198,8 +207,11 @@
   // Recipes that hand back one of their own inputs (Brine + Cut = Brine)
   // cook nothing and are ignored, and `starters`, techniques and cuisines
   // are never cooked however a recipe re-makes them.
-  function cookedSet(combos, items, starters) {
-    const raw = new Set(starters || []);
+  // `raw` lists things a heat technique makes without cooking them: the
+  // sun doing the work (Sprout + Heat = Flower), or the sea drying out
+  // (Ocean + Heat = Salt).
+  function cookedSet(combos, items, starters, raw) {
+    raw = new Set((starters || []).concat(raw || []));
     const made = new Map();
     for (const [a, b, r] of combos) {
       if (a === r || b === r) continue;
@@ -213,7 +225,7 @@
     const cooked = new Set();
     for (const [r, srcs] of made) {
       if (!skip(r) && srcs.some(([a, b]) =>
-        (HEAT.includes(a) && !MELTS.has(b)) || (HEAT.includes(b) && !MELTS.has(a)))) cooked.add(r);
+        (COOKS.includes(a) && !MELTS.has(b)) || (COOKS.includes(b) && !MELTS.has(a)))) cooked.add(r);
     }
     for (let changed = true; changed;) {
       changed = false;
@@ -236,7 +248,36 @@
     return m;
   }
 
-  const API = { make, cookedSet, parse, splitMap, MELTS, HEAT, WET, PARTICIPLE, NOT_A_FLAVOUR, MAX_MODS };
+  // The whole lookup for one pair: the written recipe, then - when a
+  // technique meets something that is really another food underneath (a
+  // Salted Egg is still an egg) - the recipe for that food, then the
+  // mechanical rules. So Salted Egg + Heat is a Fried Egg without anyone
+  // writing it. ctx also needs written(a, b) -> name, and likeOf(name).
+  function find(a, b, ctx) {
+    const w = ctx.written(a, b);
+    if (w) return { result: w, kind: ctx.kindOf(w) };
+    // A named dish follows the dish it's named after: Mango Smoothie + Ice
+    // is whatever Smoothie + Ice is (and a plain Smoothie comes back Mango).
+    const fa = ctx.follows ? ctx.follows(a) : null, fb = ctx.follows ? ctx.follows(b) : null;
+    for (const [x, base, z] of [[a, fa, b], [b, fb, a]]) {
+      if (!base) continue;
+      const r = ctx.written(base, z) || (ctx.follows(z) && ctx.written(base, ctx.follows(z)));
+      if (r) return r === base ? { result: x, kind: ctx.kindOf(x) } : { result: r, kind: ctx.kindOf(r) };
+    }
+    for (const [tech, thing] of [[a, b], [b, a]]) {
+      if (ctx.kindOf(tech) !== "technique" || ctx.kindOf(thing) === "technique") continue;
+      for (let x = ctx.likeOf(thing), hops = 0; x && hops < 5; x = ctx.likeOf(x), hops++) {
+        const r = ctx.written(x, tech);
+        // when nothing happens to the food underneath, nothing happens to
+        // this one either: Sugar Cube + Wait is still a Sugar Cube
+        if (r === x) return { result: thing, kind: ctx.kindOf(thing) };
+        if (r && ctx.kindOf(r) !== "technique") return { result: r, kind: ctx.kindOf(r) };
+      }
+    }
+    return make(a, b, ctx);
+  }
+
+  const API = { make, find, cookedSet, parse, splitMap, MELTS, HEAT, WET, PARTICIPLE, NOT_A_FLAVOUR, MAX_MODS };
   root.KitchenRules = API;
   if (typeof module !== "undefined" && module.exports) module.exports = API;
 })(typeof window !== "undefined" ? window : globalThis);

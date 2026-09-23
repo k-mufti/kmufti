@@ -1,0 +1,345 @@
+# Infinite Kitchen - the opening, written by hand.
+#
+# One combo per line:   A + B = Result [kind]
+# [kind] is only needed the first time a result appears, and defaults to
+# ingredient. Kinds: ingredient, dish, technique, cuisine, trash.
+# Build recipes.json from this with:   node infinite-kitchen/build.js
+#
+# Starters: Water, Soil, Egg, Sugar, Meat + Heat, Mix, Cut, Wait.
+# House rules: Meat + something = the animal; cut the animal for its meat;
+# animal + Wait = its baby. Nothing is forced - if it needs explaining, it's out.
+
+## The starters with each other
+Water + Water = Ocean
+Water + Soil = Sprout
+Water + Egg = Egg Wash
+Water + Sugar = Simple Syrup
+Water + Meat = Fish
+Water + Heat = Boil [technique]
+Water + Mix = Water
+Water + Cut = Water
+Water + Wait = Water
+Soil + Soil = Field
+Soil + Egg = Century Egg [dish]
+Soil + Sugar = Beet
+Soil + Meat = Pig
+Soil + Heat = Desert
+Soil + Mix = Soil
+Soil + Cut = Field
+Soil + Wait = Weeds
+Egg + Egg = Ostrich Egg
+Egg + Sugar = Meringue
+Egg + Meat = Hen
+Egg + Heat = Fried Egg [dish]
+Egg + Mix = Beaten Egg
+Egg + Cut = Yolk
+Egg + Wait = Chick
+Sugar + Sugar = Sugar Cube
+Sugar + Meat = Bee
+Sugar + Heat = Caramel
+Sugar + Mix = Sugar
+Sugar + Cut = Powdered Sugar
+Sugar + Wait = Sugar
+Meat + Meat = Cow
+Meat + Heat = Barbecue [dish]
+Meat + Cut = Cutlet
+Meat + Wait = Rot [trash]
+
+## Techniques
+Heat + Heat = Grill [technique]
+Heat + Mix = Stir-fry [technique]
+Heat + Cut = Torch [technique]
+Heat + Wait = Bake [technique]
+Mix + Mix = Whip [technique]
+Mix + Cut = Blend [technique]
+Mix + Wait = Knead [technique]
+Cut + Cut = Mince [technique]
+Cut + Wait = Dry [technique]
+Wait + Wait = Ferment [technique]
+Boil + Wait = Simmer [technique]
+Boil + Boil = Steam [technique]
+Bake + Heat = Roast [technique]
+Grill + Wait = Smoke [technique]
+Charcoal + Grill = Smoke
+Oil + Heat = Fry [technique]
+Fry + Fry = Deep-fry [technique]
+Salt + Wait = Cure [technique]
+
+## The sea
+Ocean + Heat = Salt
+Ocean + Wait = Salt
+Ocean + Water = Ocean
+Ocean + Sprout = Seaweed
+Ocean + Tree = Palm Tree
+Ocean + Egg = Roe
+Ocean + Meat = Seafood
+Salt + Water = Brine
+Salt + Burnt = Black Pepper
+
+## The garden
+Sprout + Water = Grass
+Sprout + Soil = Vegetables
+Sprout + Sugar = Fruit
+Sprout + Wait = Tree
+Sprout + Cut = Microgreens
+Sprout + Sprout = Garden
+Sprout + Heat = Flower
+Sprout + Field = Wheat
+Sprout + Desert = Cactus
+Grass + Wait = Wheat
+Grass + Soil = Vegetables
+Grass + Garden = Herbs
+Grass + Grass = Field
+Grass + Cut = Chives
+Grass + Ocean = Seaweed
+Field + Water = Rice
+Field + Grass = Wheat
+Compost + Soil = Garden
+Garden + Wait = Vegetables
+
+## Vegetables
+Vegetables + Soil = Potato
+Vegetables + Tree = Broccoli
+Vegetables + Water = Cucumber
+Vegetables + Grass = Lettuce
+Vegetables + Sugar = Fruit
+Orange + Vegetables = Carrot
+Vegetables + Heat = Chili
+Vegetables + Egg = Eggplant
+Vegetables + Fruit = Tomato
+Vegetables + Mix = Salad [dish]
+Vegetables + Boil = Soup [dish]
+Vegetables + Vegetables = Garden
+Vegetables + Wheat = Corn
+Vegetables + Seeds = Beans
+Vegetables + Vinegar = Pickle
+Potato + Sugar = Sweet Potato
+Potato + Deep-fry = Fries [dish]
+Potato + Fry = Fries
+Potato + Boil = Mashed Potatoes [dish]
+Potato + Bake = Baked Potato [dish]
+Potato + Heat = Baked Potato
+Chili + Sugar = Bell Pepper
+Lettuce + Lettuce = Cabbage
+Cabbage + Ferment = Sauerkraut
+Cabbage + Chili = Kimchi [dish]
+Sauerkraut + Chili = Kimchi
+Cucumber + Vinegar = Pickle
+Tomato + Heat = Sauce
+Tomato + Chili = Salsa
+Tomato + Blend = Tomato Juice [dish]
+Sauce + Sugar = Ketchup
+Sauce + Chili = Hot Sauce
+Corn + Heat = Popcorn [dish]
+Corn + Cut = Cornmeal
+Cornmeal + Water = Masa
+Masa + Heat = Tortilla
+Flatbread + Corn = Tortilla
+
+## Fruit
+Tree + Wait = Fruit
+Fruit + Tree = Apple
+Fruit + Cut = Seeds
+Fruit + Mix = Fruit Salad [dish]
+Fruit + Blend = Juice [dish]
+Fruit + Water = Watermelon
+Fruit + Fruit = Berries
+Fruit + Grass = Grapes
+Fruit + Salt = Olive
+Fruit + Hen = Kiwi
+Fruit + Vinegar = Lemon
+Fruit + Palm Tree = Banana
+Fruit + Sugar = Jam
+Fruit + Ferment = Vinegar
+Fruit + Desert = Dates
+Palm Tree + Water = Coconut
+Apple + Tree = Pineapple
+Apple + Seeds = Pomegranate
+Grapes + Fruit = Grapefruit
+Grapes + Dry = Raisins
+Grapes + Wait = Raisins
+Berries + Sugar = Strawberry
+Berries + Ocean = Blueberry
+Berries + Burnt = Blackberry
+Lemon + Grass = Lime
+Lemon + Sugar = Orange
+Lemon + Simple Syrup = Lemonade [dish]
+Olive + Cut = Oil
+
+## Trees, nuts, herbs
+Tree + Seeds = Nuts
+Tree + Tree = Forest
+Tree + Cut = Cinnamon
+Tree + Sugar = Maple Syrup
+Tree + Heat = Charcoal [trash]
+Tree + Rot = Mushroom
+Forest + Wait = Mushroom
+Nuts + Soil = Peanut
+Peanut + Blend = Peanut Butter
+Herbs + Heat = Spices
+Herbs + Dry = Spices
+Herbs + Water = Tea [dish]
+Herbs + Boil = Tea
+Bee + Garden = Honey
+Bee + Flower = Honey
+Bee + Tree = Honey
+
+## Animals
+Meat + Egg = Hen
+Meat + Grass = Cow
+Meat + Soil = Pig
+Meat + Water = Fish
+Meat + Sugar = Bee
+Meat + Weeds = Sheep
+Hen + Cut = Chicken
+Hen + Wait = Chick
+Chick + Wait = Hen
+Hen + Water = Duck
+Hen + Hen = Turkey
+Cow + Cut = Beef
+Cow + Water = Milk
+Cow + Wait = Calf
+Calf + Cut = Veal
+Calf + Wait = Cow
+Pig + Cut = Pork
+Pig + Wait = Piglet
+Piglet + Wait = Pig
+Piglet + Heat = Suckling Pig [dish]
+Piglet + Roast = Suckling Pig
+Sheep + Cut = Mutton
+Sheep + Wait = Lamb
+Lamb + Wait = Sheep
+Fish + Cut = Fillet
+Fish + Wait = Roe
+Fish + Fish = Tuna
+Fish + Ocean = Seafood
+Roe + Salt = Caviar
+Seafood + Cut = Crab
+Seafood + Mince = Shrimp
+Seafood + Noodles = Squid
+Crab + Crab = Lobster
+
+## Meat
+Meat + Grill = Barbecue
+Meat + Mince = Minced Meat
+Meat + Dry = Jerky
+Meat + Simmer = Stew [dish]
+Charcoal + Meat = Barbecue
+Cutlet + Cut = Minced Meat
+Minced Meat + Heat = Patty
+Minced Meat + Grill = Patty
+Minced Meat + Egg = Meatball
+Minced Meat + Dough = Dumpling [dish]
+Beef + Grill = Steak [dish]
+Beef + Heat = Steak
+Beef + Dry = Jerky
+Beef + Simmer = Stew
+Chicken + Heat = Roast Chicken [dish]
+Chicken + Roast = Roast Chicken
+Chicken + Fry = Fried Chicken [dish]
+Chicken + Boil = Chicken Soup [dish]
+Pork + Smoke = Bacon
+Pork + Cure = Ham
+Pork + Mince = Sausage
+Fillet + Fry = Fried Fish [dish]
+Fillet + Cut = Sashimi [dish]
+Fillet + Fries = Fish and Chips [dish]
+Fillet + Sushi Rice = Sushi [dish]
+
+## Eggs
+Egg + Boil = Boiled Egg [dish]
+Egg + Fry = Fried Egg
+Beaten Egg + Heat = Scrambled Eggs [dish]
+Beaten Egg + Fry = Omelette [dish]
+Yolk + Oil = Mayonnaise
+Yolk + Butter = Hollandaise
+Fried Egg + Bacon = Breakfast [dish]
+Meringue + Bake = Pavlova [dish]
+Chick + Heat = Chicken Nuggets [dish]
+
+## Milk
+Milk + Milk = Cream
+Milk + Mix = Butter
+Milk + Wait = Cheese
+Milk + Ferment = Yogurt
+Milk + Sugar = Condensed Milk
+Milk + Egg = Custard [dish]
+Milk + Fruit = Smoothie [dish]
+Cream + Whip = Whipped Cream
+Cream + Mix = Butter
+Butter + Flour = Roux
+Butter + Heat = Ghee
+Cheese + Toast = Grilled Cheese [dish]
+Cheese + Pasta = Mac and Cheese [dish]
+Cheese + Tortilla = Quesadilla [dish]
+Mold + Cheese = Blue Cheese
+Mold + Milk = Blue Cheese
+Yogurt + Cucumber = Tzatziki
+
+## Grain, dough, bread
+Wheat + Cut = Flour
+Flour + Water = Dough
+Flour + Egg = Pasta
+Flour + Milk = Batter
+Dough + Heat = Bread
+Dough + Bake = Bread
+Dough + Cut = Noodles
+Dough + Wait = Sourdough
+Dough + Sugar = Cookie Dough
+Dough + Grill = Flatbread
+Dough + Fry = Doughnut [dish]
+Dough + Egg = Brioche
+Dough + Egg Wash = Challah
+Cookie Dough + Bake = Cookie [dish]
+Cookie Dough + Heat = Cookie
+Batter + Heat = Pancake [dish]
+Batter + Fry = Pancake
+Batter + Grill = Waffle [dish]
+Batter + Sugar = Cake Batter
+Batter + Water = Crêpe Batter
+Crêpe Batter + Heat = Crêpe [dish]
+Cake Batter + Bake = Cake [dish]
+Cake Batter + Heat = Cake
+Flatbread + Bake = Pita
+Flatbread + Yogurt = Naan
+Flatbread + Sauce = Pizza [dish]
+Dough + Sauce = Pizza
+Bread + Heat = Toast [dish]
+Bread + Wait = Stale Bread
+Bread + Tomato = Bruschetta [dish]
+Bread + Patty = Burger [dish]
+Stale Bread + Cut = Breadcrumbs
+Stale Bread + Heat = Croutons
+Noodles + Stir-fry = Chow Mein [dish]
+Pasta + Sauce = Spaghetti [dish]
+
+## Rice
+Rice + Boil = Steamed Rice [dish]
+Rice + Steam = Steamed Rice
+Rice + Stir-fry = Fried Rice [dish]
+Rice + Fried Egg = Fried Rice
+Steamed Rice + Fry = Fried Rice
+Rice + Vinegar = Sushi Rice
+Steamed Rice + Vinegar = Sushi Rice
+Rice + Milk = Rice Pudding [dish]
+Rice + Cut = Rice Flour
+
+## Sugar and sweets
+Caramel + Wait = Toffee
+Caramel + Cut = Candy [dish]
+Caramel + Cream = Caramel Sauce
+Caramel + Salt = Salted Caramel
+Simple Syrup + Wait = Rock Candy [dish]
+Simple Syrup + Heat = Caramel
+Powdered Sugar + Water = Icing
+
+## The bin
+Burnt + Heat = Ash [trash]
+Burnt + Burnt = Ash
+Leftovers + Wait = Mold [trash]
+Mold + Wait = Rot
+Rot + Soil = Compost [trash]
+Compost + Wait = Soil
+Leftovers + Mix = Slop [trash]
+Mush + Mush = Slop
+Slop + Bread = Mystery Burger [dish]

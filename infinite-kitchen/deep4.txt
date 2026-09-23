@@ -1,0 +1,514 @@
+# Infinite Kitchen - full rows for the main meats and milk. Their variants
+# (Ham, Veal, Calf, Chick, Tuna, Goat Milk...) pick these up at the bottom.
+#
+#  - Two different meats are a Mixed Grill; meat + seafood is Surf and
+#    Turf (Paella when it's chicken).
+#  - A sweet glaze on beef is Bulgogi, on pork Char Siu, on chicken Sweet
+#    and Sour Chicken, on fish Teriyaki Fish.
+#  - Seafood + milk is Chowder; any milk + an acid is Ricotta.
+
+@ Beef
+Sprout = Beef
+Field = Beef
+Desert = Jerky
+Weeds = Beef
+Meringue = Meatloaf Cake
+Hen = Mixed Grill
+Chick = Mixed Grill
+Bee = Bulgogi
+Caramel = Bulgogi
+Cutlet = Beef
+Salt = Corned Beef
+Roe = Surf and Turf
+Seafood = Surf and Turf
+Brine = Corned Beef
+Grass = Beef
+Fruit = Tagine
+Tree = Beef
+Garden = Stew
+Flower = Beef
+Wheat = Kibbeh
+Cactus = Carne Asada [dish]
+Herbs = Kofta
+Chives = Kofta
+Rice = Bibimbap [dish]
+Potato = Cottage Pie [dish]
+Chili = Chili con Carne
+Tomato = Bolognese
+Corn = Tamale
+Apple = Tagine
+Seeds = Beef
+Watermelon = Beef
+Berries = Swedish Meatballs
+Grapes = Dolma
+Olive = Charcuterie
+Kiwi = Bulgogi
+Jam = Swedish Meatballs
+Vinegar = Sauerbraten [dish]
+Dates = Tagine
+Pineapple = Tagine
+Nuts = Satay
+Forest = Venison
+Cinnamon = Tagine
+Mushroom = Stroganoff
+Sheep = Mixed Grill
+Chicken = Mixed Grill
+Duck = Mixed Grill
+Turkey = Mixed Grill
+Beef = Wagyu
+Milk = Veal
+Veal = Beef
+Mutton = Mixed Grill
+Lamb = Mixed Grill
+Fillet = Surf and Turf
+Caviar = Surf and Turf
+Crab = Surf and Turf
+Shrimp = Surf and Turf
+Minced Meat = Meatloaf
+Jerky = Jerky
+Patty = Meatloaf
+Meatball = Meatloaf
+Cream = Stroganoff
+Butter = Steak
+Cheese = Cheesesteak [dish]
+Yogurt = Shawarma
+Condensed Milk = Veal
+Flour = Meat Pie
+Pasta = Lasagna
+Sourdough = Sandwich
+Rice Flour = Dumpling
+Toffee = Bulgogi
+Caramel Sauce = Bulgogi
+Salted Caramel = Bulgogi
+Dulce de Leche = Bulgogi
+Ostrich = Mixed Grill
+Yeast = Salami
+Broth = Pho [dish]
+Wagyu = Wagyu
+Goat = Mixed Grill
+Farm = Cow
+Buffalo Milk = Veal
+Goat Milk = Veal
+Camel Milk = Veal
+Milk Foam = Veal
+Milk Powder = Veal
+Duckling = Mixed Grill
+Quail = Mixed Grill
+Duck Breast = Mixed Grill
+Turkey Breast = Mixed Grill
+Smoked Salmon = Surf and Turf
+Surimi = Surf and Turf
+Fish Sauce = Larb
+Camel Meat = Mixed Grill
+Island = Loco Moco
+Oasis = Kebab
+Palm Tree = Rendang
+Tea Leaves = Smoked Meat
+Bush = Beef
+Compote = Tagine
+Dried Fruit = Tagine
+Fruit Leather = Jerky
+Coconut = Rendang
+Bulgur = Kibbeh
+Rice Vinegar = Sauerbraten
+Corned Beef = Corned Beef
+
+@ Pork
+Ocean = Surf and Turf
+Sprout = Pork
+Field = Pork
+Beet = Borscht
+Desert = Jerky
+Weeds = Pork
+Meringue = Meatloaf Cake
+Hen = Mixed Grill
+Chick = Mixed Grill
+Bee = Honey Ham
+Caramel = Char Siu
+Salt = Bacon
+Roe = Surf and Turf
+Seafood = Surf and Turf
+Brine = Ham
+Grass = Pork
+Vegetables = Chop Suey
+Fruit = Sweet and Sour Pork
+Tree = Pork
+Microgreens = Pork
+Garden = Chop Suey
+Flower = Pork
+Wheat = Dumpling
+Cactus = Carnitas [dish]
+Herbs = Sausage
+Chives = Dumpling
+Rice = Fried Rice
+Potato = Pork Chop
+Broccoli = Chop Suey
+Cucumber = Chop Suey
+Lettuce = Lettuce Wraps
+Chili = Chorizo
+Eggplant = Moussaka
+Tomato = Bolognese
+Corn = Tamale
+Apple = Pork Chop
+Seeds = Pork
+Watermelon = Pork
+Berries = Swedish Meatballs
+Grapes = Dolma
+Olive = Charcuterie
+Kiwi = Sweet and Sour Pork
+Jam = Swedish Meatballs
+Vinegar = Adobo
+Dates = Bacon-Wrapped Dates [dish]
+Pineapple = Sweet and Sour Pork
+Nuts = Satay
+Forest = Boar
+Cinnamon = Char Siu
+Mushroom = Stroganoff
+Sheep = Mixed Grill
+Chicken = Mixed Grill
+Duck = Mixed Grill
+Turkey = Mixed Grill
+Milk = Pork
+Pork = Pulled Pork
+Lamb = Mixed Grill
+Fillet = Surf and Turf
+Caviar = Surf and Turf
+Crab = Surf and Turf
+Shrimp = Surf and Turf
+Bacon = Charcuterie
+Sausage = Charcuterie
+Salami = Charcuterie
+Honey Ham = Charcuterie
+Ham = Charcuterie
+Cream = Carbonara
+Butter = Pork Chop
+Cheese = Charcuterie
+Condensed Milk = Char Siu
+Flour = Pork Pie [dish]
+Pasta = Carbonara
+Sourdough = Sandwich
+Rice Flour = Dumpling
+Toffee = Char Siu
+Caramel Sauce = Char Siu
+Salted Caramel = Char Siu
+Dulce de Leche = Char Siu
+Ostrich = Mixed Grill
+Yeast = Salami
+Broth = Ramen
+Goat = Mixed Grill
+Farm = Pig
+Duckling = Mixed Grill
+Quail = Mixed Grill
+Duck Breast = Mixed Grill
+Turkey Breast = Mixed Grill
+Smoked Salmon = Surf and Turf
+Surimi = Surf and Turf
+Fish Sauce = Larb
+Radish = Stew
+Island = Pulled Pork
+Watercress = Chop Suey
+Tea Leaves = Smoked Meat
+Bean Sprouts = Chop Suey
+Dandelion = Stew
+Roasted Beet = Borscht
+Mirepoix = Pot Roast
+Pickle = Charcuterie
+Compote = Pork Chop
+Dried Fruit = Bacon-Wrapped Dates
+Fruit Leather = Jerky
+Coconut = Rendang
+Rice Vinegar = Sweet and Sour Pork
+
+@ Chicken
+Ocean = Paella [dish]
+Sprout = Chicken
+Field = Chicken
+Pig = Mixed Grill
+Desert = Shawarma
+Weeds = Chicken
+Meringue = Meatloaf Cake
+Bee = Sweet and Sour Chicken
+Caramel = Sweet and Sour Chicken
+Cow = Mixed Grill
+Cutlet = Schnitzel
+Salt = Chicken
+Roe = Paella
+Seafood = Paella
+Brine = Chicken
+Grass = Chicken
+Fruit = Sweet and Sour Chicken
+Tree = Chicken
+Garden = Chicken Soup
+Flower = Chicken
+Wheat = Pot Pie [dish]
+Cactus = Fajitas [dish]
+Herbs = Chicken Kiev [dish]
+Chives = Chicken Kiev
+Rice = Chicken and Rice
+Potato = Roast Chicken
+Tomato = Tikka Masala [dish]
+Corn = Tamale
+Apple = Waldorf Salad [dish]
+Seeds = Chicken
+Watermelon = Chicken
+Berries = Chicken
+Grapes = Waldorf Salad
+Olive = Chicken Cacciatore [dish]
+Kiwi = Sweet and Sour Chicken
+Jam = Sweet and Sour Chicken
+Vinegar = Adobo
+Dates = Tagine
+Pineapple = Sweet and Sour Chicken
+Nuts = Kung Pao Chicken [dish]
+Forest = Chicken Cacciatore
+Mushroom = Chicken Cacciatore
+Sheep = Mixed Grill
+Duck = Mixed Grill
+Turkey = Mixed Grill
+Beef = Mixed Grill
+Milk = Fried Chicken
+Calf = Mixed Grill
+Veal = Mixed Grill
+Pork = Mixed Grill
+Piglet = Mixed Grill
+Mutton = Mixed Grill
+Lamb = Mixed Grill
+Chicken = Turkey
+Fillet = Paella
+Caviar = Paella
+Crab = Paella
+Shrimp = Paella
+Minced Meat = Meatball
+Jerky = Mixed Grill
+Patty = Mixed Grill
+Meatball = Mixed Grill
+Bacon = Club Sandwich [dish]
+Sausage = Jambalaya [dish]
+Salami = Charcuterie
+Honey Ham = Cordon Bleu [dish]
+Ham = Cordon Bleu
+Cream = Butter Chicken
+Cheese = Chicken Parmesan
+Condensed Milk = Chicken
+Flour = Fried Chicken
+Pasta = Chicken Alfredo
+Rice Flour = Fried Chicken
+Toffee = Sweet and Sour Chicken
+Caramel Sauce = Sweet and Sour Chicken
+Salted Caramel = Sweet and Sour Chicken
+Dulce de Leche = Sweet and Sour Chicken
+Ostrich = Mixed Grill
+Yeast = Chicken
+Broth = Chicken Soup
+Camel = Mixed Grill
+Wagyu = Mixed Grill
+Buffalo = Mixed Grill
+Goat = Mixed Grill
+Farm = Hen
+Buffalo Milk = Fried Chicken
+Goat Milk = Fried Chicken
+Camel Milk = Fried Chicken
+Milk Foam = Fried Chicken
+Milk Powder = Fried Chicken
+Duckling = Mixed Grill
+Quail = Mixed Grill
+Duck Breast = Mixed Grill
+Turkey Breast = Mixed Grill
+Boar = Mixed Grill
+Smoked Salmon = Paella
+Surimi = Paella
+Fish Sauce = Larb
+Camel Meat = Mixed Grill
+Island = Jerk Chicken [dish]
+Oasis = Shawarma
+Palm Tree = Jerk Chicken
+Tea Leaves = Smoked Meat
+Bush = Chicken
+Compote = Sweet and Sour Chicken
+Dried Fruit = Tagine
+Fruit Leather = Jerky
+Coconut = Chicken Curry
+Bulgur = Kibbeh
+Rice Vinegar = Sweet and Sour Chicken
+Corned Beef = Mixed Grill
+
+@ Fish
+Weeds = Seaweed
+Caramel = Teriyaki Fish
+Roe = Fish
+Seafood = Seafood
+Brine = Anchovy
+Garden = Fish Soup
+Wheat = Fried Fish
+Cactus = Fish Taco [dish]
+Herbs = Grilled Fish
+Chives = Grilled Fish
+Chili = Fish Curry [dish]
+Tomato = Bouillabaisse [dish]
+Corn = Fish Taco
+Olive = Salade Niçoise
+Vinegar = Ceviche
+Nuts = Trout Amandine [dish]
+Sheep = Surf and Turf
+Duck = Surf and Turf
+Turkey = Surf and Turf
+Lamb = Surf and Turf
+Goat = Surf and Turf
+Ostrich = Surf and Turf
+Duckling = Surf and Turf
+Quail = Surf and Turf
+Snail = Surf and Turf
+Milk = Chowder [dish]
+Tuna = Tuna
+Caviar = Caviar
+Crab = Seafood
+Shrimp = Seafood
+Cream = Chowder
+Butter = Grilled Fish
+Cheese = Tuna Melt [dish]
+Yogurt = Fish Curry
+Flour = Fried Fish
+Pasta = Tuna Casserole [dish]
+Rice Flour = Tempura
+Toffee = Teriyaki Fish
+Caramel Sauce = Teriyaki Fish
+Salted Caramel = Teriyaki Fish
+Dulce de Leche = Teriyaki Fish
+Yeast = Fish Sauce
+Broth = Fish Soup
+Farm = Catfish
+Buffalo Milk = Chowder
+Goat Milk = Chowder
+Camel Milk = Chowder
+Milk Foam = Chowder
+Milk Powder = Chowder
+Surimi = Surimi
+Fish Sauce = Fish Sauce
+Anchovy = Fish
+Catfish = Fish
+Island = Poke [dish]
+Palm Tree = Fish Curry
+Rice Vinegar = Sushi
+Sprout = Fish
+Field = Fish
+Tree = Fish
+Flower = Fish
+Seeds = Fish
+Bush = Fish
+Forest = Catfish
+Oasis = Fish
+Desert = Fish
+
+@ Milk
+Fish = Chowder
+Field = Cow
+Desert = Camel Milk
+Meringue = Floating Island [dish]
+Hen = Fried Chicken
+Caramel = Dulce de Leche
+Cutlet = Veal
+Salt = Cheese
+Seafood = Chowder
+Brine = Feta
+Grass = Cow
+Vegetables = Chowder
+Wheat = Porridge
+Potato = Mashed Potatoes
+Broccoli = Chowder
+Eggplant = Moussaka
+Tomato = Tomato Soup
+Corn = Creamed Corn
+Vinegar = Ricotta
+Cinnamon = Chai [dish]
+Mushroom = Cream of Mushroom [dish]
+Sheep = Feta
+Goat = Goat Milk
+Chicken = Fried Chicken
+Beef = Veal
+Veal = Veal
+Pork = Pork
+Fillet = Chowder
+Tuna = Chowder
+Anchovy = Chowder
+Catfish = Chowder
+Smoked Salmon = Chowder
+Surimi = Chowder
+Crab = Chowder
+Shrimp = Chowder
+Caviar = Chowder
+Minced Meat = Swedish Meatballs
+Meatball = Swedish Meatballs
+Sausage = Gravy
+Cream = Cream
+Cheese = Cheese Sauce
+Yogurt = Yogurt
+Condensed Milk = Condensed Milk
+Pasta = Mac and Cheese
+Sourdough = Bread Pudding
+Yeast = Yogurt
+Wagyu = Veal
+Goat Milk = Milk
+Buffalo Milk = Milk
+Camel Milk = Milk
+Island = Coconut Milk
+Oasis = Camel Milk
+Palm Tree = Coconut Milk
+Tea Leaves = Milk Tea [dish]
+Mirepoix = Chowder
+Bulgur = Porridge
+Rice Vinegar = Ricotta
+Milk Foam = Milk Foam
+Milk Powder = Milk
+Roux + Milk = Béchamel
+Feta acts like Cheese
+Gravy + Fries = Poutine [dish]
+Cheese Sauce + Pasta = Mac and Cheese
+Cheese Sauce + Fries = Cheese Fries [dish]
+Cheese Sauce + Corn = Nachos [dish]
+
+## The animals take their meat's recipes; their young and kin follow again
+Fillet acts like Fish prefix - except techniques, Water, Cut, Wait, Soil, Farm, Forest, Weeds
+Hen acts like Chicken prefix Chicken except techniques, Cut, Wait, Water, Egg, Meat, Soil, Grass, Field, Farm, Desert, Weeds, Forest, Ocean, Island, Oasis, Tree, Bush, Sprout, Seeds, Garden, Flower, Chicken
+Cow acts like Beef prefix Beef except techniques, Cut, Wait, Water, Egg, Meat, Soil, Grass, Field, Farm, Desert, Weeds, Forest, Ocean, Island, Oasis, Tree, Bush, Sprout, Seeds, Garden, Flower, Beef, Milk
+Pig acts like Pork prefix Pork except techniques, Cut, Wait, Water, Egg, Meat, Soil, Grass, Field, Farm, Desert, Weeds, Forest, Ocean, Island, Oasis, Tree, Bush, Sprout, Seeds, Garden, Flower, Pork
+Sheep acts like Mutton prefix Lamb except techniques, Cut, Wait, Water, Egg, Meat, Soil, Grass, Field, Farm, Desert, Weeds, Forest, Ocean, Island, Oasis, Tree, Bush, Sprout, Seeds, Garden, Flower, Mutton
+Duck acts like Duck Breast prefix Duck except techniques, Cut, Wait, Water, Egg, Meat, Soil, Grass, Field, Farm, Desert, Weeds, Forest, Ocean, Island, Oasis, Tree, Bush, Sprout, Seeds, Garden, Flower
+Mutton acts like Beef
+Veal acts like Beef
+Venison acts like Beef
+Camel Meat acts like Beef
+Cutlet acts like Beef prefix -
+Wagyu acts like Beef
+Corned Beef acts like Beef prefix Corned Beef except techniques
+Jerky acts like Beef prefix - except techniques
+Minced Meat acts like Beef prefix - except techniques, Egg, Dough
+Meatball acts like Minced Meat prefix - except techniques
+Patty acts like Minced Meat prefix - except techniques
+Ham acts like Pork except techniques
+Honey Ham acts like Pork prefix Ham except techniques
+Bacon acts like Pork except techniques
+Sausage acts like Pork except techniques
+Salami acts like Pork except techniques
+Turkey Breast acts like Chicken renaming Chicken to Turkey prefix Turkey except techniques
+Duck Breast acts like Chicken renaming Chicken to Duck prefix Duck except techniques
+Drumstick acts like Chicken prefix Chicken except techniques
+Rabbit acts like Chicken renaming Chicken to Rabbit except Cut, Wait, Heat, Simmer
+Smoked Salmon acts like Fillet prefix Salmon except techniques
+Chick acts like Hen prefix Chicken
+Calf acts like Cow prefix Veal
+Buffalo acts like Cow prefix Buffalo
+Camel acts like Cow prefix Camel except Wait, Knead
+Piglet acts like Pig prefix Pork
+Boar acts like Pig prefix Boar
+Lamb acts like Sheep prefix Lamb
+Goat acts like Sheep prefix Goat
+Duckling acts like Duck prefix Duck
+Tuna acts like Fish renaming Fish to Tuna prefix - except Salt, Soil, Ferment
+Catfish acts like Fish renaming Fish to Catfish prefix - except Salt, Soil, Ferment
+Anchovy acts like Fish renaming Fish to Anchovy prefix - except Salt, Soil, Ferment
+Buffalo Milk acts like Milk prefix -
+Goat Milk acts like Milk prefix -
+Camel Milk acts like Milk prefix -
+Condensed Milk acts like Milk prefix - except Wait, Heat, Sugar, Water, Ferment, Cure
+Milk Powder acts like Milk prefix - except Water, Wait, Heat, Ferment
+Milk Foam acts like Milk prefix - except techniques, Water

@@ -1,0 +1,362 @@
+# Infinite Kitchen - more classics. Snow keeps meaning "the white one"
+# (Cauliflower, Parsnip, Daikon, Endive), Beet "the red one" (Radicchio,
+# Kidney Beans), and a cuisine means that country's own version.
+
+## Fruit
+Grapefruit + Grapefruit = Pomelo
+Orange + Grapes = Kumquat
+Fruit + Star Anise = Starfruit
+Pineapple + Rainforest = Jackfruit
+Jackfruit + Rot = Durian
+Blackberry + Tree = Mulberry
+Berries + Lime = Gooseberry
+Berries + Wait = Elderberry !
+Raisins + Berries = Blackcurrant
+Peach + Honey = Nectarine
+Orange + Tangerine = Clementine
+Cantaloupe + Honey = Honeydew
+Celery + Beet = Rhubarb
+Pear + Apple = Quince
+Rhubarb + Pie = Rhubarb Pie [dish]
+Rhubarb + Strawberry = Rhubarb Pie
+Jackfruit + Barbecue = Pulled Pork
+Pomelo acts like Fruit renaming Fruit to Pomelo except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Kumquat acts like Fruit renaming Fruit to Kumquat except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Starfruit acts like Fruit renaming Fruit to Starfruit except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Jackfruit acts like Fruit renaming Fruit to Jackfruit except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Rot, Barbecue
+Durian acts like Fruit renaming Fruit to Durian except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Mulberry acts like Fruit renaming Fruit to Mulberry except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Gooseberry acts like Fruit renaming Fruit to Gooseberry except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Elderberry acts like Fruit renaming Fruit to Elderberry except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Wait
+Blackcurrant acts like Fruit renaming Fruit to Blackcurrant except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+Nectarine acts like Fruit renaming Fruit to Nectarine except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Honey
+Clementine acts like Fruit renaming Fruit to Clementine except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Orange
+Honeydew acts like Fruit renaming Fruit to Honeydew except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Honey
+Rhubarb acts like Fruit renaming Fruit to Rhubarb except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden, Pie, Strawberry
+Quince acts like Fruit renaming Fruit to Quince except Tree, Water, Grass, Salt, Hen, Vinegar, Palm Tree, Desert, Ocean, Vegetables, Rainforest, Oasis, Island, Bush, Sprout, Garden
+
+## Vegetables
+Lettuce + Snow = Endive
+Lettuce + Beet = Radicchio
+Celery + Licorice = Fennel
+Cabbage + Turnip = Kohlrabi
+Grass + Tree = Bamboo !
+Bamboo + Cut = Bamboo Shoots
+Chestnut + Water = Water Chestnut
+Flower + Water = Lotus !
+Lotus + Cut = Lotus Root
+Radish + Snow = Daikon
+Turnip + Mexican = Jicama
+Squash + Mexican = Chayote
+Spinach + Mountain = Swiss Chard
+Kale + Mustard = Mustard Greens
+Peas + Snow = Snow Peas
+Peas + Sugar = Sugar Snap Peas
+Bell Pepper + Rice = Stuffed Peppers [dish]
+Bell Pepper + Cheese = Chiles Rellenos [dish]
+Daikon + Kimchi = Kimchi
+Endive acts like Vegetables renaming Vegetables to Endive except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Radicchio acts like Vegetables renaming Vegetables to Radicchio except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Fennel acts like Vegetables renaming Vegetables to Fennel except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Kohlrabi acts like Vegetables renaming Vegetables to Kohlrabi except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Bamboo Shoots acts like Vegetables renaming Vegetables to Bamboo Shoot except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Water Chestnut acts like Vegetables renaming Vegetables to Water Chestnut except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Lotus Root acts like Vegetables renaming Vegetables to Lotus Root except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Daikon acts like Radish except Snow, Kimchi
+Jicama acts like Vegetables renaming Vegetables to Jicama except Soil, Tree, Water, Sugar, Heat, Egg, Fruit, Grass, Wheat, Seeds, Ocean, Orange, Garden
+Chayote acts like Squash except Mexican
+Swiss Chard acts like Spinach except Mountain
+Mustard Greens acts like Kale except Mustard
+Snow Peas acts like Peas except Snow
+Sugar Snap Peas acts like Peas except Sugar
+
+## Beans, grains, rice
+Beans + Butter = Lima Beans
+Beans + Ocean = Navy Beans
+Beans + Sprout = Mung Beans
+Beans + Italian = Fava Beans
+Beans + Japanese = Adzuki Beans
+Adzuki Beans + Sugar = Red Bean Paste
+Red Bean Paste + Pancake = Dorayaki
+Red Bean Paste + Mochi = Daifuku [dish]
+Red Bean Paste + Bao = Bao
+Peas + Cut = Split Peas
+Wheat + Italian = Farro
+Wheat + Blend = Semolina
+Semolina + Pasta = Pasta
+Semolina + Water = Couscous
+Rice + Indian = Basmati Rice
+Rice + Thai = Jasmine Rice
+Wild Rice + Rice = Brown Rice
+Rice + Honey = Sticky Rice
+Sticky Rice + Knead = Mochi
+Sticky Rice + Mango = Mango Sticky Rice
+Sticky Rice + Bamboo = Zongzi [dish]
+Sticky Rice + Chinese = Nian Gao [dish]
+Cassava + Cut = Tapioca
+Tapioca + Milk = Tapioca Pudding [dish]
+Rice + Popcorn = Rice Cake
+Lima Beans acts like Beans except Butter
+Navy Beans acts like Beans except Ocean
+Mung Beans acts like Beans except Sprout
+Fava Beans acts like Beans except Italian
+Adzuki Beans acts like Beans except Japanese, Sugar
+Split Peas acts like Peas except Cut
+Farro acts like Wheat except Italian
+Semolina acts like Flour prefix - except Pasta, Water
+Basmati Rice acts like Rice except Indian
+Jasmine Rice acts like Rice except Thai
+Brown Rice acts like Rice
+Sticky Rice acts like Rice except Knead, Mango, Bamboo, Chinese
+
+## Dairy
+Cream + Cream = Heavy Cream
+Milk + Cream = Half-and-Half !
+Milk + Simmer = Evaporated Milk !
+Cream + French = Crème Fraîche
+Milk + Yeast = Kefir !
+Yogurt + Mountain = Skyr
+Yogurt + Yogurt = Greek Yogurt
+Ricotta + Farm = Cottage Cheese
+Cheese + Smoke = Gouda
+Swiss Cheese + French = Gruyère
+Cheese + Italian = Provolone
+Parmesan + Sheep = Pecorino
+Cheese + Sheep = Manchego
+Cheese + American = Monterey Jack
+Monterey Jack + Chili = Pepper Jack
+Mozzarella + Cream = Burrata
+Gruyère + French Onion Soup = French Onion Soup
+Heavy Cream acts like Cream
+Half-and-Half acts like Cream
+Evaporated Milk acts like Condensed Milk prefix -
+Crème Fraîche acts like Sour Cream
+Kefir acts like Yogurt except Yeast
+Skyr acts like Yogurt except Mountain
+Greek Yogurt acts like Yogurt
+Cottage Cheese acts like Ricotta except Farm
+Gouda acts like Cheese except Smoke
+Gruyère acts like Cheese except French
+Provolone acts like Cheese except Italian
+Pecorino acts like Parmesan except Sheep
+Manchego acts like Cheese except Sheep
+Monterey Jack acts like Cheese except American, Chili
+Pepper Jack acts like Cheese
+Burrata acts like Mozzarella except Cream
+
+## Sauces
+Dates + Indian = Tamarind
+Flower + Brine = Capers
+Sauce + Simmer = Tomato Paste
+Bread + Sesame = Hamburger Bun
+Hamburger Bun + Patty = Burger
+Granola + Honey = Granola Bar
+Pig + Deep-fry = Pork Rinds [dish]
+Cheese + Popcorn = Cheese Puffs [dish]
+Salsa + Herbs = Salsa Verde
+Sauce + Mexican = Enchilada Sauce
+Enchilada Sauce + Tortilla = Enchilada
+Jalapeño + Smoke = Chipotle
+Cilantro + Chili = Zhug
+Aioli + Middle Eastern = Toum
+Bell Pepper + Nuts = Muhammara
+Bell Pepper + Almond = Romesco
+Parsley + Lemon = Gremolata
+Hollandaise + Herbs = Béarnaise
+Butter + Vinegar = Beurre Blanc
+Roux + Broth = Velouté
+Roast Beef + Broth = Au Jus
+Au Jus + Sandwich = French Dip [dish]
+Mint + Vinegar = Mint Sauce
+Mint Sauce + Lamb Chops = Roast Lamb
+Horseradish + Cream = Horseradish Sauce
+Ketchup + Horseradish = Cocktail Sauce
+Cocktail Sauce + Shrimp = Shrimp Cocktail
+Mayonnaise + Mustard = Remoulade
+Tamarind + Water = Tamarind Juice [dish]
+Tamarind + Rice Noodles = Pad Thai
+Capers + Fish = Grilled Fish
+Tomato Paste + Pasta = Spaghetti
+Chipotle + Chicken = Tinga [dish]
+Béarnaise + Steak = Steak Frites
+Salsa Verde acts like Salsa prefix - except Herbs
+Chipotle acts like Chili prefix - except Smoke, Chicken
+
+## Spices and seasonings
+Cardamom + Cinnamon = Garam Masala
+Star Anise + Cloves = Five Spice
+Spices + Middle Eastern = Ras el Hanout
+Spices + Island = Jerk Seasoning
+Spices + Mexican = Taco Seasoning
+Basil + Oregano = Italian Seasoning
+Herbs + French = Herbes de Provence
+Lemon + Black Pepper = Lemon Pepper
+Garlic + Salt = Garlic Salt
+Garlic + Dry = Garlic Powder
+Onion + Dry = Onion Powder
+Chili Flakes + Blend = Chili Powder
+Chili + Chili = Cayenne
+Cinnamon + Cloves = Allspice
+Nutmeg + Cut = Mace
+Berries + Spices = Sumac
+Cilantro + Dry = Coriander
+Seeds + Rye = Caraway
+Fennel + Dry = Fennel Seeds
+Flower + Herbs = Lavender !
+Flower + Steam = Rose Water
+Flower + Orange = Orange Blossom Water
+Jerk Seasoning + Chicken = Jerk Chicken
+Taco Seasoning + Minced Meat = Taco
+Five Spice + Duck = Peking Duck
+Garam Masala + Chicken = Tikka Masala
+Lavender + Honey = Honey
+Rose Water + Gummies = Turkish Delight
+Garam Masala acts like Spices prefix - except Chicken
+Five Spice acts like Spices prefix - except Duck
+Ras el Hanout acts like Spices prefix -
+Jerk Seasoning acts like Spices prefix - except Chicken
+Taco Seasoning acts like Spices prefix - except Minced Meat
+Italian Seasoning acts like Herbs prefix -
+Herbes de Provence acts like Herbs prefix -
+Lemon Pepper acts like Black Pepper prefix -
+Garlic Salt acts like Salt prefix -
+Garlic Powder acts like Spices prefix -
+Onion Powder acts like Spices prefix -
+Chili Powder acts like Spices prefix -
+Cayenne acts like Chili Flakes prefix -
+Allspice acts like Spices prefix -
+Mace acts like Nutmeg prefix -
+Sumac acts like Spices prefix -
+Coriander acts like Spices prefix -
+Caraway acts like Spices prefix -
+Fennel Seeds acts like Spices prefix -
+Lavender acts like Herbs prefix - except Honey
+
+## Sweeteners and spreads
+Cactus + Honey = Agave
+Corn + Simple Syrup = Corn Syrup
+Dates + Boil = Date Syrup
+Sugarcane + Indian = Jaggery
+Orange + Jam = Marmalade
+Apple + Butter = Apple Butter
+Almond + Blend = Almond Butter
+Cookie + Blend = Cookie Butter
+Custard + Vanilla = Crème Anglaise !
+Powdered Sugar + Milk = Glaze
+Doughnut + Glaze = Glazed Doughnut [dish]
+Brown Sugar + Cream = Butterscotch
+Fudge + Heat = Hot Fudge
+Chocolate + Simple Syrup = Chocolate Syrup
+Strawberry + Simple Syrup = Strawberry Syrup
+Honey + Butter = Honey Butter
+Hot Fudge + Ice Cream = Sundae
+Chocolate Syrup + Milk = Chocolate Milk [dish]
+Strawberry Syrup + Milk = Strawberry Milk [dish]
+Marmalade + Toast = Toast
+Agave acts like Honey prefix - except Cactus
+Corn Syrup acts like Simple Syrup prefix -
+Date Syrup acts like Simple Syrup prefix -
+Jaggery acts like Brown Sugar prefix -
+Marmalade acts like Jam prefix - except Toast
+Apple Butter acts like Jam prefix -
+Almond Butter acts like Nut Butter prefix -
+Cookie Butter acts like Nut Butter prefix -
+Butterscotch acts like Caramel Sauce prefix -
+Hot Fudge acts like Chocolate Syrup prefix - except Ice Cream
+Honey Butter acts like Butter prefix -
+
+## Breakfast and sandwiches
+Eggs Benedict + Spinach = Eggs Florentine [dish]
+Tortilla Chips + Fried Egg = Chilaquiles [dish]
+Smoothie + Granola = Acai Bowl [dish]
+Shrimp + Grits = Shrimp and Grits [dish]
+Steak + Fried Chicken = Chicken Fried Steak [dish]
+Ham + Salt = Country Ham
+Ham Sandwich + French Toast = Monte Cristo [dish]
+Shrimp + Baguette = Po' Boy [dish]
+Fried Fish + Baguette = Po' Boy
+Sandwich + Olive = Muffuletta [dish]
+Sandwich + Grill = Panini [dish]
+Patty + Grilled Cheese = Patty Melt [dish]
+Turkey Sandwich + Cheese Sauce = Hot Brown [dish]
+Katsu + Bread = Katsu Sando [dish]
+Taco + Fry = Taquito [dish]
+Masa + Fry = Sopes [dish]
+Elote + Cut = Esquites [dish]
+Shrimp + Lime = Aguachile [dish]
+Mole + Chicken = Mole Poblano [dish]
+Pork + Orange = Cochinita Pibil [dish]
+Beef + Mexican = Barbacoa [dish]
+Minced Meat + Raisins = Picadillo [dish]
+Chicken + Spanish Rice = Arroz con Pollo [dish]
+Rice Pudding + Mexican = Arroz con Leche [dish]
+Beef + Fries = Lomo Saltado [dish]
+Mashed Potatoes + Lime = Causa [dish]
+Masa + Beans = Pupusa [dish]
+Plantain + Garlic = Mofongo [dish]
+Goat + Curry = Curry Goat [dish]
+Cod + Salt = Saltfish
+Spinach + Island = Callaloo [dish]
+Shrimp + Roux = Étouffée [dish]
+Shrimp + Lobster = Crawfish
+Crawfish + Boil = Crawfish Boil [dish]
+Crawfish + Seafood Boil = Crawfish Boil
+Saltfish acts like Cod prefix - except Salt
+Crawfish acts like Lobster except Boil, Seafood Boil
+Country Ham acts like Ham except Salt
+
+## Sweets and holidays
+Brioche + Sprinkles = King Cake [dish]
+Caramel Banana + Torch = Bananas Foster [dish]
+Custard + Chocolate Cake = Boston Cream Pie [dish]
+Cake + Marshmallow = Whoopie Pie [dish]
+Batter + Deep-fry = Funnel Cake [dish]
+Flatbread + Cinnamon Sugar = Elephant Ear [dish]
+Drumstick + Turkey = Turkey Leg [dish]
+Gingerbread + Icing = Gingerbread House [dish]
+Chocolate Cake + Tree = Yule Log [dish]
+Bread + Marzipan = Stollen [dish]
+Brioche + Dried Fruit = Panettone [dish]
+Mincemeat + Pastry Dough = Mince Pie [dish]
+Mincemeat + Pie = Mince Pie
+Fruitcake + Steam = Christmas Pudding [dish]
+Bread + Raisins = Hot Cross Buns [dish]
+Doughnut + Jam = Jelly Doughnut [dish]
+
+## Drinks
+Apple Juice + Cinnamon = Apple Cider [dish]
+Apple Cider + Heat = Hot Cider [dish]
+Lime + Simple Syrup = Limeade [dish]
+Ginger Ale + Cherry = Shirley Temple [dish]
+Milkshake + Barley = Malted Milkshake [dish]
+Coffee + Wait = Cold Brew [dish]
+Latte + Milk Foam = Flat White [dish]
+Espresso + Warm Milk = Cortado [dish]
+Espresso + Water = Americano !
+Black Coffee + Condensed Milk = Vietnamese Coffee [dish]
+Iced Tea + Flower = Hibiscus Tea [dish]
+Tea + Flower = Chamomile Tea [dish]
+Tea Leaves + Wait = Oolong [dish]
+Black Tea + Orange = Earl Grey [dish]
+Green Tea + Flower = Jasmine Tea [dish]
+Tea Leaves + Rainforest = Yerba Mate [dish]
+Sugarcane + Water = Sugarcane Juice [dish] !
+Lassi + Middle Eastern = Ayran [dish]
+
+## Frozen
+Sorbet + Milk = Sherbet [dish]
+Shaved Ice + Italian = Granita [dish]
+Espresso + Freeze = Granita
+Ice Cream + Indian = Kulfi [dish]
+Ice Cream + Whip = Soft Serve [dish]
+Whipped Cream + Freeze = Semifreddo [dish]
+Gelato + Cherry = Spumoni [dish]
+Ice Cream + Marshmallow = Rocky Road [dish]
+Ice Cream Sandwich + Blend = Cookies and Cream [dish]
+Chocolate Chips + Mint = Mint Chocolate Chip [dish]
+Pecan + Butter = Butter Pecan
+Butter Pecan + Ice Cream = Butter Pecan
+Sherbet acts like Sorbet except Milk
+Kulfi acts like Ice Cream except Indian
+Soft Serve acts like Ice Cream except Whip
+Butter Pecan acts like Pecan prefix - except Butter, Ice Cream

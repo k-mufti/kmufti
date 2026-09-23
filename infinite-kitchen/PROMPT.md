@@ -151,12 +151,17 @@ Mystery Burger, which unlocks Fast Food.
 
 ## 5. What is fixed and must never be invented
 
-**The 16 starters:** Water, Salt, Sugar, Flour, Egg, Milk, Oil, Rice, Tomato,
-Onion, Chicken, Beef, and the four starting techniques Mix, Heat, Cut, Wait.
+**The 9 starters:** Water, Soil, Egg, Sugar, Meat, and the four starting
+techniques Mix, Heat, Cut, Wait. Everything else is discovered: Meat + something
+is an animal (Meat + Egg = Hen), cutting the animal gives its meat (Hen + Cut =
+Chicken), and an animal + Wait is its baby (Cow + Wait = Calf).
 
-**The 23 techniques:** Bake, Blend, Boil, Cure, Cut, Deep-fry, Dry, Ferment,
-Freeze, Fry, Grill, Heat, Knead, Mince, Mix, Roast, Simmer, Smoke, Steam,
-Stir-fry, Torch, Wait, Whip. **No combo may ever produce a new technique.**
+**The 11 techniques**, each a tool in the kitchen: Cut (knife), Mix (bowl),
+Blend (blender), Heat (stove), Boil (pot), Fry (pan), Bake (oven), Grill
+(grill), Wait (clock), Ferment (jars), Freeze (freezer). Mincing is cutting
+twice, whipping and kneading are mixing, simmering and steaming are boiling,
+roasting is baking, smoking is grilling. **No combo may ever produce a new
+technique.**
 
 **The 11 cuisines**, each unlocked by its signature dish: American (Burger),
 Italian (Pasta), Mexican (Tortilla), French (Crêpe), Middle Eastern (Pita),
@@ -214,7 +219,19 @@ and let the rules mop up the mechanical ones.
 
 ## 9. Output format
 
-Results go into `recipes.json` as plain unordered pairs:
+Combos are written in the `.txt` files next to `recipes.json` (`opening.txt`,
+`more.txt`, `deep1.txt`...), one per line, and `node infinite-kitchen/build.js`
+turns them into `recipes.json` and runs the checker. Never edit `recipes.json`
+by hand. The files also understand:
+
+- `@ Honey` then `Fish = Teriyaki Salmon` - a row: Honey + Fish.
+- `Salted Egg is Egg` - a technique on it cooks it like an egg.
+- `Calf acts like Cow except Water, Cut` - Calf gets every Cow recipe it
+  doesn't have, except those. Only for things that really are a kind of the
+  other. `renaming Chicken to Duck` fixes names in the copies.
+- `Chili is raw` - heat made it without cooking it (the sun, the sea).
+
+Underneath, `recipes.json` holds plain unordered pairs:
 
 ```json
 ["Flour", "Water", "Dough"]
@@ -255,7 +272,7 @@ A batch that does not pass the checker is not finished.
 > Cheeseburger), up to four modifiers, the fifth is "Slop"; (5) invent something
 > plausible, then something funny — but always food.
 >
-> Never invent a technique or a cuisine. The 23 techniques and 11 cuisines are
+> Never invent a technique or a cuisine. The 11 techniques and 11 cuisines are
 > fixed. A cuisine plus a dish must be a real dish of that cuisine, never a
 > stereotype; if there is none, the cuisine acts as a modifier.
 >
