@@ -223,6 +223,16 @@
     const el = elFor(K.pick(ev.clientX, ev.clientY, self && idOf(self)));
     return el && el.matches(".tool, .cookbook, .bin") ? el : null;
   }
+  // A tool can also be used on itself - the clock twice is fermenting, the
+  // stove twice is grilling - so when nothing else is under the pointer,
+  // the tool being carried counts as the thing it was dropped on.
+  function spotOrSelf(ev, self) {
+    const K = k3();
+    // itself first: the oven's hit box sits behind the stove top, and it
+    // would otherwise win every time the stove is dropped on the stove
+    if (K && elFor(K.pick(ev.clientX, ev.clientY)) === self) return self;
+    return spotAt(ev, self);
+  }
   function tileAt(ev) {
     for (const el of document.elementsFromPoint(ev.clientX, ev.clientY)) {
       const t = el.closest(".tile");
@@ -476,7 +486,7 @@
       }
       ghost.style.left = ev.clientX + "px";
       ghost.style.top = ev.clientY + "px";
-      const next = tileAt(ev) || (tech ? spotAt(ev, src) : null);
+      const next = tileAt(ev) || (tech ? spotOrSelf(ev, src) : null);
       if (next !== over) { over?.classList.remove("target"); next?.classList.add("target"); over = next; }
     };
     const up = (ev) => {
@@ -493,8 +503,8 @@
       ghost.remove();
       const tile = tileAt(ev);
       if (tile) { tile._home = { x: tile._x, y: tile._y }; applyTo(tile, name, src); return; }
-      const other = tech ? spotAt(ev, src) : null;
-      if (other && other.dataset.tech && other !== src) {
+      const other = tech ? spotOrSelf(ev, src) : null;
+      if (other && other.dataset.tech) {
         if (other.classList.contains("locked")) { restart(other, "shake"); return; }
         toolWithTool(tech, other.dataset.tech, other);
       }
