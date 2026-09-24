@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=26" />
+  <link rel="stylesheet" href="styles.css?v=27" />
 </head>
 <body>
   <div class="mc-app">
@@ -25,6 +25,12 @@
     <span id="verdictStats" hidden></span>
 
     <main class="mc-stage" id="stage">
+
+      <!-- Everything here lines up with the photo's own edges: the column
+           shrink-wraps to the frame, so the HUD above and the credit and
+           practice button below never drift away from the picture no matter
+           how wide the window gets. -->
+      <div class="mc-column">
 
       <!-- Live play HUD: time + clicks, sits above the photo -->
       <div class="mc-hud-play" id="hudPlay" hidden>
@@ -67,6 +73,8 @@
       <div class="mc-practice-row" id="practiceRow" hidden>
         <button class="mc-practice-btn" id="practiceBtn">Play again (very buggy, under construction)</button>
       </div>
+
+      </div><!-- /.mc-column -->
     </main>
 
 
