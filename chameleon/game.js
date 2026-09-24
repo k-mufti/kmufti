@@ -348,6 +348,7 @@
     hudPlay.hidden = false;
     PERIM.enabled = true;
     clicks = 0; misses.length = 0; missLog.length = 0;
+    clearFlagMarks();
     clickText.textContent = '0'; clickLbl.textContent = 'clicks';
     timeText.textContent = '0.0';
     hudPlay.style.color = rgbCss(C_GREEN);
@@ -624,6 +625,7 @@
      one, so a visitor pressing every chord on their keyboard finds nothing. */
   const DEV_KEY_STORE = 'mc.devkey';
   let devKey = '';
+  let clearFlagMarks = () => {};
   try {
     // ?dev=... sets the key once, then is scrubbed from the URL so it does
     // not sit in the address bar to be screenshotted or shared.
@@ -705,14 +707,28 @@
         body: JSON.stringify(body),
       });
       const j = await r.json().catch(() => ({}));
-      if (!r.ok) { toast('Not saved: ' + (j.error || r.status)); return; }
+      if (!r.ok) { toast('Not saved: ' + (j.error || r.status)); return false; }
       toast((verdict === 'good' ? 'Saved as good · ' : 'Flagged broken · ') + j.count + ' on file');
+      return true;
     } catch (e) {
       toast('Not saved: ' + e.message);
+      return false;
     }
   }
 
   if (devKey) {
+    // The buttons exist for the same reason the chords do, and are the only
+    // way to do it on a phone, which has no keyboard to press them with.
+    const devBar = $('devBar'), flagBadBtn = $('flagBadBtn'), flagGoodBtn = $('flagGoodBtn');
+    devBar.hidden = false;
+    const wire = (btn, verdict) => btn.addEventListener('click', async () => {
+      if (await flagRound(verdict)) btn.classList.add('sent');
+    });
+    wire(flagBadBtn, 'broken');
+    wire(flagGoodBtn, 'good');
+    // A new round is a new verdict, so the buttons go back to being pressable.
+    clearFlagMarks = () => { flagBadBtn.classList.remove('sent'); flagGoodBtn.classList.remove('sent'); };
+
     window.addEventListener('keydown', (e) => {
       if (!e.altKey || !e.shiftKey || e.ctrlKey || e.metaKey) return;
       // Alt rewrites e.key into a dead/accented character on a Mac layout, so
@@ -720,7 +736,8 @@
       const k = (e.code || '').replace('Key', '').toUpperCase();
       if (k !== 'B' && k !== 'G') return;
       e.preventDefault();
-      flagRound(k === 'B' ? 'broken' : 'good');
+      const btn = k === 'B' ? $('flagBadBtn') : $('flagGoodBtn');
+      flagRound(k === 'B' ? 'broken' : 'good').then((ok) => { if (ok) btn.classList.add('sent'); });
     });
     console.log('[MC] verdict keys armed — alt+shift+B broken, alt+shift+G good');
   }

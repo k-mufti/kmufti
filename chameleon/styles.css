@@ -327,3 +327,48 @@ a { color: inherit; text-decoration: none; }
   :root { --mc-chrome: 150px; }
   .mc-stage { padding: 8px 12px 12px; }
 }
+
+/* ---------- dev bar ------------------------------------------------------
+   Flagging a round, for the one browser that holds the key. Deliberately
+   plain and set apart from the game's own buttons: it is a workbench tool
+   sitting on the page, not part of playing, and it should never read as
+   something a visitor was meant to press. Nobody else ever sees it - the
+   markup stays hidden unless the key is there. */
+.mc-devbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(244, 242, 238, 0.14);
+}
+.mc-devbar-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(244, 242, 238, 0.35);
+  margin-right: auto;
+}
+.mc-dev-btn {
+  appearance: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 7px 14px;
+  background: transparent;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.mc-dev-bad  { border: 1px solid rgba(226, 59, 46, 0.5);  color: rgba(226, 59, 46, 0.9); }
+.mc-dev-good { border: 1px solid rgba(39, 201, 110, 0.5); color: rgba(39, 201, 110, 0.9); }
+.mc-dev-bad:hover  { background: var(--red);   color: #fff; border-color: var(--red); }
+.mc-dev-good:hover { background: var(--green); color: #000; border-color: var(--green); }
+/* A flagged round should say so, rather than leaving you wondering whether
+   the press landed and flagging it twice. */
+.mc-dev-btn.sent { opacity: 0.45; pointer-events: none; }
+.mc-dev-bad.sent  { background: var(--red);   color: #fff; border-color: var(--red); }
+.mc-dev-good.sent { background: var(--green); color: #000; border-color: var(--green); }
