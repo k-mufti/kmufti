@@ -129,22 +129,45 @@ closing tabs, quitting Chrome, and restarting the Mac.** You only redo it for:
 
 ### Reading the flags back
 
-```bash
-curl -s -H "X-MC-Dev-Key: YOUR-KEY-HERE" \
-  https://kmufti.com/chameleon/api/verdicts > ~/Desktop/verdicts.jsonl
-```
-
-One JSON object per line. Each has a `shot` field naming its picture:
+From the Mac, in the repo — same idea as `./deploy.sh`:
 
 ```bash
-curl -s -o round.jpg \
-  "https://kmufti.com/chameleon/api/verdicts/shots/THE-ID.jpg?key=YOUR-KEY-HERE"
+./verdicts.sh
 ```
+
+That lands everything in `~/Desktop/chameleon-verdicts/`: `verdicts.jsonl`
+(one JSON object per line) and a `shots/` folder with the photo from every
+flagged round. It prints a count as it goes — *"14 round(s): 11 broken, 3
+good"*. Run it again later and it only downloads the new pictures.
+
+```bash
+./verdicts.sh --no-shots        # records only, much faster
+./verdicts.sh ~/some/folder     # somewhere other than the Desktop
+```
+
+**First run needs the key**, once, in a file outside the repo:
+
+```bash
+echo 'your-key-here' > ~/.kmufti-devkey && chmod 600 ~/.kmufti-devkey
+```
+
+Outside the repo because this one is public on GitHub — a key committed here
+is a key anyone can read. The script also accepts `MC_DEV_KEY=... ./verdicts.sh`
+for a one-off.
+
+If something's wrong it says which thing: `403` wrong key, `503` flagging
+switched off on the server, `404` the server is running old code.
 
 A `good` record stores placement in the exact units `daily.json` wants, so
 promoting one to a real daily is a paste, not a re-measure.
 
 ### The key itself
+
+**Anyone holding the key can do everything you can** — flag rounds, read every
+round you've flagged, and download the photos. There is no per-person login;
+it is one shared password. So giving a friend the `?dev=` URL genuinely does
+hand them the tool, which is the right move if you want a second pair of eyes
+flagging rounds, and the wrong one otherwise.
 
 **Keep it in your password manager, not in this repo** — the GitHub repo is
 public, so anything committed here is readable by anyone.
