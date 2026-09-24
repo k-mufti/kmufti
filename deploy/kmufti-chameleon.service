@@ -27,6 +27,15 @@ Environment=PORT=8025
 # cap bounds the disk they use: 200 x ~200KB is roughly 40MB.
 Environment=PHOTO_CACHE=/var/lib/kmufti-chameleon/photos
 #Environment=PHOTO_CAP=200
+# Flagging a round from the game (alt+shift+B broken, alt+shift+G good) writes
+# to disk on a public box, so it is off until a key is set here - no key means
+# the endpoint refuses every request and nothing is ever written. Set it to
+# any long random string, then arm a browser once with
+# kmufti.com/chameleon/?dev=<the same string>
+#Environment=MC_DEV_KEY=a-long-random-string
+# Flagged rounds keep a copy of the photo as played, because the practice pool
+# evicts its oldest and would otherwise take the evidence with it.
+Environment=MC_VERDICT_DIR=/var/lib/kmufti-chameleon/verdicts
 Restart=always
 RestartSec=3
 User=www-data

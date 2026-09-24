@@ -102,6 +102,59 @@ launcher tiles before it became its own project, and the folder name stuck.
      draws at 1200. The API reports the size of the *original*, so the file is
      measured after it lands and thrown away if it is too small to play on.
 
+   **Flagging a bad round.** Some photographs make an unfair puzzle and you
+   only find out by playing one - autumn woodland is the reliable offender,
+   where the figure and every tree trunk are the same soft vertical shape in
+   the same colours. Two keys, while playing, send the round somewhere it can
+   be looked at later:
+
+   | | |
+   |---|---|
+   | `alt` + `shift` + `B` | **broken** - unfair, nobody finds this |
+   | `alt` + `shift` + `G` | **good** - keep it, worth a daily |
+
+   Each one stores the photo exactly as it was played (the pool evicts its
+   oldest, so the picture is copied rather than referenced) plus where the
+   figure was, every number that put it there, and where the clicks went -
+   which is the interesting part, because it says where the picture pulled the
+   eye instead.
+
+   This writes to disk on a public server, so it is **off until a key is
+   set**. Without `MC_DEV_KEY` the endpoint refuses everything and nothing can
+   be written:
+
+   ```bash
+   sudo systemctl edit --full kmufti-chameleon   # uncomment MC_DEV_KEY, pick a long random string
+   sudo systemctl restart kmufti-chameleon
+   ```
+
+   Then arm a browser once - the key is kept in `localStorage` and scrubbed
+   from the address bar, so it is not left sitting in a URL to be screenshotted:
+
+   ```
+   https://kmufti.com/chameleon/?dev=<the same string>
+   ```
+
+   `?dev=` with nothing after it signs that browser back out. Without a key
+   the shortcuts do not exist, so a visitor pressing every chord on their
+   keyboard finds nothing.
+
+   To read the flagged rounds back:
+
+   ```bash
+   curl -s -H "X-MC-Dev-Key: $MC_DEV_KEY" https://kmufti.com/chameleon/api/verdicts
+   ```
+
+   That is one JSON object per line. Each has a `shot` path for the picture:
+
+   ```bash
+   curl -s -o round.jpg "https://kmufti.com/chameleon/api/verdicts/shots/<id>.jpg?key=$MC_DEV_KEY"
+   ```
+
+   A `good` record already carries `figure.x`, `figure.y`, `figure.size` and
+   `figure.rot` in the units `daily.json` wants, so promoting one into a daily
+   is a paste rather than a re-measure.
+
 6. **Jigsaw service** (the shared puzzle table):
    ```bash
    sudo mkdir -p /var/lib/kmufti-puzzle && sudo chown www-data:www-data /var/lib/kmufti-puzzle

@@ -34,6 +34,14 @@ const PORT = process.env.PORT || 8025;
 const PHOTO_DIR = process.env.PHOTO_CACHE || path.join(__dirname, "photos");
 const PHOTO_CAP = Number(process.env.PHOTO_CAP || 120);   // ~60MB at Pexels "large2x"
 const PEXELS_KEY = process.env.PEXELS_KEY || "";
+
+// Flagging a round writes to disk on a public server, so it is off unless a
+// key is configured. No key means the endpoint refuses everything and nothing
+// can be written - which is the right default for a box that has not been
+// told it is a workbench.
+const DEV_KEY = process.env.MC_DEV_KEY || "";
+const VERDICT_DIR = process.env.MC_VERDICT_DIR || path.join(__dirname, "verdicts");
+const VERDICT_MAX_BODY = 12 * 1024 * 1024;   // a 1800x1200 JPEG in base64, with room
 // Overridable so the fetching can be pointed at a stub and tested for real
 // rather than against the live API and its rate limit.
 const PEXELS_API = process.env.PEXELS_API || "https://api.pexels.com/v1";
@@ -201,6 +209,74 @@ function pickPhoto(seen) {
 }
 
 /* ========================================================================
+   VERDICTS - rounds flagged while playing
+   ========================================================================
+   The game can say "this round was unfair" or "keep this one" with a
+   keystroke. Each verdict lands here as one line of JSON plus the photo as it
+   was played, so a bad round can be looked at weeks later and a good one
+   promoted into daily.json.
+
+   The photo is copied rather than referenced on purpose: the practice pool
+   evicts its oldest at a cap, and a flagged round would otherwise lose its
+   picture exactly because it sat around waiting to be reviewed.
+   ======================================================================== */
+
+function readBody(req, limit) {
+  return new Promise((resolve, reject) => {
+    let n = 0;
+    const chunks = [];
+    req.on("data", (c) => {
+      n += c.length;
+      if (n > limit) { reject(new Error("body too large")); req.destroy(); return; }
+      chunks.push(c);
+    });
+    req.on("end", () => resolve(Buffer.concat(chunks)));
+    req.on("error", reject);
+  });
+}
+
+// Constant-time-ish compare, so the key cannot be guessed a character at a
+// time off the response timing.
+function keyOk(given) {
+  if (!DEV_KEY || !given || given.length !== DEV_KEY.length) return false;
+  let diff = 0;
+  for (let i = 0; i < DEV_KEY.length; i++) diff |= DEV_KEY.charCodeAt(i) ^ given.charCodeAt(i);
+  return diff === 0;
+}
+
+function verdictCount() {
+  try {
+    return fs.readFileSync(path.join(VERDICT_DIR, "verdicts.jsonl"), "utf8")
+      .split("\n").filter(Boolean).length;
+  } catch { return 0; }
+}
+
+function saveVerdict(rec) {
+  fs.mkdirSync(path.join(VERDICT_DIR, "shots"), { recursive: true });
+
+  // One id for the record and its picture, sortable by when it happened.
+  const id = new Date().toISOString().replace(/[-:]/g, "").replace(/\..+/, "") +
+             "-" + Math.random().toString(36).slice(2, 7);
+
+  const shot = rec.shot;
+  delete rec.shot;
+  if (typeof shot === "string") {
+    const comma = shot.indexOf(",");
+    if (comma > 0 && shot.startsWith("data:image/jpeg")) {
+      try {
+        fs.writeFileSync(path.join(VERDICT_DIR, "shots", id + ".jpg"),
+                         Buffer.from(shot.slice(comma + 1), "base64"));
+        rec.shot = "shots/" + id + ".jpg";
+      } catch (e) { rec.shotError = e.message; }
+    }
+  }
+
+  rec.id = id;
+  fs.appendFileSync(path.join(VERDICT_DIR, "verdicts.jsonl"), JSON.stringify(rec) + "\n");
+  return id;
+}
+
+/* ========================================================================
    HTTP
    ======================================================================== */
 // nginx forwards /chameleon/api/ here with the prefix intact, so it is
@@ -230,6 +306,57 @@ const server = http.createServer(async (req, res) => {
     return res.end(JSON.stringify(pick
       ? { id: pick.id, src: `/chameleon/api/photo/${pick.id}.jpg`, by: pick.by, link: pick.link }
       : { error: PEXELS_KEY ? "no photos yet" : "no key configured" }));
+  }
+
+  // Flag the round just played. Key-gated; without MC_DEV_KEY set on the
+  // server this is a 503 and nothing touches the disk.
+  if (apiPath === "/api/verdict" && req.method === "POST") {
+    const json = (code, obj) => {
+      res.writeHead(code, { "Content-Type": "application/json", "Cache-Control": "no-cache" });
+      res.end(JSON.stringify(obj));
+    };
+    if (!DEV_KEY) return json(503, { error: "verdicts not enabled" });
+    if (!keyOk(req.headers["x-mc-dev-key"])) return json(403, { error: "bad key" });
+
+    let rec;
+    try {
+      rec = JSON.parse((await readBody(req, VERDICT_MAX_BODY)).toString("utf8"));
+    } catch (e) { return json(400, { error: e.message }); }
+
+    if (rec.verdict !== "broken" && rec.verdict !== "good") {
+      return json(400, { error: "verdict must be broken or good" });
+    }
+    try {
+      const id = saveVerdict(rec);
+      console.log(`verdict ${rec.verdict} ${id} (${rec.image || "?"})`);
+      return json(200, { ok: true, id, count: verdictCount() });
+    } catch (e) { return json(500, { error: e.message }); }
+  }
+
+  // Read the flagged rounds back out, for review. Same key.
+  if (apiPath === "/api/verdicts" && req.method === "GET") {
+    if (!DEV_KEY) { res.writeHead(503); return res.end("verdicts not enabled"); }
+    if (!keyOk(req.headers["x-mc-dev-key"] || url.searchParams.get("key"))) {
+      res.writeHead(403); return res.end("bad key");
+    }
+    let body = "";
+    try { body = fs.readFileSync(path.join(VERDICT_DIR, "verdicts.jsonl"), "utf8"); } catch { /* none yet */ }
+    res.writeHead(200, { "Content-Type": "application/x-ndjson; charset=utf-8", "Cache-Control": "no-cache" });
+    return res.end(body);
+  }
+
+  // The picture from a flagged round.
+  const shot = apiPath.match(/^\/api\/verdicts\/shots\/([\w-]+)\.jpg$/);
+  if (shot && req.method === "GET") {
+    if (!keyOk(req.headers["x-mc-dev-key"] || url.searchParams.get("key"))) {
+      res.writeHead(403); return res.end("bad key");
+    }
+    fs.readFile(path.join(VERDICT_DIR, "shots", shot[1] + ".jpg"), (err, data) => {
+      if (err) { res.writeHead(404); return res.end("not found"); }
+      res.writeHead(200, { "Content-Type": "image/jpeg", "Cache-Control": "no-store" });
+      res.end(data);
+    });
+    return;
   }
 
   // How the pool is doing, for when you want to know whether it is filling.
@@ -289,5 +416,6 @@ function serveStatic(req, res, pathname) {
 
 server.listen(PORT, () => {
   console.log(`chameleon server on http://localhost:${PORT} - pool ${photos.length}/${PHOTO_CAP}` +
-              (PEXELS_KEY ? "" : " (no PEXELS_KEY: practice falls back to the repo photos)"));
+              (PEXELS_KEY ? "" : " (no PEXELS_KEY: practice falls back to the repo photos)") +
+              (DEV_KEY ? ` - verdicts on, ${verdictCount()} on file` : " - verdicts off (no MC_DEV_KEY)"));
 });

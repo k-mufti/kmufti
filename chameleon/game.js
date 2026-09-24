@@ -78,7 +78,12 @@
   let mode = 'daily';
   let running = false, startTime = 0, elapsed = 0, clicks = 0, raf = 0;
   let revealRAF = 0, revealStart = 0;
+  // The splash ripples, which drawFrame drains as they fade.
   const misses = [];
+  // Where the clicks actually went. A separate list because `misses` above is
+  // an animation queue - an entry is spliced out 650ms after it is drawn - so
+  // by the end of a round it says nothing about how the round was played.
+  const missLog = [];
 
   let IMAGES = [];
   let DAILY = {};
@@ -222,6 +227,14 @@
       shadow: MECHA.DEFAULTS.shadow,
       _figImg: figImg, _won: false,
       _rebuild: { img, baseData, poseIdx, spot: bestSpot, rot },
+      // Why this round came out the way it did. Kept so a flagged puzzle can
+      // be argued with later rather than just remembered as "that hard one".
+      _meta: {
+        source: 'auto', seed: seedStr, photo: photo || null, src,
+        poseIdx, vis: bestResult.vis, calibrated: bestDist === 0,
+        detail: bestSpot.st ? bestSpot.st.detail : null,
+        lum: bestSpot.st ? bestSpot.st.mean : null,
+      },
     };
     ctx.drawImage(scene, 0, 0);
     if (params.has('debug')) window.__mc = { round, isHit, vis: bestResult.vis };
@@ -255,6 +268,12 @@
       figImg = await MECHA.figure(shadow);
     }
     finishRound({ img, CW, CH, fx, fy, figW, figH, rot, blend: e.blend || 'multiply', opacity: e.opacity != null ? e.opacity : 0.9, shadow }, figImg);
+    const st = MECHA.regionStats(baseData, CW, fx, fy, figW, figH);
+    round._meta = {
+      source: 'daily', seed: null, photo: null, src: e.image, poseIdx,
+      vis: MECHA.measureVisibility(baseData, scene, mask, CW, fx, fy, figW, figH),
+      calibrated: null, detail: st.detail, lum: st.mean,
+    };
   }
 
   // ---- perimeter timer (drawn directly on the game canvas) ----------------
@@ -328,7 +347,7 @@
     hudEnd.hidden = true;
     hudPlay.hidden = false;
     PERIM.enabled = true;
-    clicks = 0; misses.length = 0;
+    clicks = 0; misses.length = 0; missLog.length = 0;
     clickText.textContent = '0'; clickLbl.textContent = 'clicks';
     timeText.textContent = '0.0';
     hudPlay.style.color = rgbCss(C_GREEN);
@@ -351,7 +370,10 @@
     if (!running) return;
     const { x, y } = canvasPoint(e);
     clicks++; clickText.textContent = String(clicks); clickLbl.textContent = plural(clicks);
-    if (isHit(x, y)) endGame(true); else misses.push({ x, y, t: performance.now() });
+    if (isHit(x, y)) { endGame(true); return; }
+    const t = performance.now();
+    misses.push({ x, y, t });
+    missLog.push({ x, y, t });
   });
 
   // ---- end / reveal -------------------------------------------------------
@@ -576,6 +598,131 @@
     PERIM.enabled = false; // game wasn't played this session
     showEndState(prev.won, prev.time, prev.clicks);
     startReveal();
+  }
+
+  /* ---- verdicts: flagging a round for later --------------------------------
+
+     Some photographs make a bad round and you only know by playing it. Autumn
+     woodland is the reliable offender: the figure is a soft vertical blob and
+     so is every trunk, at every scale, in the same colours, so the eye has
+     nothing to sort by and the round is a pixel hunt rather than a puzzle.
+
+     Pressing one of the keys below sends the round as it stood - the photo as
+     played, where the figure was, and every number that put it there - to the
+     backend, so the bad ones can be argued with afterwards instead of
+     remembered as "that hard one", and the good ones can be promoted into a
+     daily.
+
+         alt + shift + B   broken: unfair, no reasonable person finds this
+         alt + shift + G   good: keep it, worth a daily
+
+     Two modifiers because a stray keypress writes to a file on a live server,
+     and because nothing in a browser is already bound to them.
+
+     None of this exists for anyone else. The keys do nothing without a key
+     in localStorage, and the backend refuses a request without the matching
+     one, so a visitor pressing every chord on their keyboard finds nothing. */
+  const DEV_KEY_STORE = 'mc.devkey';
+  let devKey = '';
+  try {
+    // ?dev=... sets the key once, then is scrubbed from the URL so it does
+    // not sit in the address bar to be screenshotted or shared.
+    const fromUrl = params.get('dev');
+    if (fromUrl !== null) {
+      if (fromUrl) localStorage.setItem(DEV_KEY_STORE, fromUrl);
+      else localStorage.removeItem(DEV_KEY_STORE);   // ?dev= with nothing after it signs out
+      params.delete('dev');
+      const q = params.toString();
+      history.replaceState(null, '', location.pathname + (q ? '?' + q : ''));
+    }
+    devKey = localStorage.getItem(DEV_KEY_STORE) || '';
+  } catch (_) { /* private mode: the shortcuts simply stay off */ }
+
+  async function flagRound(verdict) {
+    if (!devKey || !round) return;
+    toast('Saving ' + verdict + '…');
+
+    const m = round._meta || {};
+    const body = {
+      verdict,                                   // 'broken' | 'good'
+      at: new Date().toISOString(),
+      day: dayNumber(),
+      mode,
+      source: m.source || null,
+      seed: m.seed || null,
+      photo: m.photo || null,                    // Pexels id/by/link, when practice
+      image: m.src || null,
+
+      // Placement, in both the units the builder thinks in and the ones
+      // daily.json wants, so a good round can be pasted straight in.
+      canvas: { w: round.CW, h: round.CH },
+      figure: {
+        x: +(round.cx / round.CW).toFixed(4),
+        y: +(round.cy / round.CH).toFixed(4),
+        size: +(round.figH / round.CH).toFixed(4),
+        rot: +(round.rot * 180 / Math.PI).toFixed(2),
+        px: { fx: round.fx, fy: round.fy, w: round.figW, h: round.figH },
+        pose: m.poseIdx != null ? m.poseIdx : null,
+      },
+      render: {
+        blend: round.blend,
+        opacity: +(+round.opacity).toFixed(3),
+        shadow: +(+round.shadow).toFixed(3),
+        vis: m.vis != null ? +(+m.vis).toFixed(2) : null,          // measured ΔL
+        calibrated: m.calibrated,
+        detail: m.detail != null ? +(+m.detail).toFixed(2) : null, // busy-ness of the patch
+        lum: m.lum != null ? +(+m.lum).toFixed(1) : null,
+      },
+
+      // How it actually played. The misses are the interesting part: they say
+      // where the picture pulled the eye instead.
+      play: {
+        won: !!round._won,
+        // Read the clock rather than the HUD's copy of it: rAF stops in a
+        // backgrounded tab, so `elapsed` can be stale on a round flagged
+        // mid-play.
+        seconds: +(running ? (performance.now() - startTime) / 1000 : elapsed).toFixed(2),
+        clicks,
+        misses: missLog.map((p) => ({
+          x: +(p.x / round.CW).toFixed(4),
+          y: +(p.y / round.CH).toFixed(4),
+          t: +((p.t - startTime) / 1000).toFixed(2),
+        })),
+      },
+      viewport: { w: innerWidth, h: innerHeight, dpr: devicePixelRatio || 1 },
+
+      // The round exactly as it was played, before the reveal painted the
+      // answer over it. The practice pool evicts its oldest at a cap, so the
+      // photo has to be carried along with the record or a flagged round goes
+      // missing precisely because it sat around waiting to be looked at.
+      shot: scene ? scene.toDataURL('image/jpeg', 0.82) : null,
+    };
+
+    try {
+      const r = await fetch('/chameleon/api/verdict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-MC-Dev-Key': devKey },
+        body: JSON.stringify(body),
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) { toast('Not saved: ' + (j.error || r.status)); return; }
+      toast((verdict === 'good' ? 'Saved as good · ' : 'Flagged broken · ') + j.count + ' on file');
+    } catch (e) {
+      toast('Not saved: ' + e.message);
+    }
+  }
+
+  if (devKey) {
+    window.addEventListener('keydown', (e) => {
+      if (!e.altKey || !e.shiftKey || e.ctrlKey || e.metaKey) return;
+      // Alt rewrites e.key into a dead/accented character on a Mac layout, so
+      // the physical key is the thing to read.
+      const k = (e.code || '').replace('Key', '').toUpperCase();
+      if (k !== 'B' && k !== 'G') return;
+      e.preventDefault();
+      flagRound(k === 'B' ? 'broken' : 'good');
+    });
+    console.log('[MC] verdict keys armed — alt+shift+B broken, alt+shift+G good');
   }
 
   // ---- boot ---------------------------------------------------------------

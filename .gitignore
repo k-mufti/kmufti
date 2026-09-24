@@ -30,6 +30,10 @@ puzzle/visits.json
 # Cached practice photos for Meccha Chameleon (prod: /var/lib/kmufti-chameleon).
 chameleon/photos/
 
+# Meccha Chameleon: rounds flagged while playing, and the photos they kept
+# (prod: /var/lib/kmufti-chameleon/verdicts).
+chameleon/verdicts/
+
 # The ops dashboard keeps its uptime/traffic history here on a laptop run
 # (prod: /var/lib/kmufti-admin).
 admin/state/
