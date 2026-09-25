@@ -465,10 +465,15 @@ function spot(id, group, { meshes, proxy } = {}) {
    seconds it lifts and floats back to where it belongs. */
 // Everything that isn't built into the room: the loose kit can be picked up
 // and chucked. The range and the fridge stay where they are.
-const THROWABLE = new Set(["Cut", "Mix", "Boil", "Fry", "Wait", "Blend", "Grill", "Ferment"]);
+const THROWABLE = new Set(["Cut", "Mix", "Boil", "Fry", "Wait", "Blend", "Grill", "Ferment", "Heat"]);
+// The stove and the oven are one object, so they move as one: everything
+// below works on the "unit", and the oven's half follows the stove's.
+const UNIT = { Bake: "Heat" };
+const unitOf = (id) => UNIT[id] || id;
+const groupSpots = (g) => [...spots.values()].filter((s) => s.group === g);
 const AIRBORNE = new Map();          // id -> the flight in progress
 const GRAVITY = -9.5, BOUNCE = 0.42, REST_MS = 2600, HOME_MS = 850;
-const canThrow = (id) => THROWABLE.has(id) && spots.has(id);
+const canThrow = (id) => THROWABLE.has(unitOf(id)) && spots.has(unitOf(id));
 
 // The solid furniture, as boxes. A thrown thing bounces off these instead
 // of sailing inside them, which used to leave it stuck in the woodwork.
@@ -516,18 +521,18 @@ function screenRay(sx, sy, through) {
 // distance it normally sits at, so it keeps its size and its shadow.
 const HELD = { id: null, dist: 0 };
 function grab(id, sx, sy) {
-  const s = spots.get(id);
+  const u = unitOf(id), s = spots.get(u);
   if (!s || elFor(id)?.classList.contains("locked")) return false;
-  endFlight(id);                                   // grabbed out of the air
-  HELD.id = id;
+  endFlight(u);                                    // grabbed out of the air
+  HELD.id = u;
   HELD.dist = camera.position.distanceTo(s.home.pos) * 0.9;
   s.group.visible = true;
-  hold(id, sx, sy);
+  hold(u, sx, sy);
   return true;
 }
 function hold(id, sx, sy) {
-  const s = spots.get(id);
-  if (!s || HELD.id !== id) return;
+  const s = spots.get(unitOf(id));
+  if (!s || HELD.id !== unitOf(id)) return;
   const r = canvas.getBoundingClientRect();
   const x = Math.min(Math.max(sx, r.left + 6), r.right - 6);
   const y = Math.min(Math.max(sy, r.top + 6), r.bottom - 6);
@@ -548,6 +553,7 @@ function endFlight(id) {
   AIRBORNE.delete(id);
 }
 function sendHome(id) {
+  id = unitOf(id);
   const s = spots.get(id);
   if (HELD.id === id) HELD.id = null;
   if (!s) return;
@@ -584,9 +590,15 @@ function startHoming(flight, s) {
   dirty();
 }
 
-function throwTool(id, sx, sy, vpx, vpy) {
+function throwTool(id, sx, sy, vpx, vpy, rider) {
+  id = unitOf(id);
   const s = spots.get(id);
   if (!canThrow(id) || !s) return false;
+  // whatever was sitting on the stove goes with it
+  if (id === "Heat" && !rider) {
+    const jitter = () => (Math.random() - 0.5) * 300;
+    for (const r of ["Boil", "Fry"]) throwTool(r, sx + jitter() / 6, sy + jitter() / 6, vpx * 0.8 + jitter(), vpy * 0.8 + jitter(), true);
+  }
   const g = s.group, home = s.home;
   const held = HELD.id === id;
   const point = held ? g.position.clone() : screenRay(sx, sy, home.pos).point;
@@ -679,7 +691,9 @@ function throwTool(id, sx, sy, vpx, vpy) {
 }
 // the invisible hit boxes travel with the thing, so you can still grab it
 function moveProxies(s) {
-  for (const p of s.proxies) p.position.copy(s.group.position).add(p.userData.offset);
+  for (const q of groupSpots(s.group)) {
+    for (const p of q.proxies) p.position.copy(q.group.position).add(p.userData.offset);
+  }
 }
 
 const gltf = new GLTFLoader();
@@ -901,6 +915,7 @@ function sync() {
 }
 function animate(id, kind) {
   const s = spots.get(id);
+  id = unitOf(id);
   // in the air, or in your hand: leave it be. The wiggle used to wipe the
   // flight out from under it, which froze the thing wherever it was.
   if (!s || AIRBORNE.has(id) || HELD.id === id) return;
@@ -1057,7 +1072,10 @@ function pick(cx, cy, skip) {
   ray.setFromCamera(ndc, camera);
   const proxies = [];
   // whatever is in your hand isn't a thing you can drop onto
-  for (const s of spots.values()) if (s.id !== skip && s.id !== HELD.id) proxies.push(...s.proxies);
+  for (const s of spots.values()) {
+    if (s.id === skip || unitOf(s.id) === HELD.id) continue;
+    proxies.push(...s.proxies);
+  }
   // nearest first, but a found tool beats a black one in front of it (the
   // pan on the stove shouldn't hide the stove before you have a pan)
   const hits = ray.intersectObjects(proxies, false).map((h) => h.object.userData.spot);
@@ -1067,7 +1085,7 @@ function pick(cx, cy, skip) {
 // Is this point roughly where the tool lives? Dropping a tool back on its
 // own empty place is how you use it on itself (the clock twice = fermenting).
 function atHome(id, cx, cy) {
-  const s = spots.get(id);
+  const s = spots.get(unitOf(id));
   if (!s) return false;
   const r = canvas.getBoundingClientRect();
   const p = s.home.pos.clone().project(camera);
