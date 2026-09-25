@@ -470,12 +470,41 @@ const AIRBORNE = new Map();          // id -> the flight in progress
 const GRAVITY = -9.5, BOUNCE = 0.42, REST_MS = 2600, HOME_MS = 850;
 const canThrow = (id) => THROWABLE.has(id) && spots.has(id);
 
-// the height of whatever the thing would land on at (x, z), if anything
-function surfaceAt(x, z) {
+// The solid furniture, as boxes. A thrown thing bounces off these instead
+// of sailing inside them, which used to leave it stuck in the woodwork.
+let SOLIDS = null;
+function solids() {
+  if (SOLIDS) return SOLIDS;
+  const b = (x0, y0, z0, x1, y1, z1) => new THREE.Box3(new THREE.Vector3(x0, y0, z0), new THREE.Vector3(x1, y1, z1));
   const i = ISLAND;
-  if (Math.abs(x - i.x) < i.w / 2 && Math.abs(z - i.z) < i.d / 2) return i.top;
-  if (z < BACK + COUNTER_D && z > BACK) return COUNTER_TOP;
-  return 0;
+  SOLIDS = [
+    b(i.x - i.w / 2, 0, i.z - i.d / 2, i.x + i.w / 2, i.top, i.z + i.d / 2),                   // the island
+    b(-W, 0, BACK, W, COUNTER_TOP, BACK + COUNTER_D),                                          // the back counter
+    b(FRIDGE.x - FRIDGE.w / 2, 0, BACK, FRIDGE.x + FRIDGE.w / 2, FRIDGE.h, BACK + FRIDGE.d),    // the fridge
+    b(STOVE_X - 0.6, 1.58, BACK, STOVE_X + 0.6, CEIL, BACK + 0.66),                             // the hood
+    b(1.1, SHELVES[0] - 0.05, BACK, 2.7, SHELVES[0], BACK + 0.3),                               // the shelves
+    b(1.1, SHELVES[1] - 0.05, BACK, 2.7, SHELVES[1], BACK + 0.3),
+  ];
+  return SOLIDS;
+}
+// Push the point out of anything it has ended up inside, the short way, and
+// bounce whatever speed it had in that direction.
+function collide(p, v, spin) {
+  let hit = false;
+  for (const box of solids()) {
+    if (p.x <= box.min.x || p.x >= box.max.x || p.y <= box.min.y || p.y >= box.max.y || p.z <= box.min.z || p.z >= box.max.z) continue;
+    const out = [
+      ["x", box.min.x - p.x, -1], ["x", box.max.x - p.x, 1],
+      ["y", box.min.y - p.y, -1], ["y", box.max.y - p.y, 1],
+      ["z", box.min.z - p.z, -1], ["z", box.max.z - p.z, 1],
+    ].sort((a, c) => Math.abs(a[1]) - Math.abs(c[1]))[0];
+    p[out[0]] += out[1];
+    if (Math.sign(v[out[0]]) !== out[2]) v[out[0]] *= -BOUNCE;
+    v.multiplyScalar(0.86);
+    spin.multiplyScalar(0.7);
+    hit = true;
+  }
+  return hit;
 }
 function screenRay(sx, sy, through) {
   const r = canvas.getBoundingClientRect();
@@ -514,6 +543,7 @@ function hold(id, sx, sy) {
 function endFlight(id) {
   const f = AIRBORNE.get(id);
   if (!f) return;
+  if (f.timer) clearTimeout(f.timer);
   anims = anims.filter((a) => a !== f);
   AIRBORNE.delete(id);
 }
@@ -580,6 +610,17 @@ function throwTool(id, sx, sy, vpx, vpy) {
     last: performance.now(),
     landed: null,
     phase: "fly",
+    // stop animating, wait out the rest of the time, then float home
+    sleep(now) {
+      const wait = Math.max(0, REST_MS - (now - this.t0));
+      this.timer = setTimeout(() => {
+        this.timer = null;
+        if (AIRBORNE.get(this.id) !== this) return;    // picked up meanwhile
+        AIRBORNE.delete(this.id);
+        sendHome(this.id);
+      }, wait);
+      return false;
+    },
     step(now) {
       const dt = Math.min(0.034, (now - this.last) / 1000);
       this.last = now;
@@ -593,22 +634,24 @@ function throwTool(id, sx, sy, vpx, vpy) {
           if (p[axis] > hi) { p[axis] = hi; this.v[axis] *= -BOUNCE; }
         }
         if (p.y > CEIL - 0.25) { p.y = CEIL - 0.25; this.v.y *= -BOUNCE; }   // the ceiling
-        const floor = surfaceAt(p.x, p.z);
-        if (p.y <= floor) {
-          p.y = floor;
-          if (Math.abs(this.v.y) < 0.6) { this.v.set(0, 0, 0); this.spin.setScalar(0); }
-          else { this.v.y *= -BOUNCE; this.v.x *= 0.75; this.v.z *= 0.75; this.spin.multiplyScalar(0.6); }
+        if (p.y <= 0) {                                                       // the floor
+          p.y = 0;
+          this.v.y *= -BOUNCE;
+          this.v.x *= 0.78; this.v.z *= 0.78;
+          this.spin.multiplyScalar(0.6);
         }
+        collide(p, this.v, this.spin);
         if (this.spin.lengthSq() > 0.0001) {
           const q = new THREE.Quaternion().setFromAxisAngle(this.spin.clone().normalize(), this.spin.length() * dt);
           this.g.quaternion.premultiply(q);
         }
-        if (!this.landed && this.v.lengthSq() < 0.02 && p.y <= floor + 0.001) this.landed = now;
-        if (now - this.t0 > REST_MS) {
-          this.phase = "home";
-          this.from = { pos: this.g.position.clone(), quat: this.g.quaternion.clone() };
-          this.homeAt = now;
-        }
+        // Come to rest, and then stop drawing: a thing sitting still on the
+        // floor shouldn't keep the whole room re-rendering every frame.
+        if (this.v.lengthSq() < 0.05 && Math.abs(this.v.y) < 0.35) {
+          this.still = (this.still || 0) + dt;
+          if (this.still > 0.25) { this.v.set(0, 0, 0); this.spin.setScalar(0); return this.sleep(now); }
+        } else this.still = 0;
+        if (now - this.t0 > REST_MS) return this.sleep(now);
       } else {
         // floats back: a gentle arc up and across, easing in and out
         const t = Math.min(1, (now - this.homeAt) / HOME_MS);
