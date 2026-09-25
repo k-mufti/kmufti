@@ -8,7 +8,9 @@
 // state (locked, target, hover, shake...) and this file mirrors them: a
 // locked tool turns black in place, a targeted one glows.
 //
-// window.K3 = { ready, resize(), boardRect(), pick(x, y, skipId), snapshot(id) }
+// window.K3 = { ready, resize(), boardRect(), pick(x, y, skipId), snapshot(id),
+//               grab(id, x, y), hold(id, x, y), sendHome(id),
+//               throwTool(id, x, y, vx, vy), canThrow(id) }
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
@@ -450,9 +452,191 @@ function spot(id, group, { meshes, proxy } = {}) {
   const p = new THREE.Mesh(new THREE.BoxGeometry(size.x, size.y, size.z), proxyMat);
   b.getCenter(p.position);
   p.userData.spot = id;
+  p.userData.offset = p.position.clone().sub(group.position);
   scene.add(p);
   s.proxies.push(p);
+  s.home = { pos: group.position.clone(), quat: group.quaternion.clone() };
   return s;
+}
+
+/* ---------- throwing a tool ----------
+   Let go of a hand tool over empty room and it leaves your hand for real:
+   it flies, bounces off the counters and the floor, then after a few
+   seconds it lifts and floats back to where it belongs. */
+// Everything that isn't built into the room: the loose kit can be picked up
+// and chucked. The range and the fridge stay where they are.
+const THROWABLE = new Set(["Cut", "Mix", "Boil", "Fry", "Wait", "Blend", "Grill", "Ferment"]);
+const AIRBORNE = new Map();          // id -> the flight in progress
+const GRAVITY = -9.5, BOUNCE = 0.42, REST_MS = 2600, HOME_MS = 850;
+const canThrow = (id) => THROWABLE.has(id) && spots.has(id);
+
+// the height of whatever the thing would land on at (x, z), if anything
+function surfaceAt(x, z) {
+  const i = ISLAND;
+  if (Math.abs(x - i.x) < i.w / 2 && Math.abs(z - i.z) < i.d / 2) return i.top;
+  if (z < BACK + COUNTER_D && z > BACK) return COUNTER_TOP;
+  return 0;
+}
+function screenRay(sx, sy, through) {
+  const r = canvas.getBoundingClientRect();
+  const v = new THREE.Vector3(((sx - r.left) / r.width) * 2 - 1, -((sy - r.top) / r.height) * 2 + 1, 0.5).unproject(camera);
+  const dir = v.sub(camera.position).normalize();
+  return { dir, point: camera.position.clone().addScaledVector(dir, camera.position.distanceTo(through)) };
+}
+// Picking a tool up: the object itself follows the pointer, held at the
+// distance it normally sits at, so it keeps its size and its shadow.
+const HELD = { id: null, dist: 0 };
+function grab(id, sx, sy) {
+  const s = spots.get(id);
+  if (!s || elFor(id)?.classList.contains("locked")) return false;
+  endFlight(id);                                   // grabbed out of the air
+  HELD.id = id;
+  HELD.dist = camera.position.distanceTo(s.home.pos) * 0.9;
+  s.group.visible = true;
+  hold(id, sx, sy);
+  return true;
+}
+function hold(id, sx, sy) {
+  const s = spots.get(id);
+  if (!s || HELD.id !== id) return;
+  const r = canvas.getBoundingClientRect();
+  const x = Math.min(Math.max(sx, r.left + 6), r.right - 6);
+  const y = Math.min(Math.max(sy, r.top + 6), r.bottom - 6);
+  const { dir } = screenRay(x, y, s.home.pos);
+  s.group.position.copy(camera.position).addScaledVector(dir, HELD.dist);
+  s.group.quaternion.copy(s.home.quat);
+  s.group.rotateX(-0.4);                           // tipped up, as if held
+  s.group.rotateZ(0.22);
+  moveProxies(s);
+  dirty();
+}
+// Let go without throwing: it floats back to its place.
+function endFlight(id) {
+  const f = AIRBORNE.get(id);
+  if (!f) return;
+  anims = anims.filter((a) => a !== f);
+  AIRBORNE.delete(id);
+}
+function sendHome(id) {
+  const s = spots.get(id);
+  if (HELD.id === id) HELD.id = null;
+  if (!s) return;
+  endFlight(id);
+  if (s.group.position.distanceToSquared(s.home.pos) < 0.0004) {
+    s.group.quaternion.copy(s.home.quat);
+    moveProxies(s);
+    dirty();
+    return;
+  }
+  const flight = { g: s.group, id, s, phase: "home", last: performance.now(), t0: -1e9, v: new THREE.Vector3(), spin: new THREE.Vector3(),
+    from: { pos: s.group.position.clone(), quat: s.group.quaternion.clone() }, homeAt: performance.now(), step: null };
+  startHoming(flight, s);
+}
+function startHoming(flight, s) {
+  const home = s.home;
+  flight.step = function (now) {
+    const t = Math.min(1, (now - this.homeAt) / HOME_MS);
+    const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    this.g.position.lerpVectors(this.from.pos, home.pos, e);
+    this.g.position.y += Math.sin(e * Math.PI) * 0.22;
+    this.g.quaternion.copy(this.from.quat).slerp(home.quat, e);
+    moveProxies(s);
+    if (t >= 1) {
+      this.g.position.copy(home.pos);
+      this.g.quaternion.copy(home.quat);
+      AIRBORNE.delete(this.id);
+      return false;
+    }
+  };
+  AIRBORNE.set(flight.id, flight);
+  anims = anims.filter((a) => a.g !== flight.g);
+  anims.push(flight);
+  dirty();
+}
+
+function throwTool(id, sx, sy, vpx, vpy) {
+  const s = spots.get(id);
+  if (!canThrow(id) || !s) return false;
+  const g = s.group, home = s.home;
+  const held = HELD.id === id;
+  const point = held ? g.position.clone() : screenRay(sx, sy, home.pos).point;
+  if (held) HELD.id = null;
+  const dist = camera.position.distanceTo(point);
+  const r = canvas.getBoundingClientRect();
+  // pixels per second at that distance, in metres
+  const perPx = (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * dist) / r.height;
+  const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0);
+  const up = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
+  const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).setY(0).normalize();
+  const v = right.multiplyScalar(vpx * perPx).add(up.multiplyScalar(-vpy * perPx));
+  const speed = Math.min(v.length(), 9);
+  v.setLength(speed).addScaledVector(fwd, speed * 0.45 + 0.6);
+  g.visible = true;
+  g.position.copy(point);
+  const flight = {
+    g, id, s,
+    v,
+    spin: new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize().multiplyScalar(2 + speed * 1.4),
+    last: performance.now(),
+    landed: null,
+    phase: "fly",
+    step(now) {
+      const dt = Math.min(0.034, (now - this.last) / 1000);
+      this.last = now;
+      if (this.phase === "fly") {
+        this.v.y += GRAVITY * dt;
+        this.g.position.addScaledVector(this.v, dt);
+        const p = this.g.position;
+        // the walls and the back of the room
+        for (const [axis, lo, hi] of [["x", -W + 0.2, W - 0.2], ["z", BACK + 0.15, 3.2]]) {
+          if (p[axis] < lo) { p[axis] = lo; this.v[axis] *= -BOUNCE; }
+          if (p[axis] > hi) { p[axis] = hi; this.v[axis] *= -BOUNCE; }
+        }
+        if (p.y > CEIL - 0.25) { p.y = CEIL - 0.25; this.v.y *= -BOUNCE; }   // the ceiling
+        const floor = surfaceAt(p.x, p.z);
+        if (p.y <= floor) {
+          p.y = floor;
+          if (Math.abs(this.v.y) < 0.6) { this.v.set(0, 0, 0); this.spin.setScalar(0); }
+          else { this.v.y *= -BOUNCE; this.v.x *= 0.75; this.v.z *= 0.75; this.spin.multiplyScalar(0.6); }
+        }
+        if (this.spin.lengthSq() > 0.0001) {
+          const q = new THREE.Quaternion().setFromAxisAngle(this.spin.clone().normalize(), this.spin.length() * dt);
+          this.g.quaternion.premultiply(q);
+        }
+        if (!this.landed && this.v.lengthSq() < 0.02 && p.y <= floor + 0.001) this.landed = now;
+        if (now - this.t0 > REST_MS) {
+          this.phase = "home";
+          this.from = { pos: this.g.position.clone(), quat: this.g.quaternion.clone() };
+          this.homeAt = now;
+        }
+      } else {
+        // floats back: a gentle arc up and across, easing in and out
+        const t = Math.min(1, (now - this.homeAt) / HOME_MS);
+        const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        this.g.position.lerpVectors(this.from.pos, home.pos, e);
+        this.g.position.y += Math.sin(e * Math.PI) * 0.32;
+        this.g.quaternion.copy(this.from.quat).slerp(home.quat, e);
+        if (t >= 1) {
+          this.g.position.copy(home.pos);
+          this.g.quaternion.copy(home.quat);
+          AIRBORNE.delete(this.id);
+          moveProxies(this.s);
+          return false;
+        }
+      }
+      moveProxies(this.s);
+    },
+  };
+  flight.t0 = performance.now();
+  AIRBORNE.set(id, flight);
+  anims = anims.filter((a) => a.g !== g);
+  anims.push(flight);
+  dirty();
+  return true;
+}
+// the invisible hit boxes travel with the thing, so you can still grab it
+function moveProxies(s) {
+  for (const p of s.proxies) p.position.copy(s.group.position).add(p.userData.offset);
 }
 
 const gltf = new GLTFLoader();
@@ -674,7 +858,9 @@ function sync() {
 }
 function animate(id, kind) {
   const s = spots.get(id);
-  if (!s) return;
+  // in the air, or in your hand: leave it be. The wiggle used to wipe the
+  // flight out from under it, which froze the thing wherever it was.
+  if (!s || AIRBORNE.has(id) || HELD.id === id) return;
   const g = s.group, t0 = performance.now();
   const rest = g.userData.rest || (g.userData.rest = { ry: g.rotation.y, rz: g.rotation.z, s: g.scale.clone(), y: g.position.y });
   anims = anims.filter((a) => a.g !== g);
@@ -827,11 +1013,23 @@ function pick(cx, cy, skip) {
   ndc.set((cx - r.left) / r.width * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
   ray.setFromCamera(ndc, camera);
   const proxies = [];
-  for (const s of spots.values()) if (s.id !== skip) proxies.push(...s.proxies);
+  // whatever is in your hand isn't a thing you can drop onto
+  for (const s of spots.values()) if (s.id !== skip && s.id !== HELD.id) proxies.push(...s.proxies);
   // nearest first, but a found tool beats a black one in front of it (the
   // pan on the stove shouldn't hide the stove before you have a pan)
   const hits = ray.intersectObjects(proxies, false).map((h) => h.object.userData.spot);
   return hits.find((id) => !elFor(id)?.classList.contains("locked")) || hits[0] || null;
+}
+
+// Is this point roughly where the tool lives? Dropping a tool back on its
+// own empty place is how you use it on itself (the clock twice = fermenting).
+function atHome(id, cx, cy) {
+  const s = spots.get(id);
+  if (!s) return false;
+  const r = canvas.getBoundingClientRect();
+  const p = s.home.pos.clone().project(camera);
+  const hx = r.left + ((p.x + 1) / 2) * r.width, hy = r.top + ((1 - p.y) / 2) * r.height;
+  return Math.hypot(cx - hx, cy - hy) < 55;
 }
 
 // A picture of one spot on its own, for the copy that follows the pointer.
@@ -909,6 +1107,13 @@ async function build() {
     const m = await model(n, { x, y: SHELVES[0] + 0.0225, z: BACK + 0.15, width: w, ry });
     scene.remove(m); jars.add(m);
   }
+  // the jars are a group of three: give it a pivot at their own base, or
+  // picking it up would swing them across the room
+  jars.updateMatrixWorld(true);
+  const jb = new THREE.Box3().setFromObject(jars), jc = jb.getCenter(new THREE.Vector3());
+  jc.y = jb.min.y;
+  for (const ch of jars.children) ch.position.sub(jc);
+  jars.position.copy(jc);
   spot("Ferment", jars);
   spot("Wait", await model("mantel_clock_01", { x: 2.28, y: SHELVES[0] + 0.0225, z: BACK + 0.13, width: 0.3 }));
 
@@ -947,7 +1152,8 @@ async function build() {
   window.kitchenLayout?.();
 }
 
-window.K3 = { ready: false, resize, boardRect, pick, snapshot, dirty };
+window.K3 = { ready: false, resize, boardRect, pick, snapshot, dirty, throwTool, canThrow, grab, hold, sendHome, atHome,
+  where: (id) => spots.get(id)?.group.position.toArray().map((n) => +n.toFixed(2)) };
 new ResizeObserver(() => { if (window.K3.ready) window.kitchenLayout?.(); else resize(); }).observe(room);
 resize();
 build().catch((e) => console.error("kitchen scene:", e));

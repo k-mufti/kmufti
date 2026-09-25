@@ -472,20 +472,32 @@
       return;
     }
     const sx = e.clientX, sy = e.clientY;
-    let ghost = null, over = null;
+    let held = false, ghost = null, over = null;
+    // the last moments of the pointer, so letting go can become a throw
+    let trail = [{ x: sx, y: sy, t: performance.now() }];
+    // Picking it up: the real thing comes with the pointer. Only if the 3D
+    // room isn't there yet does a flat picture stand in for it.
+    const pickUp = (ev) => {
+      held = !!k3()?.grab?.(name, ev.clientX, ev.clientY);
+      if (held) return;
+      ghost = document.createElement("div");
+      ghost.className = "ghost";
+      const img = new Image();
+      img.src = k3()?.snapshot(name) || "";
+      img.alt = "";
+      ghost.appendChild(img);
+      document.body.appendChild(ghost);
+    };
+    const putBack = () => { if (held) k3()?.sendHome?.(name); };
     const move = (ev) => {
-      if (!ghost) {
+      trail.push({ x: ev.clientX, y: ev.clientY, t: performance.now() });
+      if (trail.length > 6) trail.shift();
+      if (!held && !ghost) {
         if (Math.hypot(ev.clientX - sx, ev.clientY - sy) < DRAG_START_PX) return;
-        ghost = document.createElement("div");
-        ghost.className = "ghost";
-        const img = new Image();
-        img.src = k3()?.snapshot(name) || "";
-        img.alt = "";
-        ghost.appendChild(img);
-        document.body.appendChild(ghost);
+        pickUp(ev);
       }
-      ghost.style.left = ev.clientX + "px";
-      ghost.style.top = ev.clientY + "px";
+      if (held) k3().hold(name, ev.clientX, ev.clientY);
+      else { ghost.style.left = ev.clientX + "px"; ghost.style.top = ev.clientY + "px"; }
       const next = tileAt(ev) || (tech ? spotOrSelf(ev, src) : null);
       if (next !== over) { over?.classList.remove("target"); next?.classList.add("target"); over = next; }
     };
@@ -494,20 +506,36 @@
       window.removeEventListener("pointerup", up);
       window.removeEventListener("pointercancel", up);
       over?.classList.remove("target");
-      if (!ghost) {                               // a click, not a carry
+      if (!held && !ghost) {                      // a click, not a carry
         if (cuisine) toast(`The ${esc(cuisine)} cookbook: drag it onto food to cook it ${esc(cuisine)}-style.`);
         else if (src.classList.contains("hand")) toast(`The ${esc(src.dataset.label.toLowerCase())}: drag it onto food to ${esc(tech.toLowerCase())} it.`);
         else toast(`The ${esc(src.dataset.label.toLowerCase())}: drag food onto it to ${esc(tech.toLowerCase())} it.`);
         return;
       }
-      ghost.remove();
+      ghost?.remove();
       const tile = tileAt(ev);
-      if (tile) { tile._home = { x: tile._x, y: tile._y }; applyTo(tile, name, src); return; }
-      const other = tech ? spotOrSelf(ev, src) : null;
+      if (tile) { tile._home = { x: tile._x, y: tile._y }; putBack(); applyTo(tile, name, src); return; }
+      // While it's in your hand it can't be dropped on itself, so using a
+      // tool on itself means putting it back on its own empty place.
+      const self = held && tech && k3().atHome(tech, ev.clientX, ev.clientY);
+      const other = self ? src : (tech ? spotOrSelf(ev, src) : null);
       if (other && other.dataset.tech) {
+        putBack();
         if (other.classList.contains("locked")) { restart(other, "shake"); return; }
         toolWithTool(tech, other.dataset.tech, other);
+        return;
       }
+      // Nothing under it: chuck it. A hand tool thrown across the room
+      // bounces where it lands and floats home a few seconds later.
+      const now = performance.now();
+      const old = trail.find((p) => now - p.t < 130) || trail[0];
+      const dt = Math.max(0.016, (now - old.t) / 1000);
+      const speed = Math.hypot(ev.clientX - old.x, ev.clientY - old.y) / dt;
+      if (tech && !overPantry(ev) && speed > 120 && k3()?.canThrow(tech)) {
+        k3().throwTool(tech, ev.clientX, ev.clientY, (ev.clientX - old.x) / dt, (ev.clientY - old.y) / dt);
+        return;
+      }
+      putBack();                                  // set down gently
     };
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
