@@ -465,7 +465,9 @@ function spot(id, group, { meshes, proxy } = {}) {
    seconds it lifts and floats back to where it belongs. */
 // Everything that isn't built into the room: the loose kit can be picked up
 // and chucked. The range and the fridge stay where they are.
-const THROWABLE = new Set(["Cut", "Mix", "Boil", "Fry", "Wait", "Blend", "Grill", "Ferment", "Heat"]);
+// Everything in the room can be picked up and thrown - tools, cookbooks,
+// the bin, the fridge, the lot.
+const FIXED = new Set();
 // The stove and the oven are one object, so they move as one: everything
 // below works on the "unit", and the oven's half follows the stove's.
 const UNIT = { Bake: "Heat" };
@@ -473,7 +475,7 @@ const unitOf = (id) => UNIT[id] || id;
 const groupSpots = (g) => [...spots.values()].filter((s) => s.group === g);
 const AIRBORNE = new Map();          // id -> the flight in progress
 const GRAVITY = -9.5, BOUNCE = 0.42, REST_MS = 2600, HOME_MS = 850;
-const canThrow = (id) => THROWABLE.has(unitOf(id)) && spots.has(unitOf(id));
+const canThrow = (id) => spots.has(unitOf(id)) && !FIXED.has(unitOf(id));
 
 // The solid furniture, as boxes. A thrown thing bounces off these instead
 // of sailing inside them, which used to leave it stuck in the woodwork.

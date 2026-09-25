@@ -466,7 +466,8 @@
     if (e.button > 0) return;
     e.preventDefault();
     const tech = src.dataset.tech, cuisine = src.dataset.cuisine;
-    const name = tech || cuisine;
+    const name = tech || cuisine || src.id;       // the bin, the book, the notes
+    const isTool = !!(tech || cuisine);
     if (src.classList.contains("locked")) {
       toast(cuisine ? "A cookbook you haven't unlocked yet. Cook its signature dish." : "Something belongs here. Keep cooking to find it.", "miss");
       return;
@@ -507,17 +508,19 @@
       window.removeEventListener("pointercancel", up);
       over?.classList.remove("target");
       if (!held && !ghost) {                      // a click, not a carry
-        if (cuisine) toast(`The ${esc(cuisine)} cookbook: drag it onto food to cook it ${esc(cuisine)}-style.`);
+        if (!isTool) src.click();                 // the bin and the books open
+        else if (cuisine) toast(`The ${esc(cuisine)} cookbook: drag it onto food to cook it ${esc(cuisine)}-style.`);
         else if (src.classList.contains("hand")) toast(`The ${esc(src.dataset.label.toLowerCase())}: drag it onto food to ${esc(tech.toLowerCase())} it.`);
         else toast(`The ${esc(src.dataset.label.toLowerCase())}: drag food onto it to ${esc(tech.toLowerCase())} it.`);
         return;
       }
       ghost?.remove();
-      const tile = tileAt(ev);
+      const tile = isTool ? tileAt(ev) : null;
       if (tile) { tile._home = { x: tile._x, y: tile._y }; putBack(); applyTo(tile, name, src); return; }
       // While it's in your hand it can't be dropped on itself, so using a
       // tool on itself means putting it back on its own empty place.
       const self = held && tech && k3().atHome(tech, ev.clientX, ev.clientY);
+      void self;
       const other = self ? src : (tech ? spotOrSelf(ev, src) : null);
       if (other && other.dataset.tech) {
         putBack();
@@ -531,8 +534,8 @@
       const old = trail.find((p) => now - p.t < 130) || trail[0];
       const dt = Math.max(0.016, (now - old.t) / 1000);
       const speed = Math.hypot(ev.clientX - old.x, ev.clientY - old.y) / dt;
-      if (tech && !overPantry(ev) && speed > 120 && k3()?.canThrow(tech)) {
-        k3().throwTool(tech, ev.clientX, ev.clientY, (ev.clientX - old.x) / dt, (ev.clientY - old.y) / dt);
+      if (!overPantry(ev) && speed > 120 && k3()?.canThrow(name)) {
+        k3().throwTool(name, ev.clientX, ev.clientY, (ev.clientX - old.x) / dt, (ev.clientY - old.y) / dt);
         return;
       }
       putBack();                                  // set down gently
@@ -548,8 +551,7 @@
     const el = elFor(k3().pick(e.clientX, e.clientY));
     if (!el) return;
     hover(null);
-    if (el.matches(".tool, .cookbook")) carry(e, el);
-    else el.click();
+    carry(e, el);                 // tools, cookbooks, the bin, the book, the notes
   });
   // Pointing at something names it and lights it up.
   const spotLabel = $("spotLabel");
