@@ -19,6 +19,29 @@
   const isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
   const API = (isLocal ? `${location.protocol}//${location.hostname}:8027` : "") + "/infinite-kitchen/api";
   const DRAG_START_PX = 4;
+  // Letting go of a tool: was that a throw, or were you putting it somewhere?
+  // A throw is still moving when you release. Aiming at something means
+  // slowing down or pausing first, which is what "dwell" measures.
+  const SETTLED_PX_S = 110;     // slower than this counts as not moving
+  const THROW_PX_S = 340;       // faster than this, released, is a throw
+  const HARD_PX_S = 900;        // a hurl: throws even if aimed at something
+  const DWELL_MS = 150;         // this long settled and it's never a throw
+  function flick(trail, ev) {
+    const now = performance.now();
+    const path = trail.concat([{ x: ev.clientX, y: ev.clientY, t: now }]);
+    const last = path[path.length - 1];
+    const ref = path.find((p) => now - p.t < 130) || path[0];
+    const dt = Math.max(0.016, (now - ref.t) / 1000);
+    const vx = (last.x - ref.x) / dt, vy = (last.y - ref.y) / dt;
+    let dwell = 0;
+    for (let i = path.length - 1; i > 0; i--) {
+      const a = path[i - 1], b = path[i];
+      const step = Math.hypot(b.x - a.x, b.y - a.y) / Math.max(0.001, (b.t - a.t) / 1000);
+      if (step > SETTLED_PX_S) break;
+      dwell = now - a.t;
+    }
+    return { vx, vy, speed: Math.hypot(vx, vy), dwell };
+  }
 
   const $ = (id) => document.getElementById(id);
   const counter = $("counter");
@@ -492,7 +515,7 @@
     const putBack = () => { if (held) k3()?.sendHome?.(name); };
     const move = (ev) => {
       trail.push({ x: ev.clientX, y: ev.clientY, t: performance.now() });
-      if (trail.length > 6) trail.shift();
+      if (trail.length > 12) trail.shift();
       if (!held && !ghost) {
         if (Math.hypot(ev.clientX - sx, ev.clientY - sy) < DRAG_START_PX) return;
         pickUp(ev);
@@ -515,27 +538,29 @@
         return;
       }
       ghost?.remove();
-      const tile = isTool ? tileAt(ev) : null;
+      const f = flick(trail, ev);
+      // still moving when you let go = a throw; slowed or paused = you meant
+      // to put it there. A proper hurl throws even over something usable.
+      const hurl = f.speed > HARD_PX_S && f.dwell < DWELL_MS;
+      const aimed = !hurl;
+
+      const tile = aimed && isTool ? tileAt(ev) : null;
       if (tile) { tile._home = { x: tile._x, y: tile._y }; putBack(); applyTo(tile, name, src); return; }
       // While it's in your hand it can't be dropped on itself, so using a
       // tool on itself means putting it back on its own empty place.
       const self = held && tech && k3().atHome(tech, ev.clientX, ev.clientY);
-      void self;
-      const other = self ? src : (tech ? spotOrSelf(ev, src) : null);
+      const other = aimed && tech ? (self ? src : spotOrSelf(ev, src)) : null;
       if (other && other.dataset.tech) {
         putBack();
         if (other.classList.contains("locked")) { restart(other, "shake"); return; }
         toolWithTool(tech, other.dataset.tech, other);
         return;
       }
-      // Nothing under it: chuck it. A hand tool thrown across the room
-      // bounces where it lands and floats home a few seconds later.
-      const now = performance.now();
-      const old = trail.find((p) => now - p.t < 130) || trail[0];
-      const dt = Math.max(0.016, (now - old.t) / 1000);
-      const speed = Math.hypot(ev.clientX - old.x, ev.clientY - old.y) / dt;
-      if (!overPantry(ev) && speed > 120 && k3()?.canThrow(name)) {
-        k3().throwTool(name, ev.clientX, ev.clientY, (ev.clientX - old.x) / dt, (ev.clientY - old.y) / dt);
+      // Nothing it could be used on: throw it if it was still flying out of
+      // your hand, otherwise set it down and let it drift back.
+      const throwing = f.dwell < DWELL_MS && f.speed > THROW_PX_S;
+      if (throwing && !overPantry(ev) && k3()?.canThrow(name)) {
+        k3().throwTool(name, ev.clientX, ev.clientY, f.vx, f.vy);
         return;
       }
       putBack();                                  // set down gently
