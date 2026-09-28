@@ -40,17 +40,34 @@ const PORT = process.env.PORT || 8023;
 /* ---------- Table geometry - MUST match app.js ---------- */
 const STAGE_W = 2200;
 const STAGE_H = 1240;
-// The biggest the assembled picture is allowed to get. Each puzzle's board is
-// its own image's aspect fitted inside this box and centred, so a square or a
-// panorama both sit correctly. The margin left over is the scatter zone - a
-// tipped-out box needs somewhere to land.
-const MAX_BOARD = { w: 1180, h: 800 };
+// How much of the desk the assembled picture covers. Every puzzle gets the
+// same AREA, whatever shape it is.
+//
+// The obvious approach - fit the picture inside a fixed box - equalises the
+// bounding BOX, not the area, and the difference is not subtle. A landscape
+// picture fills such a box, while a portrait one is pinned by its height and
+// leaves the whole width unused: it ends up at barely half the size for no
+// reason a player can see. Solving instead for the dimensions that hit a
+// target area makes a portrait, a square and a landscape puzzle equally big.
+//
+// The area is capped at roughly a third of the desk because every piece
+// starts life scattered in the margin around the board, so the margin has to
+// stay big enough to hold the whole picture again, cut up and spread out.
+const BOARD_AREA = 930000;                 // stage units^2
+const BOARD_LIMIT = { w: 2000, h: 1100 };  // a panorama or a tall poster still
+                                           // has to leave the pieces somewhere
 
-// Fit w:h inside MAX_BOARD, centred on the table.
+function centreBoard(w, h) {
+  return { x: Math.round((STAGE_W - w) / 2), y: Math.round((STAGE_H - h) / 2), w, h };
+}
+
+// The board for an image of w:h - the target area at that aspect ratio, then
+// reined in if an extreme shape would run off the desk.
 function fitBoard(w, h) {
-  const scale = Math.min(MAX_BOARD.w / w, MAX_BOARD.h / h);
-  const bw = Math.round(w * scale), bh = Math.round(h * scale);
-  return { x: Math.round((STAGE_W - bw) / 2), y: Math.round((STAGE_H - bh) / 2), w: bw, h: bh };
+  const r = w / h;
+  const bw = Math.sqrt(BOARD_AREA * r), bh = Math.sqrt(BOARD_AREA / r);
+  const rein = Math.min(1, BOARD_LIMIT.w / bw, BOARD_LIMIT.h / bh);
+  return centreBoard(Math.round(bw * rein), Math.round(bh * rein));
 }
 
 // How long the finished puzzle stays on the table before the next one drops.
@@ -197,6 +214,21 @@ let QUEUE = loadQueue();
 let shelf = []; // finished puzzles, newest first
 try { shelf = JSON.parse(fs.readFileSync(ARCHIVE_FILE, "utf8")) || []; } catch { /* first run */ }
 
+function saveShelf() {
+  const tmp = ARCHIVE_FILE + ".tmp";
+  try {
+    fs.writeFileSync(tmp, JSON.stringify(shelf));
+    fs.renameSync(tmp, ARCHIVE_FILE);
+  } catch (e) { console.error("shelf save failed:", e.message); }
+}
+
+// The shelf card - everything except the per-piece `order` log, which is only
+// needed for a solve replay and would bloat every page load.
+function shelfCard(e) {
+  const { order, ...rest } = e;
+  return rest;
+}
+
 /* ------------------------------------------------------------------------
    The hub's front-door count: how many times anyone has opened kmufti.com.
    Every open counts, the same person coming back included - it is a tally of
@@ -323,18 +355,32 @@ function restoreTable() {
   if (idx < 0) return null; // that puzzle left the queue - start fresh
   const def = QUEUE[idx];
   if (def.cols !== snap.cols || def.rows !== snap.rows) return null; // re-cut since
-  const want = fitBoard(def.imageW || 1200, def.imageH || 800);
-  // Piece positions are absolute table coordinates, so a resized desk or a
-  // bigger board would leave every placed piece sitting off its slot.
-  // A snapshot from before the board was recorded can't be checked, and the
-  // desk has changed size since, so it goes too rather than restoring wrong.
-  if (snap.boardW !== want.w || snap.boardH !== want.h) return null;
+  // Piece positions are absolute table coordinates, so they only mean anything
+  // against the board they were laid on. A snapshot from before the board was
+  // recorded can't be placed at all, so it goes.
+  if (!snap.boardW || !snap.boardH) return null;
   if (!Array.isArray(snap.pieces) || snap.pieces.length !== snap.cols * snap.rows) return null;
-  const board = fitBoard(def.imageW || 1200, def.imageH || 800);
+
+  const was = centreBoard(snap.boardW, snap.boardH);
+  const now = fitBoard(def.imageW || 1200, def.imageH || 800);
+  let board = was, pieces = snap.pieces;
+
+  // If the board is sized differently than when this puzzle was laid out,
+  // move it rather than binning days of work or freezing it at the old size:
+  // solved pieces go to their new slots, loose ones get tipped back out.
+  if (was.w !== now.w || was.h !== now.h) {
+    const pw = now.w / snap.cols, ph = now.h / snap.rows;
+    board = now;
+    pieces = snap.pieces.map((p, i) => p.placed
+      ? { ...p, x: now.x + (i % snap.cols) * pw, y: now.y + ((i / snap.cols) | 0) * ph }
+      : { ...p, ...scatter(pw, ph, now) });
+    console.log(`resized ${snap.id}: board ${was.w}x${was.h} -> ${now.w}x${now.h}, ` +
+                `${snap.placedCount || 0} placed pieces moved with it`);
+  }
   return {
     def, queueIndex: idx, cols: snap.cols, rows: snap.rows, board,
     pw: board.w / snap.cols, ph: board.h / snap.rows,
-    edges: snap.edges, pieces: snap.pieces,
+    edges: snap.edges, pieces,
     placedCount: snap.placedCount || 0,
     startedAt: snap.startedAt || Date.now(),
     contributors: snap.contributors || {},

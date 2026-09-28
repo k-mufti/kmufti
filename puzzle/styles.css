@@ -151,21 +151,6 @@ a { color: inherit; text-decoration: none; }
   -webkit-user-select: none;
 }
 
-/* Somebody set a mug down on the corner of the table once. */
-.table::after {
-  content: "";
-  position: absolute;
-  left: 4.5%;
-  bottom: 6%;
-  width: 7.5%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: 2px solid rgba(74, 38, 14, 0.4);
-  box-shadow: 0 0 0 3px rgba(74, 38, 14, 0.11);
-  pointer-events: none;
-  z-index: 1;
-}
-
 /* Covers the table until the first snapshot lands, and again if we drop. */
 .table-veil {
   position: absolute;
