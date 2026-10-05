@@ -32,11 +32,8 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { Reflector } from "three/addons/objects/Reflector.js";
-import { acceleratedRaycast, MeshBVH } from "three-mesh-bvh";
 
 const HIT_R = 0.024;        // radius of the rock one shot knocks out, in metres (bust is ~0.49 tall)
-const MAX_DEPTH = 0.07;     // how far below his original surface a crater can reach, metres,
-                            // and never more than 60% of the way through him at that spot
 const REWIND = 0.9;         // seconds for restore to undo every shot, newest first
 const GATHER = 0.45;        // ...after this long for fallen chunks to fly back into place
 const MAX_YAW = 0.6;        // how far a drag can turn him, radians either way
@@ -213,11 +210,8 @@ function start(wrap) {
   // drawing whatever geometry it last sent back. Everything is in the
   // bust's own space (the model group's).
   const model = new THREE.Group();
-  const worker = new Worker(new URL("carve-worker.js?v=3", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("carve-worker.js?v=4", import.meta.url), { type: "module" });
   let originals = [], blocks = [];   // blocks[id]: Mesh, or null once carved away
-  // The untouched bust, never drawn: shots measure against it how deep
-  // below his original surface they've already dug.
-  const pristine = new THREE.Group();
 
   function setGeometry(mesh, geometry, keepOld) {
     // bounds from the vertices themselves: what the loader carries over
@@ -268,6 +262,7 @@ function start(wrap) {
       setGeometry(mesh, soupGeometry(c), true);
     }
     const broke = m.pieces.map(breakOff);
+    if (broke.length) heights();   // he's shorter now: chunks land on what's left
     impacts.push(pendingImpacts.shift() || new THREE.Vector4());
     syncImpacts();
     history.push({ undo, pieces: broke, left });
@@ -280,6 +275,7 @@ function start(wrap) {
 
   function undoShot() {
     const h = history.pop();
+    if (h.shattered) { shots = Math.max(0, shots - 1); updateStats(); return; }
     for (const { id, mesh, prev } of h.undo.reverse()) {
       if (blocks[id] === mesh) mesh.geometry.dispose();
       else { model.add(mesh); blocks[id] = mesh; }
@@ -306,6 +302,7 @@ function start(wrap) {
     const c = new THREE.Vector3().fromArray(data.center);
     const inner = new THREE.Mesh(g, MATS);
     inner.castShadow = inner.receiveShadow = true;
+    inner.userData.piece = null;   // set below, so a shot can tell it hit a chunk
     inner.position.copy(c).negate();
     const mesh = new THREE.Group();
     mesh.add(inner);
@@ -322,25 +319,59 @@ function start(wrap) {
     const piece = {
       mesh, hull,
       home: { p: mesh.position.clone(), q: mesh.quaternion.clone() },
-      v: out.multiplyScalar(rnd(0.15, 0.35)).add(lastShotDir.clone().multiplyScalar(rnd(0.1, 0.25))).add(new THREE.Vector3(0, rnd(0.05, 0.25), 0)),
+      // outward and toward you, so it tips off the front of him and lands
+      // where you can see it
+      v: out.multiplyScalar(rnd(0.1, 0.25)).add(new THREE.Vector3(rnd(-0.05, 0.05), rnd(0.05, 0.2), rnd(0.25, 0.4))),
       w: new THREE.Vector3(rnd(-4, 4), rnd(-4, 4), rnd(-4, 4)),
       rest: false, landed: false,
     };
+    inner.userData.piece = piece;
     pieces.push(piece);
     return piece;
   }
 
+  // What's left of him, as a height map seen from above (in his own space),
+  // so a falling chunk lands on his shoulders, not through them.
+  const HF = { n: [0, 0], lo: [0, 0], cell: 0.008, h: null };
+  function heights() {
+    const box = new THREE.Box3();
+    for (const m of blocks) if (m) box.union(m.geometry.boundingBox);
+    HF.lo = [box.min.x, box.min.z];
+    HF.n = [Math.ceil((box.max.x - box.min.x) / HF.cell) + 1, Math.ceil((box.max.z - box.min.z) / HF.cell) + 1];
+    HF.h = new Float32Array(HF.n[0] * HF.n[1]).fill(-1);
+    for (const m of blocks) {
+      if (!m) continue;
+      const p = m.geometry.attributes.position.array;
+      for (let i = 0; i < p.length; i += 3) {
+        const k = Math.floor((p[i] - HF.lo[0]) / HF.cell) + HF.n[0] * Math.floor((p[i + 2] - HF.lo[1]) / HF.cell);
+        if (p[i + 1] > HF.h[k]) HF.h[k] = p[i + 1];
+      }
+    }
+  }
+  const hfTmp = new THREE.Vector3(), hfInv = new THREE.Matrix4();
+  // how far above whatever's under it (him, or the board) a world point is
+  function clearance(p) {
+    if (!HF.h) return p.y;
+    hfTmp.copy(p).applyMatrix4(hfInv);
+    const x = Math.floor((hfTmp.x - HF.lo[0]) / HF.cell), z = Math.floor((hfTmp.z - HF.lo[1]) / HF.cell);
+    if (x < 0 || z < 0 || x >= HF.n[0] || z >= HF.n[1]) return p.y;
+    const top = HF.h[x + HF.n[0] * z];
+    return top > 0 && hfTmp.y > top - 0.03 ? hfTmp.y - top : p.y;   // only from above: deep inside him counts as clear
+  }
+
   function stepPiece(pc, dt) {
-    if (pc.rest) return false;
+    if (pc.rest || pc.shattered) return false;
     pc.v.y -= GRAVITY * dt;
     pc.mesh.position.addScaledVector(pc.v, dt);
     const ang = pc.w.length();
     if (ang > 1e-4) pc.mesh.quaternion.premultiply(pieceQ.setFromAxisAngle(pieceTmp.copy(pc.w).divideScalar(ang), ang * dt));
-    // the lowest of its corners against the board (y = 0)
+    // the lowest of its corners against what's under it: the board, or him
+    hfInv.copy(model.matrixWorld).invert();
     let low = Infinity, lowP = null;
     for (const h of pc.hull) {
       pieceTmp.copy(h).applyQuaternion(pc.mesh.quaternion).add(pc.mesh.position);
-      if (pieceTmp.y < low) { low = pieceTmp.y; lowP = pieceTmp.clone(); }
+      const c = clearance(pieceTmp);
+      if (c < low) { low = c; lowP = pieceTmp.clone(); }
     }
     if (low < 0) {
       pc.mesh.position.y -= low;
@@ -364,7 +395,7 @@ function start(wrap) {
   let drop = null, ready = false;    // drop: { y, v } while it's falling in
   const foot = [], footTmp = new THREE.Vector3();
   // He's heavy (a few MB), so he waits until the rest of the page is in and
-  // the browser is idle; until then his silhouette holds his place.
+  // the browser is idle.
   const whenIdle = (fn) => (window.requestIdleCallback || ((f) => setTimeout(f, 200)))(fn, { timeout: 1500 });
   if (document.readyState === "complete") whenIdle(loadBust);
   else window.addEventListener("load", () => whenIdle(loadBust), { once: true });
@@ -417,14 +448,6 @@ function start(wrap) {
       position: g.attributes.position.array, normal: g.attributes.normal.array, ao: g.attributes._ao.array,
       index: g.index.array, skinCount: g.groups[0].materialIndex === 0 ? g.groups[0].count : 0, cell: g.userData.cell,
     })), grid: gltf.scene.userData });
-    for (const g of originals) {
-      const m = new THREE.Mesh(g, skinMat);
-      g.boundsTree = new MeshBVH(g);
-      m.raycast = acceleratedRaycast;
-      pristine.add(m);
-    }
-    model.add(pristine);
-    pristine.visible = false;
 
     // The foot of the plinth: every vertex within a hair of the bottom.
     // resize() lines the board's top border up with the lowest of them.
@@ -586,7 +609,6 @@ function start(wrap) {
 
   // ---------- Aiming & shooting ----------
   const ray = new THREE.Raycaster();
-  ray.firstHitOnly = true;
   const ndc = new THREE.Vector2();
   const pointer = { inside: false, down: false };
   let fireCd = 0, shake = 0;
@@ -594,20 +616,22 @@ function start(wrap) {
   function pick() {
     if (!ready || drop || rewind) return null;
     ray.setFromCamera(ndc, camera);
-    const hits = ray.intersectObjects(blocks.filter(Boolean), false);
-    return hits[0] || null;
+    // the bust, and any chunk lying on the board (those shatter)
+    const targets = blocks.filter(Boolean);
+    for (const pc of pieces) if (!pc.shattered) targets.push(pc.mesh.children[0]);
+    return ray.intersectObjects(targets, false)[0] || null;
   }
 
   const rnd = (a, b) => a + Math.random() * (b - a);
   function shoot() {
     const hit = pick();
     if (!hit) return;
+    if (hit.object.userData.piece) { shatter(hit.object.userData.piece, hit); return; }
     // Into the stone along the line of fire, tipped a little toward the
     // surface's own normal. A fresh hit on the skin sinks in and blasts a
-    // crater; a hit on stone that's already broken (inside a crater) bites
-    // shallower and scatters wider, so a held trigger gnaws the crater
-    // outward the way an impact does, instead of drilling a tunnel out the
-    // back of him.
+    // crater; a hit on stone that's already broken (inside a crater) keeps
+    // digging, scattered a little so a held trigger gnaws a ragged hole
+    // rather than a neat bore. Keep at it and you'll come out the back.
     const local = model.worldToLocal(hit.point.clone());
     const n = hit.face.normal.clone();                       // block space = model space
     const dirLocal = ray.ray.direction.clone().transformDirection(new THREE.Matrix4().copy(model.matrixWorld).invert());
@@ -618,18 +642,7 @@ function start(wrap) {
     local.x += rnd(-j, j); local.y += rnd(-j, j); local.z += rnd(-j, j);
     const r = HIT_R * (broken ? rnd(0.75, 1.05) : rnd(0.85, 1.15));
     const deep = broken ? rnd(0.75, 0.95) : rnd(1.1, 1.35);
-    let sink = broken ? rnd(-0.2, 0.1) : 0.4;
-    // No deeper than MAX_DEPTH below where his surface used to be: past
-    // that, a shot only widens the crater.
-    ray.firstHitOnly = false;
-    const orig = ray.intersectObjects(pristine.children, false);
-    ray.firstHitOnly = true;
-    if (orig.length) {
-      const through = orig.length > 1 ? orig[orig.length - 1].distance - orig[0].distance : Infinity;
-      const dug = hit.distance - orig[0].distance;
-      const room = Math.min(MAX_DEPTH, through * 0.6) - dug - r * deep * 1.22;   // how far past the hit the rock's centre may go
-      sink = Math.max(-1.6, Math.min(sink, room / r));
-    }
+    const sink = broken ? rnd(-0.1, 0.25) : 0.4;
     cut(local, inward, r, sink, deep);
     pendingImpacts.push(new THREE.Vector4(local.x, local.y, local.z, r * 1.1));
     lastShotDir.copy(ray.ray.direction);
@@ -639,23 +652,7 @@ function start(wrap) {
 
     // Debris leaves along the surface normal, in world space.
     const nw = n.clone().transformDirection(model.matrixWorld);
-    const count = 12 + Math.floor(Math.random() * 10);
-    for (let i = 0; i < count; i++) {
-      if (chips.length >= MAX_CHIPS) chips.shift();
-      const big = Math.random() < 0.3;
-      chips.push({
-        p: hit.point.clone(), from: hit.point.clone(),
-        v: nw.clone().multiplyScalar(rnd(0.15, 0.5)).add(new THREE.Vector3(rnd(-0.18, 0.18), rnd(0, 0.25), rnd(-0.12, 0.25))),
-        r: new THREE.Euler(rnd(0, 6), rnd(0, 6), rnd(0, 6)),
-        w: new THREE.Vector3(rnd(-18, 18), rnd(-18, 18), rnd(-18, 18)),
-        s: new THREE.Vector3(rnd(0.6, 1.3), rnd(0.5, 1), rnd(0.7, 1.4)).multiplyScalar(big ? rnd(0.006, 0.01) : rnd(0.002, 0.005)),
-        rest: false,
-      });
-    }
-    for (let i = 0; i < 3; i++) {
-      puff(hit.point.clone().addScaledVector(nw, 0.01),
-        nw.clone().multiplyScalar(rnd(0.03, 0.07)).add(new THREE.Vector3(0, -0.02, 0)), 0.014, rnd(0.03, 0.06), rnd(0.8, 1.4), 0.5);
-    }
+    chipAt(hit.point, nw, 12 + Math.floor(Math.random() * 10));
     flash.position.copy(hit.point).addScaledVector(nw, 0.02);
     flash.scale.setScalar(0.06);
     flash.visible = true;
@@ -665,6 +662,73 @@ function start(wrap) {
     kick();
   }
   const lastShotDir = new THREE.Vector3(0, 0, -1);
+
+  // chips and a puff of dust off a struck surface (point and normal in world space)
+  function chipAt(point, nw, count) {
+    for (let i = 0; i < count; i++) {
+      if (chips.length >= MAX_CHIPS) chips.shift();
+      const big = Math.random() < 0.3;
+      chips.push({
+        p: point.clone(), from: point.clone(),
+        v: nw.clone().multiplyScalar(rnd(0.15, 0.5)).add(new THREE.Vector3(rnd(-0.18, 0.18), rnd(0, 0.25), rnd(-0.12, 0.25))),
+        r: new THREE.Euler(rnd(0, 6), rnd(0, 6), rnd(0, 6)),
+        w: new THREE.Vector3(rnd(-18, 18), rnd(-18, 18), rnd(-18, 18)),
+        s: new THREE.Vector3(rnd(0.6, 1.3), rnd(0.5, 1), rnd(0.7, 1.4)).multiplyScalar(big ? rnd(0.006, 0.01) : rnd(0.002, 0.005)),
+        rest: false,
+      });
+    }
+    for (let i = 0; i < 3; i++) {
+      puff(point.clone().addScaledVector(nw, 0.01),
+        nw.clone().multiplyScalar(rnd(0.03, 0.07)).add(new THREE.Vector3(0, -0.02, 0)), 0.014, rnd(0.03, 0.06), rnd(0.8, 1.4), 0.5);
+    }
+  }
+
+  // A shot on a fallen chunk chips it, and the last one bursts it into
+  // rubble: a small chunk goes in one, a whole head takes a handful.
+  // (Restore still brings it back: it reappears where it lay and flies
+  // home with the rest.)
+  function shatter(pc, hit) {
+    const size = pc.mesh.children[0].geometry.boundingSphere.radius;
+    pc.hits = (pc.hits || 0) + 1;
+    if (pc.hits < Math.ceil(size * 40)) {
+      chipAt(hit.point, hit.face.normal.clone().transformDirection(hit.object.matrixWorld), 8);
+      pc.rest = false;
+      pc.v.add(lastShotDir.clone().multiplyScalar(0.12)).add(new THREE.Vector3(0, 0.08, 0));
+      pc.w.add(new THREE.Vector3(rnd(-3, 3), rnd(-3, 3), rnd(-3, 3)));
+      shake = Math.max(shake, 0.2);
+      impactSound(true);
+      kick();
+      return;
+    }
+    pc.shattered = true;
+    pc.mesh.visible = false;
+    const count = Math.min(60, 10 + Math.round(size * 900));
+    const at = new THREE.Vector3();
+    for (let i = 0; i < count; i++) {
+      if (chips.length >= MAX_CHIPS) chips.shift();
+      at.copy(pc.hull[Math.floor(Math.random() * pc.hull.length)]).applyQuaternion(pc.mesh.quaternion).add(pc.mesh.position);
+      const big = Math.random() < 0.35;
+      chips.push({
+        p: at.clone(), from: at.clone(),
+        v: new THREE.Vector3(rnd(-0.3, 0.3), rnd(0.2, 0.6), rnd(-0.3, 0.3)),
+        r: new THREE.Euler(rnd(0, 6), rnd(0, 6), rnd(0, 6)),
+        w: new THREE.Vector3(rnd(-18, 18), rnd(-18, 18), rnd(-18, 18)),
+        s: new THREE.Vector3(rnd(0.6, 1.3), rnd(0.5, 1), rnd(0.7, 1.4)).multiplyScalar(big ? rnd(0.006, 0.012) : rnd(0.002, 0.006)),
+        rest: false,
+      });
+    }
+    for (let i = 0; i < 6; i++) {
+      puff(hit.point.clone().add(new THREE.Vector3(rnd(-0.02, 0.02), rnd(0, 0.02), rnd(-0.02, 0.02))),
+        new THREE.Vector3(rnd(-0.06, 0.06), rnd(0.02, 0.08), rnd(-0.06, 0.06)), 0.02, rnd(0.05, 0.1), rnd(1, 1.6), 0.5);
+    }
+    history.push({ undo: [], pieces: [], shattered: pc, left });
+    shots++;
+    updateStats();
+    shake = Math.max(shake, 0.25);
+    impactSound(true);
+    thud(0.4);
+    kick();
+  }
 
   function updatePointer(e) {
     const r = canvas.getBoundingClientRect();
@@ -741,6 +805,7 @@ function start(wrap) {
       chips: chips.map((c) => ({ c, at: c.p.clone(), delay: rnd(0, 0.45), lift: rnd(0.03, 0.12) })),
       pieces: pieces.map((pc) => ({ pc, at: pc.mesh.position.clone(), q: pc.mesh.quaternion.clone() })),
     };
+    for (const pc of pieces) { pc.shattered = false; pc.hits = 0; pc.mesh.visible = true; }
     for (const pc of pieces) pc.rest = true;
     yawTarget = 0;
     restoreBtn.hidden = true;

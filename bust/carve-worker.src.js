@@ -346,9 +346,10 @@ function islands() {
   for (let id = 0; id < blocks.length; id++) {
     const b = blocks[id];
     if (!b) continue;
-    // held: touching the base, a hollow (which never falls by itself), or
-    // a flat sliver with no stone in it at all (left over from cutting)
-    for (let p = 0; p < b.part.count; p++) if (b.part.grounded[p] || b.part.vol[p] < MIN_PIECE / 20) ground[offset[id] + p] = 1;
+    // held: touching the base, or a hollow left inside a block (which never
+    // falls by itself). A flat sliver holds nothing up: it goes with
+    // whatever it's stuck to, or on its own if it's stuck to nothing.
+    for (let p = 0; p < b.part.count; p++) if (b.part.grounded[p] || b.part.vol[p] < -MIN_PIECE / 20) ground[offset[id] + p] = 1;
     // join across the +x, +y, +z walls to the neighbour's opposite wall
     for (let ax = 0; ax < 3; ax++) {
       const nid = neighbours[id][ax];
