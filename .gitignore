@@ -45,3 +45,7 @@ infinite-kitchen/data/
 # Infinite Kitchen: the old recipe set, kept aside locally until it is deleted.
 infinite-kitchen/_archive/
 infinite-kitchen/_lab/
+
+# Marble bust: build intermediates (bust/makehuman.js writes head.glb, which
+# bust/chunk.mjs cuts into the shipped bust.glb).
+bust/model/head.glb
