@@ -100,10 +100,10 @@ for (let z = 0; z < n[2]; z++) for (let y = 0; y < n[1]; y++) for (let x = 0; x 
   // their normals differ
   const welded = mergeVertices(flat, 1e-6);
   const skinIdx = tris[0].length;   // indices are in the same triangle order
-  blocks.push({ g: welded, skinCount: skinIdx });
+  blocks.push({ g: welded, skinCount: skinIdx, cell: [x, y, z] });
 }
 console.log(`${blocks.length} blocks in ${((performance.now() - t) / 1000).toFixed(1)} s`);
-writeGlb(OUT, blocks);
+writeGlb(OUT, blocks, { gridMin: bb.min.toArray(), cell: CELL });
 
 // ---------- helpers ----------
 function brush(g, m) { const b = new Brush(g, m); b.updateMatrixWorld(); return b; }
@@ -130,7 +130,7 @@ function splitSmall(geo, maxSize) {
   return { head: make(headTris), eyes: [...eyeTris.values()].map(make) };
 }
 
-function writeGlb(file, blocks) {
+function writeGlb(file, blocks, grid) {
   const parts = [], views = [], accessors = [], nodes = [], meshes = [];
   let off = 0;
   const add = (arr, target, type, comp, extra) => {
@@ -148,7 +148,7 @@ function writeGlb(file, blocks) {
     return accessors.length - 1;
   };
   let tris = 0;
-  for (const { g, skinCount } of blocks) {
+  for (const { g, skinCount, cell } of blocks) {
     g.computeBoundingBox();
     const lo = g.boundingBox.min.toArray(), size = g.boundingBox.getSize(new THREE.Vector3()).toArray().map((v) => v || 1e-6);
     const p = g.attributes.position.array, nr = g.attributes.normal.array, ao = g.attributes._ao.array, n = p.length / 3;
@@ -175,13 +175,15 @@ function writeGlb(file, blocks) {
     }
     tris += idx.length / 3;
     meshes.push({ primitives });
-    nodes.push({ mesh: meshes.length - 1, extras: { lo, size } });
+    nodes.push({ mesh: meshes.length - 1, extras: { lo, size, cell } });
   }
   const bin = Buffer.concat(parts);
   const gltf = {
     asset: { version: "2.0", generator: "kmufti bust/chunk.mjs (MakeHuman base mesh, CC0)" },
     extensionsUsed: ["KHR_mesh_quantization"], extensionsRequired: ["KHR_mesh_quantization"],
-    scene: 0, scenes: [{ nodes: nodes.map((_, i) => i) }], nodes, meshes,
+    // the grid the blocks sit in, so the cutter knows which blocks are
+    // neighbours (for working out which pieces are still attached)
+    scene: 0, scenes: [{ nodes: nodes.map((_, i) => i), extras: grid }], nodes, meshes,
     buffers: [{ byteLength: bin.length }], bufferViews: views, accessors,
   };
   let json = Buffer.from(JSON.stringify(gltf));
