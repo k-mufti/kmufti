@@ -15,7 +15,7 @@
 // with max-age=3600 - so a new app.js would run against up-to-an-hour-old
 // copies of these four. Bump every one of them, and app.js in index.html, in
 // the same commit.
-import { DiceTable } from "./dice3d.js?v=7";
+import { DiceTable } from "./dice3d.js?v=13";
 import * as R from "./rules.js?v=7";
 import * as BOT from "./bot.js?v=7";
 import { Net, loadName, saveName } from "./net.js?v=7";
@@ -158,7 +158,7 @@ function render() {
   $("th-bot").classList.toggle("active", !myTurn() && !state.over);
 
   $("roll").disabled = state.busy || !myTurn() || state.rollsLeft === 0;
-  $("roll").textContent = state.rollsLeft === 3 ? "Roll" : "Roll again";
+  $("roll").textContent = state.rollsLeft === 3 ? "Hold to roll" : "Hold to roll again";
   $("rolls-left").textContent =
     myTurn() ? `${state.rollsLeft} roll${state.rollsLeft === 1 ? "" : "s"} left` : "";
 
@@ -194,10 +194,62 @@ function onPick(e) {
 
 /* ---------------- shared actions ---------------- */
 
-$("roll").addEventListener("click", () => {
+// Roll with a given throw power (0..1; 0.5 is an ordinary throw).
+function doRoll(power) {
   if (state.busy || !myTurn() || state.rollsLeft === 0) return;
-  if (state.mode === "online") { net.send({ t: "roll" }); return; }
-  soloRoll();
+  if (state.mode === "online") { net.send({ t: "roll", power }); return; }
+  soloRoll(power);
+}
+
+// Hold Roll to wind up: a meter fills in the button, then swings back down,
+// so the strongest throw is a moment you have to catch, not just a long
+// press. Let go to throw. All the power comes from holding: a tap is a
+// feeble toss. Space / Enter on the button wind up the same way.
+const CHARGE_PERIOD = 0.95;   // seconds from empty to full
+let charge = null;            // { t0, raf } while winding up
+const chargePower = () => {
+  const x = ((performance.now() - charge.t0) / 1000 / CHARGE_PERIOD) % 2;
+  return x <= 1 ? x : 2 - x;
+};
+function showCharge(p) {
+  const b = $("roll");
+  b.style.setProperty("--power", p.toFixed(3));
+  $("rolls-left").textContent = `power ${Math.round(p * 100)}%`;
+}
+function startCharge(e) {
+  if (charge || e.button > 0 || $("roll").disabled) return;
+  if (state.busy || !myTurn() || state.rollsLeft === 0) return;
+  e.preventDefault();
+  $("roll").classList.add("charging");
+  charge = { t0: performance.now(), raf: 0 };
+  const tick = () => { if (!charge) return; showCharge(chargePower()); charge.raf = requestAnimationFrame(tick); };
+  tick();
+}
+function releaseCharge(cancel) {
+  if (!charge) return;
+  const p = chargePower();
+  cancelAnimationFrame(charge.raf);
+  charge = null;
+  $("roll").classList.remove("charging");
+  $("roll").style.removeProperty("--power");
+  render();
+  if (cancel) return;
+  doRoll(Math.max(0.01, p));
+}
+$("roll").addEventListener("pointerdown", startCharge);
+window.addEventListener("pointerup", () => releaseCharge(false));
+window.addEventListener("pointercancel", () => releaseCharge(true));
+window.addEventListener("blur", () => releaseCharge(true));
+// The keyboard winds up the same way: hold Space or Enter on the button.
+$("roll").addEventListener("keydown", (e) => {
+  if (e.key !== " " && e.key !== "Enter") return;
+  e.preventDefault();   // no click: the throw happens on key-up
+  if (!e.repeat) startCharge({ button: 0, preventDefault() {} });
+});
+$("roll").addEventListener("keyup", (e) => {
+  if (e.key !== " " && e.key !== "Enter") return;
+  e.preventDefault();
+  releaseCharge(false);
 });
 
 $("tray").addEventListener("click", (e) => {
@@ -207,12 +259,12 @@ $("tray").addEventListener("click", (e) => {
 
 // Play a throw the tray was handed. Any server state that lands mid-throw is
 // held back until the dice stop, or the board would jump ahead of the picture.
-async function playRoll(values, seed, fromSeat) {
+async function playRoll(values, seed, fromSeat, power = 0.5) {
   animating = true;
   state.busy = true;
   render();
   state.dice = values.slice();
-  await table.roll({ values, seed, fromSeat });
+  await table.roll({ values, seed, fromSeat, power });
   animating = false;
   if (pendingState) { const s = pendingState; pendingState = null; applyState(s); }
   else { state.busy = false; render(); }
@@ -223,11 +275,11 @@ async function playRoll(values, seed, fromSeat) {
 const rollValues = (held) =>
   state.dice.map((v, i) => (state.rolledThisTurn && held[i] ? v : 1 + Math.floor(Math.random() * 6)));
 
-async function soloRoll() {
+async function soloRoll(power = 0.5) {
   const values = rollValues(state.held);
   state.rollsLeft--;
   state.rolledThisTurn = true;
-  await playRoll(values, (Math.random() * 1e9) | 0, 0);
+  await playRoll(values, (Math.random() * 1e9) | 0, 0, power);
   say(state.rollsLeft ? "Click dice to keep them, or pick a box." : "Pick a box.");
   render();
 }
@@ -255,7 +307,7 @@ async function commitSolo(cat) {
 
   if (state.turn === state.mySeat) {
     state.busy = false;
-    say("Your turn. Roll.");
+    say("Your turn. Hold Roll to throw.");
     render();
   } else soloBotTurn();
 }
@@ -268,7 +320,7 @@ async function soloBotTurn() {
     const values = rollValues(state.held);
     state.rollsLeft = roll - 1;
     state.rolledThisTurn = true;
-    await playRoll(values, (Math.random() * 1e9) | 0, 1);
+    await playRoll(values, (Math.random() * 1e9) | 0, 1, 0.3 + Math.random() * 0.5);   // the bot throws however it likes
     state.busy = true;
     if (state.rollsLeft === 0) break;
     await sleep(420);
@@ -312,7 +364,7 @@ function applyState(s) {
   startClock(s.msLeft);
   if (!state.over) {
     say(myTurn()
-      ? (s.rolledThisTurn ? "Click dice to keep them, or pick a box." : "Your turn. Roll.")
+      ? (s.rolledThisTurn ? "Click dice to keep them, or pick a box." : "Your turn. Hold Roll to throw.")
       : `${state.names[oppSeat()]}’s turn…`);
   }
   render();
@@ -360,7 +412,7 @@ function onNet(m) {
       state.held = m.held.slice();
       syncHolds();
       if (m.by !== state.mySeat) say(`${state.names[m.by]} rolls…`);
-      return void playRoll(m.values, m.seed, m.by);
+      return void playRoll(m.values, m.seed, m.by, m.power ?? 0.5);
     case "scored": {
       flash(m.cat);
       const who = m.seat === state.mySeat ? "You" : state.names[m.seat];
@@ -508,7 +560,7 @@ function newSoloGame() {
   table.setViewSeat(0);
   table.clearHolds();
   table.setValues(state.dice);
-  say("Your turn. Roll.");
+  say("Your turn. Hold Roll to throw.");
   render();
 }
 
@@ -521,6 +573,12 @@ $("name").value = loadName();
 say("Loading dice…");
 try {
   table = await DiceTable.create({ canvas: $("tray"), count: 5 });
+  // Sound toggle: the table remembers the choice between visits.
+  const sound = $("sound");
+  const showSound = () => { sound.textContent = table.muted ? "Sound off" : "Sound on"; };
+  sound.addEventListener("click", () => { table.setMuted(!table.muted); showSound(); });
+  showSound();
+  sound.hidden = false;
   newSoloGame();
   $("lobby").hidden = false;      // the board is ready behind the menu
 } catch (e) {

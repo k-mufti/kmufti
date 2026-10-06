@@ -18,7 +18,8 @@
 //   {t:"create"}                 open a private room, get a code back
 //   {t:"join", code}             join someone's private room
 //   {t:"leave"}                  back out of a queue, room or game
-//   {t:"roll"}                   roll the dice you are not holding
+//   {t:"roll", power}            roll the dice you are not holding; power
+//                                0..1 is how hard they're thrown (optional)
 //   {t:"hold", held:[b,b,b,b,b]} keep these between rolls
 //   {t:"score", cat}             write this roll into a box; ends your turn
 //   {t:"again"}                  offer a rematch
@@ -28,7 +29,7 @@
 //   {t:"queued"} / {t:"room", code, names}
 //   {t:"start", seat, names}     a match begins; you are players[seat]
 //   {t:"state", ...}             the whole board, after every change
-//   {t:"rolled", by, values, seed, held}
+//   {t:"rolled", by, values, seed, power, held}
 //   {t:"scored", seat, cat, pts, yahtzeeBonus}
 //   {t:"over", totals, winner}
 //   {t:"peer", status}           "left" | "bot" - your opponent went away
@@ -271,7 +272,7 @@ function armTimer(room) {
 }
 
 // The only place dice numbers come from.
-function doRoll(room, seat, auto = false) {
+function doRoll(room, seat, auto = false, power = 0.5) {
   if (room.over || room.turn !== seat || room.rollsLeft <= 0) return;
   const values = room.dice.map((v, i) =>
     room.rolledThisTurn && room.held[i] ? v : crypto.randomInt(1, 7)
@@ -280,7 +281,9 @@ function doRoll(room, seat, auto = false) {
   room.dice = values;
   room.rollsLeft--;
   room.rolledThisTurn = true;
-  broadcastRoom(room, { t: "rolled", by: seat, values, seed, held: room.held.slice(), auto });
+  // the throw's power goes out with its seed: both players must see the same throw
+  const p = Number.isFinite(power) ? Math.min(1, Math.max(0, power)) : 0.5;
+  broadcastRoom(room, { t: "rolled", by: seat, values, seed, power: p, held: room.held.slice(), auto });
   armTimer(room);
   pushState(room);
 }
@@ -326,7 +329,7 @@ function botPlay(room, seat) {
 
   const step = () => {
     if (room.over || room.turn !== seat) return;
-    doRoll(room, seat);
+    doRoll(room, seat, false, 0.3 + Math.random() * 0.5);   // the bot throws however it likes
     if (room.rollsLeft === 0) return setTimeout(finish, ROLL_WATCH_MS);
     setTimeout(() => {
       if (room.over || room.turn !== seat) return;
@@ -456,7 +459,7 @@ function onMessage(peer, raw) {
     case "join":   return joinPrivate(peer, m.code);
     case "leave":  leaveEverything(peer); return send(peer, { t: "idle" });
     case "roll":
-      if (room && !room.isBot[peer.seat]) doRoll(room, peer.seat);
+      if (room && !room.isBot[peer.seat]) doRoll(room, peer.seat, false, Number(m.power));
       return;
     case "hold":
       if (!room || room.over || room.turn !== peer.seat) return;

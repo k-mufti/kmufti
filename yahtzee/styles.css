@@ -109,12 +109,33 @@ html, body {
   color: #f4fff8; border: 1px solid #2a8f5c; border-radius: 10px;
   padding: 11px 26px; font: inherit; font-weight: 600; font-size: 15px;
   cursor: pointer; letter-spacing: .02em;
-  min-width: 158px;            /* so "Roll" and "Roll again" occupy the same box */
+  min-width: 210px;            /* so "Hold to roll" and "Hold to roll again" occupy the same box */
   box-shadow: 0 3px 0 #0a3320, 0 8px 18px rgba(0,0,0,.35);
 }
 .roll:hover:not(:disabled) { filter: brightness(1.12); }
 .roll:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #0a3320; }
 .roll:disabled { opacity: .4; cursor: default; box-shadow: none; }
+/* Holding Roll winds up a throw: a meter fills the button (green, then
+   gold, then red at full strength), and swings back down if you hold on. */
+#roll { position: relative; overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; }
+#roll::after {
+  content: ""; position: absolute; inset: 0; right: auto;
+  width: calc(var(--power, 0) * 100%);
+  background: linear-gradient(90deg, rgba(255,255,255,.08), hsla(calc(130 - var(--power, 0) * 130), 85%, 55%, .55));
+  opacity: 0; transition: opacity .12s;
+  pointer-events: none;
+}
+#roll.charging::after { opacity: 1; }
+/* The empty meter, always there while you can roll, so the button reads as
+   a gauge you fill by holding. */
+#roll::before {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 5px; height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, hsl(130 70% 60%) 0, hsl(45 90% 58%) 60%, hsl(0 85% 60%) 100%) 0 0 / calc(var(--power, 0) * 100%) 100% no-repeat, rgba(255,255,255,.18);
+  pointer-events: none;
+}
+#roll:disabled::before { opacity: 0; }
+#roll.charging { transform: translateY(2px) scale(calc(1 + var(--power, 0) * .04)); box-shadow: 0 1px 0 #0a3320; }
 .rolls {
   font-family: "JetBrains Mono", ui-monospace, monospace;
   font-size: 13px; color: var(--gold);
