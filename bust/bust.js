@@ -37,7 +37,6 @@ const HIT_R = 0.024;        // radius of the rock one shot knocks out, in metres
 const REWIND = 0.9;         // seconds for restore to undo every shot, newest first
 const GATHER = 0.45;        // ...after this long for fallen chunks to fly back into place
 const MAX_YAW = 0.6;        // how far a drag can turn him, radians either way
-const FIRE_EVERY = 0.12;    // seconds between shots while held
 const MAX_CHIPS = 360, MAX_DUST = 48;
 const YAW = 0;              // square to the viewer: he's symmetrical, show it
 const GRAVITY = 2.4;
@@ -210,7 +209,7 @@ function start(wrap) {
   // drawing whatever geometry it last sent back. Everything is in the
   // bust's own space (the model group's).
   const model = new THREE.Group();
-  const worker = new Worker(new URL("carve-worker.js?v=4", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("carve-worker.js?v=5", import.meta.url), { type: "module" });
   let originals = [], blocks = [];   // blocks[id]: Mesh, or null once carved away
 
   function setGeometry(mesh, geometry, keepOld) {
@@ -263,9 +262,10 @@ function start(wrap) {
     }
     const broke = m.pieces.map(breakOff);
     if (broke.length) heights();   // he's shorter now: chunks land on what's left
-    impacts.push(pendingImpacts.shift() || new THREE.Vector4());
+    const hit = pendingImpacts.shift() || [];
+    impacts.push(...hit);
     syncImpacts();
-    history.push({ undo, pieces: broke, left });
+    history.push({ undo, pieces: broke, left, impacts: hit.length });
     left = m.left;
     shots++;
     updateStats();
@@ -282,7 +282,7 @@ function start(wrap) {
       mesh.geometry = prev;
     }
     for (const p of h.pieces) { scene.remove(p.mesh); p.mesh.children[0].geometry.dispose(); pieces.splice(pieces.indexOf(p), 1); }
-    impacts.pop();
+    impacts.length -= Math.min(impacts.length, h.impacts);
     syncImpacts();
     left = h.left;
     shots = Math.max(0, shots - 1);
@@ -462,6 +462,7 @@ function start(wrap) {
 
     ready = true;
     wrap.classList.add("ready");
+    if (weaponBtn) weaponBtn.hidden = false;
     resize();
     dropIn();
   });
@@ -592,30 +593,44 @@ function start(wrap) {
         normal = sPerturb(-vViewPosition, normal, vec2(dFdx(h), dFdy(h)), faceDirection);`);
   }
 
-  // ---------- Cutting ----------
+  // ---------- Weapons ----------
+  // Every trigger pull is one message to the cutter with one or more rocks
+  // in it, so a shotgun blast counts (and rewinds) as one shot.
+  //   r       rock radius, as a multiple of HIT_R
+  //   deep    rock depth, as a multiple of its radius
+  //   pellets how many rocks, each on its own ray within spread (NDC units)
+  //   every   seconds between shots while held
+  const WEAPONS = [
+    { name: "pistol", every: 0.12, pellets: 1, spread: 0, r: 1, deep: 1.25, chips: 16, shake: 0.35, sound: (b) => impactSound(b) },
+    { name: "shotgun", every: 0.55, pellets: 7, spread: 0.07, r: 0.55, deep: 1.0, chips: 6, shake: 0.8, sound: () => shotgunSound() },
+    { name: "sledgehammer", every: 0.9, pellets: 1, spread: 0, r: 2.3, deep: 0.75, chips: 40, shake: 1.6, sound: () => hammerSound() },
+  ];
+  let weapon = WEAPONS[0];
+
   // The rock is a jagged icosahedron (the worker shapes it): a little deeper
   // than it is wide, pointed into the stone, sunk past the surface so the
   // cut is a crater, not a shallow scuff.
   const Z = new THREE.Vector3(0, 0, 1), rockQ = new THREE.Quaternion(), rollQ = new THREE.Quaternion();
-  function cut(at, inward, r, sink, deep) {
+  function rockSpec(at, inward, r, sink, deep) {
     rockQ.setFromUnitVectors(Z, inward).multiply(rollQ.setFromAxisAngle(Z, rnd(0, Math.PI * 2)));
-    worker.postMessage({
-      type: "cut", gen,
+    return {
       position: at.clone().addScaledVector(inward, r * sink).toArray(),
       quaternion: rockQ.toArray(),
       scale: [r * rnd(0.85, 1.15), r * rnd(0.85, 1.15), r * deep],
-    });
+    };
   }
 
   // ---------- Aiming & shooting ----------
   const ray = new THREE.Raycaster();
-  const ndc = new THREE.Vector2();
+  const ndc = new THREE.Vector2(), aim = new THREE.Vector2();
   const pointer = { inside: false, down: false };
   let fireCd = 0, shake = 0;
 
-  function pick() {
+  function pick(offset) {
     if (!ready || drop || rewind) return null;
-    ray.setFromCamera(ndc, camera);
+    aim.copy(ndc);
+    if (offset) aim.add(offset);
+    ray.setFromCamera(aim, camera);
     // the bust, and any chunk lying on the board (those shatter)
     const targets = blocks.filter(Boolean);
     for (const pc of pieces) if (!pc.shattered) targets.push(pc.mesh.children[0]);
@@ -624,41 +639,62 @@ function start(wrap) {
 
   const rnd = (a, b) => a + Math.random() * (b - a);
   function shoot() {
-    const hit = pick();
-    if (!hit) return;
-    if (hit.object.userData.piece) { shatter(hit.object.userData.piece, hit); return; }
-    // Into the stone along the line of fire, tipped a little toward the
-    // surface's own normal. A fresh hit on the skin sinks in and blasts a
-    // crater; a hit on stone that's already broken (inside a crater) keeps
-    // digging, scattered a little so a held trigger gnaws a ragged hole
-    // rather than a neat bore. Keep at it and you'll come out the back.
-    const local = model.worldToLocal(hit.point.clone());
-    const n = hit.face.normal.clone();                       // block space = model space
-    const dirLocal = ray.ray.direction.clone().transformDirection(new THREE.Matrix4().copy(model.matrixWorld).invert());
-    if (n.dot(dirLocal) > 0) n.negate();
-    const inward = dirLocal.clone().multiplyScalar(0.6).addScaledVector(n, -0.4).normalize();
-    const broken = hit.face.materialIndex === 1;
-    const j = HIT_R * (broken ? 0.7 : 0.25);
-    local.x += rnd(-j, j); local.y += rnd(-j, j); local.z += rnd(-j, j);
-    const r = HIT_R * (broken ? rnd(0.75, 1.05) : rnd(0.85, 1.15));
-    const deep = broken ? rnd(0.75, 0.95) : rnd(1.1, 1.35);
-    const sink = broken ? rnd(-0.1, 0.25) : 0.4;
-    cut(local, inward, r, sink, deep);
-    pendingImpacts.push(new THREE.Vector4(local.x, local.y, local.z, r * 1.1));
-    lastShotDir.copy(ray.ray.direction);
-    uniforms.uDust.value *= 0.35;   // the blast stirs up what had settled
-    wrap.classList.add("shot");
-    if (restoreBtn) restoreBtn.hidden = false;
-
-    // Debris leaves along the surface normal, in world space.
-    const nw = n.clone().transformDirection(model.matrixWorld);
-    chipAt(hit.point, nw, 12 + Math.floor(Math.random() * 10));
-    flash.position.copy(hit.point).addScaledVector(nw, 0.02);
-    flash.scale.setScalar(0.06);
-    flash.visible = true;
-    flashT = 0.05;
-    shake = Math.max(shake, 0.35);
-    impactSound(broken);
+    const w = weapon, rocks = [], hits = [];
+    let anyBroken = false, hitSomething = false;
+    for (let i = 0; i < w.pellets; i++) {
+      // pellets spread over a disc around the aim point
+      const a = Math.random() * Math.PI * 2, d = Math.sqrt(Math.random()) * w.spread;
+      const hit = pick(i === 0 && w.pellets === 1 ? null : new THREE.Vector2(Math.cos(a) * d, Math.sin(a) * d * camera.aspect));
+      if (!hit) continue;
+      hitSomething = true;
+      if (hit.object.userData.piece) { shatter(hit.object.userData.piece, hit, w); continue; }
+      // Into the stone along the line of fire, tipped a little toward the
+      // surface's own normal. A fresh hit on the skin sinks in and blasts a
+      // crater; a hit on stone that's already broken (inside a crater) keeps
+      // digging, scattered a little so a held trigger gnaws a ragged hole
+      // rather than a neat bore. Keep at it and you'll come out the back.
+      const local = model.worldToLocal(hit.point.clone());
+      const n = hit.face.normal.clone();                       // block space = model space
+      const dirLocal = ray.ray.direction.clone().transformDirection(new THREE.Matrix4().copy(model.matrixWorld).invert());
+      if (n.dot(dirLocal) > 0) n.negate();
+      const inward = dirLocal.clone().multiplyScalar(0.6).addScaledVector(n, -0.4).normalize();
+      const broken = hit.face.materialIndex === 1;
+      anyBroken ||= broken;
+      const R = HIT_R * w.r;
+      const j = R * (broken ? 0.7 : 0.25);
+      local.x += rnd(-j, j); local.y += rnd(-j, j); local.z += rnd(-j, j);
+      const r = R * (broken ? rnd(0.75, 1.05) : rnd(0.85, 1.15));
+      const deep = w.deep * (broken ? rnd(0.65, 0.8) : rnd(0.9, 1.08));
+      const sink = broken ? rnd(-0.1, 0.25) : 0.4;
+      rocks.push(rockSpec(local, inward, r, sink, deep));
+      hits.push(new THREE.Vector4(local.x, local.y, local.z, r * 1.1));
+      lastShotDir.copy(ray.ray.direction);
+      // debris leaves along the surface normal, in world space
+      const nw = n.clone().transformDirection(model.matrixWorld);
+      chipAt(hit.point, nw, w.chips + Math.floor(Math.random() * w.chips * 0.6));
+      if (i === 0 || Math.random() < 0.4) {
+        flash.position.copy(hit.point).addScaledVector(nw, 0.02);
+        flash.scale.setScalar(0.06 * Math.sqrt(w.r));
+        flash.visible = true;
+        flashT = 0.05;
+      }
+    }
+    if (!hitSomething) return;
+    if (rocks.length) {
+      worker.postMessage({ type: "cut", gen, rocks });
+      pendingImpacts.push(hits);
+      uniforms.uDust.value *= 0.35;   // the blast stirs up what had settled
+      wrap.classList.add("shot");
+      if (restoreBtn) restoreBtn.hidden = false;
+      if (w.name === "sledgehammer") {
+        // the whole board takes it
+        board?.classList.remove("thud");
+        void board?.offsetWidth;
+        board?.classList.add("thud");
+      }
+    }
+    shake = Math.max(shake, w.shake);
+    w.sound(anyBroken);
     kick();
   }
   const lastShotDir = new THREE.Vector3(0, 0, -1);
@@ -687,9 +723,9 @@ function start(wrap) {
   // rubble: a small chunk goes in one, a whole head takes a handful.
   // (Restore still brings it back: it reappears where it lay and flies
   // home with the rest.)
-  function shatter(pc, hit) {
+  function shatter(pc, hit, w) {
     const size = pc.mesh.children[0].geometry.boundingSphere.radius;
-    pc.hits = (pc.hits || 0) + 1;
+    pc.hits = (pc.hits || 0) + w.r * w.r;   // a hammer blow counts for a lot more than a pellet
     if (pc.hits < Math.ceil(size * 40)) {
       chipAt(hit.point, hit.face.normal.clone().transformDirection(hit.object.matrixWorld), 8);
       pc.rest = false;
@@ -766,7 +802,7 @@ function start(wrap) {
     e.preventDefault();
     pointer.down = true;
     shoot();
-    fireCd = FIRE_EVERY;
+    fireCd = weapon.every;
   });
   window.addEventListener("pointermove", (e) => {
     if (!touch || e.pointerType !== "touch") return;
@@ -901,6 +937,54 @@ function start(wrap) {
     } catch (e) { /* no audio, no problem */ }
   }
 
+  // a shotgun: a hard boom, then the pellets rattling into stone
+  function shotgunSound() {
+    try {
+      audio();
+      const t = actx.currentTime;
+      tone(t, rnd(95, 120), 40, 0.32, 0.22);
+      burst(t, { type: "lowpass", f0: 2400, f1: 300, q: 0.6, gain: 0.3, dur: 0.25 });
+      burst(t, { f0: rnd(1800, 2600), f1: 600, q: 0.7, gain: 0.12, dur: 0.12 });
+      for (let i = 0; i < 9; i++) {
+        const at = t + 0.02 + Math.random() * 0.09;
+        burst(at, { f0: rnd(2200, 4200), f1: 900, q: 1.2, gain: rnd(0.03, 0.06), dur: rnd(0.03, 0.07) });
+      }
+      for (let i = 0; i < 10; i++) {
+        burst(t + 0.08 + Math.pow(Math.random(), 1.5) * 0.4, { type: "highpass", f0: rnd(2500, 6000), q: 0.7, gain: rnd(0.012, 0.03), dur: rnd(0.012, 0.03) });
+      }
+    } catch (e) { /* no audio, no problem */ }
+  }
+  // a sledgehammer: a deep, heavy crunch and a long rubble tail
+  function hammerSound() {
+    try {
+      audio();
+      const t = actx.currentTime;
+      tone(t, rnd(70, 85), 30, 0.45, 0.35);
+      tone(t, rnd(260, 320), 90, 0.15, 0.12, "triangle");
+      burst(t, { type: "lowpass", f0: 1400, f1: 160, q: 0.8, gain: 0.32, dur: 0.4 });
+      burst(t + 0.01, { f0: rnd(900, 1400), f1: 250, q: 0.6, gain: 0.16, dur: 0.35 });
+      for (let i = 0; i < 18; i++) {
+        burst(t + 0.05 + Math.pow(Math.random(), 1.4) * 0.7, { type: "highpass", f0: rnd(1500, 5000), q: 0.7, gain: rnd(0.015, 0.045), dur: rnd(0.015, 0.045) });
+      }
+    } catch (e) { /* no audio, no problem */ }
+  }
+
+  // ---------- Weapon switch ----------
+  // Soft-launched: a quiet label that cycles on click, and keys 1, 2, 3.
+  const weaponBtn = wrap.querySelector(".bust-weapon");
+  function setWeapon(i) {
+    weapon = WEAPONS[(i + WEAPONS.length) % WEAPONS.length];
+    fireCd = Math.min(fireCd, 0.1);
+    if (weaponBtn) weaponBtn.textContent = weapon.name;
+    try { audio(); tone(actx.currentTime, 1800, 1200, 0.04, 0.05, "square"); } catch (e) { /* no audio */ }
+  }
+  weaponBtn?.addEventListener("click", () => setWeapon(WEAPONS.indexOf(weapon) + 1));
+  window.addEventListener("keydown", (e) => {
+    if (!ready || e.metaKey || e.ctrlKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
+    const i = ["1", "2", "3"].indexOf(e.key);
+    if (i >= 0) setWeapon(i);
+  });
+
   // ---------- Stats ----------
   const stats = wrap.querySelector(".bust-stats");
   function updateStats() {
@@ -981,7 +1065,7 @@ function start(wrap) {
     if (pointer.down) {
       busy = true;
       fireCd -= dt;
-      if (fireCd <= 0) { shoot(); fireCd = FIRE_EVERY; }
+      if (fireCd <= 0) { shoot(); fireCd = weapon.every; }
     }
 
     if (rewind) {
@@ -1033,7 +1117,7 @@ function start(wrap) {
       touch.fired = true;
       pointer.down = true;
       shoot();
-      fireCd = FIRE_EVERY;
+      fireCd = weapon.every;
     }
     if (touch) busy = true;
 

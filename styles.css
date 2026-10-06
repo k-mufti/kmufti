@@ -385,11 +385,28 @@ html.bust-aim, html.bust-aim * {
   pointer-events: auto;
 }
 .bust-restore:hover { color: var(--ink); }
-/* the damage so far, on the other side of him from restore */
-.bust-stats {
+/* the weapon in hand (click to switch), and above it the damage so far:
+   on the other side of him from restore */
+.bust-weapon {
   position: absolute;
   right: calc(50% + 300px);
   bottom: calc(var(--foot) + 10px);
+  padding: 0;
+  background: none;
+  border: 0;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--ink-faint);
+  cursor: pointer;
+  pointer-events: auto;
+}
+.bust-weapon::before { content: "\2316  "; }   /* a small crosshair-ish mark */
+.bust-weapon:hover { color: var(--ink); }
+.bust-stats {
+  position: absolute;
+  right: calc(50% + 300px);
+  bottom: calc(var(--foot) + 28px);
   margin: 0;
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
@@ -417,7 +434,7 @@ html.bust-aim, html.bust-aim * {
   .hub { padding: 36px 14px 56px; }
   .bust { height: 340px; margin-top: -24px; }   /* no bigger: at phone width his shoulders already fill it */
   .bust-hint, .bust-restore { left: auto; right: 16px; }
-  .bust-stats { right: auto; left: 16px; }
+  .bust-stats, .bust-weapon { right: auto; left: 16px; }
   .app-board { padding: 20px 16px 24px; border-radius: 20px; }
   .app { width: 100%; max-width: 340px; }
 }

@@ -31,6 +31,11 @@ const RIM_W = 0.005;     // how far the chipped lip reaches from a crater's edge
 const S = 16;            // samples across a block wall, for the overlap test
 const EPS = 3e-5;        // how close to a wall a face must lie to count as on it
 const MIN_PIECE = 2e-7;  // m³ (0.2 cm³): anything looser and smaller is a CSG sliver, not a chunk
+// Stone that's barely holding on breaks. A chunk joined to the rest only
+// through thin links snaps off when their total area is less than it can
+// bear: STRENGTH m² per m³ of what hangs from them (a head needs roughly a
+// third of its neck), and never less than MIN_HOLD (a few square millimetres).
+const STRENGTH = 0.35, MIN_HOLD = 6e-6, THIN = 3e-4;   // m²/m³, m², m² (a link under THIN counts as thin)
 
 const skin = new MeshBasicMaterial(), inner = new MeshBasicMaterial();
 const evaluator = new Evaluator();
@@ -153,20 +158,25 @@ function rock({ position, quaternion, scale }) {
 
 // ---------- A shot ----------
 function cut(m) {
-  const { brush, bounds } = rock(m);
+  // one shot can be several rocks (a shotgun's pellets)
   const touched = new Set(), gone = new Set();
-  for (let id = 0; id < blocks.length; id++) {
-    const b = blocks[id];
-    if (!b || !bounds.intersectsBox(b.box)) continue;
-    const g = b.brush.geometry;
-    if (!g.halfEdges) g.halfEdges = fastHalfEdges(g);
-    const res = evaluator.evaluate(b.brush, brush, SUBTRACTION);
-    const soup = fromResult(res);
-    if (soup.n === 0) { blocks[id] = null; gone.add(id); continue; }
-    blocks[id] = block(soup, b.cell);
-    touched.add(id);
+  let bounds = null;
+  for (const spec of m.rocks) {
+    const { brush, bounds: bb } = rock(spec);
+    bounds = bounds ? bounds.union(bb) : bb;
+    for (let id = 0; id < blocks.length; id++) {
+      const b = blocks[id];
+      if (!b || !bb.intersectsBox(b.box)) continue;
+      const g = b.brush.geometry;
+      if (!g.halfEdges) g.halfEdges = fastHalfEdges(g);
+      const res = evaluator.evaluate(b.brush, brush, SUBTRACTION);
+      const soup = fromResult(res);
+      if (soup.n === 0) { blocks[id] = null; gone.add(id); touched.delete(id); continue; }
+      blocks[id] = block(soup, b.cell);
+      touched.add(id);
+    }
+    brush.geometry.dispose();
   }
-  brush.geometry.dispose();
 
   // the chipped lip: skin near the new crater edges, in the cut blocks and
   // any block close enough to reach
@@ -303,7 +313,7 @@ function parts(b) {
   // walls: 0 -x, 1 +x, 2 -y, 3 +y, 4 -z, 5 +z
   const lo = cell.map((c, k) => grid.gridMin[k] + c * grid.cell);
   const wallOf = new Int8Array(tris).fill(-1);
-  const walls = Array.from({ length: 6 }, () => ({ samples: new Int32Array(S * S).fill(-1), tris: [] }));
+  const walls = Array.from({ length: 6 }, () => ({ samples: new Int32Array(S * S).fill(-1), tris: [], area: new Map() }));
   const UV = [[1, 2], [1, 2], [0, 2], [0, 2], [0, 1], [0, 1]];
   for (let t = soup.skinN / 3; t < tris; t++) {
     for (let w = 0; w < 6; w++) {
@@ -315,6 +325,8 @@ function parts(b) {
       const [ua, va] = UV[w];
       const tri = [0, 1, 2].map((k) => [(P[(t * 3 + k) * 3 + ua] - lo[ua]) / grid.cell, (P[(t * 3 + k) * 3 + va] - lo[va]) / grid.cell]);
       walls[w].tris.push({ tri, part: partOf[t] });
+      const a2 = Math.abs((tri[1][0] - tri[0][0]) * (tri[2][1] - tri[0][1]) - (tri[2][0] - tri[0][0]) * (tri[1][1] - tri[0][1])) / 2 * grid.cell * grid.cell;
+      walls[w].area.set(partOf[t], (walls[w].area.get(partOf[t]) || 0) + a2);
       // mark the sample points it covers
       const minU = Math.max(0, Math.floor(Math.min(tri[0][0], tri[1][0], tri[2][0]) * S - 0.5));
       const maxU = Math.min(S - 1, Math.ceil(Math.max(tri[0][0], tri[1][0], tri[2][0]) * S - 0.5));
@@ -326,7 +338,24 @@ function parts(b) {
       break;
     }
   }
-  return { corner, nIds, partOf, count, grounded, vol, wallOf, walls };
+  // what a part weighs, for whether it can hang: its volume, but no more
+  // than its bounding box (a part that's open where it meets a block wall
+  // has a meaningless signed volume)
+  const bmin = new Float64Array(count * 3).fill(Infinity), bmax = new Float64Array(count * 3).fill(-Infinity);
+  for (let t = 0; t < tris; t++) {
+    const q = partOf[t] * 3;
+    for (let k = 0; k < 3; k++) for (let c = 0; c < 3; c++) {
+      const v = P[(t * 3 + k) * 3 + c];
+      if (v < bmin[q + c]) bmin[q + c] = v;
+      if (v > bmax[q + c]) bmax[q + c] = v;
+    }
+  }
+  const weight = new Float64Array(count);
+  for (let q = 0; q < count; q++) {
+    const box = (bmax[q * 3] - bmin[q * 3]) * (bmax[q * 3 + 1] - bmin[q * 3 + 1]) * (bmax[q * 3 + 2] - bmin[q * 3 + 2]);
+    weight[q] = Math.min(Math.abs(vol[q]), box);
+  }
+  return { corner, nIds, partOf, count, grounded, vol, weight, wallOf, walls };
 }
 
 function inTri(u, v, [a, b, c]) {
@@ -343,13 +372,22 @@ function islands() {
   const N = offset[blocks.length], up = new Int32Array(N).map((_, i) => i), ground = new Uint8Array(N);
   const find = (i) => { while (up[i] !== i) i = up[i] = up[up[i]]; return i; };
   const join = (a, b) => { a = find(a); b = find(b); if (a !== b) up[b] = a; };
+  // the same again, over thick links only, to find what's hanging by threads
+  const upS = new Int32Array(N).map((_, i) => i);
+  const findS = (i) => { while (upS[i] !== i) i = upS[i] = upS[upS[i]]; return i; };
+  const joinStrong = (a, b) => { a = findS(a); b = findS(b); if (a !== b) upS[b] = a; };
+  const edges = [], vol = new Float64Array(N), where = [];
   for (let id = 0; id < blocks.length; id++) {
     const b = blocks[id];
     if (!b) continue;
     // held: touching the base, or a hollow left inside a block (which never
     // falls by itself). A flat sliver holds nothing up: it goes with
     // whatever it's stuck to, or on its own if it's stuck to nothing.
-    for (let p = 0; p < b.part.count; p++) if (b.part.grounded[p] || b.part.vol[p] < -MIN_PIECE / 20) ground[offset[id] + p] = 1;
+    for (let p = 0; p < b.part.count; p++) {
+      if (b.part.grounded[p] || b.part.vol[p] < -MIN_PIECE / 20) ground[offset[id] + p] = 1;
+      vol[offset[id] + p] = b.part.vol[p] > 0 ? b.part.weight[p] : 0;
+      where[offset[id] + p] = [id, p];
+    }
     // join across the +x, +y, +z walls to the neighbour's opposite wall
     for (let ax = 0; ax < 3; ax++) {
       const nid = neighbours[id][ax];
@@ -358,43 +396,82 @@ function islands() {
       const k = id * 4096 + nid;
       let L = links.get(k);
       if (!L || L.a !== b || L.b !== nb) links.set(k, (L = { a: b, b: nb, pairs: touching(b.part.walls[ax * 2 + 1], nb.part.walls[ax * 2]) }));
-      for (let i = 0; i < L.pairs.length; i += 2) join(offset[id] + L.pairs[i], offset[nid] + L.pairs[i + 1]);
+      for (let i = 0; i < L.pairs.length; i += 3) {
+        const a = offset[id] + L.pairs[i], c = offset[nid] + L.pairs[i + 1], area = L.pairs[i + 2];
+        join(a, c);
+        edges.push(a, c, area);
+        if (area >= THIN) joinStrong(a, c);
+      }
     }
   }
-  const rootGround = new Uint8Array(N);
-  for (let i = 0; i < N; i++) if (ground[i]) rootGround[find(i)] = 1;
-  const loose = new Map();
-  for (let id = 0; id < blocks.length; id++) {
-    const b = blocks[id];
-    if (!b) continue;
-    for (let p = 0; p < b.part.count; p++) {
-      const r = find(offset[id] + p);
-      if (rootGround[r]) continue;
-      if (!loose.has(r)) loose.set(r, []);
-      loose.get(r).push([id, p]);
+  const rootGround = new Uint8Array(N), strongGround = new Uint8Array(N);
+  for (let i = 0; i < N; i++) if (ground[i]) { rootGround[find(i)] = 1; strongGround[findS(i)] = 1; }
+  const loose = new Map(), out = [];
+  // 1. truly loose: no stone at all joins it to the base
+  for (let i = 0; i < N; i++) {
+    const r = find(i);
+    if (rootGround[r]) continue;
+    if (!loose.has(r)) loose.set(r, []);
+    loose.get(r).push(where[i]);
+  }
+  out.push(...loose.values());
+  // 2. hanging by threads: grounded overall, but not through thick links.
+  // Each such group breaks if its thin links can't bear its weight.
+  const groups = new Map();
+  for (let i = 0; i < N; i++) {
+    if (!rootGround[find(i)]) continue;
+    const r = findS(i);
+    if (strongGround[r]) continue;
+    if (!groups.has(r)) groups.set(r, { nodes: [], vol: 0, hold: 0 });
+    const g = groups.get(r);
+    g.nodes.push(i);
+    g.vol += vol[i];
+  }
+  if (groups.size) {
+    for (let e = 0; e < edges.length; e += 3) {
+      const ra = findS(edges[e]), rb = findS(edges[e + 1]);
+      if (ra === rb) continue;
+      if (groups.has(ra)) groups.get(ra).hold += edges[e + 2];
+      if (groups.has(rb)) groups.get(rb).hold += edges[e + 2];
+    }
+    for (const g of groups.values()) {
+      if (g.vol < MIN_PIECE) continue;   // slivers: not worth dropping
+      if (g.hold < Math.max(MIN_HOLD, g.vol * STRENGTH)) out.push(g.nodes.map((i) => where[i]));
     }
   }
-  return [...loose.values()];
+  return out;
 }
 
 // Which parts on wall A (one block) touch which on wall B (its neighbour's
-// facing wall): flat pairs [partA, partB, ...].
+// facing wall), and over how much area: flat triples [partA, partB, m², ...].
+// The area is from the sample points they share; a touch too narrow for
+// any sample takes the smaller of the two parts' faces on the wall (both
+// sides are the same slice through the stone, so where they meet they match).
 function touching(A, B) {
-  const seen = new Set(), pairs = [];
-  const add = (a, b) => { const k = a * 65536 + b; if (!seen.has(k)) { seen.add(k); pairs.push(a, b); } };
+  const at = new Map(), pairs = [];
+  const add = (a, b, n) => { const k = a * 65536 + b; at.set(k, (at.get(k) || 0) + n); };
   if (!A.tris.length || !B.tris.length) return pairs;
-  for (let s = 0; s < S * S; s++) if (A.samples[s] >= 0 && B.samples[s] >= 0) add(A.samples[s], B.samples[s]);
-  // slivers too thin for the samples: test each face's centre against the other side
-  if (A.tris.length * B.tris.length < 40000) {
-    const centre = (t) => [(t[0][0] + t[1][0] + t[2][0]) / 3, (t[0][1] + t[1][1] + t[2][1]) / 3];
-    for (const ta of A.tris) {
-      const [u, v] = centre(ta.tri);
-      for (const tb of B.tris) if (inTri(u, v, tb.tri)) { add(ta.part, tb.part); break; }
-    }
-    for (const tb of B.tris) {
-      const [u, v] = centre(tb.tri);
-      for (const ta of A.tris) if (inTri(u, v, ta.tri)) { add(ta.part, tb.part); break; }
-    }
+  for (let s = 0; s < S * S; s++) if (A.samples[s] >= 0 && B.samples[s] >= 0) add(A.samples[s], B.samples[s], 1);
+  // parts too thin for any sample: test their faces' centres against the
+  // other side (only theirs, so busy walls stay cheap)
+  const linkedA = new Set(), linkedB = new Set();
+  for (const k of at.keys()) { linkedA.add(Math.floor(k / 65536)); linkedB.add(k % 65536); }
+  const centre = (t) => [(t[0][0] + t[1][0] + t[2][0]) / 3, (t[0][1] + t[1][1] + t[2][1]) / 3];
+  for (const ta of A.tris) {
+    if (linkedA.has(ta.part)) continue;
+    const [u, v] = centre(ta.tri);
+    for (const tb of B.tris) if (inTri(u, v, tb.tri)) { add(ta.part, tb.part, 0); break; }
+  }
+  for (const tb of B.tris) {
+    if (linkedB.has(tb.part)) continue;
+    const [u, v] = centre(tb.tri);
+    for (const ta of A.tris) if (inTri(u, v, ta.tri)) { add(ta.part, tb.part, 0); break; }
+  }
+  const sampleArea = (grid.cell / S) ** 2;
+  for (const [k, n] of at) {
+    const a = Math.floor(k / 65536), b = k % 65536;
+    const faces = Math.min(A.area.get(a) || 0, B.area.get(b) || 0);
+    pairs.push(a, b, n > 0 ? n * sampleArea : faces);
   }
   return pairs;
 }
