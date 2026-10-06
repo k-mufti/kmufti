@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Destroy — kmufti.com</title>
+  <link rel="icon" href="../favicon.svg?v=1" type="image/svg+xml" />
+  <meta name="description" content="Turn any web page into a level, then blow it up." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=1" />
+</head>
+<body>
+  <a class="home" href="../">&larr; kmufti.com</a>
+  <main>
+    <h1>DESTROY</h1>
+    <p class="lede">Every word is a platform. Every picture is a target. Pick a page and take it apart.</p>
+
+    <section class="targets">
+      <a class="target hot" href="demo.html"><b>The demo article</b><span>an encyclopedia page, begging for it</span></a>
+      <a class="target" href="play.html?p=/"><b>kmufti.com</b><span>the launcher, tiles and all</span></a>
+      <a class="target" href="play.html?p=/jeoprady/"><b>Jeoprady!</b><span>600 episodes of words</span></a>
+      <a class="target" href="#" id="self"><b>This page</b><span>right here, right now</span></a>
+    </section>
+
+    <section class="anywhere">
+      <h2>Any site on the web</h2>
+      <p>Drag this to your bookmarks bar, open any page, then click it:</p>
+      <p><a id="bookmarklet" class="bookmarklet" href="#">&#128165; destroy</a></p>
+      <p class="fine">Some sites (GitHub, Google, banks) forbid outside scripts, so it silently does nothing there. Reload the page to put it back together.</p>
+    </section>
+
+    <section class="controls">
+      <h2>Controls</h2>
+      <dl>
+        <dt>A / D</dt><dd>run</dd>
+        <dt>Space / W</dt><dd>jump &middot; twice to flip &middot; hold to fly</dd>
+        <dt>S</dt><dd>drop through a platform</dd>
+        <dt>Click</dt><dd>shoot</dd>
+        <dt>Right-click</dt><dd>grenade</dd>
+        <dt>1&ndash;5 / wheel</dt><dd>pistol, shotgun, SMG, rocket, laser</dd>
+        <dt>M</dt><dd>mute</dd>
+        <dt>Esc</dt><dd>stop</dd>
+      </dl>
+      <p class="fine">Desktop only &mdash; you need a keyboard and a mouse. Rocket-jumping works.</p>
+    </section>
+  </main>
+
+  <script>
+    const src = location.origin + "/destroy/destroy.js?v=1";
+    document.getElementById("bookmarklet").href =
+      "javascript:(function(){if(window.__kmDestroy)return;var s=document.createElement('script');s.src='" + src + "';document.body.appendChild(s);})()";
+    document.getElementById("bookmarklet").addEventListener("click", (e) => {
+      e.preventDefault();
+      alert("Drag it to your bookmarks bar instead — then click it on any page.");
+    });
+    document.getElementById("self").addEventListener("click", (e) => {
+      e.preventDefault();
+      const s = document.createElement("script");
+      s.src = "destroy.js?v=1";
+      document.body.appendChild(s);
+    });
+    addEventListener("kmdestroy:quit", () => location.reload());
+  </script>
+</body>
+</html>

@@ -19,6 +19,7 @@ each tile is a self-contained app living in its own folder.
 | **`/translate/`** | **Lost in Translation** — a phrase appears in a mystery language. Guess what it means, and name the language for bonus points. |
 | **`/infinite-kitchen/`** | **Infinite Kitchen** — start from six elements (Water, Grain, Plant, Animal, Salt, Sugar) and the tools in a 3D kitchen, and combine your way to anything food. Every combo is hand-written in `core.txt`; `node infinite-kitchen/core.js` builds `recipes.json` from it. |
 | **`/yahtzee/`** | **Yahtzee** — five dice on a green felt tray, thrown with real physics. Play the bot, or a stranger 1v1 over a socket. |
+| **`/destroy/`** | **Destroy** — every word on a page becomes a platform and every picture a target; run, fly and blow it apart. Plays its demo article, any kmufti.com page (in a same-origin frame), or any site via a bookmarklet. All client-side, in `destroy.js`. |
 
 
 ## Architecture
