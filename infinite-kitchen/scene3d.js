@@ -15,6 +15,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import { foodMesh, onPicture } from "./food3d.js";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js";
@@ -39,6 +40,43 @@ scene.background = new THREE.Color(0x090b12);
 scene.fog = new THREE.Fog(0x121a30, 14, 60);   // only the hills outside are far enough to get it
 const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 120);
 const CAM = new THREE.Vector3(0, 2.08, 3.0), LOOK = new THREE.Vector3(0, 1.02, -1.0);
+
+/* ---------- the loading screen ---------- */
+// Every model, texture and the sky go through three's loading manager, so
+// it knows how much is left. The screen lifts once the room is built and
+// nothing is still on its way. (Food photos aren't counted: a card shows
+// its name until its photo turns up.)
+const LOADER = THREE.DefaultLoadingManager;
+const loadingEl = document.getElementById("loading");
+const SAYINGS = ["Lighting the stove…", "Warming the oven…", "Setting out the pots…", "Wiping down the island…", "Filling the pantry…"];
+let loadShown = 0, loadIdle = true, built = false;
+function showLoad(f) {
+  loadShown = Math.max(loadShown, f);              // more turns up as models open, so never go backwards
+  document.getElementById("loadingBar").style.width = `${Math.round(loadShown * 100)}%`;
+  document.getElementById("loadingText").textContent = SAYINGS[Math.min(SAYINGS.length - 1, Math.floor(loadShown * SAYINGS.length))];
+}
+LOADER.onStart = () => { loadIdle = false; };
+LOADER.onProgress = (url, done, total) => {
+  loadIdle = done === total;
+  if (!built) showLoad(Math.min(0.95, done / total));
+  maybeOpen();
+};
+LOADER.onError = (url) => console.warn("kitchen: couldn't load", url);
+function openKitchen() {
+  if (!loadingEl || loadingEl.classList.contains("done")) return;
+  showLoad(1);
+  renderer.compile(scene, camera);                 // build the shaders now, not on the first grab
+  dirty();
+  requestAnimationFrame(() => requestAnimationFrame(() => loadingEl.classList.add("done")));
+}
+function maybeOpen() { if (built && loadIdle) openKitchen(); }
+// a slow connection shouldn't lock you out of the pantry
+setTimeout(() => {
+  const skip = document.getElementById("loadingSkip");
+  if (!skip || loadingEl.classList.contains("done")) return;
+  skip.hidden = false;
+  skip.onclick = openKitchen;
+}, 15000);
 
 /* ---------- drawing on demand ---------- */
 // Soft shadow where things meet (ambient occlusion) is most of what makes
@@ -416,6 +454,7 @@ function cabinets(x0, x1, z0, depth, frontZ) {
 
 // the island: dark wood base with doors, a thick marble top
 const ISLAND = { x: 0, z: 0.3, w: 2.6, d: 1.25, top: 0.96 };
+const BOARD = { x: 0, z: ISLAND.z - 0.02, w: 1.5, d: 0.72, h: 0.04 };   // the cutting board on it
 {
   const { x, z, w, d, top } = ISLAND, bw = w - 0.3, bd = d - 0.3, front = z + bd / 2;
   add(scene, box(bw, top - 0.06, bd, x, (top - 0.06) / 2, z, M.wood));
@@ -430,7 +469,7 @@ const ISLAND = { x: 0, z: 0.3, w: 2.6, d: 1.25, top: 0.96 };
   add(scene, box(bw + 0.02, 0.08, bd + 0.02, x, 0.04, z, M.black, 0, { cast: false }));
   add(scene, box(w, 0.07, d, x, top - 0.035, z, M.marble, 0.02));
   // the big dark cutting board
-  add(scene, box(1.5, 0.04, 0.72, x, top + 0.02, z - 0.02, M.board, 0.012));
+  add(scene, box(BOARD.w, BOARD.h, BOARD.d, BOARD.x, top + BOARD.h / 2, BOARD.z, M.board, 0.012));
 }
 
 /* ---------- spots: the things you can use ---------- */
@@ -486,6 +525,7 @@ function solids() {
   const i = ISLAND;
   SOLIDS = [
     b(i.x - i.w / 2, 0, i.z - i.d / 2, i.x + i.w / 2, i.top, i.z + i.d / 2),                   // the island
+    b(BOARD.x - BOARD.w / 2, i.top, BOARD.z - BOARD.d / 2, BOARD.x + BOARD.w / 2, i.top + BOARD.h, BOARD.z + BOARD.d / 2),   // the board
     b(-W, 0, BACK, W, COUNTER_TOP, BACK + COUNTER_D),                                          // the back counter
     b(FRIDGE.x - FRIDGE.w / 2, 0, BACK, FRIDGE.x + FRIDGE.w / 2, FRIDGE.h, BACK + FRIDGE.d),    // the fridge
     b(STOVE_X - 0.6, 1.58, BACK, STOVE_X + 0.6, CEIL, BACK + 0.66),                             // the hood
@@ -493,6 +533,24 @@ function solids() {
     b(1.1, SHELVES[1] - 0.05, BACK, 2.7, SHELVES[1], BACK + 0.3),
   ];
   return SOLIDS;
+}
+// The flat tops things land on, highest first. A falling thing moves further
+// in one step than the cutting board is thick, so landing is checked against
+// where it was a moment ago rather than where it is now.
+function surfaces() {
+  const i = ISLAND;
+  return [
+    { y: i.top + BOARD.h, x0: BOARD.x - BOARD.w / 2, x1: BOARD.x + BOARD.w / 2, z0: BOARD.z - BOARD.d / 2, z1: BOARD.z + BOARD.d / 2 },
+    { y: i.top, x0: i.x - i.w / 2, x1: i.x + i.w / 2, z0: i.z - i.d / 2, z1: i.z + i.d / 2 },
+    { y: COUNTER_TOP, x0: -W, x1: W, z0: BACK, z1: BACK + COUNTER_D },
+    { y: 0, x0: -W, x1: W, z0: BACK, z1: 3.4 },
+  ];
+}
+function landing(prevY, p) {
+  for (const s of surfaces()) {
+    if (prevY >= s.y - 0.001 && p.y < s.y && p.x > s.x0 && p.x < s.x1 && p.z > s.z0 && p.z < s.z1) return s.y;
+  }
+  return null;
 }
 // Push the point out of anything it has ended up inside, the short way, and
 // bounce whatever speed it had in that direction.
@@ -640,6 +698,7 @@ function throwTool(id, sx, sy, vpx, vpy, rider) {
       this.last = now;
       if (this.phase === "fly") {
         this.v.y += GRAVITY * dt;
+        this.prevY = this.g.position.y;
         this.g.position.addScaledVector(this.v, dt);
         const p = this.g.position;
         // the walls and the back of the room
@@ -648,8 +707,9 @@ function throwTool(id, sx, sy, vpx, vpy, rider) {
           if (p[axis] > hi) { p[axis] = hi; this.v[axis] *= -BOUNCE; }
         }
         if (p.y > CEIL - 0.25) { p.y = CEIL - 0.25; this.v.y *= -BOUNCE; }   // the ceiling
-        if (p.y <= 0) {                                                       // the floor
-          p.y = 0;
+        const land = landing(this.prevY === undefined ? p.y : this.prevY, p);
+        if (land !== null) {
+          p.y = land;
           this.v.y *= -BOUNCE;
           this.v.x *= 0.78; this.v.z *= 0.78;
           this.spin.multiplyScalar(0.6);
@@ -699,10 +759,20 @@ function moveProxies(s) {
 }
 
 const gltf = new GLTFLoader();
+onPicture(dirty);                             // a card redraws when its photo arrives
 // A Poly Haven model: scaled to `width` metres across (or by `scale`), set
 // down on `y`, turned by `ry`.
+const GLTFS = new Map();
+function loadModel(name) {
+  if (!GLTFS.has(name)) GLTFS.set(name, gltf.loadAsync(`${ART}models/${name}/${name}.gltf`));
+  return GLTFS.get(name);
+}
+// start them all downloading together; build() places them as they come
+for (const n of ["pot_enamel_01", "brass_pan_01", "ceramic_pot", "jug_01", "mantel_clock_01", "wooden_bowl_02", "wooden_bucket_01", "wooden_cutting_board"]) {
+  loadModel(n).catch(() => {});                  // build() reports it if one fails
+}
 async function model(name, { x = 0, y = 0, z = 0, ry = 0, width, scale = 1 }) {
-  const g = (await gltf.loadAsync(`${ART}models/${name}/${name}.gltf`)).scene;
+  const g = (await loadModel(name)).scene.clone();
   g.traverse((o) => { if (o.isMesh) { o.castShadow = o.receiveShadow = true; } });
   const b = new THREE.Box3().setFromObject(g), size = b.getSize(new THREE.Vector3());
   const k = width ? width / Math.max(size.x, size.z) : scale;
@@ -1017,8 +1087,8 @@ shelfLight.position.set(2.0, SHELVES[1] - 0.06, BACK + 0.26);
 shelfLight.target.position.set(2.1, SHELVES[0], BACK + 0.2);
 scene.add(shelfLight, shelfLight.target);
 const cornerLight = new THREE.SpotLight(0xffd2a4, 6, 3, 1.0, 0.8, 1.7);
-cornerLight.position.set(2.62, 1.75, BACK + 0.5);
-cornerLight.target.position.set(2.62, COUNTER_TOP, BACK + 0.32);
+cornerLight.position.set(2.15, 1.75, BACK + 0.5);
+cornerLight.target.position.set(2.15, COUNTER_TOP, BACK + 0.32);
 scene.add(cornerLight, cornerLight.target);
 // and a breath of warm light in the room, so nothing goes pure black
 const fill = new THREE.PointLight(0xffd0a0, 1.6, 9, 1.6);
@@ -1095,6 +1165,37 @@ function atHome(id, cx, cy) {
   return Math.hypot(cx - hx, cy - hy) < 55;
 }
 
+// What's under the pointer, tool or food? Whichever is nearer - and food
+// resting in or on a tool (an egg in the bowl) wins, or it could never be
+// picked back up.
+function pickAny(cx, cy, skipFood) {
+  const r = canvas.getBoundingClientRect();
+  if (cx < r.left || cx > r.right || cy < r.top || cy > r.bottom) return null;
+  ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+
+  const proxies = [];
+  for (const s of spots.values()) {
+    if (unitOf(s.id) === HELD.id) continue;
+    proxies.push(...s.proxies);
+  }
+  const spotHits = ray.intersectObjects(proxies, false);
+  const spotHit = spotHits.find((h) => !elFor(h.object.userData.spot)?.classList.contains("locked")) || spotHits[0] || null;
+
+  const foodList = [...FOOD.values()].filter((f) => f.id !== skipFood && f.id !== HELD_FOOD.id).map((f) => f.g);
+  const foodHit = ray.intersectObjects(foodList, true)[0] || null;
+
+  if (!spotHit && !foodHit) return null;
+  if (!foodHit) return { type: "spot", id: spotHit.object.userData.spot };
+  let food = foodHit.object;
+  while (food && !food.userData.id) food = food.parent;
+  if (!food) return spotHit ? { type: "spot", id: spotHit.object.userData.spot } : null;
+  if (!spotHit) return { type: "food", id: food.userData.id };
+  const box = new THREE.Box3().setFromObject(spotHit.object);
+  if (box.containsPoint(foodHit.point) || foodHit.distance < spotHit.distance) return { type: "food", id: food.userData.id };
+  return { type: "spot", id: spotHit.object.userData.spot };
+}
+
 // A picture of one spot on its own, for the copy that follows the pointer.
 let snapR = null;
 const SNAPS = new Map();
@@ -1159,7 +1260,7 @@ async function build() {
   scene.add(grill);
   spot("Grill", grill);
   const bl = blender();
-  bl.position.set(2.62, top, BACK + 0.3); bl.rotation.y = -0.4;
+  bl.position.set(2.15, top, BACK + 0.3); bl.rotation.y = -0.4;
   scene.add(bl);
   spot("Blend", bl);
 
@@ -1199,13 +1300,8 @@ async function build() {
   // the compost bin on the floor
   spot("bin", await model("wooden_bucket_01", { x: -1.95, y: 0, z: -0.45, width: 0.42, ry: 0.6 }));
 
-  // and things that are just there
-  await model("wicker_basket_01", { x: 2.0, y: top, z: BACK + 0.32, width: 0.36, ry: 0.2 });
-  for (const [n, x, z, ry] of [["lemon", 1.93, BACK + 0.3, 0], ["lemon", 2.03, BACK + 0.36, 1], ["yellow_onion", 2.09, BACK + 0.26, 2], ["food_apple_01", 1.9, BACK + 0.4, 0.5]]) {
-    await model(n, { x, y: top + 0.03, z, scale: 1, ry });
-  }
+  // a spare board on the counter: the only thing here that isn't used
   await model("wooden_cutting_board", { x: -0.72, y: top, z: BACK + 0.3, width: 0.42, ry: 0.15 });
-  await model("croissant", { x: -0.72, y: top + 0.03, z: BACK + 0.3, scale: 1, ry: 0.4 });
 
   scene.traverse((o) => { if (o.isMesh && o.material.envMapIntensity !== undefined) o.material.envMapIntensity = 0.12; });
   buildBooks();
@@ -1213,10 +1309,191 @@ async function build() {
   resize();
   window.K3.ready = true;
   window.kitchenLayout?.();
+  window.kitchenReady?.();
+  // ?food=demo lays a sample of food cards on the island, to look at
+  if (new URLSearchParams(location.search).get("food") === "demo") {
+    const sample = [["Blueberry", "ingredient"], ["Apple", "ingredient"], ["Banana", "ingredient"], ["Carrot", "ingredient"],
+      ["Lettuce", "ingredient"], ["Egg", "ingredient"], ["Beef", "ingredient"], ["Bread", "ingredient"],
+      ["Flour", "ingredient"], ["Milk", "ingredient"], ["Green Tea", "dish"], ["Tomato Soup", "dish"],
+      ["Fried Rice", "dish"], ["Apple Pie", "dish"], ["Cheese", "ingredient"], ["Burnt", "trash"], ["Mush", "trash"], ["Sludge", "trash"]];
+    sample.forEach(([n, k], i) => addFood(n, k, -0.8 + (i % 6) * 0.32, -0.18 + Math.floor(i / 6) * 0.3));
+  }
 }
 
-window.K3 = { ready: false, resize, boardRect, pick, snapshot, dirty, throwTool, canThrow, grab, hold, sendHome, atHome,
+/* ---------- the food on the board ----------
+   Each piece is its own object with its own id, because you can have three
+   eggs at once. They fall, settle, can be carried, thrown and binned. */
+const FOOD = new Map();               // id -> { id, g, name, kind }
+let foodId = 0;
+const HELD_FOOD = { id: null, dist: 0 };
+
+function addFood(name, kind, x, z, y) {
+  const g = foodMesh(name, kind);
+  const onBoard = Math.abs(x - BOARD.x) < BOARD.w / 2 && Math.abs(z - BOARD.z) < BOARD.d / 2;
+  g.position.set(x, y === undefined ? ISLAND.top + (onBoard ? BOARD.h : 0) : y, z);
+  g.rotation.y = facing(g.position);
+  scene.add(g);
+  const id = "f" + ++foodId;
+  g.userData.id = id;
+  FOOD.set(id, { id, g, name, kind });
+  dirty();
+  return id;
+}
+// the turn that points a card's picture at the camera
+const facing = (p) => Math.atan2(camera.position.x - p.x, camera.position.z - p.z);
+function removeFood(id) {
+  const f = FOOD.get(id);
+  if (!f) return;
+  endFall(id);
+  if (HELD_FOOD.id === id) HELD_FOOD.id = null;
+  scene.remove(f.g);
+  FOOD.delete(id);
+  dirty();
+}
+function clearFood() { for (const id of [...FOOD.keys()]) removeFood(id); }
+const foodName = (id) => FOOD.get(id)?.name || null;
+// everything on the board, for saving
+const listFood = () => [...FOOD.values()].map((f) => ({ name: f.name, kind: f.kind, x: +f.g.position.x.toFixed(3), y: +f.g.position.y.toFixed(3), z: +f.g.position.z.toFixed(3) }));
+
+// What piece of food is under the pointer, ignoring the one in your hand.
+function pickFood(cx, cy, skip) {
+  const r = canvas.getBoundingClientRect();
+  if (!FOOD.size || cx < r.left || cx > r.right || cy < r.top || cy > r.bottom) return null;
+  ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  const list = [...FOOD.values()].filter((f) => f.id !== skip && f.id !== HELD_FOOD.id).map((f) => f.g);
+  for (const hit of ray.intersectObjects(list, true)) {
+    let o = hit.object;
+    while (o && !o.userData.id) o = o.parent;
+    if (o) return o.userData.id;
+  }
+  return null;
+}
+function foodScreenPos(id) {
+  const f = FOOD.get(id);
+  if (!f) return null;
+  const r = canvas.getBoundingClientRect();
+  const p = f.g.position.clone().setY(f.g.position.y + 0.1).project(camera);
+  return { x: r.left + ((p.x + 1) / 2) * r.width, y: r.top + ((1 - p.y) / 2) * r.height };
+}
+
+/* ---------- carrying and dropping food ---------- */
+function grabFood(id, sx, sy) {
+  const f = FOOD.get(id);
+  if (!f) return false;
+  endFall(id);
+  HELD_FOOD.id = id;
+  HELD_FOOD.dist = camera.position.distanceTo(new THREE.Vector3(0, ISLAND.top + 0.12, ISLAND.z));
+  holdFood(sx, sy);
+  return true;
+}
+// make one out of thin air, already in your hand (dragged from the pantry)
+function spawnHeld(name, kind, sx, sy) {
+  const id = addFood(name, kind, 0, ISLAND.z, ISLAND.top + 0.2);
+  grabFood(id, sx, sy);
+  return id;
+}
+function holdFood(sx, sy) {
+  const f = FOOD.get(HELD_FOOD.id);
+  if (!f) return;
+  const r = canvas.getBoundingClientRect();
+  const x = Math.min(Math.max(sx, r.left + 6), r.right - 6);
+  const y = Math.min(Math.max(sy, r.top + 6), r.bottom - 6);
+  const v = new THREE.Vector3(((x - r.left) / r.width) * 2 - 1, -((y - r.top) / r.height) * 2 + 1, 0.5).unproject(camera);
+  const dir = v.sub(camera.position).normalize();
+  f.g.position.copy(camera.position).addScaledVector(dir, HELD_FOOD.dist);
+  dirty();
+}
+// let go: it falls from wherever it is and settles
+function dropFood(id, vx = 0, vy = 0, vz = 0) {
+  const f = FOOD.get(id || HELD_FOOD.id);
+  if (!f) return;
+  if (HELD_FOOD.id === f.id) HELD_FOOD.id = null;
+  fall(f, new THREE.Vector3(vx, vy, vz));
+}
+function throwFood(id, sx, sy, vpx, vpy) {
+  const f = FOOD.get(id);
+  if (!f) return false;
+  const r = canvas.getBoundingClientRect();
+  const dist = camera.position.distanceTo(f.g.position);
+  const perPx = (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * dist) / r.height;
+  const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0);
+  const up = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
+  const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).setY(0).normalize();
+  const v = right.multiplyScalar(vpx * perPx).add(up.multiplyScalar(-vpy * perPx));
+  const speed = Math.min(v.length(), 8);
+  v.setLength(speed).addScaledVector(fwd, speed * 0.4 + 0.4);
+  if (HELD_FOOD.id === id) HELD_FOOD.id = null;
+  fall(f, v, 2 + speed);
+  return true;
+}
+
+// Falling food: the same bouncing as a thrown tool, but it stays where it
+// lands instead of going home.
+const FALLING = new Map();
+function endFall(id) {
+  const a = FALLING.get(id);
+  if (!a) return;
+  anims = anims.filter((x) => x !== a);
+  FALLING.delete(id);
+}
+function fall(f, v, spin = 1.5) {
+  endFall(f.id);
+  const a = {
+    g: f.g, id: f.id, v: v.clone(), last: performance.now(), still: 0,
+    spin: new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize().multiplyScalar(spin),
+    step(now) {
+      const dt = Math.min(0.034, (now - this.last) / 1000);
+      this.last = now;
+      this.v.y += GRAVITY * dt;
+      const p = this.g.position;
+      const prevY = p.y;
+      p.addScaledVector(this.v, dt);
+      for (const [axis, lo, hi] of [["x", -W + 0.15, W - 0.15], ["z", BACK + 0.12, 3.2]]) {
+        if (p[axis] < lo) { p[axis] = lo; this.v[axis] *= -BOUNCE; }
+        if (p[axis] > hi) { p[axis] = hi; this.v[axis] *= -BOUNCE; }
+      }
+      if (p.y > CEIL - 0.25) { p.y = CEIL - 0.25; this.v.y *= -BOUNCE; }
+      const land = landing(prevY, p);
+      if (land !== null) {
+        p.y = land;
+        this.v.y *= -BOUNCE;
+        this.v.x *= 0.72; this.v.z *= 0.72;
+        this.spin.multiplyScalar(0.5);
+      }
+      collide(p, this.v, this.spin);
+      if (this.spin.lengthSq() > 0.0001) {
+        const q = new THREE.Quaternion().setFromAxisAngle(this.spin.clone().normalize(), this.spin.length() * dt);
+        this.g.quaternion.premultiply(q);
+      }
+      if (this.v.lengthSq() < 0.04 && Math.abs(this.v.y) < 0.3) {
+        this.still += dt;
+        if (this.still > 0.2) {
+          // stand it back up, facing you
+          this.g.rotation.set(0, facing(p), 0);
+          FALLING.delete(this.id);
+          return false;
+        }
+      } else this.still = 0;
+    },
+  };
+  FALLING.set(f.id, a);
+  anims = anims.filter((x) => x.g !== f.g);
+  anims.push(a);
+  dirty();
+}
+
+window.K3 = { ready: false, pickAny,
+  food: { add: addFood, remove: removeFood, clear: clearFood, pick: pickFood, name: foodName, list: listFood,
+    spawnHeld, grab: grabFood, hold: holdFood, drop: dropFood, throw: throwFood, screenPos: foodScreenPos,
+    held: () => HELD_FOOD.id },
+  pickFood, clearFood, shapeOf: (n, k) => foodMesh(n, k).userData.food.shape, resize, boardRect, pick, snapshot, dirty, throwTool, canThrow, grab, hold, sendHome, atHome,
   where: (id) => spots.get(id)?.group.position.toArray().map((n) => +n.toFixed(2)) };
 new ResizeObserver(() => { if (window.K3.ready) window.kitchenLayout?.(); else resize(); }).observe(room);
 resize();
-build().catch((e) => console.error("kitchen scene:", e));
+build().then(() => { built = true; maybeOpen(); }).catch((e) => {
+  console.error("kitchen scene:", e);
+  document.getElementById("loadingText").textContent = "The kitchen didn't load. Try reloading the page.";
+  document.getElementById("loadingSkip").hidden = false;
+  document.getElementById("loadingSkip").onclick = openKitchen;
+});

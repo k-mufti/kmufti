@@ -15,7 +15,7 @@
 "use strict";
 
 (function () {
-  const SAVE_KEY = "infinite-kitchen:v2";
+  const SAVE_KEY = "infinite-kitchen:v3";   // v3: the restart with the six elements
   const isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
   const API = (isLocal ? `${location.protocol}//${location.hostname}:8027` : "") + "/infinite-kitchen/api";
   const DRAG_START_PX = 4;
@@ -56,8 +56,6 @@
   const RECIPES = new Map();  // "a|b" (sorted) -> result
   const UNLOCKS = new Map();  // signature dish -> cuisine
   let tab = "ingredient";
-  let CTX = null;             // what rules.js needs to know about an item
-  let COOKED = new Set();     // everything a heat technique ever touched
 
   // The room is drawn by scene3d.js (window.K3), which loads on its own
   // time: until it's ready there is nothing to point at and no board.
@@ -88,7 +86,7 @@
   function load() {
     try {
       const raw = JSON.parse(localStorage.getItem(SAVE_KEY));
-      if (raw && raw.found) S = { found: raw.found, missing: raw.missing || [], board: raw.board || [] };
+      if (raw && raw.found) S = { found: raw.found, missing: raw.missing || [], board: raw.board || [], board3d: raw.board3d || [] };
     } catch { /* private mode, or nothing saved yet */ }
   }
   function save() {
@@ -159,10 +157,10 @@
 
   /* ---------- the room: tools and cookbooks ---------- */
   function renderRoom() {
+    // every tool is out from the start: you find food, not tools
     for (const t of tools) {
-      const open = has(t.dataset.tech);
-      t.classList.toggle("locked", !open);
-      t.title = open ? `${t.dataset.label} (${t.dataset.tech})` : "Not found yet";
+      t.classList.remove("locked");
+      t.title = `${t.dataset.label} (${t.dataset.tech})`;
     }
     cookbooksEl.replaceChildren();
     for (const c of Object.keys(DATA.cuisines)) {
@@ -173,9 +171,9 @@
       b.title = open ? `${c} cookbook: drag it onto food` : "A cookbook you haven't unlocked";
       cookbooksEl.appendChild(b);
     }
-    const tech = DATA.techniques.filter(has).length;
-    const cui = Object.keys(DATA.cuisines).filter(has).length;
-    $("pantryFoot").textContent = `Tools ${tech} / ${DATA.techniques.length}  ·  Cookbooks ${cui} / ${Object.keys(DATA.cuisines).length}`;
+    // tools are all out from the start, so what's left to count is the food
+    const food = Object.keys(DATA.items).filter((n) => DATA.items[n] !== "technique" && DATA.items[n] !== "cuisine");
+    $("pantryFoot").textContent = `Found ${food.filter(has).length} / ${food.length}`;
   }
 
   /* ---------- the board ---------- */
@@ -264,14 +262,9 @@
     return null;
   }
 
-  // A written recipe first; failing that, the mechanical rules (rules.js).
+  // Only what core.txt says, for now: no made-up results until the AI part is built.
   function resultFor(a, b) {
-    const made = KitchenRules.find(a, b, CTX);
-    if (!made) return null;
-    // so the shelf knows what it is - but a name the recipes already know
-    // keeps its kind, however it was reached (Egg + Fry is still a dish)
-    if (!(made.result in DATA.items)) DATA.items[made.result] = made.kind;
-    return made.result;
+    return RECIPES.get(key(a, b)) || null;
   }
 
   // Put a tile back where it came from, or off the board if it came from
@@ -455,6 +448,12 @@
     const move = (ev) => {
       if (Math.hypot(ev.clientX - sx, ev.clientY - sy) < DRAG_START_PX) return;
       stop();
+      if (FOOD3D && food()) {                    // pull the real thing out of the pantry
+        const id = food().spawnHeld(name, kindOf(name), ev.clientX, ev.clientY);
+        carryFood(ev, id);
+        unfresh(name);
+        return;
+      }
       const t = makeTile(name, 0, 0);
       t._home = null;
       const cr = counter.getBoundingClientRect();
@@ -464,6 +463,12 @@
     };
     const up = () => {                            // a tap: put one on the board
       stop();
+      if (FOOD3D && food()) {
+        food().drop(spawnFood(name));
+        unfresh(name);
+        saveFood();
+        return;
+      }
       const t = makeTile(name, 0, 0);
       const p = freeSpot(t.offsetWidth, t.offsetHeight);
       place(t, p.x, p.y);
@@ -480,6 +485,135 @@
     window.addEventListener("pointerup", up);
     window.addEventListener("pointercancel", stop);
   });
+
+  /* ---------- food as real objects ----------
+     The 3D kitchen can hold the food itself: you pull an egg out of the
+     pantry, it's in your hand, and where you let go decides what happens.
+     Each one is a card with its photo on it (food3d.js). ?food=tiles brings
+     back the old flat tiles. */
+  const FOOD3D = new URLSearchParams(location.search).get("food") !== "tiles";
+  const food = () => k3()?.food;
+
+  function spawnFood(name, x, z) {
+    return food().add(name, kindOf(name), x === undefined ? (Math.random() - 0.5) * 1.6 : x, z === undefined ? 0.3 + (Math.random() - 0.5) * 0.5 : z, 1.25);
+  }
+  // two pieces of food meet
+  function combineFood(idA, idB) {
+    const a = food().name(idA), b = food().name(idB);
+    const result = resultFor(a, b);
+    if (!result) {
+      food().drop(idA);
+      toast(`Nobody has cooked <strong>${esc(a)} + ${esc(b)}</strong> yet. It's in the notebook.`, "miss");
+      noteMissing(a, b);
+      saveFood();
+      return;
+    }
+    const p = food().screenPos(idB);
+    food().remove(idA);
+    food().remove(idB);
+    if (kindOf(result) !== "technique") dropAtPointer(result, p);
+    if (result !== a || result !== b) found(result, a, b);
+    $("hint").classList.add("gone");
+    renderShelf();
+    saveFood();
+  }
+  // food meets a tool or a cookbook
+  function applyToFood(id, withName, el) {
+    const a = food().name(id);
+    const result = resultFor(a, withName);
+    restart(el, "working");
+    if (!result) {
+      food().drop(id);
+      toast(`Nobody has cooked <strong>${esc(a)} + ${esc(withName)}</strong> yet. It's in the notebook.`, "miss");
+      noteMissing(a, withName);
+      saveFood();
+      return;
+    }
+    const p = food().screenPos(id);
+    food().remove(id);
+    if (kindOf(result) !== "technique") dropAtPointer(result, p);
+    if (result !== a) found(result, a, withName);
+    $("hint").classList.add("gone");
+    renderShelf();
+    saveFood();
+  }
+  // put the result where the old one was, and let it fall into place
+  function dropAtPointer(name, p) {
+    if (!p) { const id = spawnFood(name); food().drop(id); return id; }
+    const id = food().spawnHeld(name, kindOf(name), p.x, p.y);
+    food().drop(id);
+    return id;
+  }
+
+  function saveFood() {
+    if (!FOOD3D || !food()) return;
+    S.board3d = food().list();
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch { /* full or blocked */ }
+  }
+  // The recipes and the 3D room load separately, so whichever finishes last
+  // is the one that puts the board back.
+  let dataReady = false, sceneReady = false, restored = false;
+  function restoreFood() {
+    if (!FOOD3D || restored || !dataReady || !sceneReady || !food()) return;
+    restored = true;
+    for (const f of S.board3d || []) if (f.name in DATA.items) food().add(f.name, f.kind, f.x, f.z, f.y);
+  }
+  window.kitchenReady = () => { sceneReady = true; restoreFood(); };
+
+  // Dragging a piece of food: out of the pantry, or up off the board.
+  function carryFood(e, id) {
+    if (e.button > 0) return;
+    e.preventDefault();
+    const sx = e.clientX, sy = e.clientY;
+    let trail = [{ x: sx, y: sy, t: performance.now() }];
+    let over = null;
+    const move = (ev) => {
+      trail.push({ x: ev.clientX, y: ev.clientY, t: performance.now() });
+      if (trail.length > 12) trail.shift();
+      food().hold(ev.clientX, ev.clientY);
+      const spot = spotAt(ev, null);
+      const other = spot ? null : food().pick(ev.clientX, ev.clientY, id);
+      const next = spot || null;
+      if (next !== over) { over?.classList.remove("target"); next?.classList.add("target"); over = next; }
+      highlightFood(other);
+    };
+    const up = (ev) => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+      over?.classList.remove("target");
+      highlightFood(null);
+      const f = flick(trail, ev);
+      const hurl = f.speed > HARD_PX_S && f.dwell < DWELL_MS;
+      const aimed = !hurl;
+
+      if (overPantry(ev)) { food().remove(id); saveFood(); return; }        // back in the pantry: gone
+      const spot = aimed ? spotAt(ev, null) : null;
+      if (spot === bin) { food().remove(id); restart(bin, "gulp"); saveFood(); return; }
+      if (spot) {
+        const name = spot.dataset.tech || spot.dataset.cuisine;
+        if (spot.classList.contains("locked")) {
+          food().drop(id);
+          restart(spot, "shake");
+          toast(spot.classList.contains("cookbook") ? "That cookbook is still locked." : "You haven't found that tool yet.", "miss");
+          saveFood();
+          return;
+        }
+        applyToFood(id, name, spot);
+        return;
+      }
+      const other = aimed ? food().pick(ev.clientX, ev.clientY, id) : null;
+      if (other) { combineFood(id, other); return; }
+      if (f.dwell < DWELL_MS && f.speed > THROW_PX_S) { food().throw(id, ev.clientX, ev.clientY, f.vx, f.vy); saveFood(); return; }
+      food().drop(id);                                    // set it down
+      saveFood();
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+  }
+  let litFood = null;
+  function highlightFood(id) { litFood = id; }            // (a glow comes later)
 
   /* ---------- carrying a tool or a cookbook ----------
      Any found tool can be picked up (a copy of it follows the pointer): onto
@@ -573,10 +707,35 @@
   // recipe book and the notes just open.
   room.addEventListener("pointerdown", (e) => {
     if (e.target.closest(".tile") || !k3()) return;
-    const el = elFor(k3().pick(e.clientX, e.clientY));
-    if (!el) return;
+    const under = FOOD3D ? k3().pickAny(e.clientX, e.clientY) : { type: "spot", id: k3().pick(e.clientX, e.clientY) };
+    const el = under?.type === "spot" ? elFor(under.id) : null;
+    if (el) { hover(null); carry(e, el); return; }
+    if (!FOOD3D) return;
+    const id = under?.type === "food" ? under.id : null;
+    if (!id) return;
     hover(null);
-    carry(e, el);                 // tools, cookbooks, the bin, the book, the notes
+    // double-tap to get another, right-click to bin it
+    const now = performance.now();
+    if (lastFoodTap.id === id && now - lastFoodTap.at < 350) {
+      lastFoodTap = { id: null, at: 0 };
+      const p = food().screenPos(id);
+      const made = food().spawnHeld(food().name(id), kindOf(food().name(id)), p.x + 14, p.y - 10);
+      food().drop(made);
+      saveFood();
+      return;
+    }
+    lastFoodTap = { id, at: now };
+    food().grab(id, e.clientX, e.clientY);
+    carryFood(e, id);
+  });
+  let lastFoodTap = { id: null, at: 0 };
+  room.addEventListener("contextmenu", (e) => {
+    if (!FOOD3D || !k3()) return;
+    const id = food().pick(e.clientX, e.clientY);
+    if (!id) return;
+    e.preventDefault();
+    food().remove(id);
+    saveFood();
   });
   // Pointing at something names it and lights it up.
   const spotLabel = $("spotLabel");
@@ -596,8 +755,24 @@
   }
   room.addEventListener("pointermove", (e) => {
     if (e.buttons || e.pointerType === "touch" || !k3()) return hover(null);
-    hover(e.target.closest(".tile") ? null : elFor(k3().pick(e.clientX, e.clientY)), e);
+    if (e.target.closest(".tile")) return hover(null);
+    const under = k3().pickAny(e.clientX, e.clientY);
+    if (under?.type === "spot") return hover(elFor(under.id), e);
+    // not a tool: a piece of food says its name when you point at it
+    if (under?.type === "food") return showLabel(k3().food.name(under.id), e);
+    hover(null);
   });
+  // the same little label, for something that isn't one of the room's spots
+  function showLabel(text, ev) {
+    hovered?.classList.remove("hover");
+    hovered = null;
+    room.style.cursor = "grab";
+    const r = room.getBoundingClientRect();
+    spotLabel.textContent = text;
+    spotLabel.style.left = ev.clientX - r.left + "px";
+    spotLabel.style.top = ev.clientY - r.top + "px";
+    spotLabel.hidden = false;
+  }
   room.addEventListener("pointerleave", () => hover(null));
 
   function unfresh(name) {
@@ -609,6 +784,7 @@
 
   $("clearBtn").addEventListener("click", () => {
     counter.querySelectorAll(".tile").forEach((t) => t.remove());
+    if (FOOD3D && food()) { food().clear(); saveFood(); }
     save();
   });
 
@@ -757,7 +933,7 @@
   window.addEventListener("resize", layout);
 
   /* ---------- start ---------- */
-  fetch("recipes.json?v=9")
+  fetch("recipes.json?v=10")
     .then((r) => r.json())
     .then((data) => {
       DATA = data;
@@ -766,27 +942,6 @@
       for (const [c, v] of Object.entries(data.cuisines)) UNLOCKS.set(v.unlockedBy, c);
       TOTALS = { ingredient: 0, dish: 0, technique: 0, cuisine: 0, trash: 0 };
       for (const k of Object.values(data.items)) TOTALS[k]++;
-      // The names recipes.json itself writes, so the rules can tell a dish's
-      // own name from the flavours a player stacked on top of it.
-      const WRITTEN = new Set(Object.keys(data.items));
-      const SPLITS = KitchenRules.splitMap(data.combos, data.items);
-      const LIKE = data.like || {};
-      CTX = {
-        kindOf,
-        written: (x, y) => RECIPES.get(key(x, y)),
-        likeOf: (n) => LIKE[n] || null,
-        follows: (n) => (data.follows || {})[n] || null,
-        isWritten: (n) => WRITTEN.has(n),
-        splitOf: (n) => SPLITS.get(n) || null,
-        isCooked: (n) => COOKED.has(n),
-        // A flavour is something you'd see in front of a dish on a menu - and
-        // it has to be a real item, or a stray pair of words would pass as one.
-        isModifier: (n) => {
-          const k = data.items[n];
-          return (k === "ingredient" || k === "dish") && !KitchenRules.NOT_A_FLAVOUR.has(n);
-        },
-      };
-      COOKED = KitchenRules.cookedSet(data.combos, data.items, data.starters, data.raw);
 
       load();
       for (const s of data.starters) if (!has(s)) S.found[s] = { from: null, via: null, fresh: false };
@@ -800,9 +955,11 @@
         if (f.k && f.k !== "technique" && f.k !== "cuisine") data.items[n] = f.k; else delete S.found[n];
       }
       // Tools and cookbooks live in the room now, not on the board.
-      for (const b of S.board) {
-        const k = data.items[b.name];
-        if (k && k !== "technique" && k !== "cuisine") makeTile(b.name, b.x, b.y);
+      if (!FOOD3D) {
+        for (const b of S.board) {
+          const k = data.items[b.name];
+          if (k && k !== "technique" && k !== "cuisine") makeTile(b.name, b.x, b.y);
+        }
       }
       layout();
       keepOnCounter();
@@ -811,6 +968,9 @@
       renderRoom();
       renderShelf();
       renderMissingCount();
+      if (FOOD3D) counter.hidden = true;         // the island itself is the board now
+      dataReady = true;
+      restoreFood();
       save();
     })
     .catch(() => toast("Couldn't load the recipes.", "miss", 8000));

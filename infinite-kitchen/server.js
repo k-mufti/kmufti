@@ -1,8 +1,9 @@
 // Zero-dependency Node backend for Infinite Kitchen.
 //
-// V1 has no AI: every recipe is written by hand in recipes.json. So the one
-// job here is to keep the list of pairs players tried that have no recipe
-// yet - the to-do list for writing the next batch.
+// No AI yet: every recipe is written by hand in core.txt (node core.js turns
+// it into recipes.json). So the one job here is to keep the list of pairs
+// players tried that have no recipe yet - the to-do list for writing the
+// next batch.
 //
 //   GET  /api/health     counts, for a quick look
 //   POST /api/missing    {a, b} - a player tried this pair and got nothing

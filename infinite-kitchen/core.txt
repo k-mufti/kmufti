@@ -1,0 +1,138 @@
+# Infinite Kitchen - the hand-written core (restart, 2026-10-04).
+#
+# One combo per line:   A + B = Result [kind]
+# Pairs are unordered. [kind] only on a result's first appearance; it
+# defaults to ingredient. Tools are the ones in the room: Stove, Oven, Pot,
+# Pan, Grill, Knife, Bowl, Blender, Clock, Fridge, Jars - all usable from
+# the start. Players discover food, never tools.
+#
+# Elements: Water, Grain, Plant, Animal, Salt, Sugar.
+#
+# When it isn't obvious what a pair makes, think of everything food can be,
+# not just cooking: groceries, snacks, candy, brands, restaurants and their
+# iconic menu items, baking, drinks. Animal + Candy is nothing in a recipe,
+# but it's Gummy Bears in the candy aisle. Use that range to find the answer
+# that clicks; don't go looking for ways to squeeze brands in.
+
+## The elements with each other
+Water + Water = Ocean
+Grain + Grain = Wheat
+Plant + Plant = Tree
+Animal + Animal = Farm
+Sugar + Sugar = Candy [dish]
+Salt + Salt = Rock Salt
+Water + Grain = Rice
+Water + Plant = Tea [dish]
+Water + Animal = Fish
+Water + Sugar = Syrup
+Grain + Animal = Hen
+Grain + Sugar = Cereal
+Plant + Animal = Cow
+Plant + Sugar = Fruit
+Plant + Salt = Seaweed
+Animal + Sugar = Bee
+
+## Second step: where the real food comes from
+Farm + Plant = Vegetables
+Hen + Clock = Egg
+Hen + Knife = Chicken
+Cow + Bowl = Milk
+Cow + Knife = Beef
+Bee + Tree = Honey
+Tree + Sugar = Maple Syrup
+Tree + Fruit = Apple
+Vegetables + Fruit = Tomato
+Grain + Blender = Flour
+
+## Cooking
+Flour + Water = Dough
+Dough + Oven = Bread [dish]
+Bread + Stove = Toast [dish]
+Toast + Stove = Burnt [trash]
+Milk + Clock = Cheese
+Egg + Stove = Fried Egg [dish]
+Egg + Flour = Batter
+Batter + Pan = Pancakes [dish]
+Tomato + Pot = Tomato Sauce
+Dough + Tomato Sauce = Pizza [dish]
+Bread + Cheese = Grilled Cheese [dish]
+Beef + Grill = Steak [dish]
+Fish + Rice = Sushi [dish]
+
+## Surprises: only where nothing real fits
+Fish + Candy = Swedish Fish [dish]
+
+## The grocery store: staples (2026-10-05)
+Grain + Plant = Corn
+Vegetables + Vegetables = Potato
+Vegetables + Grain = Beans
+Beans + Salt = Peanuts
+Beans + Tree = Cocoa
+Milk + Milk = Cream
+Cream + Blender = Butter
+Cream + Bowl = Whipped Cream
+Corn + Blender = Cornmeal
+Dough + Knife = Pasta
+Flour + Oven = Crackers
+Dough + Salt = Pretzel [dish]
+Dough + Sugar = Cookie [dish]
+Sugar + Stove = Caramel
+Water + Fridge = Ice
+Syrup + Water = Soda [dish]
+
+## Cheese
+Cheese + Cheese = Cheddar
+Cheese + Water = Mozzarella
+Cheese + Clock = Parmesan
+Cheese + Jars = Blue Cheese
+Cream + Cheese = Cream Cheese
+Mozzarella + Knife = String Cheese
+Cheese + Blender = Cheese Powder
+Animal + Cheese = Mouse
+Cheese + Mouse = Swiss Cheese
+Animal + Tree = Goat
+Goat + Cheese = Feta
+
+## The butcher
+Farm + Animal = Pig
+Pig + Knife = Pork
+Pork + Pan = Bacon
+Pork + Salt = Ham
+Pork + Blender = Sausage
+Beef + Blender = Ground Beef
+Chicken + Pan = Fried Chicken [dish]
+Chicken + Blender = Chicken Nuggets [dish]
+
+## The snack aisle
+Corn + Stove = Popcorn [dish]
+Potato + Pan = French Fries [dish]
+Potato + Knife = Potato Slices
+Potato Slices + Pan = Potato Chips [dish]
+Potato Chips + Potato Chips = Pringles [dish]
+Cornmeal + Water = Tortilla
+Tortilla + Pan = Tortilla Chips [dish]
+Tortilla Chips + Cheese = Nachos [dish]
+Tortilla Chips + Cheese Powder = Doritos [dish]
+Cornmeal + Cheese Powder = Cheetos [dish]
+Crackers + Cheese Powder = Cheez-It [dish]
+Crackers + Fish = Goldfish [dish]
+
+## The candy aisle
+Cocoa + Sugar = Chocolate
+Chocolate + Milk = Milk Chocolate
+Milk Chocolate + Milk Chocolate = Hershey's Bar [dish]
+Milk Chocolate + Candy = M&M's [dish]
+Peanuts + Blender = Peanut Butter
+Chocolate + Peanut Butter = Reese's [dish]
+Milk Chocolate + Peanuts = Snickers [dish]
+Animal + Candy = Gummy Bears [dish]
+Cookie + Chocolate = Chocolate Chip Cookie [dish]
+Ice + Cream = Ice Cream [dish]
+Ice Cream + Blender = Milkshake [dish]
+
+## Fast food
+Ground Beef + Bread = Burger [dish]
+Burger + Cheese = Cheeseburger [dish]
+Sausage + Bread = Hot Dog [dish]
+Burger + French Fries = Combo Meal [dish]
+Pasta + Cheese = Mac and Cheese [dish]

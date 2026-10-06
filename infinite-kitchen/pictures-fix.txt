@@ -1,0 +1,24 @@
+# Pictures put right by hand, for when Wikipedia's pick is wrong.
+#   Item = Wikipedia article    use that article's photo
+#   Item = -                    no picture, just the name
+# Then run: node pictures.js Item   (or node pictures.js --all)
+
+Egg = Eggs as food
+Hen = Chicken
+Water = Tap water
+Sprout = Sprouting
+Slop = -
+Burnt = Toast (food)
+Sludge = Mud
+Rot = Decomposition
+Field = Wheat
+Cream Tea = Cream tea
+Arroz con Leche = Rice pudding
+Banana Leather = Fruit leather
+Blue Cheese Gratin = Gratin
+Goldfish = Goldfish (cracker)
+Pringles = -
+Reese's = Peanut butter cup
+Swiss Cheese = Emmental cheese
+Cheese Powder = -
+Cheetos = Cheese puffs
