@@ -330,6 +330,9 @@ a {
   letter-spacing: 1px;
   color: rgba(255, 255, 255, 0.4);
 }
+.deep-caption { text-align: center; }
+.deep-caption a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.deep-caption a:hover { color: rgba(255, 255, 255, 0.75); }
 
 /* ---------- The bust --------------------------------------------------- */
 /* A marble bust standing on the board's top edge (bust/bust.js). The canvas

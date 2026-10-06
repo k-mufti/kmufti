@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>kmufti.com, before</title>
+  <link rel="icon" href="../favicon.svg?v=1" type="image/svg+xml" />
+  <meta name="description" content="What the kmufti.com launcher looked like before the marble bust." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <!-- What the hub looked like before the bust: screenshots of commit
+       3015b63 (5 Oct 2026), the last launcher without him. Standalone page,
+       so it never changes when the hub does. -->
+  <style>
+    :root {
+      --ink: #111111;
+      --ink-dim: rgba(17, 17, 17, 0.55);
+      --ink-faint: rgba(17, 17, 17, 0.32);
+      --wall: #f1f0ee;
+      --shadow: 0 10px 34px rgba(0, 0, 0, 0.13);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--wall);
+      color: var(--ink);
+      font-family: Inter, system-ui, sans-serif;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 22px 28px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      letter-spacing: 2px;
+    }
+    header a { color: var(--ink-dim); text-decoration: none; }
+    header a:hover { color: var(--ink); }
+    main {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px 28px 80px;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-weight: 400;
+      font-size: clamp(22px, 3vw, 30px);
+      letter-spacing: -0.01em;
+    }
+    .when {
+      margin: 0 0 36px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--ink-faint);
+    }
+    .shots {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 260px);
+      gap: 32px;
+      align-items: start;
+    }
+    figure { margin: 0; }
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      background: #fff;
+    }
+    figure.phone img { border-radius: 22px; }
+    figcaption {
+      margin-top: 12px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--ink-faint);
+    }
+    @media (max-width: 760px) {
+      header, main { padding-left: 16px; padding-right: 16px; }
+      .shots { grid-template-columns: minmax(0, 1fr); }
+      figure.phone { max-width: 260px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="../">kmufti.com</a>
+    <a href="../">back to now &rarr;</a>
+  </header>
+  <main>
+    <h1>Before the bust</h1>
+    <p class="when">the launcher, 5 october 2026, just before the statue arrived</p>
+    <div class="shots">
+      <figure>
+        <img src="hub-desktop.jpg" width="1800" height="1125" alt="The kmufti.com launcher before the bust: a white board of project tiles (Yahtzee, Jigsaw, Jeopardy, Wishlist, Meccha Chameleon, White Canvas, Lost in Translation) under the line 'definitely not inspired by neal.fun'." />
+        <figcaption>on a laptop</figcaption>
+      </figure>
+      <figure class="phone">
+        <img src="hub-phone.jpg" width="554" height="1200" alt="The same launcher on a phone: the tiles stacked in one column." />
+        <figcaption>on a phone</figcaption>
+      </figure>
+    </div>
+  </main>
+</body>
+</html>
