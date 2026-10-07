@@ -6,6 +6,7 @@ Everything here is hand-written HTML, CSS and vanilla JS. No build step, no
 framework, no npm dependencies. The landing page is a launcher board of tiles;
 each tile is a self-contained app living in its own folder.
 
+
 ## The projects
 
 | Path | What it is |
