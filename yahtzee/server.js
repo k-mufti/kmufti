@@ -23,6 +23,7 @@
 //   {t:"hold", held:[b,b,b,b,b]} keep these between rolls
 //   {t:"score", cat}             write this roll into a box; ends your turn
 //   {t:"again"}                  offer a rematch
+//   {t:"chat", text}             say something to the other player
 //
 // Protocol, server -> client:
 //   {t:"welcome", id}
@@ -33,6 +34,8 @@
 //   {t:"scored", seat, cat, pts, yahtzeeBonus}
 //   {t:"over", totals, winner}
 //   {t:"peer", status}           "left" | "bot" - your opponent went away
+//   {t:"chat", seat, name, text, at}   someone in your room said something
+//   {t:"chat-slow"}              you're sending too fast; that one was dropped
 //   {t:"error", msg}
 //
 // A match is always exactly two players. If one leaves, the bot finishes their
@@ -59,6 +62,8 @@ const TURN_MS = +process.env.TURN_MS || 45000;       // before the bot plays for
 const BOT_THINK_MS = +process.env.BOT_THINK_MS || 800;   // pause between a bot's rolls
 const ROLL_WATCH_MS = +process.env.ROLL_WATCH_MS || 2200; // time for a throw to animate
 const QUEUE_SWEEP_MS = 1000;
+// chat: at most CHAT_BURST messages per CHAT_WINDOW_MS, and CHAT_GAP_MS apart
+const CHAT_MAX = 200, CHAT_GAP_MS = 500, CHAT_BURST = 6, CHAT_WINDOW_MS = 10000;
 
 /* ========================================================================
    WebSocket, hand-rolled. Same codec as puzzle/server.js -- text frames,
@@ -472,7 +477,23 @@ function onMessage(peer, raw) {
       if (room && !room.isBot[peer.seat]) doScore(room, peer.seat, m.cat);
       return;
     case "again":  return offerRematch(peer);
+    case "chat":   return doChat(peer, room, m.text);
   }
+}
+
+// Table talk. Plain text only (control characters out, whitespace squashed,
+// capped), passed on to everyone at the table, and rate-limited per person
+// so nobody can flood the other player.
+function doChat(peer, room, text) {
+  if (!room || !(peer.seat >= 0)) return;
+  const now = Date.now();
+  peer.chatTimes = (peer.chatTimes || []).filter((t) => now - t < CHAT_WINDOW_MS);
+  const last = peer.chatTimes[peer.chatTimes.length - 1] || 0;
+  if (peer.chatTimes.length >= CHAT_BURST || now - last < CHAT_GAP_MS) return send(peer, { t: "chat-slow" });
+  const clean = String(text || "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, CHAT_MAX);
+  if (!clean) return;
+  peer.chatTimes.push(now);
+  broadcastRoom(room, { t: "chat", seat: peer.seat, name: room.names[peer.seat], text: clean, at: now });
 }
 
 const server = http.createServer((req, res) => {

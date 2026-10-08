@@ -329,22 +329,23 @@ const ARTWORK = {
     </svg>`,
 
   /* Yahtzee — the table it's played on: green felt with a real nap, lit
-     from above, two glossy ivory dice thrown either side of the word. The
+     like the game's table, by one warm lamp hanging over the middle: a
+     pool of light falling off into a dark room at the edges. Two glossy
+     ivory dice thrown either side of the word. The
      word is finished like the dice (ivory, a thick edge, a shadow on the
      cloth). Anton is already loaded for the hub. */
   yahtzee: `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="yz-felt" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#177a4c"/>
-          <stop offset="0.55" stop-color="#0f5c39"/>
-          <stop offset="1" stop-color="#083b25"/>
-        </linearGradient>
-        <radialGradient id="yz-lamp" cx="0.5" cy="0.42" r="0.7">
-          <stop offset="0" stop-color="#d7ffe8" stop-opacity="0.22"/>
-          <stop offset="0.6" stop-color="#d7ffe8" stop-opacity="0.04"/>
-          <stop offset="1" stop-color="#021a0e" stop-opacity="0.35"/>
-        </radialGradient>
+        <!-- the lamp: one pool of light with a lampshade's edge -- flat
+             light inside, flat dark outside, only the rim is soft -->
+        <filter id="yz-rim" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="5"/>
+        </filter>
+        <mask id="yz-room" maskUnits="userSpaceOnUse" x="0" y="0" width="320" height="200">
+          <rect width="320" height="200" fill="#fff"/>
+          <ellipse cx="164" cy="96" rx="132" ry="86" fill="#000" filter="url(#yz-rim)"/>
+        </mask>
         <!-- dice + word: ivory plastic, lit from the top left -->
         <linearGradient id="yz-ivory" x1="0.1" y1="0" x2="0.7" y2="1">
           <stop offset="0" stop-color="#ffffff"/>
@@ -385,9 +386,8 @@ const ARTWORK = {
         </filter>
       </defs>
 
-      <rect width="320" height="200" fill="url(#yz-felt)"/>
+      <rect width="320" height="200" fill="#10603b"/>
       <rect width="320" height="200" filter="url(#yz-nap)" opacity="0.5"/>
-      <rect width="320" height="200" fill="url(#yz-lamp)"/>
 
       <!-- two dice, thrown: a five low on the left, a three high on the right -->
       <g transform="translate(10,110) rotate(-14 28.0 28.0) scale(0.9655)" filter="url(#yz-drop)">
@@ -414,6 +414,11 @@ const ARTWORK = {
         <text x="160" y="143" fill="#a59d89">DICE</text>
         <text x="160" y="139" fill="url(#yz-word)">DICE</text>
       </g>
+
+      <!-- the lamp over everything, felt, dice and word alike: a warm pool,
+           and the room's dark beyond its edge -->
+      <ellipse cx="164" cy="96" rx="132" ry="86" fill="#ffcf96" opacity="0.13" filter="url(#yz-rim)"/>
+      <rect width="320" height="200" fill="#020a06" opacity="0.5" mask="url(#yz-room)"/>
     </svg>`,
 
   /* Infinite Kitchen — the game's Tuscan kitchen: a dark walnut counter lit

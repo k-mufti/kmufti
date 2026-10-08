@@ -405,6 +405,8 @@ function onNet(m) {
       $("conn").hidden = false;
       $("conn").textContent = "online";
       say("Match on.");
+      showChat(true);
+      chatSys(`Match on: ${m.names[0]} vs ${m.names[1]}.`);
       return;
     case "state":
       return applyState(m);
@@ -436,15 +438,72 @@ function onNet(m) {
       if (m.status === "bot") {
         state.isBot[m.seat] = true;
         say("Your opponent left — the bot is finishing their game.");
+        chatSys(`${state.names[m.seat]} left the table.`);
       } else {
         lobbyNote("They left before the game started.");
         $("lobby").hidden = false;
       }
       return;
+    case "chat":
+      return chatLine(m.seat === state.mySeat ? "You" : m.name, m.text, m.seat === state.mySeat);
+    case "chat-slow":
+      return chatSys("Slow down a little — that one didn't send.");
     case "error":
       return lobbyNote(m.msg);
   }
 }
+
+/* ---------------- chat (online only) ---------------- */
+// Everything from the other player goes in as text, never as HTML.
+let unread = 0;
+const chatOpen = () => !$("chat").classList.contains("closed");
+function chatScroll() { const log = $("chat-log"); log.scrollTop = log.scrollHeight; }
+function chatLine(who, text, mine) {
+  const li = document.createElement("li");
+  if (mine) li.className = "mine";
+  const w = document.createElement("span");
+  w.className = "who";
+  w.textContent = who;
+  const t = document.createElement("span");
+  t.className = "msg";
+  t.textContent = text;
+  li.append(w, t);
+  $("chat-log").appendChild(li);
+  while ($("chat-log").children.length > 120) $("chat-log").firstChild.remove();
+  chatScroll();
+  if (!mine && !chatOpen()) { unread++; $("chat-unread").hidden = false; $("chat-unread").textContent = unread; }
+}
+function chatSys(text) {
+  const last = $("chat-log").lastElementChild;
+  if (last && last.className === "sys" && last.textContent === text) return;   // once is enough
+  const li = document.createElement("li");
+  li.className = "sys";
+  li.textContent = text;
+  $("chat-log").appendChild(li);
+  chatScroll();
+}
+function setChatOpen(open) {
+  $("chat").classList.toggle("closed", !open);
+  $("chat-toggle").setAttribute("aria-expanded", String(open));
+  if (open) { unread = 0; $("chat-unread").hidden = true; chatScroll(); }
+}
+function showChat(on) { $("chat").hidden = !on; }
+function sendChat(text) {
+  text = String(text || "").trim();
+  if (!text || !net || state.mode !== "online") return;
+  net.send({ t: "chat", text: text.slice(0, 200) });
+}
+$("chat-toggle").addEventListener("click", () => setChatOpen(!chatOpen()));
+$("chat-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  sendChat($("chat-input").value);
+  $("chat-input").value = "";
+});
+$("chat-quick").addEventListener("click", (e) => {
+  if (e.target.tagName === "BUTTON") sendChat(e.target.textContent);
+});
+// start folded away on a phone, open on a bigger screen
+setChatOpen(!matchMedia("(max-width: 700px)").matches);
 
 function lobbyNote(html) { $("lobby-note").innerHTML = html; }
 
@@ -504,6 +563,8 @@ $("joinform").addEventListener("submit", (e) => {
 
 function toLobby() {
   if (net) { net.send({ t: "leave" }); }
+  showChat(false);
+  $("chat-log").replaceChildren();
   clearInterval(clockTimer);
   $("clock").hidden = true;
   $("overlay").hidden = true;
@@ -543,6 +604,7 @@ function finish() {
 
 function newSoloGame() {
   state.mode = "solo";
+  showChat(false);
   state.mySeat = 0;
   state.names = ["You", "Bot"];
   state.isBot = [false, true];

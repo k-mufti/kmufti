@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=6" />
+  <link rel="stylesheet" href="styles.css?v=7" />
   <script type="importmap">
   {"imports":{
     "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
@@ -86,6 +86,26 @@
     </section>
   </main>
 
+  <!-- table talk, online matches only -->
+  <aside class="chat" id="chat" hidden>
+    <button class="chat-head" id="chat-toggle" type="button" aria-expanded="true" aria-controls="chat-body">
+      Chat <span class="chat-unread" id="chat-unread" hidden></span>
+    </button>
+    <div class="chat-body" id="chat-body">
+      <ol class="chat-log" id="chat-log" aria-live="polite"></ol>
+      <div class="chat-quick" id="chat-quick">
+        <button type="button">gg</button>
+        <button type="button">nice roll</button>
+        <button type="button">unlucky</button>
+        <button type="button">😂</button>
+      </div>
+      <form class="chat-form" id="chat-form" autocomplete="off">
+        <input type="text" id="chat-input" maxlength="200" placeholder="Say something…" aria-label="Chat message">
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </aside>
+
   <div class="overlay" id="overlay" hidden>
     <div class="dialog">
       <h2 id="ov-title">Game over</h2>
@@ -126,6 +146,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=14"></script>
+  <script type="module" src="app.js?v=16"></script>
 </body>
 </html>
