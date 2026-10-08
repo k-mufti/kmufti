@@ -571,8 +571,10 @@
       trail.push({ x: ev.clientX, y: ev.clientY, t: performance.now() });
       if (trail.length > 12) trail.shift();
       food().hold(ev.clientX, ev.clientY);
-      const spot = spotAt(ev, null);
-      const other = spot ? null : food().pick(ev.clientX, ev.clientY, id);
+      // food on the island stands in front of the room, so it comes first:
+      // otherwise a tool's hit box behind a card would win
+      const other = food().pick(ev.clientX, ev.clientY, id);
+      const spot = other ? null : spotAt(ev, null);
       const next = spot || null;
       if (next !== over) { over?.classList.remove("target"); next?.classList.add("target"); over = next; }
       highlightFood(other);
@@ -588,6 +590,8 @@
       const aimed = !hurl;
 
       if (overPantry(ev)) { food().remove(id); saveFood(); return; }        // back in the pantry: gone
+      const other = aimed ? food().pick(ev.clientX, ev.clientY, id) : null;
+      if (other) { combineFood(id, other); return; }
       const spot = aimed ? spotAt(ev, null) : null;
       if (spot === bin) { food().remove(id); restart(bin, "gulp"); saveFood(); return; }
       if (spot) {
@@ -602,8 +606,6 @@
         applyToFood(id, name, spot);
         return;
       }
-      const other = aimed ? food().pick(ev.clientX, ev.clientY, id) : null;
-      if (other) { combineFood(id, other); return; }
       if (f.dwell < DWELL_MS && f.speed > THROW_PX_S) { food().throw(id, ev.clientX, ev.clientY, f.vx, f.vy); saveFood(); return; }
       food().drop(id);                                    // set it down
       saveFood();
@@ -656,14 +658,17 @@
       }
       if (held) k3().hold(name, ev.clientX, ev.clientY);
       else { ghost.style.left = ev.clientX + "px"; ghost.style.top = ev.clientY + "px"; }
-      const next = tileAt(ev) || (tech ? spotOrSelf(ev, src) : null);
+      const onFood = FOOD3D && isTool ? food()?.pick(ev.clientX, ev.clientY) : null;
+      const next = onFood ? null : tileAt(ev) || (tech ? spotOrSelf(ev, src) : null);
       if (next !== over) { over?.classList.remove("target"); next?.classList.add("target"); over = next; }
+      highlightFood(onFood);
     };
     const up = (ev) => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
       window.removeEventListener("pointercancel", up);
       over?.classList.remove("target");
+      highlightFood(null);
       if (!held && !ghost) {                      // a click, not a carry
         if (!isTool) src.click();                 // the bin and the books open
         else if (cuisine) toast(`The ${esc(cuisine)} cookbook: drag it onto food to cook it ${esc(cuisine)}-style.`);
@@ -678,6 +683,9 @@
       const hurl = f.speed > HARD_PX_S && f.dwell < DWELL_MS;
       const aimed = !hurl;
 
+      // onto a piece of food on the island: use the tool on it
+      const onFood = aimed && isTool && FOOD3D ? food()?.pick(ev.clientX, ev.clientY) : null;
+      if (onFood) { putBack(); applyToFood(onFood, name, src); return; }
       const tile = aimed && isTool ? tileAt(ev) : null;
       if (tile) { tile._home = { x: tile._x, y: tile._y }; putBack(); applyTo(tile, name, src); return; }
       // While it's in your hand it can't be dropped on itself, so using a
@@ -933,7 +941,7 @@
   window.addEventListener("resize", layout);
 
   /* ---------- start ---------- */
-  fetch("recipes.json?v=10")
+  fetch("recipes.json?v=11")
     .then((r) => r.json())
     .then((data) => {
       DATA = data;

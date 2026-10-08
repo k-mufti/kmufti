@@ -657,7 +657,7 @@ function throwTool(id, sx, sy, vpx, vpy, rider) {
   // whatever was sitting on the stove goes with it
   if (id === "Heat" && !rider) {
     const jitter = () => (Math.random() - 0.5) * 300;
-    for (const r of ["Boil", "Fry"]) throwTool(r, sx + jitter() / 6, sy + jitter() / 6, vpx * 0.8 + jitter(), vpy * 0.8 + jitter(), true);
+    for (const r of ["Boil"]) throwTool(r, sx + jitter() / 6, sy + jitter() / 6, vpx * 0.8 + jitter(), vpy * 0.8 + jitter(), true);
   }
   const g = s.group, home = s.home;
   const held = HELD.id === id;
@@ -768,7 +768,7 @@ function loadModel(name) {
   return GLTFS.get(name);
 }
 // start them all downloading together; build() places them as they come
-for (const n of ["pot_enamel_01", "brass_pan_01", "ceramic_pot", "jug_01", "mantel_clock_01", "wooden_bowl_02", "wooden_bucket_01", "wooden_cutting_board"]) {
+for (const n of ["pot_enamel_01", "mantel_clock_01", "wooden_bucket_01", "wooden_cutting_board"]) {
   loadModel(n).catch(() => {});                  // build() reports it if one fails
 }
 async function model(name, { x = 0, y = 0, z = 0, ry = 0, width, scale = 1 }) {
@@ -806,16 +806,6 @@ function knife() {
     g.add(r);
   }
   g.children.forEach((c) => (c.position.y += 0.002));
-  return g;
-}
-function grillPan() {
-  const g = new THREE.Group(), s = 0.3;
-  g.add(box(s, 0.016, s, 0, 0.008, 0, M.iron, 0.004));
-  for (const [w, d, x, z] of [[s, 0.012, 0, s / 2], [s, 0.012, 0, -s / 2], [0.012, s, s / 2, 0], [0.012, s, -s / 2, 0]]) g.add(box(w, 0.045, d, x, 0.03, z, M.iron, 0.004));
-  for (let i = 0; i < 8; i++) g.add(box(s - 0.03, 0.012, 0.01, 0, 0.022, -s / 2 + 0.03 + i * (s - 0.06) / 7, M.iron));
-  const h = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.014, 0.22, 12), M.iron);
-  h.rotation.z = Math.PI / 2 - 0.12; h.position.set(s / 2 + 0.11, 0.05, 0); h.castShadow = true;
-  g.add(h);
   return g;
 }
 function blender() {
@@ -1248,41 +1238,21 @@ async function build() {
 
   const bz = BACK + sd / 2 + 0.01;
   spot("Boil", await model("pot_enamel_01", { x: STOVE_X - 0.22, y: grate, z: bz - 0.13, width: 0.42, ry: 0.3 }));
-  spot("Fry", await model("brass_pan_01", { x: STOVE_X + 0.28, y: grate, z: bz + 0.14, width: 0.6, ry: Math.PI / 2 + 0.6 }));
 
   const f = fridge();
   f.position.set(FRIDGE.x, 0, BACK + FRIDGE.d / 2 + 0.01);
   scene.add(f);
   spot("Freeze", f);
 
-  const grill = grillPan();
-  grill.position.set(0.95, top, BACK + 0.36); grill.rotation.y = -0.25;
-  scene.add(grill);
-  spot("Grill", grill);
   const bl = blender();
   bl.position.set(2.15, top, BACK + 0.3); bl.rotation.y = -0.4;
   scene.add(bl);
   spot("Blend", bl);
 
-  // jars for fermenting, and the clock, on the lower shelf
-  const jars = new THREE.Group();
-  scene.add(jars);
-  for (const [n, x, w, ry] of [["ceramic_pot", 1.4, 0.26, 0.4], ["jug_01", 1.7, 0.19, -0.6], ["ceramic_pot", 1.94, 0.2, 2]]) {
-    const m = await model(n, { x, y: SHELVES[0] + 0.0225, z: BACK + 0.15, width: w, ry });
-    scene.remove(m); jars.add(m);
-  }
-  // the jars are a group of three: give it a pivot at their own base, or
-  // picking it up would swing them across the room
-  jars.updateMatrixWorld(true);
-  const jb = new THREE.Box3().setFromObject(jars), jc = jb.getCenter(new THREE.Vector3());
-  jc.y = jb.min.y;
-  for (const ch of jars.children) ch.position.sub(jc);
-  jars.position.copy(jc);
-  spot("Ferment", jars);
+  // the clock, on the lower shelf
   spot("Wait", await model("mantel_clock_01", { x: 2.28, y: SHELVES[0] + 0.0225, z: BACK + 0.13, width: 0.3 }));
 
-  // on the island: the bowl, the knife, the recipe book, the notes
-  spot("Mix", await model("wooden_bowl_02", { x: -0.98, y: it, z: 0.45, width: 0.32 }));
+  // on the island: the knife, the recipe book, the notes
   const k = knife();
   k.scale.setScalar(1.45);
   k.position.set(0.98, it, 0.48); k.rotation.y = 0.75;

@@ -3,8 +3,9 @@
 # One combo per line:   A + B = Result [kind]
 # Pairs are unordered. [kind] only on a result's first appearance; it
 # defaults to ingredient. Tools are the ones in the room: Stove, Oven, Pot,
-# Pan, Grill, Knife, Bowl, Blender, Clock, Fridge, Jars - all usable from
-# the start. Players discover food, never tools.
+# Knife, Blender, Clock, Fridge - seven, all usable from the start. Players
+# discover food, never tools. The Stove does all pan cooking (fry, grill,
+# sear); the Clock is time in every form (age, ferment, grow, spoil).
 #
 # Elements: Water, Grain, Plant, Animal, Salt, Sugar.
 #
@@ -22,7 +23,7 @@ Animal + Animal = Farm
 Sugar + Sugar = Candy [dish]
 Salt + Salt = Rock Salt
 Water + Grain = Rice
-Water + Plant = Tea [dish]
+Water + Plant = Vegetables
 Water + Animal = Fish
 Water + Sugar = Syrup
 Grain + Animal = Hen
@@ -34,9 +35,10 @@ Animal + Sugar = Bee
 
 ## Second step: where the real food comes from
 Farm + Plant = Vegetables
+Plant + Boiling Water = Tea [dish]
 Hen + Clock = Egg
 Hen + Knife = Chicken
-Cow + Bowl = Milk
+Cow + Water = Milk
 Cow + Knife = Beef
 Bee + Tree = Honey
 Tree + Sugar = Maple Syrup
@@ -52,11 +54,11 @@ Toast + Stove = Burnt [trash]
 Milk + Clock = Cheese
 Egg + Stove = Fried Egg [dish]
 Egg + Flour = Batter
-Batter + Pan = Pancakes [dish]
+Batter + Stove = Pancakes [dish]
 Tomato + Pot = Tomato Sauce
 Dough + Tomato Sauce = Pizza [dish]
 Bread + Cheese = Grilled Cheese [dish]
-Beef + Grill = Steak [dish]
+Beef + Stove = Steak [dish]
 Fish + Rice = Sushi [dish]
 
 ## Surprises: only where nothing real fits
@@ -70,7 +72,7 @@ Beans + Salt = Peanuts
 Beans + Tree = Cocoa
 Milk + Milk = Cream
 Cream + Blender = Butter
-Cream + Bowl = Whipped Cream
+Cream + Sugar = Whipped Cream
 Corn + Blender = Cornmeal
 Dough + Knife = Pasta
 Flour + Oven = Crackers
@@ -84,7 +86,7 @@ Syrup + Water = Soda [dish]
 Cheese + Cheese = Cheddar
 Cheese + Water = Mozzarella
 Cheese + Clock = Parmesan
-Cheese + Jars = Blue Cheese
+Cheese + Ocean = Blue Cheese
 Cream + Cheese = Cream Cheese
 Mozzarella + Knife = String Cheese
 Cheese + Blender = Cheese Powder
@@ -96,21 +98,21 @@ Goat + Cheese = Feta
 ## The butcher
 Farm + Animal = Pig
 Pig + Knife = Pork
-Pork + Pan = Bacon
+Pork + Stove = Bacon
 Pork + Salt = Ham
 Pork + Blender = Sausage
 Beef + Blender = Ground Beef
-Chicken + Pan = Fried Chicken [dish]
+Chicken + Stove = Fried Chicken [dish]
 Chicken + Blender = Chicken Nuggets [dish]
 
 ## The snack aisle
 Corn + Stove = Popcorn [dish]
-Potato + Pan = French Fries [dish]
+Potato + Stove = French Fries [dish]
 Potato + Knife = Potato Slices
-Potato Slices + Pan = Potato Chips [dish]
+Potato Slices + Stove = Potato Chips [dish]
 Potato Chips + Potato Chips = Pringles [dish]
 Cornmeal + Water = Tortilla
-Tortilla + Pan = Tortilla Chips [dish]
+Tortilla + Stove = Tortilla Chips [dish]
 Tortilla Chips + Cheese = Nachos [dish]
 Tortilla Chips + Cheese Powder = Doritos [dish]
 Cornmeal + Cheese Powder = Cheetos [dish]
@@ -136,3 +138,436 @@ Burger + Cheese = Cheeseburger [dish]
 Sausage + Bread = Hot Dog [dish]
 Burger + French Fries = Combo Meal [dish]
 Pasta + Cheese = Mac and Cheese [dish]
+
+#############################################################################
+# Big batch 1 (2026-10-08): the whole opening, then the broad items.
+#############################################################################
+
+## Every element with every element
+Water + Salt = Brine
+Grain + Salt = Crackers
+Animal + Salt = Jerky [dish]
+Salt + Sugar = Salted Caramel
+
+## Every element with every tool
+Water + Stove = Steam
+Water + Oven = Water [nothing]
+Water + Pot = Boiling Water
+Water + Knife = Water [nothing]
+Water + Blender = Sparkling Water [dish]
+Water + Clock = Water [nothing]
+Grain + Stove = Popcorn
+Grain + Oven = Granola [dish]
+Grain + Pot = Porridge [dish]
+Rice + Popcorn = Puffed Rice
+Grain + Knife = Oats
+Grain + Fridge = Grain [nothing]
+Grain + Clock = Beer [dish]
+Plant + Oven = Kale Chips [dish]
+Plant + Pot = Vegetable Soup [dish]
+Plant + Stove = Stir-Fry [dish]
+Plant + Knife = Herbs
+Lettuce + Vegetables = Salad [dish]
+Plant + Blender = Green Smoothie [dish]
+Plant + Clock = Flower
+Plant + Fridge = Mint
+Animal + Stove = Barbecue [dish]
+Animal + Oven = Roast [dish]
+Animal + Pot = Broth
+Animal + Knife = Meat
+Animal + Blender = Hot Dog
+Animal + Clock = Egg
+Animal + Fridge = Animal [nothing]
+Salt + Stove = Salt [nothing]
+Salt + Oven = Salt [nothing]
+Salt + Pot = Salt [nothing]
+Salt + Knife = Salt [nothing]
+Salt + Blender = Salt [nothing]
+Salt + Clock = Salt [nothing]
+Salt + Fridge = Salt [nothing]
+Sugar + Oven = Caramel
+Sugar + Pot = Syrup
+Caramel + Stove = Burnt
+Sugar + Knife = Sugar Cubes
+Sugar + Blender = Powdered Sugar
+Sugar + Clock = Rock Candy [dish]
+Sugar + Fridge = Sugar [nothing]
+
+## Animals that love something (a running joke: the animal, then what it loves)
+Animal + Fruit = Monkey
+Monkey + Fruit = Banana
+Animal + Vegetables = Rabbit
+Rabbit + Vegetables = Carrot
+Animal + Fish = Bear
+Bear + Fish = Salmon
+Chicken + Chicken = Turkey
+Egg + Egg = Chicken
+
+## Vegetables
+Vegetables + Water = Cucumber
+Vegetables + Sugar = Sweet Potato
+Vegetables + Tree = Broccoli
+Vegetables + Knife = Onion
+Vegetables + Plant = Lettuce
+Vegetables + Stove = Chili Pepper
+Vegetables + Fridge = Peas
+Vegetables + Clock = Kimchi
+Vegetables + Salt = Pickles
+Vegetables + Pot = Vegetable Soup
+Vegetables + Oven = Roasted Vegetables [dish]
+Vegetables + Blender = Baby Food [dish]
+Fruit + Butter = Avocado
+Potato + Sugar = Sweet Potato
+Broccoli + Milk = Cauliflower
+Chili Pepper + Fridge = Bell Pepper
+Chili Pepper + Blender = Hot Sauce
+Chili Pepper + Tomato = Salsa
+Onion + Herbs = Garlic
+Onion + Stove = Onion Rings [dish]
+Carrot + Knife = Baby Carrots
+Sweet Potato + Stove = Sweet Potato Fries [dish]
+Lettuce + Ice = Iceberg Lettuce
+Cucumber + Clock = Pickles
+
+## Fruit
+Fruit + Water = Watermelon
+Fruit + Sugar = Jam
+Fruit + Fruit = Grapes
+Fruit + Plant = Berries
+Fruit + Salt = Olive
+Fruit + Knife = Lemon
+Fruit + Salad = Fruit Salad [dish]
+Fruit + Fridge = Popsicle [dish]
+Fruit + Clock = Dried Fruit
+Fruit + Blender = Smoothie [dish]
+Apple + Tree = Pineapple
+Lemon + Sugar = Orange
+Lemon + Plant = Lime
+Lemon + Water = Lemonade [dish]
+Orange + Blender = Orange Juice [dish]
+Berries + Sugar = Strawberry
+Berries + Ocean = Blueberry
+Berries + Tree = Cherry
+Grapes + Clock = Wine [dish]
+Grapes + Dried Fruit = Raisins
+Grapes + Blender = Grape Juice [dish]
+Wine + Clock = Vinegar
+Olive + Blender = Olive Oil
+Apple + Blender = Applesauce [dish]
+Apple + Water = Apple Juice [dish]
+Apple + Clock = Cider [dish]
+Apple + Caramel = Caramel Apple [dish]
+Apple + Dough = Apple Pie [dish]
+Banana + Bread = Banana Bread [dish]
+
+## Herbs and spices
+Herbs + Blender = Pesto
+Herbs + Fridge = Mint
+Herbs + Tomato = Basil
+Herbs + Salt = Seasoning
+Herbs + Clock = Spices
+Herbs + Tea = Herbal Tea [dish]
+Spices + Tree = Cinnamon
+Spices + Salt = Pepper
+Spices + Sugar = Vanilla
+Spices + Pot = Curry [dish]
+Mint + Candy = Peppermint [dish]
+
+## Grains, rice and cereal
+Wheat + Blender = Flour
+Wheat + Bread = Whole Wheat Bread [dish]
+Oats + Pot = Oatmeal [dish]
+Oats + Water = Oat Milk [dish]
+Oats + Oven = Granola
+Oats + Cereal = Cheerios [dish]
+Granola + Honey = Granola Bar [dish]
+Corn + Pot = Corn on the Cob [dish]
+Corn + Syrup = Corn Syrup
+Corn + Cereal = Corn Flakes [dish]
+Corn Flakes + Sugar = Frosted Flakes [dish]
+Cereal + Chocolate = Cocoa Puffs [dish]
+Cereal + Fruit = Froot Loops [dish]
+Cereal + Honey = Honey Nut Cheerios [dish]
+Cereal + Raisins = Raisin Bran [dish]
+Cinnamon + Toast = Cinnamon Toast [dish]
+Cinnamon Toast + Cereal = Cinnamon Toast Crunch [dish]
+Puffed Rice + Sugar = Rice Krispies [dish]
+Popcorn + Sugar = Kettle Corn [dish]
+Popcorn + Butter = Buttered Popcorn [dish]
+Popcorn + Caramel = Caramel Corn [dish]
+Caramel Corn + Peanuts = Cracker Jack [dish]
+Popcorn + Stove = Burnt
+Rice + Stove = Fried Rice [dish]
+Rice + Pot = Steamed Rice [dish]
+Rice + Milk = Rice Pudding [dish]
+Rice + Seaweed = Rice Ball [dish]
+Rice + Beans = Rice and Beans [dish]
+Rice + Clock = Sake [dish]
+Rice + Tortilla = Burrito [dish]
+Rice + Seafood = Paella [dish]
+
+## Bread and baking
+Bread + Bread = Sandwich [dish]
+Bread + Egg = French Toast [dish]
+Bread + Garlic = Garlic Bread [dish]
+Bread + Blender = Breadcrumbs
+Bread + Clock = Spoiled [trash]
+Dough + Clock = Sourdough [dish]
+Dough + Pot = Bagel [dish]
+Dough + Butter = Croissant [dish]
+Dough + Stove = Donut [dish]
+Dough + Fruit = Pie [dish]
+Dough + Cinnamon = Cinnamon Roll [dish]
+Batter + Oven = Cake [dish]
+Pancakes + Fridge = Waffle [dish]
+Batter + Berries = Muffin [dish]
+Butter + Sugar = Frosting
+Cake + Frosting = Cupcake [dish]
+Cake + Cake = Wedding Cake [dish]
+Cake + Chocolate = Chocolate Cake [dish]
+Cake + Cream Cheese = Cheesecake [dish]
+Cake + Carrot = Carrot Cake [dish]
+Cake + Strawberry = Strawberry Shortcake [dish]
+Cake + Ice Cream = Ice Cream Cake [dish]
+Cake + Coffee = Coffee Cake [dish]
+Cake + Whipped Cream = Twinkie [dish]
+Cake + Lollipop = Cake Pop [dish]
+Donut + Sugar = Glazed Donut [dish]
+Donut + Jam = Jelly Donut [dish]
+Donut + Cinnamon = Churro [dish]
+Pie + Toast = Pop-Tart [dish]
+Pie + Cherry = Cherry Pie [dish]
+Toast + Avocado = Avocado Toast [dish]
+Toast + Beans = Beans on Toast [dish]
+Toast + Knife = Croutons
+Croissant + Chocolate = Chocolate Croissant [dish]
+
+## Sandwiches
+Sandwich + Ham = Ham Sandwich [dish]
+Sandwich + Sandwich = Club Sandwich [dish]
+Sandwich + Stove = Panini [dish]
+Sandwich + Tortilla = Wrap [dish]
+Sandwich + Fried Chicken = Chicken Sandwich [dish]
+Bread + Cold Cuts = Sub [dish]
+Bread + Chicken = Chicken Sandwich
+Peanut Butter + Jam = PB&J [dish]
+Bacon + Lettuce = BLT [dish]
+Steak + Bread = Cheesesteak [dish]
+
+## Eggs and dairy
+Egg + Pot = Boiled Egg [dish]
+Egg + Blender = Scrambled Eggs [dish]
+Egg + Cheese = Omelette [dish]
+Egg + Sugar = Meringue
+Egg + Milk = Custard [dish]
+Egg + Olive Oil = Mayonnaise
+Egg + Bacon = Bacon and Eggs [dish]
+Fish + Egg = Caviar
+Milk + Fruit = Yogurt
+Milk + Blender = Milkshake
+Milk + Fridge = Ice Cream
+Milk + Cocoa = Hot Chocolate [dish]
+Milk + Tea = Milk Tea [dish]
+Milk + Coffee = Latte [dish]
+Milk + Cookie = Milk and Cookies [dish]
+Milk Chocolate + Milk = Chocolate Milk [dish]
+Beans + Milk = Soy Milk [dish]
+Soy Milk + Clock = Tofu
+Nuts + Water = Almond Milk [dish]
+Yogurt + Granola = Parfait [dish]
+Yogurt + Fridge = Frozen Yogurt [dish]
+Yogurt + Cucumber = Tzatziki
+Mayonnaise + Herbs = Ranch
+
+## More cheese
+Cheese + Pot = Fondue [dish]
+Cheese + Knife = Sliced Cheese
+Cheese + Milk = Cottage Cheese
+Cheese + Butter = Brie
+Cheese + Chili Pepper = Pepper Jack
+Cheese + Tortilla = Quesadilla [dish]
+Mozzarella + Stove = Mozzarella Sticks [dish]
+Crackers + Cheese = Cheese and Crackers [dish]
+Crackers + Ham = Lunchables [dish]
+
+## Meat
+Meat + Vegetables = Kebab [dish]
+Meat + Pot = Stew [dish]
+Meat + Oven = Roast
+Meat + Stove = Steak
+Meat + Knife = Cold Cuts
+Meat + Clock = Jerky
+Sausage + Clock = Salami
+Meat + Meat = Meatloaf [dish]
+Meat + Water = Broth
+Meat + Tortilla = Taco [dish]
+Meat + Beans = Chili [dish]
+Pork + Knife = Pork Chop [dish]
+Pork + Barbecue = Pulled Pork [dish]
+Beef + Pot = Beef Stew [dish]
+Beef + Broccoli = Beef and Broccoli [dish]
+Ground Beef + Breadcrumbs = Meatballs [dish]
+Ground Beef + Oven = Meatloaf
+Ground Beef + Tomato Sauce = Meat Sauce
+Ground Beef + Tortilla = Taco
+Ground Beef + Beans = Chili
+Sausage + Knife = Pepperoni
+Sausage + Cornmeal = Corn Dog [dish]
+Hot Dog + Chili = Chili Dog [dish]
+Chicken + Oven = Rotisserie Chicken [dish]
+Chicken + Pot = Chicken Soup [dish]
+Chicken + Chili Pepper = Buffalo Wings [dish]
+Chicken + Tortilla = Chicken Wrap [dish]
+Fried Chicken + Waffle = Chicken and Waffles [dish]
+Fried Chicken + Tomato Sauce = Chicken Parmesan [dish]
+Fried Chicken + Fried Chicken = Bucket of Chicken [dish]
+Turkey + Oven = Thanksgiving Dinner [dish]
+
+## Fish and the sea
+Ocean + Animal = Seafood
+Ocean + Salt = Sea Salt
+Ocean + Plant = Seaweed
+Ocean + Fish = Tuna
+Fish + Knife = Sashimi [dish]
+Fish + Salt = Anchovies
+Fish + Stove = Fried Fish [dish]
+Fish + Breadcrumbs = Fish Sticks [dish]
+Fish + French Fries = Fish and Chips [dish]
+Fish + Clock = Spoiled
+Seafood + Butter = Lobster
+Seafood + Stove = Shrimp
+Seafood + Knife = Crab
+Seafood + Pot = Seafood Boil [dish]
+Seafood + Lemon = Oysters [dish]
+Sushi + Avocado = California Roll [dish]
+Sushi + Burrito = Sushirrito [dish]
+Sushi + Pizza = Sushi Pizza [dish]
+
+## Beans, nuts and coffee
+Beans + Water = Coffee [dish]
+Beans + Oven = Baked Beans [dish]
+Beans + Blender = Hummus [dish]
+Beans + Clock = Soy Sauce
+Beans + Sugar = Jelly Beans [dish]
+Beans + Tortilla = Burrito
+Peanuts + Tree = Nuts
+Nuts + Chocolate = Nutella
+Nuts + Candy = Trail Mix [dish]
+Tree + Water = Coconut
+Coffee + Coffee = Espresso [dish]
+Espresso + Milk = Cappuccino [dish]
+Coffee + Fridge = Iced Coffee [dish]
+Coffee + Ice = Iced Coffee
+Coffee + Clock = Cold Brew [dish]
+Coffee + Chocolate = Mocha [dish]
+Coffee + Whipped Cream = Frappuccino [dish]
+Latte + Spices = Pumpkin Spice Latte [dish]
+
+## Tea and drinks
+Tea + Sugar = Sweet Tea [dish]
+Tea + Fridge = Iced Tea [dish]
+Tea + Clock = Kombucha [dish]
+Tea + Blender = Matcha
+Tea + Plant = Green Tea [dish]
+Matcha + Milk = Matcha Latte [dish]
+Iced Tea + Lemonade = Arnold Palmer [dish]
+Sparkling Water + Sugar = Soda
+Soda + Caramel = Cola [dish]
+Soda + Lemon = Sprite [dish]
+Soda + Orange = Fanta [dish]
+Soda + Beer = Root Beer [dish]
+Soda + Ice Cream = Float [dish]
+Ice + Syrup = Snow Cone [dish]
+Ice + Blender = Slushie [dish]
+Ice + Stove = Water
+Chocolate + Pot = Hot Chocolate
+
+## Snacks
+Potato + Oven = Baked Potato [dish]
+Potato + Pot = Mashed Potatoes [dish]
+Potato + Salad = Potato Salad [dish]
+Mashed Potatoes + Stove = Hash Browns [dish]
+Potato + Clock = Vodka [dish]
+French Fries + Cheese = Cheese Fries [dish]
+Broth + Flour = Gravy
+Cheese Fries + Gravy = Poutine [dish]
+Potato Chips + Vinegar = Salt and Vinegar Chips [dish]
+Potato Chips + Barbecue = BBQ Chips [dish]
+Tortilla Chips + Chili Pepper = Takis [dish]
+Cheetos + Chili Pepper = Flamin' Hot Cheetos [dish]
+Guacamole + Tortilla Chips = Chips and Guac [dish]
+Avocado + Blender = Guacamole
+Salsa + Tortilla Chips = Chips and Salsa [dish]
+Smoothie + Granola = Smoothie Bowl [dish]
+
+## Sauces
+Tomato + Sugar = Ketchup
+Tomato + Broth = Tomato Soup [dish]
+Ketchup + Barbecue = BBQ Sauce
+Hot Sauce + Garlic = Sriracha
+Onion + Broth = French Onion Soup [dish]
+Soy Sauce + Broth = Miso Soup [dish]
+Tomato Soup + Grilled Cheese = Soup and Sandwich [dish]
+
+## Candy and chocolate
+Candy + Fruit = Skittles [dish]
+Candy + Blender = Cotton Candy [dish]
+Candy + Tree = Lollipop [dish]
+Candy + Chocolate = Candy Bar [dish]
+Candy + Lemon = Sour Patch Kids [dish]
+Chocolate + Oven = Brownie [dish]
+Chocolate + Chocolate = Dark Chocolate
+Chocolate + Butter = Fudge
+Chocolate + Cream = White Chocolate
+Chocolate + Strawberry = Chocolate-Covered Strawberry [dish]
+Chocolate + Crackers = Kit Kat [dish]
+Cookie + Caramel = Twix [dish]
+Cookie + Cream = Oreo [dish]
+Cookie + Ice Cream = Ice Cream Sandwich [dish]
+Cookie + Oats = Oatmeal Cookie [dish]
+
+## Ice cream
+Ice Cream + Whipped Cream = Sundae [dish]
+Ice Cream + Fudge = Sundae
+Ice Cream + Banana = Banana Split [dish]
+Ice Cream + Waffle = Ice Cream Cone [dish]
+Ice Cream + Oreo = Cookies and Cream [dish]
+Ice Cream + M&M's = McFlurry [dish]
+Milkshake + Chocolate = Chocolate Milkshake [dish]
+
+## Pasta and pizza
+Pasta + Tomato Sauce = Spaghetti [dish]
+Pasta + Broth = Ramen [dish]
+Pasta + Oven = Lasagna [dish]
+Pasta + Cream = Alfredo [dish]
+Pasta + Pesto = Pesto Pasta [dish]
+Pasta + Bacon = Carbonara [dish]
+Pasta + Soy Sauce = Lo Mein [dish]
+Pasta + Meat Sauce = Spaghetti Bolognese [dish]
+Spaghetti + Meatballs = Spaghetti and Meatballs [dish]
+Chicken Soup + Pasta = Chicken Noodle Soup [dish]
+Pizza + Pepperoni = Pepperoni Pizza [dish]
+Pizza + Pineapple = Hawaiian Pizza [dish]
+Pizza + Cheese = Stuffed Crust Pizza [dish]
+Pizza + Pot = Deep Dish Pizza [dish]
+Pizza + Dough = Calzone [dish]
+Pizza + Bagel = Pizza Bagel [dish]
+Pizza + Taco = Mexican Pizza [dish]
+
+## Fast food
+Burger + Burger = Big Mac [dish]
+Burger + Stove = Whopper [dish]
+Burger + Fish = Filet-O-Fish [dish]
+Burger + Bacon = Bacon Burger [dish]
+Cheeseburger + Cheeseburger = Double Cheeseburger [dish]
+Chicken Nuggets + French Fries = Happy Meal [dish]
+Pancakes + Sausage = McGriddle [dish]
+Muffin + Egg = Egg McMuffin [dish]
+Taco + Doritos = Doritos Locos Taco [dish]
+Burrito + Tortilla Chips = Crunchwrap Supreme [dish]
+
+## The bin, earned
+Steak + Stove = Burnt
+Fried Egg + Stove = Burnt
+Ice Cream + Ketchup = Slop [trash]
+Soda + Chicken Soup = Slop
