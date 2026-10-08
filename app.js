@@ -149,3 +149,59 @@
     })
     .catch(() => { /* no counter today */ });
 })();
+
+/* =========================================================================
+   Your name, up in the header: the one every game uses (you.js). Click it
+   to type a new one; Enter or clicking away saves, Escape backs out.
+   ========================================================================= */
+(function yourName() {
+  const wrap = document.getElementById("you");
+  const Y = window.KmuftiYou;
+  if (!wrap || !Y) return;
+  const chip = document.getElementById("youChip");
+  const text = document.getElementById("youText");
+  const dot = document.getElementById("youDot");
+  const input = document.getElementById("youInput");
+
+  const show = () => {
+    text.textContent = Y.name();
+    dot.style.background = Y.color();
+  };
+  const edit = () => {
+    input.value = Y.name();
+    chip.hidden = true;
+    input.hidden = false;
+    input.focus();
+    input.select();
+  };
+  const done = (save) => {
+    if (input.hidden) return;
+    if (save) Y.setName(input.value);
+    input.hidden = true;
+    chip.hidden = false;
+    show();
+  };
+
+  chip.addEventListener("click", edit);
+  // A fresh random name, with a little tumble so it feels like a roll.
+  const roll = document.getElementById("youRoll");
+  roll.addEventListener("pointerdown", (e) => e.preventDefault());   // don't blur an open edit first
+  roll.addEventListener("click", () => {
+    let n = Y.randomName();
+    for (let i = 0; i < 5 && n === Y.name(); i++) n = Y.randomName();
+    Y.setName(n);
+    done(false);
+    show();
+    roll.classList.remove("rolling");
+    void roll.offsetWidth;                     // restart the animation
+    roll.classList.add("rolling");
+  });
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") done(true);
+    else if (e.key === "Escape") done(false);
+  });
+  input.addEventListener("blur", () => done(true));
+  Y.onChange(show);
+  show();
+  wrap.hidden = false;
+})();

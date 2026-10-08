@@ -125,6 +125,87 @@ a {
   white-space: nowrap;
 }
 
+/* Your name in every game. The label follows the header's lowercase; the
+   name itself is shown exactly as you typed it. */
+.header-you {
+  color: var(--ink-dim);
+  white-space: nowrap;
+}
+.you-chip,
+.you-input {
+  font: inherit;
+  letter-spacing: 1px;
+  text-transform: none;
+  color: var(--ink);
+}
+.you-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: 4px;
+  padding: 2px 9px;
+  background: none;
+  border: 1px dashed transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.you-chip[hidden] { display: none; }   /* inline-flex would otherwise beat [hidden] */
+.you-chip:hover,
+.you-chip:focus-visible {
+  border-color: var(--ink-dim);
+  outline: none;
+}
+.you-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.you-input {
+  width: 19ch;
+  margin-left: 4px;
+  padding: 2px 9px;
+  background: transparent;
+  border: 1px solid var(--ink-dim);
+  border-radius: 999px;
+  outline: none;
+}
+
+.you-roll {
+  margin-left: 2px;
+  padding: 2px 4px;
+  background: none;
+  border: 0;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.55;
+  filter: grayscale(1);
+  transition: opacity 0.15s ease, filter 0.15s ease;
+}
+.you-roll:hover,
+.you-roll:focus-visible {
+  opacity: 1;
+  filter: none;
+  outline: none;
+}
+.you-roll.rolling { animation: you-roll 0.45s cubic-bezier(.3, 1.4, .5, 1); }
+@keyframes you-roll {
+  0%   { transform: rotate(0) scale(1); }
+  50%  { transform: rotate(200deg) scale(1.25); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* Phones: the header wraps rather than overlapping, and the name stands on
+   its own (the coloured dot says enough). */
+@media (max-width: 600px) {
+  .site-header { flex-wrap: wrap; row-gap: 6px; }
+  .header-left { flex-wrap: wrap; row-gap: 4px; }
+  .you-label { display: none; }
+  .you-chip, .you-input { margin-left: -9px; }
+}
+
 .header-link {
   color: var(--ink-dim);
   transition: color 0.15s ease;

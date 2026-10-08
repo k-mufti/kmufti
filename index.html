@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@1,600;1,700&family=Inter:wght@100;200;300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=31" />
+  <link rel="stylesheet" href="styles.css?v=35" />
 </head>
 <body>
   <header class="site-header">
@@ -18,6 +18,13 @@
       <!-- Filled in by app.js from the counter; stays out of the way if the
            backend is down. -->
       <span class="header-users" id="visitCount" hidden></span>
+      <!-- Your name in every game (you.js). Click to change it. -->
+      <span class="header-you" id="you" hidden>
+        <span class="you-label">playing as</span>
+        <button type="button" class="you-chip" id="youChip" title="your name in every game - click to change"><span class="you-dot" id="youDot"></span><span id="youText"></span></button>
+        <input class="you-input" id="youInput" maxlength="18" spellcheck="false" autocomplete="nickname" aria-label="your name in every game" hidden />
+        <button type="button" class="you-roll" id="youRoll" title="roll a random name" aria-label="roll a random name">🎲</button>
+      </span>
     </span>
     <a class="header-link" href="https://kareemmuftee.com">kareemmuftee.com &rarr;</a>
   </header>
@@ -55,9 +62,10 @@
     <p class="deep-caption">made by kareem muftee · <a href="then/">what it used to look like</a></p>
   </footer>
 
+  <script src="you.js?v=2"></script>
   <script src="projects.js?v=14"></script>
   <script src="artwork.js?v=40"></script>
-  <script src="app.js?v=16"></script>
+  <script src="app.js?v=18"></script>
   <!-- layout mode for trying tile orders; does nothing off localhost -->
   <script src="reorder.js?v=2"></script>
   <script type="importmap">{ "imports": {

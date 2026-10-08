@@ -31,10 +31,14 @@ function identity() {
   return id;
 }
 
+// Your name is the one you have across all of kmufti.com (../you.js, loaded
+// by index.html). The old Yahtzee-only key is the fallback if it didn't load.
 export function loadName() {
+  if (window.KmuftiYou) return window.KmuftiYou.name();
   try { return localStorage.getItem("yahtzee-name") || ""; } catch { return ""; }
 }
 export function saveName(n) {
+  if (window.KmuftiYou) { window.KmuftiYou.setName(n); return; }
   try { localStorage.setItem("yahtzee-name", n); } catch { /* fine */ }
 }
 

@@ -51,6 +51,7 @@ the visitor's `localStorage`.
 index.html  styles.css  app.js   the launcher page
 projects.js                      the tile list (one object per project)
 artwork.js                       tile artwork, drawn in code
+you.js                           your name + colour, shared by every game
 <project>/                       one folder per app, each self-contained
 draw/server.js                   white-canvas backend (no frontend of its own)
 admin/                           the private ops dashboard (not linked from the hub)

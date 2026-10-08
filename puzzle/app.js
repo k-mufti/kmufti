@@ -54,9 +54,12 @@
     myId = "p" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
     remember("kmufti-puzzle-id", myId);
   }
-  let myName = store("kmufti-puzzle-name", "");
+  // Your name and colour are the ones you have across all of kmufti.com
+  // (../you.js). The old Jigsaw-only keys are the fallback if it didn't load.
+  const You = window.KmuftiYou;
+  let myName = You ? You.name() : store("kmufti-puzzle-name", "");
   if (!myName) { myName = pick(ADJECTIVES) + " " + pick(NOUNS); remember("kmufti-puzzle-name", myName); }
-  let myColor = store("kmufti-puzzle-color", "");
+  let myColor = You ? You.color() : store("kmufti-puzzle-color", "");
   if (!/^#[0-9a-f]{6}$/i.test(myColor)) { myColor = pick(COLORS); remember("kmufti-puzzle-color", myColor); }
   let soundOn = store("kmufti-puzzle-sound", "on") !== "off";
 
@@ -747,10 +750,17 @@
     const v = youName.value.trim().slice(0, 18) || myName;
     youName.value = v;
     if (v === myName) return;
-    myName = v;
-    remember("kmufti-puzzle-name", myName);
+    myName = You ? You.setName(v) : v;
+    if (!You) remember("kmufti-puzzle-name", myName);
     send({ t: "name", name: myName, color: myColor });
   }
+  // Renamed somewhere else (the hub, or another tab): tell the table.
+  You?.onChange(({ name }) => {
+    if (name === myName) return;
+    myName = name;
+    if (document.activeElement !== youName) youName.value = myName;
+    send({ t: "name", name: myName, color: myColor });
+  });
   youName.addEventListener("change", commitName);
   youName.addEventListener("blur", commitName);
   youName.addEventListener("keydown", (e) => { if (e.key === "Enter") youName.blur(); });

@@ -18,7 +18,7 @@
 import { DiceTable } from "./dice3d.js?v=13";
 import * as R from "./rules.js?v=7";
 import * as BOT from "./bot.js?v=7";
-import { Net, loadName, saveName } from "./net.js?v=7";
+import { Net, loadName, saveName } from "./net.js?v=8";
 
 const $ = (id) => document.getElementById(id);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -528,7 +528,9 @@ function ensureNet() {
   return net;
 }
 
-const currentName = () => ($("name").value || "").trim().slice(0, 18) || "anon";
+// An emptied box keeps the name you already have (it's shared with every
+// other game now, so "anon" would rename you everywhere).
+const currentName = () => ($("name").value || "").trim().slice(0, 18) || loadName() || "anon";
 
 /* ---------------- lobby ---------------- */
 
