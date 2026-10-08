@@ -210,6 +210,15 @@ a { color: inherit; text-decoration: none; }
   100% { transform: scale(1); }
 }
 .snap-flash { animation: thunk 260ms ease-out; transform-box: fill-box; transform-origin: center; }
+/* Two loose pieces clicking together. A brightness glint, NOT a scale: a loose
+   piece's position lives in its transform, so animating transform (like the
+   thunk above, which is only ever used on pieces already home) would yank it
+   back onto the board for the length of the animation. */
+@keyframes glint {
+  0%   { filter: brightness(1.45); }
+  100% { filter: brightness(1); }
+}
+.join-flash { animation: glint 320ms ease-out; }
 
 /* ---------- Cursors ----------------------------------------------------- */
 .cursor { transition: transform 90ms linear; pointer-events: none; }

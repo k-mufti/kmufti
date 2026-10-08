@@ -100,12 +100,12 @@
   /* ---------- World state ------------------------------------------------ */
   let board = null;          // { x, y, w, h }
   let cols = 0, rows = 0, pw = 0, ph = 0;
-  let pieces = [];           // server-known [{ x, y, placed }]
+  let pieces = [];           // server-known [{ x, y, placed, g }] - g: the group it's joined into
   let nodes = [];            // per piece: { g, hold }
   let total = 0, placedCount = 0;
   let holders = new Map();   // pieceIndex -> peerId
   const peers = new Map();   // peerId -> { name, color, x, y, el }
-  let drag = null;           // { i, offX, offY, fromX, fromY }
+  let drag = null;           // { i, offX, offY, members, from } - i is the piece under your hand
   let finaleEl = null;
   let ws = null, retry = 0, helloSent = false;
 
@@ -186,7 +186,7 @@
     ph = board.h / rows;
     total = init.pieces.length;
     placedCount = init.placedCount;
-    pieces = init.pieces.map((p) => ({ x: p.x, y: p.y, placed: p.placed }));
+    pieces = init.pieces.map((p, i) => ({ x: p.x, y: p.y, placed: p.placed, g: Number.isInteger(p.g) ? p.g : i }));
     nodes = [];
     holders = new Map();
     drag = null;
@@ -278,7 +278,30 @@
     return { x: board.x + (i % cols) * pw, y: board.y + ((i / cols) | 0) * ph };
   }
 
+  // Every piece joined to piece i (itself included). Joined pieces always sit
+  // as they do in the finished picture, so one spot places them all.
+  function membersOf(i) {
+    const g = pieces[i].g, out = [];
+    for (let k = 0; k < pieces.length; k++) if (pieces[k].g === g) out.push(k);
+    return out;
+  }
+  function moveGroup(members, i, x, y) {
+    const hi = homeOf(i);
+    for (const k of members) {
+      const hk = homeOf(k);
+      pieces[k].x = x + hk.x - hi.x;
+      pieces[k].y = y + hk.y - hi.y;
+      applyPiece(k);
+    }
+  }
+  const inDrag = (k) => drag && drag.members.includes(k);
+
+  // Holding a piece holds everything joined to it.
   function paintHold(i, by) {
+    if (!pieces[i]) return;
+    for (const k of membersOf(i)) paintHoldOne(k, by);
+  }
+  function paintHoldOne(i, by) {
     const n = nodes[i];
     if (!n) return;
     if (by == null) {
@@ -316,9 +339,15 @@
     if (!p || p.placed) return;
     if (holders.has(i) && holders.get(i) !== myId) return; // in someone else's hands
     const at = stageXY(e);
-    drag = { i, offX: at.x - p.x, offY: at.y - p.y, fromX: p.x, fromY: p.y };
-    nodes[i].g.classList.add("dragging");
-    looseLayer.appendChild(nodes[i].g);
+    const members = membersOf(i);
+    drag = {
+      i, offX: at.x - p.x, offY: at.y - p.y, members,
+      from: members.map((k) => [k, pieces[k].x, pieces[k].y]),
+    };
+    for (const k of members) {
+      nodes[k].g.classList.add("dragging");
+      looseLayer.appendChild(nodes[k].g);
+    }
     send({ t: "grab", p: i });
     try { svg.setPointerCapture(e.pointerId); } catch { /* not captureable */ }
     e.preventDefault();
@@ -331,9 +360,7 @@
 
     if (drag) {
       const p = pieces[drag.i];
-      p.x = at.x - drag.offX;
-      p.y = at.y - drag.offY;
-      applyPiece(drag.i);
+      moveGroup(drag.members, drag.i, at.x - drag.offX, at.y - drag.offY);
       if (now - lastMoveSend > 30) {
         lastMoveSend = now;
         send({ t: "move", x: Math.round(p.x), y: Math.round(p.y) });
@@ -348,7 +375,7 @@
   function endDrag(e) {
     if (!drag) return;
     const i = drag.i, p = pieces[i];
-    nodes[i].g.classList.remove("dragging");
+    for (const k of drag.members) nodes[k].g.classList.remove("dragging");
     drag = null;
     send({ t: "drop", x: Math.round(p.x), y: Math.round(p.y) });
     if (e) { try { svg.releasePointerCapture(e.pointerId); } catch { /* fine */ } }
@@ -994,7 +1021,7 @@
           p.el.style.transform = `translate(${x}px, ${y}px)`;
         }
         for (const [i, x, y] of m.pos) {
-          if (drag && drag.i === i) continue;      // your own hand wins locally
+          if (inDrag(i)) continue;                 // your own hand wins locally
           if (!pieces[i] || pieces[i].placed) continue;
           pieces[i].x = x; pieces[i].y = y;
           applyPiece(i);
@@ -1004,7 +1031,7 @@
 
       case "shuffled": {
         for (const [i, x, y] of m.pos) {
-          if (drag && drag.i === i) continue;     // your own hand wins locally
+          if (inDrag(i)) continue;                // your own hand wins locally
           if (!pieces[i] || pieces[i].placed) continue;
           pieces[i].x = x; pieces[i].y = y;
           applyPiece(i);
@@ -1021,38 +1048,67 @@
       case "freed":
         holders.delete(m.p);
         paintHold(m.p, null);
-        if (drag && drag.i === m.p) { nodes[m.p].g.classList.remove("dragging"); drag = null; }
+        if (drag && drag.i === m.p) { for (const k of drag.members) nodes[k].g.classList.remove("dragging"); drag = null; }
         break;
+
+      // Pieces clicked together somewhere on the table: one group from now on.
+      case "joined": {
+        for (const [i, x, y] of m.pos) {
+          if (!pieces[i]) continue;
+          pieces[i].g = m.g;
+          pieces[i].x = x; pieces[i].y = y;
+          applyPiece(i);
+        }
+        for (const i of m.ps) if (pieces[i]) pieces[i].g = m.g;
+        // Everything already in the group it joined keeps its spot; make sure
+        // it's on top with the newcomers so the group reads as one.
+        for (const i of membersOf(m.ps[0])) {
+          const n = nodes[i];
+          if (!n) continue;
+          looseLayer.appendChild(n.g);
+          n.g.classList.add("join-flash");
+          setTimeout(() => n.g.classList.remove("join-flash"), 340);
+        }
+        play("click", m.by === myId ? 0.7 : 0.4);
+        break;
+      }
 
       case "deny": {
         // Someone beat you to it (or it's already home). Put it back where it
         // was before your hand landed on it.
         if (drag && drag.i === m.p) {
-          pieces[m.p].x = drag.fromX;
-          pieces[m.p].y = drag.fromY;
-          nodes[m.p].g.classList.remove("dragging");
+          for (const [k, x, y] of drag.from) {
+            pieces[k].x = x; pieces[k].y = y;
+            nodes[k].g.classList.remove("dragging");
+            applyPiece(k);
+          }
           drag = null;
-          applyPiece(m.p);
         }
         break;
       }
 
       case "placed": {
-        holders.delete(m.p);
-        const p = pieces[m.p];
-        if (p) {
-          p.placed = true;
-          p.x = homeOf(m.p).x;
-          p.y = homeOf(m.p).y;
+        // One piece, or a whole joined group going home at once.
+        const ps = m.ps || [m.p];
+        for (const i of ps) {
+          holders.delete(i);
+          paintHoldOne(i, null);
         }
-        paintHold(m.p, null);
-        if (drag && drag.i === m.p) drag = null;
-        const n = nodes[m.p];
-        if (n) {
-          n.g.classList.remove("dragging");
-          applyPiece(m.p);
-          n.g.classList.add("snap-flash");
-          setTimeout(() => n.g.classList.remove("snap-flash"), 300);
+        if (drag && ps.includes(drag.i)) drag = null;
+        for (const i of ps) {
+          const p = pieces[i];
+          if (p) {
+            p.placed = true;
+            p.x = homeOf(i).x;
+            p.y = homeOf(i).y;
+          }
+          const n = nodes[i];
+          if (n) {
+            n.g.classList.remove("dragging");
+            applyPiece(i);
+            n.g.classList.add("snap-flash");
+            setTimeout(() => n.g.classList.remove("snap-flash"), 300);
+          }
         }
         placedCount = m.count;
         play("click", m.by.id === myId ? 1 : 0.55);
