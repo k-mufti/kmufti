@@ -23,16 +23,28 @@ export function onPicture(redraw) { REDRAW = redraw; }
 const CW = 512, CH = 600;          // canvas size; the card is the same shape
 const PAD = 22, PHOTO_H = 410;
 
-function blankFace(g) {
+// A cuisine's dish gets a band of its colors along the bottom edge.
+const STRIPE_H = 30;
+function blankFace(g, stripe) {
   g.clearRect(0, 0, CW, CH);
   g.fillStyle = "#f7f0e2";
+  g.beginPath();
+  g.roundRect(4, 4, CW - 8, CH - 8, 34);
+  g.fill();
+  if (stripe) {
+    g.save();
+    g.clip();
+    const w = (CW - 8) / stripe.length;
+    stripe.forEach((c, i) => { g.fillStyle = c; g.fillRect(4 + i * w, CH - 4 - STRIPE_H, w + 1, STRIPE_H); });
+    g.restore();
+  }
   g.strokeStyle = "#c9b995";
   g.lineWidth = 6;
   g.beginPath();
   g.roundRect(4, 4, CW - 8, CH - 8, 34);
-  g.fill();
   g.stroke();
 }
+const stripeOf = (name) => window.kitchenStripe?.(name) || null;
 function writeName(g, name, cx, cy, maxW, start) {
   g.fillStyle = "#3a2a1c";
   g.textAlign = "center";
@@ -46,12 +58,14 @@ function writeName(g, name, cx, cy, maxW, start) {
 }
 // no photo (yet): just the name, big
 function drawName(g, name) {
-  blankFace(g);
-  writeName(g, name, CW / 2, CH / 2, CW - 70, 76);
+  const stripe = stripeOf(name);
+  blankFace(g, stripe);
+  writeName(g, name, CW / 2, (CH - (stripe ? STRIPE_H : 0)) / 2, CW - 70, 76);
 }
 // the photo, cropped to fill its window, with the name underneath
 function drawPhoto(g, name, img) {
-  blankFace(g);
+  const stripe = stripeOf(name);
+  blankFace(g, stripe);
   const w = CW - PAD * 2, h = PHOTO_H;
   const k = Math.max(w / img.width, h / img.height);
   const sw = w / k, sh = h / k;
@@ -61,7 +75,7 @@ function drawPhoto(g, name, img) {
   g.clip();
   g.drawImage(img, (img.width - sw) / 2, (img.height - sh) / 2, sw, sh, PAD, PAD, w, h);
   g.restore();
-  writeName(g, name, CW / 2, PAD + h + (CH - PAD - h) / 2, CW - 50, 84);
+  writeName(g, name, CW / 2, PAD + h + (CH - PAD - h - (stripe ? STRIPE_H : 0)) / 2, CW - 50, 84);
 }
 
 // One face per name, shared by every copy of it: three eggs, one texture.

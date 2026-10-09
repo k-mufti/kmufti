@@ -15,7 +15,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
-import { foodMesh, onPicture } from "./food3d.js";
+import { foodMesh, onPicture } from "./food3d.js?v=2";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js";
@@ -918,8 +918,8 @@ function notepad() {
   return g;
 }
 const BOOK_COLORS = {
-  American: 0x2d4a7a, Italian: 0x8e2a1f, Mexican: 0x2f6b3a, French: 0x1f3565, "Middle Eastern": 0xb07a2a,
-  Indian: 0xc2601e, Chinese: 0xa11d1d, Japanese: 0xe4ddd0, Korean: 0x3a6f78, Thai: 0x5e3a78, "Fast Food": 0xd6a21f,
+  American: 0x2d4a7a, Italian: 0x8e2a1f, Mexican: 0x2f6b3a, "East Asian": 0xa11d1d,
+  Indian: 0xc2601e, "Middle Eastern": 0xb07a2a, "Fast Food": 0xd6a21f,
 };
 const bookGroup = new THREE.Group();
 scene.add(bookGroup);

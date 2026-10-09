@@ -54,7 +54,21 @@
 
   let DATA = null;            // recipes.json
   const RECIPES = new Map();  // "a|b" (sorted) -> result
-  const UNLOCKS = new Map();  // signature dish -> cuisine
+  const UNLOCKS = new Map();  // a cuisine's dish or drink -> the cuisine it unlocks
+  // Each cuisine's colors, for the stripe on its cards: equal bands, left to
+  // right. Generic food has no stripe.
+  const STRIPES = {
+    American: ["#3c3b6e", "#3c3b6e", "#b22234", "#ffffff", "#b22234", "#ffffff", "#b22234", "#ffffff", "#b22234"],
+    Italian: ["#009246", "#ffffff", "#ce2b37"],
+    Mexican: ["#ce1126", "#f2c14e", "#006847"],
+    "East Asian": ["#c8102e", "#ffffff", "#d4a017"],
+    Indian: ["#ff9933", "#ffffff", "#138808"],
+    "Middle Eastern": ["#111111", "#ffffff", "#007a3d", "#ce1126"],
+    "Fast Food": ["#da291c", "#ffc72c"],
+  };
+  const stripeOf = (name) => STRIPES[UNLOCKS.get(name)] || null;
+  window.kitchenStripe = stripeOf;            // the 3D cards use it too (food3d.js)
+  const stripeCss = (cols) => "linear-gradient(90deg, " + cols.map((c, i) => `${c} ${(i * 100) / cols.length}% ${((i + 1) * 100) / cols.length}%`).join(", ") + ")";
   let tab = "ingredient";
 
   // The room is drawn by scene3d.js (window.K3), which loads on its own
@@ -130,7 +144,7 @@
       restart(toolFor(result), "unlocking");
       return;
     }
-    const label = { ingredient: "New ingredient", dish: "New dish", cuisine: "New cuisine", trash: "Into the bin" }[kind];
+    const label = { ingredient: "New ingredient", dish: "New dish", drink: "New drink", cuisine: "New cuisine", trash: "Into the bin" }[kind];
     toast(`${label}: <strong>${esc(result)}</strong>`);
 
     const cuisine = UNLOCKS.get(result);
@@ -815,6 +829,8 @@
     c.dataset.kind = kind;
     c.dataset.name = name;
     c.textContent = name;
+    const stripe = !locked && stripeOf(name);
+    if (stripe) { c.classList.add("regional"); c.style.setProperty("--stripe", stripeCss(stripe)); c.title = UNLOCKS.get(name); }
     return c;
   }
 
@@ -941,14 +957,14 @@
   window.addEventListener("resize", layout);
 
   /* ---------- start ---------- */
-  fetch("recipes.json?v=11")
+  fetch("recipes.json?v=12")
     .then((r) => r.json())
     .then((data) => {
       DATA = data;
       DATA.techniques = Object.keys(data.items).filter((n) => data.items[n] === "technique");
       for (const [a, b, r] of data.combos) RECIPES.set(key(a, b), r);
-      for (const [c, v] of Object.entries(data.cuisines)) UNLOCKS.set(v.unlockedBy, c);
-      TOTALS = { ingredient: 0, dish: 0, technique: 0, cuisine: 0, trash: 0 };
+      for (const [c, v] of Object.entries(data.cuisines)) for (const d of v.dishes || [v.unlockedBy]) UNLOCKS.set(d, c);
+      TOTALS = { ingredient: 0, dish: 0, drink: 0, technique: 0, cuisine: 0, trash: 0 };
       for (const k of Object.values(data.items)) TOTALS[k]++;
 
       load();

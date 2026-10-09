@@ -59,8 +59,12 @@ async function api(params) {
     await new Promise((res) => setTimeout(res, 1000 * 2 ** tries));
   }
 }
-const IMAGE = { prop: "pageimages|pageprops", piprop: "thumbnail", pithumbsize: SIZE, ppprop: "disambiguation" };
-const usable = (p) => p && !p.missing && !p.pageprops && p.thumbnail && !BAD_FILE.test(decodeURIComponent(p.thumbnail.source));
+// An article about a person, a band, a team or a place is never the food,
+// however well its title matches (LaCroix once found an actress).
+const NOT_FOOD = /\b(actor|actress|singer|rapper|musician|band|footballer|player|politician|athlete|wrestler|model|comedian|writer|author|director|producer|businessman|businesswoman|television|film|album|song|novel|video game|town|city|village|county|municipality|river|mountain|island|district|neighbou?rhood|ranch|company|born)\b/i;
+const IMAGE = { prop: "pageimages|pageprops", piprop: "thumbnail", pithumbsize: SIZE, ppprop: "disambiguation|wikibase-shortdesc" };
+const usable = (p) => p && !p.missing && !(p.pageprops && "disambiguation" in p.pageprops) && p.thumbnail
+  && !NOT_FOOD.test(p.pageprops?.["wikibase-shortdesc"] || "") && !BAD_FILE.test(decodeURIComponent(p.thumbnail.source));
 // keep just the part after wikimedia.org/wikipedia/ - the game puts the rest back
 const short = (src) => src.replace(/^https:\/\/[^/]+\/wikipedia\//, "").replace(/\?.*$/, "");
 

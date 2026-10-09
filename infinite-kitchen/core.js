@@ -9,6 +9,13 @@
 // here. Every tool is out from the start, so they're all starters, along
 // with the six elements.
 //
+// Cuisines are cookbooks on the shelf, used like tools once unlocked:
+//   Cuisine: Italian                     there is an Italian cookbook
+//   Italian: Pizza, Lasagna, Gelato      these are Italian - making any of
+//                                        them unlocks it, and their cards
+//                                        get the Italian stripe
+//   Bread + Italian = Focaccia           what the cookbook does to food
+//
 // Two limits keep the set honest, and the build fails past either:
 //   - "nothing happens" (Water + Knife = Water) has to be marked [nothing]
 //     on purpose, and stays under NOTHING_MAX of all combos
@@ -22,7 +29,7 @@ const TOOLS = {
   Stove: "Heat", Oven: "Bake", Pot: "Boil", Knife: "Cut", Blender: "Blend", Clock: "Wait", Fridge: "Freeze",
 };
 const ROOM = Object.fromEntries(Object.entries(TOOLS).map(([room, tech]) => [tech, room]));
-const KINDS = new Set(["ingredient", "dish", "trash"]);
+const KINDS = new Set(["ingredient", "dish", "drink", "trash"]);
 const NOTHING_MAX = 0.05, TRASH_MAX = 0.03, FEW_USES = 3, DEPTHS = 4;
 const LIST = process.argv.includes("--list");
 
@@ -31,10 +38,23 @@ for (const e of ELEMENTS) items[e] = "ingredient";
 for (const t of Object.values(TOOLS)) items[t] = "technique";
 
 const combos = [], seen = new Map(), problems = [], nothing = [];
+const cuisines = {};          // cuisine -> its dishes and drinks
+const cuisineLines = [];
+const marked = {};           // results given a [kind] somewhere
 const lines = fs.readFileSync(path.join(__dirname, "core.txt"), "utf8").split("\n");
 lines.forEach((line, i) => {
   line = line.trim();
   if (!line || line.startsWith("#")) return;
+  const c = line.match(/^Cuisine: (.+)$/);
+  if (c) {
+    if (c[1] in items) problems.push(`line ${i + 1}: ${c[1]} is already a ${items[c[1]]}`);
+    cuisines[c[1]] = [];
+    items[c[1]] = "cuisine";
+    return;
+  }
+  // "Italian: Pizza, Lasagna" - read once every combo is in, so the names exist
+  const t = line.match(/^([^+=]+?): (.+)$/);
+  if (t) return cuisineLines.push([i + 1, t[1], t[2].split(",").map((n) => n.trim())]);
   const m = line.match(/^(.+?) \+ (.+?) = (.+?)(?: \[(\w+)\])?$/);
   if (!m) return problems.push(`line ${i + 1}: can't read "${line}"`);
   const [a, b] = [m[1], m[2]].map((n) => TOOLS[n] || n);
@@ -49,11 +69,26 @@ lines.forEach((line, i) => {
   } else {
     if (kind === "nothing") problems.push(`line ${i + 1}: [nothing] but ${res} is new`);
     else if (kind && !KINDS.has(kind)) problems.push(`line ${i + 1}: unknown kind [${kind}]`);
-    if (!(res in items)) items[res] = kind || "ingredient";
-    else if (kind && items[res] !== kind) problems.push(`line ${i + 1}: ${res} was already a ${items[res]}`);
+    // the [kind] can sit on any one of a result's lines, not just the first
+    if (kind) {
+      if (marked[res] && marked[res] !== kind) problems.push(`line ${i + 1}: ${res} was already marked [${marked[res]}]`);
+      marked[res] = kind;
+      items[res] = kind;
+    } else if (!(res in items)) items[res] = "ingredient";
   }
   combos.push([a, b, res]);
 });
+const cuisineOf = {};
+for (const [ln, c, names] of cuisineLines) {
+  if (!cuisines[c]) { problems.push(`line ${ln}: no "Cuisine: ${c}" line`); continue; }
+  for (const n of names) {
+    if (!(n in items)) problems.push(`line ${ln}: nothing makes ${n}`);
+    else if (items[n] !== "dish" && items[n] !== "drink") problems.push(`line ${ln}: ${n} is a ${items[n]} - only dishes and drinks belong to a cuisine`);
+    else if (cuisineOf[n]) problems.push(`line ${ln}: ${n} is already ${cuisineOf[n]}`);
+    else { cuisineOf[n] = c; cuisines[c].push(n); }
+  }
+}
+for (const [c, list] of Object.entries(cuisines)) if (!list.length) problems.push(`${c} has no dishes, so it can never unlock`);
 // every input has to be something you can actually get
 for (const [a, b] of combos) {
   for (const n of [a, b]) if (!(n in items)) problems.push(`${a} + ${b}: nothing makes ${n}`);
@@ -76,12 +111,18 @@ for (let changed = true; changed;) {
     const d = Math.max(depth.get(a), depth.get(b)) + 1;
     if (!depth.has(r) || d < depth.get(r)) { depth.set(r, d); changed = true; }
   }
+  // a cookbook is in hand as soon as the first of its dishes is
+  for (const [c, list] of Object.entries(cuisines)) {
+    for (const dish of list) {
+      if (depth.has(dish) && (!depth.has(c) || depth.get(dish) < depth.get(c))) { depth.set(c, depth.get(dish)); changed = true; }
+    }
+  }
 }
 const unreachable = Object.keys(items).filter((n) => !depth.has(n));
 
 // Coverage: of every pair you could try using only things within N steps,
 // how many have an answer. Two tools together isn't a pair anyone makes.
-const food = Object.keys(items).filter((n) => !ROOM[n]);
+const food = Object.keys(items).filter((n) => !ROOM[n] && items[n] !== "cuisine");
 const tools = Object.keys(ROOM);
 const coverage = [];
 for (let d = 0; d <= DEPTHS; d++) {
@@ -113,7 +154,7 @@ const trash = combos.filter(([, , r]) => items[r] === "trash").length;
 const pct = (x, of) => (of ? Math.round((x / of) * 1000) / 10 : 0) + "%";
 const count = (k) => Object.values(items).filter((v) => v === k).length;
 
-console.log(`${combos.length} combos: ${count("ingredient")} ingredients, ${count("dish")} dishes, ${count("trash")} in the bin`);
+console.log(`${combos.length} combos: ${count("ingredient")} ingredients, ${count("dish")} dishes, ${count("drink")} drinks, ${count("trash")} in the bin`);
 console.log("\nCoverage - pairs answered among things within N steps of the start:");
 for (const c of coverage) {
   console.log(`  ${c.d} step${c.d === 1 ? " " : "s"}  ${String(c.items).padStart(4)} items  ${pct(c.total - c.gaps.length, c.total).padStart(6)}  (${c.gaps.length} of ${c.total} pairs open)`);
@@ -123,6 +164,14 @@ for (const l of nothing) console.log("  " + l);
 console.log(`Into the bin: ${trash} (${pct(trash, combos.length)}, limit ${TRASH_MAX * 100}%)`);
 console.log(`\nUsed in fewer than ${FEW_USES} combos (fine for iconic items): ${few.length}`);
 console.log("  " + (LIST ? few.map((n) => `${n} (${uses.get(n)})`).join(", ") : few.slice(0, 25).join(", ") + (few.length > 25 ? ", ..." : "")));
+if (Object.keys(cuisines).length) {
+  console.log("\nCookbooks - its dishes, the soonest one to make, combos that use the book:");
+  for (const [c, list] of Object.entries(cuisines)) {
+    const first = list.filter((d) => depth.has(d)).sort((x, y) => depth.get(x) - depth.get(y))[0];
+    const n = combos.filter(([a, b]) => a === c || b === c).length;
+    console.log(`  ${c.padEnd(15)} ${String(list.length).padStart(3)} dishes   soonest: ${(first || "-").padEnd(14)} (${depth.get(c) ?? "-"} steps)  ${String(n).padStart(3)} combos`);
+  }
+}
 if (unreachable.length) console.log(`\nCan't be reached from the start: ${unreachable.join(", ")}`);
 if (LIST) {
   for (const c of coverage) {
@@ -142,7 +191,7 @@ if (over.length) {
 
 const out = {
   starters: ELEMENTS.concat(Object.values(TOOLS)),
-  cuisines: {},
+  cuisines: Object.fromEntries(Object.entries(cuisines).map(([c, list]) => [c, { dishes: list, pantry: [] }])),
   items,
   like: {},
   follows: {},
