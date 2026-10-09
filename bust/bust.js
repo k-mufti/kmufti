@@ -37,7 +37,7 @@ const HIT_R = 0.024;        // radius of the rock one shot knocks out, in metres
 const REWIND = 0.9;         // seconds for restore to undo every shot, newest first
 const GATHER = 0.45;        // ...after this long for fallen chunks to fly back into place
 const MAX_YAW = 0.6;        // how far a drag can turn him, radians either way
-const MAX_CHIPS = 360, MAX_DUST = 48;
+const MAX_CHIPS = 360, MAX_DUST = 110;
 const YAW = 0;              // square to the viewer: he's symmetrical, show it
 const GRAVITY = 2.4;
 const MARBLE_SCALE = 1.6;   // texture repeats per metre: one slab covers about two thirds of the bust
@@ -193,8 +193,9 @@ function start(wrap) {
   scene.add(flash);
   let flashT = 0;
 
-  function puff(at, v, size, grow, life, peak) {
+  function puff(at, v, size, grow, life, peak, color = 0xcfc6b8) {
     const d = dust[dustNext++ % MAX_DUST];
+    d.s.material.color.set(color);
     d.s.position.copy(at);
     d.v.copy(v);
     d.life = d.max = life;
@@ -600,10 +601,14 @@ function start(wrap) {
   //   deep    rock depth, as a multiple of its radius
   //   pellets how many rocks, each on its own ray within spread (NDC units)
   //   every   seconds between shots while held
+  //   beam    the laser: fired continuously while held (see laserSample)
+  //   rocket  fires a projectile that explodes where it lands (see launch)
   const WEAPONS = [
     { name: "pistol", every: 0.12, pellets: 1, spread: 0, r: 1, deep: 1.25, chips: 16, shake: 0.35, sound: (b) => impactSound(b) },
     { name: "shotgun", every: 0.55, pellets: 7, spread: 0.07, r: 0.55, deep: 1.0, chips: 6, shake: 0.8, sound: () => shotgunSound() },
     { name: "sledgehammer", every: 0.9, pellets: 1, spread: 0, r: 2.3, deep: 0.75, chips: 40, shake: 1.6, sound: () => hammerSound() },
+    { name: "laser", every: 0.04, beam: true, r: 0.32, deep: 5, chips: 0, shake: 0.05 },
+    { name: "rocket launcher", every: 1.4, rocket: true, r: 3.0, deep: 1.0, chips: 70, shake: 2.4 },
   ];
   let weapon = WEAPONS[0];
 
@@ -639,6 +644,8 @@ function start(wrap) {
 
   const rnd = (a, b) => a + Math.random() * (b - a);
   function shoot() {
+    if (weapon.beam) return laserSample();
+    if (weapon.rocket) return launch();
     const w = weapon, rocks = [], hits = [];
     let anyBroken = false, hitSomething = false;
     for (let i = 0; i < w.pellets; i++) {
@@ -719,20 +726,241 @@ function start(wrap) {
     }
   }
 
+  // A point just below and right of the camera, where the laser and the
+  // rocket come from: as if from your hand, just out of shot.
+  const muzzle = (out) => out.set(0.34, -0.26, -0.55).applyMatrix4(camera.matrixWorld);
+
+  // ---------- Laser ----------
+  // Held down, it's a beam: drawn every frame from the muzzle to whatever it
+  // touches, and every LASER_EVERY a thin, deep needle of stone is cut where
+  // it lands. Sweep it and the needles join into a clean slice. The needles
+  // are sent to the cutter in batches, so it keeps up with a held beam.
+  const LASER_BATCH = 0.14;   // seconds of beam per message to the cutter
+  const beamCore = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 8, 1, true),
+    new THREE.MeshBasicMaterial({ color: 0xfff6f0, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false }));
+  const beamGlow = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 12, 1, true),
+    new THREE.MeshBasicMaterial({ color: 0xff3a24, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false }));
+  const beamSpot = new THREE.Sprite(new THREE.SpriteMaterial({ map: dustTex, color: 0xff6a3a, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+  const beam = new THREE.Group();
+  beam.add(beamCore, beamGlow);
+  beam.visible = beamSpot.visible = false;
+  beamCore.renderOrder = beamGlow.renderOrder = beamSpot.renderOrder = 10;
+  scene.add(beam, beamSpot);
+  const laser = { on: false, rocks: [], age: 0, end: new THREE.Vector3(), from: new THREE.Vector3(), touching: false };
+  const beamUp = new THREE.Vector3(0, 1, 0), beamDir = new THREE.Vector3();
+
+  // where the beam ends this frame: the first stone along the aim, or far past him
+  function beamTarget() {
+    const hit = pick();
+    laser.touching = !!hit;
+    if (hit) laser.end.copy(hit.point);
+    else { ray.setFromCamera(ndc, camera); laser.end.copy(ray.ray.origin).addScaledVector(ray.ray.direction, 3); }
+    return hit;
+  }
+  function drawBeam(t) {
+    muzzle(laser.from);
+    beamDir.subVectors(laser.end, laser.from);
+    const len = beamDir.length();
+    beam.position.copy(laser.from).addScaledVector(beamDir, 0.5);
+    beam.quaternion.setFromUnitVectors(beamUp, beamDir.normalize());
+    const flick = 0.85 + 0.15 * Math.sin(t * 90) * Math.sin(t * 37);
+    beamCore.scale.set(0.0016 * flick, len, 0.0016 * flick);
+    beamGlow.scale.set(0.006 * flick, len, 0.006 * flick);
+    beam.visible = true;
+    beamSpot.visible = laser.touching;
+    beamSpot.position.copy(laser.end);
+    beamSpot.scale.setScalar(0.03 * flick + (laser.touching ? 0.01 : 0));
+  }
+  function laserStart() {
+    laser.on = true;
+    laser.age = 0;
+    laserHum(true);
+    kick();               // the beam is drawn by the frame loop, so wake it
+  }
+  function laserStop() {
+    if (!laser.on) return;
+    laser.on = false;
+    beam.visible = beamSpot.visible = false;
+    flushLaser();
+    laserHum(false);
+  }
+  function laserSample() {
+    if (!laser.on) laserStart();
+    const hit = beamTarget();
+    if (!hit) return;
+    if (hit.object.userData.piece) { shatter(hit.object.userData.piece, hit, weapon, true); return; }
+    // straight down the beam, a long thin needle sunk well past the surface
+    const local = model.worldToLocal(hit.point.clone());
+    const dirLocal = ray.ray.direction.clone().transformDirection(new THREE.Matrix4().copy(model.matrixWorld).invert());
+    const r = HIT_R * weapon.r * rnd(0.9, 1.1);
+    laser.rocks.push(rockSpec(local, dirLocal, r, 1.2, weapon.deep));
+    lastShotDir.copy(ray.ray.direction);
+    // sparks: a few hot flecks and a wisp of smoke off the cut
+    const n = hit.face.normal.clone().transformDirection(hit.object.matrixWorld);
+    if (n.dot(ray.ray.direction) > 0) n.negate();
+    if (Math.random() < 0.5) {
+      puff(hit.point.clone().addScaledVector(n, 0.004), n.clone().multiplyScalar(0.05).add(new THREE.Vector3(0, 0.04, 0)),
+        0.008, rnd(0.02, 0.04), rnd(0.5, 0.9), 0.35, 0x9a948c);
+    }
+    if (Math.random() < 0.35) chipAt(hit.point, n, 1);
+    laserSizzle();
+    wrap.classList.add("shot");
+    if (restoreBtn) restoreBtn.hidden = false;
+    if (laser.rocks.length && laser.age >= LASER_BATCH) flushLaser();
+  }
+  function flushLaser() {
+    laser.age = 0;
+    if (!laser.rocks.length) return;
+    worker.postMessage({ type: "cut", gen, rocks: laser.rocks });
+    pendingImpacts.push([]);            // a clean cut: no cracks spreading from it
+    laser.rocks = [];
+    uniforms.uDust.value *= 0.7;
+  }
+
+  // ---------- Rocket launcher ----------
+  // A rocket flies from your side of the room to wherever you clicked,
+  // trailing flame and smoke, and goes off: one big crater ringed by smaller
+  // ones, cracks well out past it, rubble everywhere, and anything already
+  // lying on the board thrown clear.
+  const ROCKET_SPEED = 3.2;   // metres a second: slow enough to watch it come
+  const rockets = [];
+  const rocketBody = new THREE.Group();
+  {
+    const metal = new THREE.MeshStandardMaterial({ color: 0x5a5f5a, roughness: 0.45, metalness: 0.6 });
+    const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.07, 10), metal);
+    const nose = new THREE.Mesh(new THREE.ConeGeometry(0.009, 0.022, 10), new THREE.MeshStandardMaterial({ color: 0x9b2a1e, roughness: 0.5 }));
+    nose.position.y = 0.046;
+    const fins = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.016, 0.002), metal);
+    fins.position.y = -0.03;
+    const fins2 = fins.clone();
+    fins2.rotation.y = Math.PI / 2;
+    rocketBody.add(tube, nose, fins, fins2);
+  }
+  function launch() {
+    const hit = pick();
+    if (!hit) return;
+    const from = muzzle(new THREE.Vector3());
+    const mesh = rocketBody.clone();
+    const flame = new THREE.Sprite(new THREE.SpriteMaterial({ map: dustTex, color: 0xffa040, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+    flame.position.y = -0.05;
+    flame.scale.setScalar(0.035);
+    mesh.add(flame);
+    mesh.position.copy(from);
+    mesh.quaternion.setFromUnitVectors(beamUp, hit.point.clone().sub(from).normalize());
+    scene.add(mesh);
+    const dist = from.distanceTo(hit.point);
+    rockets.push({
+      mesh, flame, from, to: hit.point.clone(), t: 0, dur: dist / ROCKET_SPEED,
+      hit: { object: hit.object, face: hit.face, point: hit.point.clone(), dir: ray.ray.direction.clone() },
+      sound: rocketLaunchSound(dist / ROCKET_SPEED),
+    });
+    wrap.classList.add("shot");
+    if (restoreBtn) restoreBtn.hidden = false;
+    shake = Math.max(shake, 0.25);
+    kick();
+  }
+  function stepRockets(dt) {
+    for (let i = rockets.length - 1; i >= 0; i--) {
+      const rk = rockets[i];
+      rk.t += dt;
+      const u = Math.min(1, rk.t / rk.dur);
+      rk.mesh.position.lerpVectors(rk.from, rk.to, u);
+      rk.flame.scale.setScalar(0.03 + Math.random() * 0.02);
+      // smoke: a puff left behind every frame, drifting and spreading
+      const back = rk.to.clone().sub(rk.from).normalize().multiplyScalar(-0.04);
+      puff(rk.mesh.position.clone().add(back), new THREE.Vector3(rnd(-0.02, 0.02), rnd(0.01, 0.04), rnd(-0.02, 0.02)),
+        0.012, rnd(0.05, 0.09), rnd(0.9, 1.5), 0.45, 0xb8b4ae);
+      if (u >= 1) {
+        scene.remove(rk.mesh);
+        rockets.splice(i, 1);
+        explode(rk);
+      }
+    }
+  }
+  function explode(rk) {
+    const { hit } = rk;
+    rk.sound?.stop();
+    const at = hit.point;
+    const w = weapon.rocket ? weapon : WEAPONS.find((x) => x.rocket);
+    // anything on the board nearby is thrown clear
+    for (const pc of pieces) {
+      if (pc.shattered) continue;
+      const away = pc.mesh.position.clone().sub(at);
+      const d = away.length();
+      if (d > 0.32) continue;
+      const push = (1 - d / 0.32) * 1.6;
+      pc.rest = false;
+      pc.v.add(away.normalize().multiplyScalar(push)).add(new THREE.Vector3(0, push * 0.6, 0));
+      pc.w.add(new THREE.Vector3(rnd(-9, 9), rnd(-9, 9), rnd(-9, 9)));
+    }
+    if (hit.object.userData.piece) {
+      // a direct hit on a fallen chunk: it's gone
+      const pc = hit.object.userData.piece;
+      pc.hits = 1e9;
+      shatter(pc, hit, w, true);
+    } else if (blocks.includes(hit.object)) {
+      // one big crater, ringed by smaller ones
+      const local = model.worldToLocal(at.clone());
+      const n = hit.face.normal.clone();
+      const dirLocal = hit.dir.clone().transformDirection(new THREE.Matrix4().copy(model.matrixWorld).invert());
+      if (n.dot(dirLocal) > 0) n.negate();
+      const inward = dirLocal.clone().multiplyScalar(0.5).addScaledVector(n, -0.5).normalize();
+      const R = HIT_R * w.r;
+      const rocks = [rockSpec(local, inward, R * rnd(0.9, 1.1), 0.15, w.deep)];
+      const hits = [new THREE.Vector4(local.x, local.y, local.z, R * 1.5)];
+      for (let k = 0; k < 5; k++) {
+        const off = new THREE.Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalize().multiplyScalar(R * rnd(0.7, 1.1));
+        const p = local.clone().add(off);
+        rocks.push(rockSpec(p, inward, R * rnd(0.4, 0.6), 0.3, 1));
+        hits.push(new THREE.Vector4(p.x, p.y, p.z, R * 0.6));
+      }
+      worker.postMessage({ type: "cut", gen, rocks });
+      pendingImpacts.push(hits);
+      uniforms.uDust.value = 0;
+      lastShotDir.copy(hit.dir);
+    }
+    // the blast: a fireball, a flash, a cloud, rubble everywhere
+    const nw = hit.face.normal.clone().transformDirection(hit.object.matrixWorld);
+    if (nw.dot(hit.dir) > 0) nw.negate();
+    chipAt(at, nw, w.chips);
+    for (let k = 0; k < 14; k++) {
+      puff(at.clone().addScaledVector(nw, 0.02), nw.clone().multiplyScalar(rnd(0.05, 0.2)).add(new THREE.Vector3(rnd(-0.12, 0.12), rnd(0, 0.15), rnd(-0.12, 0.12))),
+        0.025, rnd(0.08, 0.16), rnd(0.9, 1.6), 0.4, k < 4 ? 0x8a8580 : 0xcfc6b8);
+    }
+    fireball.position.copy(at).addScaledVector(nw, 0.03);
+    fireballT = FIREBALL;
+    fireball.visible = true;
+    flash.position.copy(at).addScaledVector(nw, 0.03);
+    flash.scale.setScalar(0.4);
+    flash.visible = true;
+    flashT = 0.08;
+    shake = Math.max(shake, w.shake);
+    board?.classList.remove("thud");
+    void board?.offsetWidth;
+    board?.classList.add("thud");
+    explosionSound();
+    kick();
+  }
+  const FIREBALL = 0.45;
+  const fireball = new THREE.Sprite(new THREE.SpriteMaterial({ map: dustTex, color: 0xff8a30, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+  fireball.visible = false;
+  scene.add(fireball);
+  let fireballT = 0;
+
   // A shot on a fallen chunk chips it, and the last one bursts it into
   // rubble: a small chunk goes in one, a whole head takes a handful.
   // (Restore still brings it back: it reappears where it lay and flies
   // home with the rest.)
-  function shatter(pc, hit, w) {
+  function shatter(pc, hit, w, quiet) {
     const size = pc.mesh.children[0].geometry.boundingSphere.radius;
     pc.hits = (pc.hits || 0) + w.r * w.r;   // a hammer blow counts for a lot more than a pellet
     if (pc.hits < Math.ceil(size * 40)) {
-      chipAt(hit.point, hit.face.normal.clone().transformDirection(hit.object.matrixWorld), 8);
+      chipAt(hit.point, hit.face.normal.clone().transformDirection(hit.object.matrixWorld), w.beam ? (Math.random() < 0.3 ? 1 : 0) : 8);
       pc.rest = false;
-      pc.v.add(lastShotDir.clone().multiplyScalar(0.12)).add(new THREE.Vector3(0, 0.08, 0));
+      pc.v.add(lastShotDir.clone().multiplyScalar(w.beam ? 0.01 : 0.12)).add(new THREE.Vector3(0, w.beam ? 0.004 : 0.08, 0));
       pc.w.add(new THREE.Vector3(rnd(-3, 3), rnd(-3, 3), rnd(-3, 3)));
       shake = Math.max(shake, 0.2);
-      impactSound(true);
+      if (!quiet) impactSound(true);
       kick();
       return;
     }
@@ -761,8 +989,7 @@ function start(wrap) {
     shots++;
     updateStats();
     shake = Math.max(shake, 0.25);
-    impactSound(true);
-    thud(0.4);
+    if (!quiet) { impactSound(true); thud(0.4); }
     kick();
   }
 
@@ -836,6 +1063,9 @@ function start(wrap) {
     gen++;               // anything still being cut is dropped
     pendingImpacts.length = 0;
     pointer.down = false;
+    laser.rocks = [];    // dropped first, or stopping the beam would send them
+    laserStop();
+    for (const rk of rockets.splice(0)) { scene.remove(rk.mesh); rk.sound?.stop(); }
     rewind = {
       t: 0, shots: history.length,
       chips: chips.map((c) => ({ c, at: c.p.clone(), delay: rnd(0, 0.45), lift: rnd(0.03, 0.12) })),
@@ -849,19 +1079,77 @@ function start(wrap) {
     kick();
   });
 
-  // ---------- Sound, synthesized ----------
-  // A shot on marble is three things at once: a hard "tock" (the strike),
-  // a bright crack (the stone giving), and a crumble (grit and chips
-  // landing). Each is randomized a little so a burst never repeats itself.
-  let actx = null, noise = null;
+  // ---------- Sound ----------
+  // Real recordings where they exist (bust/sfx: Kenney's CC0 packs -- rock
+  // struck with a pick, grit, explosions, a laser, a thruster), layered with
+  // synthesis for what no recording does (a gun's crack, a beam's hum). Every
+  // sound goes through one mix: a small room's reverb so it all sits in the
+  // same space, and a limiter so a burst of fire never clips.
+  const SFX = {
+    stone: 5, grit: 5, blast: 4, boom: 2, zap: 3, thrust: 1,
+  };
+  let actx = null, noise = null, out = null, verb = null, sfx = null;
   function audio() {
-    if (!actx) {
-      actx = new (window.AudioContext || window.webkitAudioContext)();
-      noise = actx.createBuffer(1, actx.sampleRate * 1.2, actx.sampleRate);
-      const d = noise.getChannelData(0);
-      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    if (actx) return actx;
+    actx = new (window.AudioContext || window.webkitAudioContext)();
+    noise = actx.createBuffer(1, actx.sampleRate * 1.2, actx.sampleRate);
+    const d = noise.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    // the mix: everything into `out`, a share of it into the room
+    const limit = actx.createDynamicsCompressor();
+    limit.threshold.value = -10; limit.knee.value = 8; limit.ratio.value = 8;
+    limit.attack.value = 0.002; limit.release.value = 0.18;
+    const master = actx.createGain();
+    master.gain.value = 0.9;
+    out = actx.createGain();
+    out.connect(limit);
+    verb = actx.createConvolver();
+    verb.buffer = room(1.4);
+    const wet = actx.createGain();
+    wet.gain.value = 0.22;
+    out.connect(verb).connect(wet).connect(limit);
+    limit.connect(master).connect(actx.destination);
+    // the recordings, fetched once, the first time anything makes a sound
+    sfx = {};
+    for (const [name, n] of Object.entries(SFX)) {
+      sfx[name] = [];
+      for (let i = 0; i < n; i++) {
+        const file = n > 1 ? `${name}-${i}` : name;
+        fetch(new URL(`sfx/${file}.mp3`, import.meta.url))
+          .then((r) => r.arrayBuffer())
+          .then((b) => actx.decodeAudioData(b))
+          .then((buf) => { sfx[name][i] = buf; })
+          .catch(() => { /* that one stays synthesized */ });
+      }
     }
     return actx;
+  }
+  // a small stone room: decaying stereo noise, brighter at the start
+  function room(seconds) {
+    const n = Math.floor(actx.sampleRate * seconds), ir = actx.createBuffer(2, n, actx.sampleRate);
+    for (let c = 0; c < 2; c++) {
+      const ch = ir.getChannelData(c);
+      for (let i = 0; i < n; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 3.2);
+    }
+    return ir;
+  }
+  // play a recording (a random take of it), or say it isn't loaded yet
+  function play(name, { at = actx.currentTime, gain = 1, rate = 1, take, dur } = {}) {
+    const list = sfx?.[name];
+    const buf = list && list[take ?? Math.floor(Math.random() * list.length)];
+    if (!buf) return null;
+    const src = actx.createBufferSource(), g = actx.createGain();
+    src.buffer = buf;
+    src.playbackRate.value = rate;
+    g.gain.value = gain;
+    src.connect(g).connect(out);
+    src.start(at);
+    if (dur) {
+      g.gain.setValueAtTime(gain, at + dur - 0.08);
+      g.gain.linearRampToValueAtTime(0.0001, at + dur);
+      src.stop(at + dur + 0.02);
+    }
+    return { src, g };
   }
   function burst(t, { type = "bandpass", f0, f1, q = 1, gain, dur, offset = 0 }) {
     const src = actx.createBufferSource(), f = actx.createBiquadFilter(), g = actx.createGain();
@@ -873,7 +1161,7 @@ function start(wrap) {
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(gain, t + 0.004);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    src.connect(f).connect(g).connect(actx.destination);
+    src.connect(f).connect(g).connect(out);
     src.start(t, offset || Math.random() * 0.6);
     src.stop(t + dur + 0.02);
   }
@@ -885,25 +1173,35 @@ function start(wrap) {
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(gain, t + 0.003);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    o.connect(g).connect(actx.destination);
+    o.connect(g).connect(out);
     o.start(t);
     o.stop(t + dur + 0.02);
+  }
+  // a gun going off: a sharp crack and a short low punch
+  function report(t, size = 1) {
+    burst(t, { type: "highpass", f0: 1800, q: 0.5, gain: 0.32 * size, dur: 0.035 });
+    burst(t, { type: "lowpass", f0: 1600, f1: 180, q: 0.7, gain: 0.26 * size, dur: 0.11 * size });
+    tone(t, 140 / size, 45, 0.3 * size, 0.09 * size);
+  }
+  // stone giving way, then grit settling: the recordings, or synthesis
+  function stoneHit(t, { gain = 0.7, rate = 1, grit = 4 } = {}) {
+    if (!play("stone", { at: t, gain, rate: rate * rnd(0.92, 1.1) })) {
+      tone(t, 900 * rate, 160, 0.18 * gain, 0.06, "triangle");
+      burst(t + 0.004, { f0: rnd(1500, 2400), f1: 420, q: 0.8, gain: 0.12 * gain, dur: 0.22 });
+    }
+    for (let i = 0; i < grit; i++) {
+      const at = t + 0.06 + Math.pow(Math.random(), 1.5) * 0.45;
+      if (!play("grit", { at, gain: rnd(0.12, 0.3) * gain, rate: rnd(0.9, 1.5) }))
+        burst(at, { type: "highpass", f0: rnd(2500, 6000), q: 0.7, gain: rnd(0.012, 0.03), dur: rnd(0.012, 0.03) });
+    }
   }
   function impactSound(broken) {
     try {
       audio();
-      const t = actx.currentTime, pitch = rnd(0.85, 1.2);
-      // the strike: duller once he's already broken there
-      tone(t, (broken ? 520 : 900) * pitch, 160 * pitch, 0.18, 0.06, "triangle");
-      burst(t, { f0: rnd(2600, 3600) * pitch, f1: 900, q: 1.4, gain: 0.12, dur: 0.07 });
-      // the crack
-      burst(t + 0.004, { f0: rnd(1500, 2400), f1: 420, q: 0.8, gain: 0.1, dur: 0.22 });
-      // the crumble: a scatter of tiny grains over the next third of a second
-      const grains = 5 + Math.floor(Math.random() * 6);
-      for (let i = 0; i < grains; i++) {
-        const at = t + 0.03 + Math.pow(Math.random(), 1.6) * 0.32;
-        burst(at, { type: "highpass", f0: rnd(2500, 6000), q: 0.7, gain: rnd(0.012, 0.035), dur: rnd(0.012, 0.03) });
-      }
+      const t = actx.currentTime;
+      report(t);
+      // duller once he's already broken there
+      stoneHit(t + 0.012, { gain: broken ? 0.55 : 0.75, rate: broken ? 0.85 : 1.05, grit: 3 + Math.floor(Math.random() * 3) });
     } catch (e) { /* no audio, no problem */ }
   }
   // a chunk hitting the board
@@ -911,9 +1209,12 @@ function start(wrap) {
     try {
       audio();
       const t = actx.currentTime;
-      tone(t, rnd(110, 150), 55, 0.25 * strength + 0.05, 0.18);
-      burst(t, { type: "lowpass", f0: 900, f1: 200, q: 0.7, gain: 0.12 * strength + 0.03, dur: 0.16 });
-      burst(t + 0.01, { f0: rnd(1800, 3000), q: 1, gain: 0.03 * strength, dur: 0.08 });
+      if (!play("stone", { at: t, gain: 0.35 + 0.6 * strength, rate: rnd(0.45, 0.6) })) {
+        tone(t, rnd(110, 150), 55, 0.25 * strength + 0.05, 0.18);
+        burst(t, { type: "lowpass", f0: 900, f1: 200, q: 0.7, gain: 0.12 * strength + 0.03, dur: 0.16 });
+      }
+      for (let i = 0; i < 2 + Math.round(strength * 4); i++)
+        play("grit", { at: t + 0.03 + Math.random() * 0.3, gain: rnd(0.1, 0.25) * (0.4 + strength), rate: rnd(0.8, 1.3) });
     } catch (e) { /* no audio, no problem */ }
   }
   // restore: a rising, reversed-sounding swell
@@ -930,28 +1231,20 @@ function start(wrap) {
       g.gain.setValueAtTime(0.0001, t);
       g.gain.exponentialRampToValueAtTime(0.09, t + dur * 0.92);
       g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.05);
-      src.connect(f).connect(g).connect(actx.destination);
+      src.connect(f).connect(g).connect(out);
       src.start(t);
       src.stop(t + dur + 0.1);
       tone(t + dur - 0.02, 1400, 2200, 0.05, 0.12);   // and a soft click as he's whole again
     } catch (e) { /* no audio, no problem */ }
   }
-
-  // a shotgun: a hard boom, then the pellets rattling into stone
+  // a shotgun: a big report, then the pellets rattling into stone
   function shotgunSound() {
     try {
       audio();
       const t = actx.currentTime;
-      tone(t, rnd(95, 120), 40, 0.32, 0.22);
-      burst(t, { type: "lowpass", f0: 2400, f1: 300, q: 0.6, gain: 0.3, dur: 0.25 });
-      burst(t, { f0: rnd(1800, 2600), f1: 600, q: 0.7, gain: 0.12, dur: 0.12 });
-      for (let i = 0; i < 9; i++) {
-        const at = t + 0.02 + Math.random() * 0.09;
-        burst(at, { f0: rnd(2200, 4200), f1: 900, q: 1.2, gain: rnd(0.03, 0.06), dur: rnd(0.03, 0.07) });
-      }
-      for (let i = 0; i < 10; i++) {
-        burst(t + 0.08 + Math.pow(Math.random(), 1.5) * 0.4, { type: "highpass", f0: rnd(2500, 6000), q: 0.7, gain: rnd(0.012, 0.03), dur: rnd(0.012, 0.03) });
-      }
+      report(t, 1.6);
+      for (let i = 0; i < 5; i++)
+        stoneHit(t + 0.015 + Math.random() * 0.06, { gain: rnd(0.2, 0.35), rate: rnd(1.2, 1.6), grit: 2 });
     } catch (e) { /* no audio, no problem */ }
   }
   // a sledgehammer: a deep, heavy crunch and a long rubble tail
@@ -959,20 +1252,84 @@ function start(wrap) {
     try {
       audio();
       const t = actx.currentTime;
-      tone(t, rnd(70, 85), 30, 0.45, 0.35);
-      tone(t, rnd(260, 320), 90, 0.15, 0.12, "triangle");
-      burst(t, { type: "lowpass", f0: 1400, f1: 160, q: 0.8, gain: 0.32, dur: 0.4 });
-      burst(t + 0.01, { f0: rnd(900, 1400), f1: 250, q: 0.6, gain: 0.16, dur: 0.35 });
-      for (let i = 0; i < 18; i++) {
-        burst(t + 0.05 + Math.pow(Math.random(), 1.4) * 0.7, { type: "highpass", f0: rnd(1500, 5000), q: 0.7, gain: rnd(0.015, 0.045), dur: rnd(0.015, 0.045) });
+      tone(t, rnd(70, 85), 30, 0.4, 0.35);
+      stoneHit(t, { gain: 1, rate: 0.55, grit: 10 });
+      play("boom", { at: t, gain: 0.35, rate: 1.4, take: 1 });
+    } catch (e) { /* no audio, no problem */ }
+  }
+  // the laser: a zap as it fires, then a hum for as long as it's held
+  let hum = null, lastSizzle = 0;
+  function laserHum(on) {
+    try {
+      audio();
+      const t = actx.currentTime;
+      if (on) {
+        if (hum) return;
+        play("zap", { at: t, gain: 0.35, rate: rnd(0.95, 1.05) });
+        const g = actx.createGain(), f = actx.createBiquadFilter();
+        f.type = "lowpass"; f.frequency.value = 2400; f.Q.value = 2;
+        const a = actx.createOscillator(), b = actx.createOscillator(), lfo = actx.createOscillator(), depth = actx.createGain();
+        a.type = "sawtooth"; a.frequency.value = 92;
+        b.type = "square"; b.frequency.value = 184.6;
+        lfo.frequency.value = 23; depth.gain.value = 700;
+        lfo.connect(depth).connect(f.frequency);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.06, t + 0.05);
+        a.connect(f); b.connect(f); f.connect(g).connect(out);
+        a.start(t); b.start(t); lfo.start(t);
+        hum = { g, nodes: [a, b, lfo] };
+      } else if (hum) {
+        hum.g.gain.cancelScheduledValues(t);
+        hum.g.gain.setValueAtTime(hum.g.gain.value, t);
+        hum.g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+        for (const n of hum.nodes) n.stop(t + 0.15);
+        hum = null;
       }
+    } catch (e) { /* no audio, no problem */ }
+  }
+  // the beam on stone: a crackling sizzle, a grain at a time
+  function laserSizzle() {
+    try {
+      audio();
+      const t = actx.currentTime;
+      if (t - lastSizzle < 0.03) return;
+      lastSizzle = t;
+      burst(t, { type: "highpass", f0: rnd(3000, 7000), q: 0.9, gain: rnd(0.02, 0.05), dur: rnd(0.02, 0.05) });
+      if (Math.random() < 0.15) play("grit", { at: t, gain: 0.12, rate: rnd(1.4, 2) });
+    } catch (e) { /* no audio, no problem */ }
+  }
+  // the rocket: the thruster roaring for its flight
+  function rocketLaunchSound(flight) {
+    try {
+      audio();
+      const t = actx.currentTime;
+      report(t, 0.7);
+      burst(t, { type: "bandpass", f0: 600, f1: 2400, q: 0.8, gain: 0.12, dur: Math.max(0.15, flight) });
+      const h = play("thrust", { at: t, gain: 0.5, rate: 1.1, dur: Math.max(0.2, flight + 0.05) });
+      return { stop() { if (h) { const n = actx.currentTime; h.g.gain.cancelScheduledValues(n); h.g.gain.setValueAtTime(h.g.gain.value, n); h.g.gain.linearRampToValueAtTime(0.0001, n + 0.05); } } };
+    } catch (e) { return null; }
+  }
+  // the blast: a crunch on top of a deep boom, stone splitting, rubble raining
+  function explosionSound() {
+    try {
+      audio();
+      const t = actx.currentTime;
+      if (!play("blast", { at: t, gain: 1, rate: rnd(0.9, 1.05) })) {
+        burst(t, { type: "lowpass", f0: 2200, f1: 120, q: 0.6, gain: 0.5, dur: 0.9 });
+      }
+      play("boom", { at: t, gain: 0.9, rate: rnd(0.85, 1), take: 0 });
+      tone(t, 70, 24, 0.5, 0.7);
+      stoneHit(t + 0.03, { gain: 0.8, rate: 0.6, grit: 0 });
+      for (let i = 0; i < 16; i++)
+        play("grit", { at: t + 0.15 + Math.pow(Math.random(), 1.3) * 1.3, gain: rnd(0.1, 0.32), rate: rnd(0.7, 1.4) });
     } catch (e) { /* no audio, no problem */ }
   }
 
   // ---------- Weapon switch ----------
-  // Soft-launched: a quiet label that cycles on click, and keys 1, 2, 3.
+  // Soft-launched: a quiet label that cycles on click, and keys 1 to 5.
   const weaponBtn = wrap.querySelector(".bust-weapon");
   function setWeapon(i) {
+    laserStop();
     weapon = WEAPONS[(i + WEAPONS.length) % WEAPONS.length];
     fireCd = Math.min(fireCd, 0.1);
     if (weaponBtn) weaponBtn.textContent = weapon.name;
@@ -981,7 +1338,7 @@ function start(wrap) {
   weaponBtn?.addEventListener("click", () => setWeapon(WEAPONS.indexOf(weapon) + 1));
   window.addEventListener("keydown", (e) => {
     if (!ready || e.metaKey || e.ctrlKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
-    const i = ["1", "2", "3"].indexOf(e.key);
+    const i = ["1", "2", "3", "4", "5"].indexOf(e.key);
     if (i >= 0) setWeapon(i);
   });
 
@@ -1066,6 +1423,26 @@ function start(wrap) {
       busy = true;
       fireCd -= dt;
       if (fireCd <= 0) { shoot(); fireCd = weapon.every; }
+    }
+
+    // the laser, while it's held: redrawn every frame, cut in batches
+    if (laser.on) {
+      if (!pointer.down || !weapon.beam) laserStop();
+      else {
+        laser.age += dt;
+        beamTarget();
+        drawBeam(now / 1000);
+        busy = true;
+      }
+    }
+    if (rockets.length) { stepRockets(dt); busy = true; }
+    if (fireballT > 0) {
+      fireballT = Math.max(0, fireballT - dt);
+      const f = 1 - fireballT / FIREBALL;
+      fireball.scale.setScalar(0.08 + 0.32 * Math.sqrt(f));
+      fireball.material.opacity = (1 - f) * (1 - f);
+      if (fireballT <= 0) fireball.visible = false;
+      busy = true;
     }
 
     if (rewind) {
