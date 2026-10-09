@@ -2,8 +2,9 @@
   "_comment": "The queue, played in order, wrapping when it reaches the end. To add a puzzle: drop the image in images/ and add a row here. Name the file after the piece with its piece count on the end - \"images/red-canyon-100\" is Red Canyon at about 100 pieces - and the row needs nothing but an id and the image. The extension may be left off (.png/.jpg/.webp/.svg all work). Anything set on the row wins over the filename: title, pieces, or an exact cols/rows. Pixel size is read from the file itself. An entry whose image isn't there yet is skipped until it is, and the manifest is re-read at every changeover, so a live table picks up new puzzles without a restart. Keep an id stable once it has played: the shelf archive is keyed on it.",
   "queue": [
     {
-      "id": "tiger",
-      "image": "images/tiger-100"
+      "id": "ebb",
+      "title": "Rise @ the Ebb",
+      "image": "images/Rise-@-the-Ebb-100"
     },
     {
       "id": "darknight",

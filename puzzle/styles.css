@@ -299,8 +299,8 @@ a { color: inherit; text-decoration: none; }
   .crumb { display: none; }
   .presence { font-size: 10px; letter-spacing: 0.4px; white-space: nowrap; }
   .header-right { gap: 6px; }
-  .you-name { width: 78px; font-size: 10.5px; padding: 1px 4px; }
-  .you-icon { width: 11px; height: 11px; }
+  .you-name { width: 134px; font-size: 11.5px; padding: 2px 6px; }
+  .you-icon { width: 13px; height: 13px; }
   .hero { padding: 6px 12px 4px; }
   .running { font-size: 10px; letter-spacing: 0.4px; min-height: 13px; }
   .shelf-area { padding: 30vh 14px 60px; }
@@ -340,38 +340,58 @@ a { color: inherit; text-decoration: none; }
 .shuffle-btn:hover { color: var(--amber); border-color: rgba(255, 255, 255, 0.24); }
 .shuffle-btn[disabled] { opacity: 0.35; cursor: default; color: var(--ink-dim); border-color: rgba(255, 255, 255, 0.1); }
 
-/* Small and quiet, tucked under the back link. Brightens when you go near it. */
+/* Tucked under the back link, but plainly visible. */
 .you {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  opacity: 0.6;
-  transition: opacity 0.15s ease;
+  gap: 7px;
 }
-.you:hover, .you:focus-within { opacity: 1; }
 
 /* A plain person mark rather than an emoji, so it can wear your colour. */
-.you-icon { width: 13px; height: 13px; flex: 0 0 auto; display: block; }
+.you-icon { width: 15px; height: 15px; flex: 0 0 auto; display: block; }
 
+/* Always outlined, so it reads as something you can type in. */
 .you-name {
-  width: 116px;
+  width: 150px;
   text-align: right;
-  padding: 2px 6px;
-  border: 1px solid transparent;
-  border-radius: 5px;
-  background: transparent;
-  color: var(--ink-dim);
+  padding: 3px 8px;
+  border: 1px solid rgba(239, 230, 216, 0.2);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink);
   font-family: "Instrument Sans", sans-serif;
-  font-size: 12px;
-  letter-spacing: 0.5px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
   text-transform: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
-.you-name:hover { border-color: rgba(239, 230, 216, 0.12); }
+.you-name:hover { border-color: rgba(239, 230, 216, 0.36); }
 .you-name:focus {
   outline: none;
   color: var(--ink);
   border-color: rgba(239, 230, 216, 0.28);
   background: rgba(255, 255, 255, 0.04);
+}
+
+/* Roll a random name - the same drawn die as on the hub. */
+.you-roll {
+  display: inline-flex;
+  padding: 2px;
+  background: none;
+  border: 0;
+  color: rgba(239, 230, 216, 0.75);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.you-roll svg { width: 16px; height: 16px; display: block; }
+.you-roll circle { fill: currentColor; }
+.you-roll:hover, .you-roll:focus-visible { color: var(--ink); outline: none; }
+.you-roll.rolling svg { animation: you-roll 0.45s cubic-bezier(.3, 1.4, .5, 1); }
+@keyframes you-roll {
+  0%   { transform: rotate(0) scale(1); }
+  50%  { transform: rotate(200deg) scale(1.25); }
+  100% { transform: rotate(360deg) scale(1); }
 }
 
 .shelf-jump {

@@ -791,6 +791,20 @@
   youName.addEventListener("change", commitName);
   youName.addEventListener("blur", commitName);
   youName.addEventListener("keydown", (e) => { if (e.key === "Enter") youName.blur(); });
+  // The die: a random name, everywhere at once (the onChange above tells the
+  // table). It sits inside the name's <label>, so stop the click focusing it.
+  const youRoll = document.getElementById("youRoll");
+  youRoll?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const fresh = () => You ? You.randomName() : pick(ADJECTIVES) + " " + pick(NOUNS);
+    let n = fresh();
+    for (let i = 0; i < 5 && n === myName; i++) n = fresh();
+    youName.value = n;
+    commitName();
+    youRoll.classList.remove("rolling");
+    void youRoll.offsetWidth;                  // restart the spin
+    youRoll.classList.add("rolling");
+  });
 
   /* ---------- How long it took, for the solved card ----------------------- */
   // Clock style, so a solve reads as a time and not a rounded-off label:
