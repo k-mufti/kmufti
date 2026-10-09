@@ -24,6 +24,7 @@
    ========================================================================= */
 import { BufferGeometry, BufferAttribute, IcosahedronGeometry, MeshBasicMaterial } from "three";
 import { Brush, Evaluator, SUBTRACTION } from "three-bvh-csg";
+import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 const ATTRS = ["position", "normal", "_ao", "_rim"];
 const SIZES = { position: 3, normal: 3, _ao: 1, _rim: 1 };
@@ -132,19 +133,21 @@ function pack(soup) {
 }
 
 // ---------- The rock ----------
-// An icosahedron with every corner pushed in or out, flat-shaded, so the
-// crater it leaves is struck facets rather than a smooth scoop.
-function rock({ position, quaternion, scale }) {
-  const g = new IcosahedronGeometry(1, 1);
+// A lumpy ball, smooth-shaded: craters read as rough hollows in the stone,
+// and overlapping ones melt into one bigger hollow instead of a jumble of
+// flat facets at clashing angles. Big rocks get a finer ball, so a sledge or
+// a rocket doesn't leave a few huge planes. (The shader adds the grit.)
+function rock({ position, quaternion, scale, detail = 1 }) {
+  let g = new IcosahedronGeometry(1, detail);
   g.deleteAttribute("uv");
-  const p = g.attributes.position, jit = new Map();
+  g.deleteAttribute("normal");
+  g = mergeVertices(g, 1e-4);
+  const p = g.attributes.position;
   for (let i = 0; i < p.count; i++) {
-    const k = `${p.getX(i).toFixed(3)},${p.getY(i).toFixed(3)},${p.getZ(i).toFixed(3)}`;
-    if (!jit.has(k)) jit.set(k, 0.74 + Math.random() * 0.42);
-    const s = jit.get(k);
+    const s = 0.86 + Math.random() * 0.24;
     p.setXYZ(i, p.getX(i) * s, p.getY(i) * s, p.getZ(i) * s);
   }
-  g.computeVertexNormals();   // non-indexed, so these come out per face: flat
+  g.computeVertexNormals();
   g.setAttribute("_ao", new BufferAttribute(new Float32Array(p.count).fill(1), 1));
   g.setAttribute("_rim", new BufferAttribute(new Float32Array(p.count), 1));
   const b = new Brush(g, inner);
@@ -435,7 +438,6 @@ function islands() {
       if (groups.has(rb)) groups.get(rb).hold += edges[e + 2];
     }
     for (const g of groups.values()) {
-      if (g.vol < MIN_PIECE) continue;   // slivers: not worth dropping
       if (g.hold < Math.max(MIN_HOLD, g.vol * STRENGTH)) out.push(g.nodes.map((i) => where[i]));
     }
   }

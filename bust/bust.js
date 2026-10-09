@@ -31,7 +31,6 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-import { Reflector } from "three/addons/objects/Reflector.js";
 
 const HIT_R = 0.024;        // radius of the rock one shot knocks out, in metres (bust is ~0.49 tall)
 const REWIND = 0.9;         // seconds for restore to undo every shot, newest first
@@ -56,6 +55,10 @@ function start(wrap) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
   renderer.shadowMap.enabled = true;
+  // Shadows are only redrawn when something that casts one has moved
+  // (see shadowDirty); most frames during a burst of fire don't need it.
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;   // with shadow.radius: a soft, even penumbra
 
   const scene = new THREE.Scene();
@@ -101,42 +104,6 @@ function start(wrap) {
   contact.position.set(0, 0.0005, 0.03);
   scene.add(contact);
 
-  // A faint reflection in the board, as if it were lightly polished: the
-  // scene mirrored in y = 0, fading out a few centimetres in front of the
-  // plinth so only his base and anything lying on the board shows in it.
-  const mirror = new Reflector(new THREE.PlaneGeometry(1.2, 0.8), {
-    clipBias: 0.002,
-    textureWidth: 1024, textureHeight: 512,
-    shader: {
-      uniforms: { color: { value: null }, tDiffuse: { value: null }, textureMatrix: { value: null }, uFront: { value: 0.1 } },
-      vertexShader: `
-        uniform mat4 textureMatrix;
-        varying vec4 vUv;
-        varying vec3 vWorld;
-        void main() {
-          vUv = textureMatrix * vec4(position, 1.0);
-          vWorld = (modelMatrix * vec4(position, 1.0)).xyz;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }`,
-      fragmentShader: `
-        uniform sampler2D tDiffuse;
-        uniform float uFront;
-        varying vec4 vUv;
-        varying vec3 vWorld;
-        void main() {
-          vec4 base = texture2DProj(tDiffuse, vUv);
-          float fade = 1.0 - smoothstep(-0.01, 0.07, vWorld.z - uFront);
-          gl_FragColor = vec4(base.rgb, base.a * fade * 0.16);
-        }`,
-    },
-  });
-  mirror.material.transparent = true;
-  mirror.material.depthWrite = false;
-  mirror.rotation.x = -Math.PI / 2;
-  mirror.position.y = 0.0002;
-  mirror.renderOrder = -1;
-  mirror.visible = false;   // until he's loaded
-  scene.add(mirror);
 
   // ---------- Materials: the weathered skin, and the broken stone inside ----------
   const MAX_IMPACTS = 48;
@@ -210,7 +177,7 @@ function start(wrap) {
   // drawing whatever geometry it last sent back. Everything is in the
   // bust's own space (the model group's).
   const model = new THREE.Group();
-  const worker = new Worker(new URL("carve-worker.js?v=5", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("carve-worker.js?v=8", import.meta.url), { type: "module" });
   let originals = [], blocks = [];   // blocks[id]: Mesh, or null once carved away
 
   function setGeometry(mesh, geometry, keepOld) {
@@ -251,8 +218,28 @@ function start(wrap) {
   // kept, shot by shot, so restore can run the whole thing backwards.
   const history = [];   // per shot: { undo: [{ id, mesh, prev }], pieces: [piece], impact, left }
   let left = 1, shots = 0;
+  // Every cut goes out with the cracks it should leave and, for a rocket,
+  // a hold: the rocket's crater is worked out while it's still flying, and
+  // kept back until it lands. Replies are applied strictly in order, so
+  // anything that comes back after a held one waits behind it.
+  const replies = [], holds = [];
+  function postCut(rocks, hits, hold = null) {
+    worker.postMessage({ type: "cut", gen, rocks });
+    pendingImpacts.push(hits);
+    holds.push(hold);
+  }
+  function drainReplies() {
+    while (replies.length && (!replies[0].hold || replies[0].hold.landed)) {
+      const r = replies.shift();
+      applyCut(r.m, r.hits);
+    }
+  }
   worker.onmessage = ({ data: m }) => {
     if (m.type !== "cut" || m.gen !== gen) return;   // a cut from before the last restore
+    replies.push({ m, hits: pendingImpacts.shift() || [], hold: holds.shift() || null });
+    drainReplies();
+  };
+  function applyCut(m, hit) {
     const undo = [];
     for (const c of m.changed) {
       const mesh = blocks[c.id];
@@ -261,18 +248,19 @@ function start(wrap) {
       if (c.gone) { model.remove(mesh); blocks[c.id] = null; continue; }
       setGeometry(mesh, soupGeometry(c), true);
     }
-    const broke = m.pieces.map(breakOff);
-    if (broke.length) heights();   // he's shorter now: chunks land on what's left
-    const hit = pendingImpacts.shift() || [];
+    const broke = m.pieces.map(breakOff).filter(Boolean);
+    if (m.pieces.length) heights();   // he's shorter now: chunks land on what's left
     impacts.push(...hit);
     syncImpacts();
     history.push({ undo, pieces: broke, left, impacts: hit.length });
     left = m.left;
     shots++;
     updateStats();
+    shadowDirty = true;
     kick();
-  };
+  }
   let gen = 0;   // bumped on restore
+  let shadowDirty = true;   // something that casts a shadow has changed
 
   function undoShot() {
     const h = history.pop();
@@ -286,6 +274,7 @@ function start(wrap) {
     impacts.length -= Math.min(impacts.length, h.impacts);
     syncImpacts();
     left = h.left;
+    shadowDirty = true;
     shots = Math.max(0, shots - 1);
     updateStats();
   }
@@ -296,6 +285,18 @@ function start(wrap) {
   const pieces = [];
   const pieceTmp = new THREE.Vector3(), pieceQ = new THREE.Quaternion();
   function breakOff(data) {
+    // A thin shard doesn't fall as a slab, perched on his shoulder or
+    // standing on edge on the board; it crumbles. Thickness is roughly twice
+    // the volume over the surface area (exact for a flat slab).
+    const P = data.arrays.position;
+    let vol = 0, area = 0;
+    for (let i = 0; i < data.n * 3; i += 9) {
+      const ax = P[i + 3] - P[i], ay = P[i + 4] - P[i + 1], az = P[i + 5] - P[i + 2];
+      const bx = P[i + 6] - P[i], by = P[i + 7] - P[i + 1], bz = P[i + 8] - P[i + 2];
+      area += Math.hypot(ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx) / 2;
+      vol += (P[i] * (P[i + 4] * P[i + 8] - P[i + 5] * P[i + 7]) - P[i + 1] * (P[i + 3] * P[i + 8] - P[i + 5] * P[i + 6]) + P[i + 2] * (P[i + 3] * P[i + 7] - P[i + 4] * P[i + 6])) / 6;
+    }
+    if (Math.abs(vol) < 3e-6 || 2 * Math.abs(vol) / area < 0.007) { crumble(data, Math.abs(vol)); return null; }
     // the piece keeps its bust-space coordinates (the stone's texture is
     // mapped from them), inside a group that turns about its centre
     const g = soupGeometry(data);
@@ -358,6 +359,25 @@ function start(wrap) {
     if (x < 0 || z < 0 || x >= HF.n[0] || z >= HF.n[1]) return p.y;
     const top = HF.h[x + HF.n[0] * z];
     return top > 0 && hfTmp.y > top - 0.03 ? hfTmp.y - top : p.y;   // only from above: deep inside him counts as clear
+  }
+
+  // a shard too thin to fall whole: it goes to rubble where it was
+  function crumble(data, vol) {
+    model.updateMatrixWorld();
+    const P = data.arrays.position, at = new THREE.Vector3(), n = Math.min(40, 3 + Math.round(vol * 4e6));
+    for (let i = 0; i < n; i++) {
+      const k = Math.floor(Math.random() * data.n) * 3;
+      at.set(P[k], P[k + 1], P[k + 2]).applyMatrix4(model.matrixWorld);
+      if (chips.length >= MAX_CHIPS) chips.shift();
+      chips.push({
+        p: at.clone(), from: at.clone(),
+        v: new THREE.Vector3(rnd(-0.12, 0.12), rnd(0, 0.15), rnd(0.02, 0.2)),
+        r: new THREE.Euler(rnd(0, 6), rnd(0, 6), rnd(0, 6)),
+        w: new THREE.Vector3(rnd(-18, 18), rnd(-18, 18), rnd(-18, 18)),
+        s: new THREE.Vector3(rnd(0.6, 1.3), rnd(0.5, 1), rnd(0.7, 1.4)).multiplyScalar(rnd(0.003, 0.008)),
+        rest: false,
+      });
+    }
   }
 
   function stepPiece(pc, dt) {
@@ -457,9 +477,15 @@ function start(wrap) {
       for (let i = 0; i < p.count; i++) if (p.getY(i) < box.min.y + 0.004) foot.push(new THREE.Vector3().fromBufferAttribute(p, i));
     }
 
-    // the reflection fades out from the front of his plinth
-    mirror.material.uniforms.uFront.value = Math.max(...foot.map((f) => f.z)) + model.position.z;
-    mirror.visible = true;
+
+    // Compile everything a rocket draws (its body, flame, fireball) now, so
+    // the first one doesn't stall a frame while the GPU catches up.
+    const warm = rocketBody.clone();
+    scene.add(warm);
+    fireball.visible = beam.visible = beamSpot.visible = true;
+    renderer.compile(scene, camera);
+    scene.remove(warm);
+    fireball.visible = beam.visible = beamSpot.visible = false;
 
     ready = true;
     wrap.classList.add("ready");
@@ -549,7 +575,7 @@ function start(wrap) {
         for (int i = 0; i < ${MAX_IMPACTS}; i++) {
           if (i >= uImpactCount) break;
           float d = distance(vObj, uImpacts[i].xyz);
-          spread = max(spread, 1.0 - smoothstep(uImpacts[i].w * 0.85, uImpacts[i].w * 1.9, d));
+          spread = max(spread, 1.0 - smoothstep(uImpacts[i].w * 0.9, uImpacts[i].w * 1.4, d));
         }
         float crack = 0.0;
         if (spread > 0.0) {
@@ -621,7 +647,8 @@ function start(wrap) {
     return {
       position: at.clone().addScaledVector(inward, r * sink).toArray(),
       quaternion: rockQ.toArray(),
-      scale: [r * rnd(0.85, 1.15), r * rnd(0.85, 1.15), r * deep],
+      scale: [r * rnd(0.9, 1.1), r * rnd(0.9, 1.1), r * deep],
+      detail: r > HIT_R * 1.5 ? 2 : 1,     // a big hollow needs a finer ball, or it's all flat planes
     };
   }
 
@@ -688,8 +715,7 @@ function start(wrap) {
     }
     if (!hitSomething) return;
     if (rocks.length) {
-      worker.postMessage({ type: "cut", gen, rocks });
-      pendingImpacts.push(hits);
+      postCut(rocks, hits);
       uniforms.uDust.value *= 0.35;   // the blast stirs up what had settled
       wrap.classList.add("shot");
       if (restoreBtn) restoreBtn.hidden = false;
@@ -811,8 +837,7 @@ function start(wrap) {
   function flushLaser() {
     laser.age = 0;
     if (!laser.rocks.length) return;
-    worker.postMessage({ type: "cut", gen, rocks: laser.rocks });
-    pendingImpacts.push([]);            // a clean cut: no cracks spreading from it
+    postCut(laser.rocks, []);           // a clean cut: no cracks spreading from it
     laser.rocks = [];
     uniforms.uDust.value *= 0.7;
   }
@@ -849,11 +874,32 @@ function start(wrap) {
     mesh.quaternion.setFromUnitVectors(beamUp, hit.point.clone().sub(from).normalize());
     scene.add(mesh);
     const dist = from.distanceTo(hit.point);
-    rockets.push({
+    const rk = {
       mesh, flame, from, to: hit.point.clone(), t: 0, dur: dist / ROCKET_SPEED,
       hit: { object: hit.object, face: hit.face, point: hit.point.clone(), dir: ray.ray.direction.clone() },
       sound: rocketLaunchSound(dist / ROCKET_SPEED),
-    });
+      hold: null,
+    };
+    // The crater is cut now, in the background, while the rocket's in the
+    // air, and held back until it lands: so it's there the instant it hits.
+    if (blocks.includes(hit.object)) {
+      rk.hold = { landed: false };
+      const w = weapon, local = model.worldToLocal(hit.point.clone());
+      const n = hit.face.normal.clone();
+      const dirLocal = rk.hit.dir.clone().transformDirection(new THREE.Matrix4().copy(model.matrixWorld).invert());
+      if (n.dot(dirLocal) > 0) n.negate();
+      const inward = dirLocal.clone().multiplyScalar(0.5).addScaledVector(n, -0.5).normalize();
+      const R = HIT_R * w.r;
+      const rocks = [rockSpec(local, inward, R * rnd(0.95, 1.1), 0.15, w.deep)];
+      const hits = [new THREE.Vector4(local.x, local.y, local.z, R * 1.1)];
+      for (let k = 0; k < 2; k++) {
+        const off = new THREE.Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalize().multiplyScalar(R * rnd(0.6, 0.9));
+        const p = local.clone().add(off);
+        rocks.push(rockSpec(p, inward, R * rnd(0.45, 0.6), 0.3, 1));
+      }
+      postCut(rocks, hits, rk.hold);
+    }
+    rockets.push(rk);
     wrap.classList.add("shot");
     if (restoreBtn) restoreBtn.hidden = false;
     shake = Math.max(shake, 0.25);
@@ -898,24 +944,11 @@ function start(wrap) {
       const pc = hit.object.userData.piece;
       pc.hits = 1e9;
       shatter(pc, hit, w, true);
-    } else if (blocks.includes(hit.object)) {
-      // one big crater, ringed by smaller ones
-      const local = model.worldToLocal(at.clone());
-      const n = hit.face.normal.clone();
-      const dirLocal = hit.dir.clone().transformDirection(new THREE.Matrix4().copy(model.matrixWorld).invert());
-      if (n.dot(dirLocal) > 0) n.negate();
-      const inward = dirLocal.clone().multiplyScalar(0.5).addScaledVector(n, -0.5).normalize();
-      const R = HIT_R * w.r;
-      const rocks = [rockSpec(local, inward, R * rnd(0.9, 1.1), 0.15, w.deep)];
-      const hits = [new THREE.Vector4(local.x, local.y, local.z, R * 1.5)];
-      for (let k = 0; k < 5; k++) {
-        const off = new THREE.Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).normalize().multiplyScalar(R * rnd(0.7, 1.1));
-        const p = local.clone().add(off);
-        rocks.push(rockSpec(p, inward, R * rnd(0.4, 0.6), 0.3, 1));
-        hits.push(new THREE.Vector4(p.x, p.y, p.z, R * 0.6));
-      }
-      worker.postMessage({ type: "cut", gen, rocks });
-      pendingImpacts.push(hits);
+    }
+    if (rk.hold) {
+      // the crater was cut on the way in; it shows now
+      rk.hold.landed = true;
+      drainReplies();
       uniforms.uDust.value = 0;
       lastShotDir.copy(hit.dir);
     }
@@ -1062,6 +1095,8 @@ function start(wrap) {
     if (rewind) return;
     gen++;               // anything still being cut is dropped
     pendingImpacts.length = 0;
+    holds.length = 0;
+    replies.length = 0;
     pointer.down = false;
     laser.rocks = [];    // dropped first, or stopping the beam would send them
     laserStop();
@@ -1177,11 +1212,9 @@ function start(wrap) {
     o.start(t);
     o.stop(t + dur + 0.02);
   }
-  // a gun going off: a sharp crack and a short low punch
-  function report(t, size = 1) {
-    burst(t, { type: "highpass", f0: 1800, q: 0.5, gain: 0.32 * size, dur: 0.035 });
-    burst(t, { type: "lowpass", f0: 1600, f1: 180, q: 0.7, gain: 0.26 * size, dur: 0.11 * size });
-    tone(t, 140 / size, 45, 0.3 * size, 0.09 * size);
+  // the weight behind a hit: a low thump you feel more than hear
+  function thump(t, f, gain, dur) {
+    tone(t, f, f * 0.4, gain, dur);
   }
   // stone giving way, then grit settling: the recordings, or synthesis
   function stoneHit(t, { gain = 0.7, rate = 1, grit = 4 } = {}) {
@@ -1195,13 +1228,17 @@ function start(wrap) {
         burst(at, { type: "highpass", f0: rnd(2500, 6000), q: 0.7, gain: rnd(0.012, 0.03), dur: rnd(0.012, 0.03) });
     }
   }
+  // The pistol: the sledgehammer's recipe, smaller. Real stone struck,
+  // pitched a little lower and heavier than it was recorded, a low thump
+  // under it, a short boom for punch, grit after. Duller where he's
+  // already broken.
   function impactSound(broken) {
     try {
       audio();
       const t = actx.currentTime;
-      report(t);
-      // duller once he's already broken there
-      stoneHit(t + 0.012, { gain: broken ? 0.55 : 0.75, rate: broken ? 0.85 : 1.05, grit: 3 + Math.floor(Math.random() * 3) });
+      thump(t, rnd(105, 125), 0.28, 0.16);
+      play("boom", { at: t, gain: 0.22, rate: rnd(1.9, 2.3), take: 1 });
+      stoneHit(t, { gain: broken ? 0.7 : 0.85, rate: broken ? rnd(0.68, 0.76) : rnd(0.8, 0.9), grit: 2 + Math.floor(Math.random() * 3) });
     } catch (e) { /* no audio, no problem */ }
   }
   // a chunk hitting the board
@@ -1237,14 +1274,16 @@ function start(wrap) {
       tone(t + dur - 0.02, 1400, 2200, 0.05, 0.12);   // and a soft click as he's whole again
     } catch (e) { /* no audio, no problem */ }
   }
-  // a shotgun: a big report, then the pellets rattling into stone
+  // The shotgun: one deep boom and thump, and the pellets' stone hits
+  // landing as a ragged cluster right after it.
   function shotgunSound() {
     try {
       audio();
       const t = actx.currentTime;
-      report(t, 1.6);
-      for (let i = 0; i < 5; i++)
-        stoneHit(t + 0.015 + Math.random() * 0.06, { gain: rnd(0.2, 0.35), rate: rnd(1.2, 1.6), grit: 2 });
+      thump(t, rnd(80, 92), 0.42, 0.24);
+      play("boom", { at: t, gain: 0.5, rate: rnd(1.45, 1.6), take: 1 });
+      for (let i = 0; i < 4; i++)
+        stoneHit(t + 0.01 + Math.random() * 0.07, { gain: rnd(0.35, 0.5), rate: rnd(0.75, 1.0), grit: 2 });
     } catch (e) { /* no audio, no problem */ }
   }
   // a sledgehammer: a deep, heavy crunch and a long rubble tail
@@ -1303,8 +1342,8 @@ function start(wrap) {
     try {
       audio();
       const t = actx.currentTime;
-      report(t, 0.7);
-      burst(t, { type: "bandpass", f0: 600, f1: 2400, q: 0.8, gain: 0.12, dur: Math.max(0.15, flight) });
+      thump(t, 70, 0.25, 0.2);
+      burst(t, { type: "bandpass", f0: 600, f1: 2400, q: 0.8, gain: 0.1, dur: Math.max(0.15, flight) });
       const h = play("thrust", { at: t, gain: 0.5, rate: 1.1, dur: Math.max(0.2, flight + 0.05) });
       return { stop() { if (h) { const n = actx.currentTime; h.g.gain.cancelScheduledValues(n); h.g.gain.setValueAtTime(h.g.gain.value, n); h.g.gain.linearRampToValueAtTime(0.0001, n + 0.05); } } };
     } catch (e) { return null; }
@@ -1478,7 +1517,7 @@ function start(wrap) {
     }
 
     // fallen chunks tumble and settle
-    if (!rewind) for (const pc of pieces) if (stepPiece(pc, dt)) busy = true;
+    if (!rewind) for (const pc of pieces) if (stepPiece(pc, dt)) { busy = true; shadowDirty = true; }
 
     // dust settles back into the craters once the shooting stops
     if (history.length && uniforms.uDust.value < 1 && !pointer.down) {
@@ -1488,7 +1527,7 @@ function start(wrap) {
 
     // a drag turns him; let go and he stays put
     const dy = yawTarget - pivot.rotation.y;
-    if (Math.abs(dy) > 1e-4) { pivot.rotation.y += dy * Math.min(1, dt * 10); busy = true; }
+    if (Math.abs(dy) > 1e-4) { pivot.rotation.y += dy * Math.min(1, dt * 10); busy = true; shadowDirty = true; }
     if (touch && !touch.dragging && !touch.fired && performance.now() - touch.t > 280) {
       // a finger held still on him: keep firing
       touch.fired = true;
@@ -1506,8 +1545,10 @@ function start(wrap) {
     if (shake > 0) busy = true;
 
     // chips fall, skitter, and stay where they land — rubble on the board
+    let chipsMoving = false;
     for (const c of chips) {
       if (c.rest || rewind) continue;
+      chipsMoving = true;
       c.v.y -= GRAVITY * dt;
       c.p.addScaledVector(c.v, dt);
       c.r.x += c.w.x * dt; c.r.y += c.w.y * dt; c.r.z += c.w.z * dt;
@@ -1543,6 +1584,8 @@ function start(wrap) {
     keyView.copy(key.position).normalize().transformDirection(camera.matrixWorldInverse);
     uniforms.uKeyDir.value.copy(keyView);
 
+    if (drop || rewind || chipsMoving) shadowDirty = true;
+    if (shadowDirty) { renderer.shadowMap.needsUpdate = true; shadowDirty = false; }
     renderer.render(scene, camera);
     if (busy && visible && !document.hidden) requestAnimationFrame(frame);
     else running = false;
