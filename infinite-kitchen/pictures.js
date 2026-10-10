@@ -61,7 +61,7 @@ async function api(params) {
 }
 // An article about a person, a band, a team or a place is never the food,
 // however well its title matches (LaCroix once found an actress).
-const NOT_FOOD = /\b(actor|actress|singer|rapper|musician|band|footballer|player|politician|athlete|wrestler|model|comedian|writer|author|director|producer|businessman|businesswoman|television|film|album|song|novel|video game|town|city|village|county|municipality|river|mountain|island|district|neighbou?rhood|ranch|company|born)\b/i;
+const NOT_FOOD = /\b(actor|actress|singer|rapper|musician|band|footballer|player|politician|athlete|wrestler|model|comedian|writer|author|director|producer|businessman|businesswoman|television|film|album|song|novel|video game|town|city|village|county|municipality|river|mountain|island|district|neighbou?rhood|ranch|company|born|hotel|galaxy|planet|star|constellation|ship|aircraft|stadium|team|league)\b/i;
 const IMAGE = { prop: "pageimages|pageprops", piprop: "thumbnail", pithumbsize: SIZE, ppprop: "disambiguation|wikibase-shortdesc" };
 const usable = (p) => p && !p.missing && !(p.pageprops && "disambiguation" in p.pageprops) && p.thumbnail
   && !NOT_FOOD.test(p.pageprops?.["wikibase-shortdesc"] || "") && !BAD_FILE.test(decodeURIComponent(p.thumbnail.source));

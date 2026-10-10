@@ -103,7 +103,7 @@ Pizza, Pepperoni Pizza, Margherita Pizza, Hawaiian Pizza, Mushroom Pizza, Meat L
 Steak, Ribs, Brisket, Pulled Pork, BBQ Chicken, Barbecue, Baked Potato, Mashed Potatoes, Creamed Spinach, Corn on the Cob, Coleslaw, Baked Beans, Surf and Turf, Roast Beef, Prime Rib
 
 ## Sandwich shop and soups
-Sandwich, Sub, Panini, Wrap, Chicken Wrap, PB&J, Ham Sandwich, Grilled Cheese, Cheesesteak, Reuben, Meatball Sub, Tuna Sandwich, Egg Salad Sandwich, Soup and Sandwich, Chicken Noodle Soup, Tomato Soup, French Onion Soup, Clam Chowder, Potato Soup, Corn Chowder, Minestrone, Vegetable Soup, Chicken Soup, Chili, Stew, Beef Stew, Salad, Caesar Salad, Greek Salad, Garden Salad, Fruit Salad
+Sandwich, Sub, Panini, Wrap, Chicken Wrap, PB&J, Ham Sandwich, Grilled Cheese, Cheesesteak, Reuben, Meatball Sub, Tuna Sandwich, Egg Salad Sandwich, Soup and Sandwich, Chicken Noodle Soup, Tomato Soup, French Onion Soup, Clam Chowder, Potato Soup, Corn Chowder, Minestrone, Vegetable Soup, Chicken Soup, Chili, Stew, Beef Stew, Salad, Caesar Salad, Greek Salad, Fruit Salad
 
 ## Seafood shack
 Fish and Chips, Fried Fish, Fish Sticks, Popcorn Shrimp, Shrimp Cocktail, Lobster Roll, Crab Cakes, Clam Chowder, Seafood Boil, Oysters, Fish Tacos, Grilled Salmon
@@ -138,7 +138,7 @@ Hummus, Falafel, Falafel Wrap, Shawarma, Kebab, Shish Tawook, Kofta, Mansaf, Maq
 Thanksgiving Dinner, Turkey, Roast Turkey, Stuffing, Mashed Potatoes, Gravy, Cranberry Sauce, Sweet Potato Casserole, Green Bean Casserole, Pumpkin Pie, Pecan Pie, Dinner Roll, Cornbread
 
 ## Halloween
-Candy Corn, Caramel Apple, Pumpkin, Pumpkin Seeds, Candy Bar, Popcorn Ball, Jack-o'-Lantern Cookie
+Candy Corn, Caramel Apple, Pumpkin, Pumpkin Seeds, Candy Bar, Popcorn Ball
 
 ## Christmas and winter
 Gingerbread, Gingerbread House, Candy Cane, Eggnog, Hot Cocoa, Sugar Cookie, Fruitcake, Roast Beef, Ham, Chestnuts, Yule Log
