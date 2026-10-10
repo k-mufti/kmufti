@@ -230,5 +230,16 @@ const out = {
   combos,
 };
 // generated: edit core.txt, not this
-fs.writeFileSync(path.join(__dirname, "recipes.json"), JSON.stringify(out) + "\n");
+const json = JSON.stringify(out) + "\n";
+fs.writeFileSync(path.join(__dirname, "recipes.json"), json);
+
+// Browsers keep recipes.json (and app.js) for an hour, so a new set needs a
+// new address or players keep the old one. Stamp both with a hash of the set.
+const stamp = require("crypto").createHash("sha1").update(json).digest("hex").slice(0, 8);
+const restamp = (file, re, to) => {
+  const f = path.join(__dirname, file), was = fs.readFileSync(f, "utf8"), now = was.replace(re, to);
+  if (now !== was) fs.writeFileSync(f, now);
+};
+restamp("app.js", /recipes\.json\?v=[\w]+/, `recipes.json?v=${stamp}`);
+restamp("index.html", /app\.js\?v=[\w]+/, `app.js?v=${stamp}`);
 console.log("\nwrote recipes.json");
