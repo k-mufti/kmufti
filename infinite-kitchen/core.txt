@@ -1442,3 +1442,92 @@ Meatballs + Sub = Meatball Sub [dish]
 Boiled Egg + Mayonnaise = Egg Salad
 Egg Salad + Bread = Egg Salad Sandwich [dish]
 Salad + Feta = Greek Salad [dish]
+
+#############################################################################
+# Batch 4 (2026-10-09): pairs among the most common ingredients - the ones
+# players try constantly. Only pairs with a real answer; the rest stay open.
+# Two everyday things make something plain (Meat + Potato = Meat and
+# Potatoes); named dishes stay a step deeper.
+#############################################################################
+
+## Plates and generic dishes
+Meat + Potato = Meat and Potatoes [dish]
+Beef + Potato = Meat and Potatoes
+Pork + Potato = Meat and Potatoes
+Rice + Beef = Rice and Meat
+Rice + Pork = Rice and Meat
+Rice + Chicken = Chicken and Rice
+Chicken + Potato = Chicken Dinner [dish]
+Meat + Dough = Meat Pie [dish]
+Chicken + Pie Crust = Chicken Pot Pie [dish]
+Vegetables + Cheese = Casserole [dish]
+Cheese + Meat = Charcuterie Board [dish]
+Cheese + Potato = Cheesy Potatoes [dish]
+Potato + Cream = Scalloped Potatoes [dish]
+Cheese + Dough = Cheese Bread [dish]
+Rice + Cheese = Cheesy Rice [dish]
+Rice + Garlic = Garlic Rice [dish]
+Vegetables + Pasta = Veggie Pasta [dish]
+Butter + Pasta = Buttered Noodles [dish]
+Chicken + Lettuce = Chicken Salad [dish]
+Chicken + Lemon = Lemon Chicken [dish]
+Chicken + Vegetables = Chicken Stir-Fry
+Chicken + Flour = Fried Chicken
+Bread + Vegetables = Veggie Sandwich [dish]
+Bread + Meat = Sandwich
+Bread + Beef = Sandwich
+Bread + Fish = Fish Sandwich [dish]
+Bread + Bacon = Bacon Sandwich [dish]
+Bread + Beans = Beans on Toast
+Bread + Corn = Cornbread
+
+## Breakfast
+Egg + Tomato = Omelette
+Egg + Onion = Omelette
+Egg + Butter = Scrambled Eggs
+Egg + Beef = Steak and Eggs
+Egg + Pork = Ham and Eggs [dish]
+Egg + Dough = Egg Noodles
+Egg + Cream = Custard
+Egg + Lemon = Lemon Curd
+Egg + Chocolate = Easter Egg [dish]
+Milk + Bread = Bread Pudding [dish]
+Milk + Lemon = Buttermilk
+Milk + Cream = Half and Half
+Milk + Banana = Banana Milk [drink]
+Milk + Flour = Gravy
+Milk + Corn = Creamed Corn [dish]
+Cream + Corn = Creamed Corn
+Milk + Potato = Mashed Potatoes
+Butter + Potato = Mashed Potatoes
+Milk + Tomato = Tomato Soup
+Cream + Tomato = Tomato Soup
+Rice + Cream = Rice Pudding
+Rice + Pasta = Rice-A-Roni [dish]
+
+## Sauces, sides and staples
+Tomato + Onion = Pico de Gallo
+Tomato + Garlic = Tomato Sauce
+Tomato + Lettuce = Salad
+Tomato + Pasta = Spaghetti
+Tomato + Bacon = BLT
+Meat + Tomato = Meat Sauce
+Beans + Tomato = Baked Beans
+Beans + Beef = Chili
+Beans + Pork = Pork and Beans [dish]
+Corn + Beans = Succotash [dish]
+Butter + Garlic = Garlic Butter
+Garlic Butter + Bread = Garlic Bread
+Butter + Honey = Honey Butter
+Sour Cream + Onion = French Onion Dip [dish]
+French Onion Dip + Potato Chips = Chips and Dip
+Cream + Yogurt = Sour Cream
+
+## Sweets
+Pasta + Pasta = Lasagna
+Banana + Flour = Banana Bread
+Chocolate + Flour = Brownie
+Dough + Cream = Cream Puff [dish]
+Yogurt + Fruit = Parfait
+Apple + Banana = Fruit Salad
+Banana + Pie = Banana Cream Pie [dish]
