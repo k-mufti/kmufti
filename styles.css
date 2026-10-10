@@ -125,85 +125,71 @@ a {
   white-space: nowrap;
 }
 
-/* Your name in every game. The label follows the header's lowercase; the
-   name itself is shown exactly as you typed it. */
-.header-you {
-  color: var(--ink-dim);
-  white-space: nowrap;
+/* Top right: the link, and your name tucked under it - the same layout
+   and the same quiet field as Jigsaw's, so it feels like one site. */
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
 }
-.you-chip,
-.you-input {
-  font: inherit;
-  letter-spacing: 1px;
-  text-transform: none;
-  color: var(--ink);
-}
-.you-chip {
+
+.you {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  margin-left: 4px;
-  padding: 2px 9px;
-  background: none;
-  border: 1px dashed transparent;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: border-color 0.15s ease;
 }
-.you-chip[hidden] { display: none; }   /* inline-flex would otherwise beat [hidden] */
-.you-chip:hover,
-.you-chip:focus-visible {
-  border-color: var(--ink-dim);
+.you[hidden] { display: none; }
+
+/* A plain person mark rather than an emoji, so it can wear your colour. */
+.you-icon { width: 15px; height: 15px; flex: 0 0 auto; display: block; }
+
+/* Always outlined, so it reads as something you can type in. */
+.you-name {
+  width: 150px;
+  text-align: right;
+  padding: 3px 8px;
+  border: 1px solid var(--field-line, rgba(17, 17, 17, 0.16));
+  border-radius: 6px;
+  background: var(--field-bg, rgba(255, 255, 255, 0.35));
+  color: var(--ink);
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-transform: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.you-name:hover { border-color: var(--field-line-hi, rgba(17, 17, 17, 0.3)); }
+.you-name:focus {
   outline: none;
-}
-.you-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex: none;
-}
-.you-input {
-  width: 19ch;
-  margin-left: 4px;
-  padding: 2px 9px;
-  background: transparent;
-  border: 1px solid var(--ink-dim);
-  border-radius: 999px;
-  outline: none;
+  color: var(--ink);
+  border-color: var(--field-line-hi, rgba(17, 17, 17, 0.3));
+  background: var(--field-bg-hi, rgba(255, 255, 255, 0.5));
 }
 
+/* Roll a random name. Drawn, not an emoji. */
 .you-roll {
-  margin-left: 2px;
-  padding: 2px 4px;
+  display: inline-flex;
+  padding: 2px;
   background: none;
   border: 0;
-  font-size: 14px;
-  line-height: 1;
+  color: var(--ink-soft, rgba(17, 17, 17, 0.7));
   cursor: pointer;
-  opacity: 0.55;
-  filter: grayscale(1);
-  transition: opacity 0.15s ease, filter 0.15s ease;
+  transition: color 0.15s ease;
 }
-.you-roll:hover,
-.you-roll:focus-visible {
-  opacity: 1;
-  filter: none;
-  outline: none;
-}
-.you-roll.rolling { animation: you-roll 0.45s cubic-bezier(.3, 1.4, .5, 1); }
+.you-roll svg { width: 16px; height: 16px; display: block; }
+.you-roll circle { fill: currentColor; }
+.you-roll:hover, .you-roll:focus-visible { color: var(--ink); outline: none; }
+.you-roll.rolling svg { animation: you-roll 0.45s cubic-bezier(.3, 1.4, .5, 1); }
 @keyframes you-roll {
   0%   { transform: rotate(0) scale(1); }
   50%  { transform: rotate(200deg) scale(1.25); }
   100% { transform: rotate(360deg) scale(1); }
 }
 
-/* Phones: the header wraps rather than overlapping, and the name stands on
-   its own (the coloured dot says enough). */
 @media (max-width: 600px) {
-  .site-header { flex-wrap: wrap; row-gap: 6px; }
-  .header-left { flex-wrap: wrap; row-gap: 4px; }
-  .you-label { display: none; }
-  .you-chip, .you-input { margin-left: -9px; }
+  .you-name { width: 146px; font-size: 12px; }
 }
 
 .header-link {
@@ -259,8 +245,8 @@ a {
   gap: 22px;
   max-width: 1320px;
   padding: 26px 30px 30px;
-  background: #ffffff;
-  border: 1px solid rgba(17, 17, 17, 0.12);
+  background: var(--board, #ffffff);
+  border: 1px solid var(--board-line, rgba(17, 17, 17, 0.12));
   border-radius: 26px;
   box-shadow: 0 10px 34px rgba(0, 0, 0, 0.06);
 }
@@ -426,11 +412,37 @@ a {
   z-index: 6;               /* above the board it stands on */
   width: min(980px, 100%);
   height: 564px;
-  margin-top: -48px;
+  /* Room above his head for the heat word: the word's letters are about
+     17% of its width tall, and his head should only reach their bottom
+     third, so he stands lower the wider the word is. */
+  --word-room: max(0px, calc(0.113 * min(1700px, 96vw) - 23px));
+  margin-top: calc(-48px + var(--word-room));
   pointer-events: none;
   --foot: 40px;
 }
+/* The thermal "KMUFTI" behind his head (heat-word.js). The canvas above it
+   is transparent, so it shows all round the head. Fades in once the font
+   has loaded and the letters are built. */
+.heat-word {
+  position: absolute;
+  left: 50%;
+  /* Anchored to the top of his head (about 5.7% down the bust at every
+     size), then lifted a third of the word's own height so it sits behind
+     the crown and rises above it - on a phone as on a desktop. */
+  top: 5.7%;
+  width: min(1700px, 96vw);    /* sized off the screen, not the bust, so it can go big */
+  height: auto;
+  transform: translate(-50%, -58%);
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.heat-word.ready { opacity: 1; }
 .bust canvas {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   height: 100%;
@@ -516,9 +528,39 @@ html.bust-aim, html.bust-aim * {
 
 @media (max-width: 620px) {
   .hub { padding: 36px 14px 56px; }
-  .bust { height: 340px; margin-top: -24px; }   /* no bigger: at phone width his shoulders already fill it */
+  .bust { height: 340px; margin-top: calc(-24px + var(--word-room)); }   /* no bigger: at phone width his shoulders already fill it */
   .bust-hint, .bust-restore { left: auto; right: 16px; }
   .bust-stats, .bust-weapon { right: auto; left: 16px; }
   .app-board { padding: 20px 16px 24px; border-radius: 20px; }
   .app { width: 100%; max-width: 340px; }
+}
+
+/* =========================================================================
+   The page background: infrared haze. A near-black wall with a pink-violet
+   heat glow rising behind the word, so the thermal "KMUFTI" reads as a heat
+   image rather than a sticker. index.html sets data-tone="dark" and
+   data-bg="haze" on <html>, which keeps these rules to the hub alone.
+   ========================================================================= */
+html[data-tone="dark"] {
+  --ink: #efe6d8;
+  --ink-dim: rgba(239, 230, 216, 0.6);
+  --ink-faint: rgba(239, 230, 216, 0.38);
+  --ink-soft: rgba(239, 230, 216, 0.75);
+  --line: rgba(239, 230, 216, 0.12);
+  --board: rgba(255, 255, 255, 0.04);
+  --board-line: rgba(239, 230, 216, 0.1);
+  --field-line: rgba(239, 230, 216, 0.22);
+  --field-line-hi: rgba(239, 230, 216, 0.4);
+  --field-bg: rgba(255, 255, 255, 0.05);
+  --field-bg-hi: rgba(255, 255, 255, 0.09);
+}
+html[data-tone="dark"] .app-board { box-shadow: none; }
+html[data-bg="haze"] body {
+  background:
+    radial-gradient(ellipse 60% 520px at 50% 300px, rgba(255, 79, 163, 0.22), rgba(120, 40, 200, 0.12) 50%, rgba(0, 0, 0, 0) 100%) no-repeat,
+    #0c0812;
+}
+/* the footer picks up from the haze's own black, so there's no seam */
+html[data-bg="haze"] .deep-space {
+  background: linear-gradient(180deg, #0c0812 0%, var(--space-2) 100%);
 }

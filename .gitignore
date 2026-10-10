@@ -49,3 +49,6 @@ infinite-kitchen/_lab/
 # Marble bust: build intermediates (bust/makehuman.js writes head.glb, which
 # bust/chunk.mjs cuts into the shipped bust.glb).
 bust/model/head.glb
+
+# scratch pages for tweaking things locally, never deployed
+/_lab/

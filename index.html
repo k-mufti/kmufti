@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-tone="dark" data-bg="haze">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
@@ -8,8 +8,8 @@
   <meta name="description" content="A small collection of apps and experiments by Kareem Muftee." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@1,600;1,700&family=Inter:wght@100;200;300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=35" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@1,600;1,700&family=Paytone+One&family=Inter:wght@100;200;300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=52" />
 </head>
 <body>
   <header class="site-header">
@@ -18,15 +18,28 @@
       <!-- Filled in by app.js from the counter; stays out of the way if the
            backend is down. -->
       <span class="header-users" id="visitCount" hidden></span>
-      <!-- Your name in every game (you.js). Click to change it. -->
-      <span class="header-you" id="you" hidden>
-        <span class="you-label">playing as</span>
-        <button type="button" class="you-chip" id="youChip" title="your name in every game - click to change"><span class="you-dot" id="youDot"></span><span id="youText"></span></button>
-        <input class="you-input" id="youInput" maxlength="18" spellcheck="false" autocomplete="nickname" aria-label="your name in every game" hidden />
-        <button type="button" class="you-roll" id="youRoll" title="roll a random name" aria-label="roll a random name">🎲</button>
+    </span>
+    <span class="header-right">
+      <a class="header-link" href="https://kareemmuftee.com">kareemmuftee.com &rarr;</a>
+      <!-- Your name in every game (you.js), laid out like Jigsaw's: a person
+           mark in your colour, the name (just type to change it), and a die
+           that rolls a random one. -->
+      <span class="you" id="you" hidden>
+        <svg class="you-icon" id="youIcon" viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="8" cy="4.9" r="3.1"/>
+          <path d="M1.7 15.2 a6.3 6.3 0 0 1 12.6 0 z"/>
+        </svg>
+        <input class="you-name" id="youName" maxlength="18" spellcheck="false" autocomplete="nickname" aria-label="your name in every game" />
+        <button type="button" class="you-roll" id="youRoll" title="roll a random name" aria-label="roll a random name">
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <rect x="1.6" y="1.6" width="12.8" height="12.8" rx="3.2" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <circle cx="5.1" cy="5.1" r="1.25"/><circle cx="10.9" cy="5.1" r="1.25"/>
+            <circle cx="8" cy="8" r="1.25"/>
+            <circle cx="5.1" cy="10.9" r="1.25"/><circle cx="10.9" cy="10.9" r="1.25"/>
+          </svg>
+        </button>
       </span>
     </span>
-    <a class="header-link" href="https://kareemmuftee.com">kareemmuftee.com &rarr;</a>
   </header>
 
   <!-- The launcher: tiles on a mounting board. (The shared pixel canvas that
@@ -34,6 +47,9 @@
   <main class="hub">
     <!-- The bust: a marble head you can shoot to pieces (bust/bust.js). -->
     <div class="bust" id="bust">
+      <!-- "KMUFTI" as a thermal image, behind his head (heat-word.js). The
+           cursor melts it in rings; it warms back up. -->
+      <svg class="heat-word" id="heatWord" viewBox="0 0 1000 380" aria-hidden="true" focusable="false"></svg>
       <canvas aria-label="A marble bust. Click on it to chip it away."></canvas>
       <p class="bust-hint">go on, shoot it</p>
       <button class="bust-restore" type="button" hidden>restore</button>
@@ -65,7 +81,8 @@
   <script src="you.js?v=2"></script>
   <script src="projects.js?v=14"></script>
   <script src="artwork.js?v=40"></script>
-  <script src="app.js?v=18"></script>
+  <script src="app.js?v=24"></script>
+  <script src="heat-word.js?v=5"></script>
   <!-- layout mode for trying tile orders; does nothing off localhost -->
   <script src="reorder.js?v=2"></script>
   <script type="importmap">{ "imports": {

@@ -151,56 +151,38 @@
 })();
 
 /* =========================================================================
-   Your name, up in the header: the one every game uses (you.js). Click it
-   to type a new one; Enter or clicking away saves, Escape backs out.
+   Your name, top right: the one every game uses (you.js), laid out like
+   Jigsaw's. Type to change it (Enter or clicking away saves, Escape backs
+   out), or roll the die for a random one.
    ========================================================================= */
 (function yourName() {
   const wrap = document.getElementById("you");
   const Y = window.KmuftiYou;
   if (!wrap || !Y) return;
-  const chip = document.getElementById("youChip");
-  const text = document.getElementById("youText");
-  const dot = document.getElementById("youDot");
-  const input = document.getElementById("youInput");
+  const input = document.getElementById("youName");
+  const icon = document.getElementById("youIcon");
+  const roll = document.getElementById("youRoll");
 
   const show = () => {
-    text.textContent = Y.name();
-    dot.style.background = Y.color();
+    if (document.activeElement !== input) input.value = Y.name();
+    icon.style.fill = Y.color();
   };
-  const edit = () => {
-    input.value = Y.name();
-    chip.hidden = true;
-    input.hidden = false;
-    input.focus();
-    input.select();
-  };
-  const done = (save) => {
-    if (input.hidden) return;
-    if (save) Y.setName(input.value);
-    input.hidden = true;
-    chip.hidden = false;
-    show();
-  };
+  const commit = () => { input.value = Y.setName(input.value); };
 
-  chip.addEventListener("click", edit);
-  // A fresh random name, with a little tumble so it feels like a roll.
-  const roll = document.getElementById("youRoll");
-  roll.addEventListener("pointerdown", (e) => e.preventDefault());   // don't blur an open edit first
+  input.addEventListener("change", commit);
+  input.addEventListener("blur", commit);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") input.blur();
+    else if (e.key === "Escape") { input.value = Y.name(); input.blur(); }
+  });
   roll.addEventListener("click", () => {
     let n = Y.randomName();
     for (let i = 0; i < 5 && n === Y.name(); i++) n = Y.randomName();
-    Y.setName(n);
-    done(false);
-    show();
+    input.value = Y.setName(n);
     roll.classList.remove("rolling");
-    void roll.offsetWidth;                     // restart the animation
+    void roll.offsetWidth;                     // restart the spin
     roll.classList.add("rolling");
   });
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") done(true);
-    else if (e.key === "Escape") done(false);
-  });
-  input.addEventListener("blur", () => done(true));
   Y.onChange(show);
   show();
   wrap.hidden = false;
