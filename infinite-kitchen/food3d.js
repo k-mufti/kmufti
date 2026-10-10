@@ -23,8 +23,9 @@ export function onPicture(redraw) { REDRAW = redraw; }
 const CW = 512, CH = 600;          // canvas size; the card is the same shape
 const PAD = 22, PHOTO_H = 410;
 
-// A cuisine's dish gets a band of its colors along the bottom edge.
-const STRIPE_H = 30;
+// A cuisine's dish gets a bold band of its colors along the bottom edge,
+// and a thin one along the top.
+const STRIPE_H = 72, STRIPE_TOP = 16;
 function blankFace(g, stripe) {
   g.clearRect(0, 0, CW, CH);
   g.fillStyle = "#f7f0e2";
@@ -35,7 +36,11 @@ function blankFace(g, stripe) {
     g.save();
     g.clip();
     const w = (CW - 8) / stripe.length;
-    stripe.forEach((c, i) => { g.fillStyle = c; g.fillRect(4 + i * w, CH - 4 - STRIPE_H, w + 1, STRIPE_H); });
+    stripe.forEach((c, i) => {
+      g.fillStyle = c;
+      g.fillRect(4 + i * w, CH - 4 - STRIPE_H, w + 1, STRIPE_H);
+      g.fillRect(4 + i * w, 4, w + 1, STRIPE_TOP);
+    });
     g.restore();
   }
   g.strokeStyle = "#c9b995";

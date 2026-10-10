@@ -234,12 +234,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
   box-shadow: inset 3px 0 0 #3f6f8f, 0 2px 3px rgba(20, 10, 0, 0.35);
   padding-left: 12px;
 }
-/* a cuisine's dish: a stripe of its colors along the bottom */
+/* a cuisine's dish: a bold band of its colors along the bottom, and a thin
+   one along the top, so it reads as that country's at a glance */
 .item.regional {
-  background: var(--stripe) bottom / 100% 5px no-repeat, linear-gradient(180deg, #fffaf0, #f6ecd6);
-  padding-bottom: 8px;
+  background: var(--stripe) bottom / 100% 9px no-repeat, var(--stripe) top / 100% 3px no-repeat, linear-gradient(180deg, #fffaf0, #f6ecd6);
+  padding-top: 7px;
+  padding-bottom: 13px;
 }
-.item.regional[data-kind="drink"] { background: var(--stripe) bottom / 100% 5px no-repeat, linear-gradient(180deg, #f8fbff, #e9f0f4); }
+.item.regional[data-kind="drink"] { background: var(--stripe) bottom / 100% 9px no-repeat, var(--stripe) top / 100% 3px no-repeat, linear-gradient(180deg, #f8fbff, #e9f0f4); }
 .item[data-kind="technique"] { background: #2b2219; border-color: #2b2219; color: var(--cream); font-style: italic; }
 .item[data-kind="cuisine"] { background: #e3efe1; border-color: #3f7d4f; color: #23452c; font-family: Fraunces, Georgia, serif; font-weight: 700; }
 .item[data-kind="trash"] { background: #d9d3c7; border-color: #9f978a; color: #4f4a42; font-style: italic; }

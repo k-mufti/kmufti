@@ -1,0 +1,156 @@
+# Infinite Kitchen - the catalog: every food we want in the game.
+#
+# Not combos - a checklist. Each section is a real aisle, menu, cookbook or
+# occasion, so coverage comes from how the world already sorts food, not
+# from memory. For anything missing, the question is "how is this actually
+# made?" - its combo comes from its real recipe. If there's no honest route
+# yet, it waits; a gap is better than a forced combo.
+#
+# Names are written the way the game names things (what you'd say out loud).
+# An item may sit in more than one section. node core.js reports how much of
+# each section is in the game (--list shows what's missing).
+
+#############################################################################
+# THE GROCERY STORE
+#############################################################################
+
+## Produce: vegetables
+Potato, Sweet Potato, Carrot, Baby Carrots, Onion, Garlic, Tomato, Lettuce, Iceberg Lettuce, Spinach, Kale, Cabbage, Broccoli, Cauliflower, Cucumber, Bell Pepper, Chili Pepper, Jalapeno, Corn, Peas, Green Beans, Celery, Zucchini, Eggplant, Mushroom, Asparagus, Brussels Sprouts, Beet, Radish, Pumpkin, Squash, Avocado, Artichoke, Leek, Green Onion, Ginger, Bok Choy, Okra, Turnip, Edamame
+
+## Produce: fruit
+Apple, Banana, Orange, Lemon, Lime, Grapes, Strawberry, Blueberry, Raspberry, Blackberry, Cherry, Peach, Pear, Plum, Mango, Pineapple, Watermelon, Cantaloupe, Kiwi, Coconut, Pomegranate, Grapefruit, Apricot, Fig, Dates, Papaya, Passion Fruit, Cranberry, Raisins, Dried Fruit, Olive
+
+## Herbs and spices
+Herbs, Spices, Basil, Mint, Cilantro, Parsley, Rosemary, Thyme, Oregano, Dill, Bay Leaves, Lavender, Cinnamon, Pepper, Paprika, Cumin, Turmeric, Nutmeg, Vanilla, Garam Masala, Za'atar, Curry Powder, Chili Powder, Seasoning, Salt, Sea Salt, Rock Salt, Tajin, Pumpkin Spice, Saffron, Sesame Seeds
+
+## Dairy and eggs
+Milk, Cream, Whipped Cream, Butter, Ghee, Yogurt, Greek Yogurt, Sour Cream, Buttermilk, Condensed Milk, Evaporated Milk, Egg, Chocolate Milk, Strawberry Milk, Oat Milk, Almond Milk, Soy Milk, Rice Milk, Labneh, Custard, Pudding
+
+## Cheese
+Cheese, Cheddar, Mozzarella, Parmesan, Swiss Cheese, Blue Cheese, Feta, Brie, Goat Cheese, Cream Cheese, Cottage Cheese, Ricotta, Mascarpone, Pepper Jack, American Cheese, String Cheese, Sliced Cheese, Gouda, Provolone, Halloumi, Paneer, Queso, Cheese Powder
+
+## Meat
+Meat, Beef, Ground Beef, Steak, Pork, Bacon, Ham, Sausage, Chicken, Turkey, Lamb, Duck, Veal, Ribs, Pork Chop, Chicken Wings, Brisket, Hot Dog, Jerky, Corned Beef, Roast Beef
+
+## Seafood
+Fish, Salmon, Tuna, Cod, Shrimp, Crab, Lobster, Oysters, Clams, Mussels, Scallops, Squid, Sardines, Anchovies, Caviar, Imitation Crab, Seafood, Fish Fillet
+
+## Bakery: bread
+Bread, Sliced Bread, Whole Wheat Bread, Sourdough, Toast, Bagel, Croissant, Baguette, Pita, Naan, Tortilla, Focaccia, Cornbread, Biscuit, Dinner Roll, Brioche, English Muffin, Hamburger Bun, Pretzel, Breadcrumbs, Croutons, Flatbread
+
+## Deli
+Cold Cuts, Salami, Pepperoni, Prosciutto, Rotisserie Chicken, Potato Salad, Coleslaw, Pickles, Hummus, Sub, Club Sandwich, Ham Sandwich
+
+## Frozen
+Ice Cream, Frozen Yogurt, Popsicle, Ice Pop, Fish Sticks, Frozen Pizza, Waffle, Ice, Peas, Chicken Nuggets, Tater Tots, Ice Cream Sandwich, Mochi Ice Cream
+
+## Pantry: grains, pasta, flour, baking
+Grain, Wheat, Barley, Rice, Brown Rice, Wild Rice, Basmati Rice, Oats, Quinoa, Couscous, Corn, Cornmeal, Flour, Rice Flour, Oat Flour, Pasta, Spaghetti, Macaroni, Egg Noodles, Ramen, Rice Noodles, Lasagna, Dough, Batter, Cake Mix, Pie Crust, Yeast, Baking Soda, Sugar, Powdered Sugar, Brown Sugar, Sugar Cubes, Honey, Maple Syrup, Corn Syrup, Syrup, Molasses, Cocoa, Chocolate Chips, Sprinkles, Marshmallow, Gelatin, Oil, Olive Oil, Vinegar
+
+## Canned and jarred
+Beans, Baked Beans, Refried Beans, Chickpeas, Lentils, Black Beans, Tomato Sauce, Tomato Soup, Chicken Noodle Soup, Cream of Mushroom, Canned Tuna, Peanut Butter, Jam, Nutella, Applesauce, Olives, Sauerkraut, Kimchi, Salsa, Broth, Coconut Milk
+
+## Condiments and sauces
+Ketchup, Mustard, Honey Mustard, Mayonnaise, Ranch, BBQ Sauce, Hot Sauce, Sriracha, Soy Sauce, Teriyaki, Fish Sauce, Pesto, Gravy, Hollandaise, Tzatziki, Guacamole, Salsa, Pico de Gallo, Italian Dressing, Caesar Dressing, Relish, Tahini, Mole, Alfredo, Marinara, Worcestershire Sauce, Buffalo Sauce, Icing, Frosting, Caramel, Fudge, Whipped Cream
+
+## Breakfast and cereal
+Cereal, Granola, Granola Bar, Oatmeal, Overnight Oats, Porridge, Cream of Wheat, Pancakes, Waffle, French Toast, Cheerios, Honey Nut Cheerios, Froot Loops, Frosted Flakes, Corn Flakes, Cocoa Puffs, Lucky Charms, Cinnamon Toast Crunch, Rice Krispies, Raisin Bran, Wheaties, Frosted Mini-Wheats, Honey Bunches of Oats, Cap'n Crunch, Pop-Tart, Eggo Waffles, Breakfast
+
+## Snacks: chips and crackers
+Potato Chips, Tortilla Chips, Pringles, Doritos, Cheetos, Flamin' Hot Cheetos, Takis, Lay's, Fritos, Funyuns, Salt and Vinegar Chips, BBQ Chips, Popcorn, Kettle Corn, Caramel Corn, Movie Theater Popcorn, Pretzel, Crackers, Saltines, Ritz, Cheez-It, Goldfish, Wheat Thins, Graham Crackers, Animal Crackers, Oyster Crackers, Rice Cakes, Rice Crackers, Corn Nuts, Pork Rinds, Kale Chips, Seaweed Snacks, Beef Jerky, Trail Mix, Chips and Salsa, Chips and Guac, Chips and Dip, Nachos
+
+## Nuts and seeds
+Nuts, Peanuts, Almonds, Cashews, Walnuts, Pecans, Pistachios, Hazelnuts, Sunflower Seeds, Pumpkin Seeds, Sesame Seeds, Chia Seeds
+
+## Candy and chocolate
+Candy, Chocolate, Milk Chocolate, Dark Chocolate, White Chocolate, Hershey's Bar, M&M's, Reese's, Snickers, Kit Kat, Twix, Milky Way, 3 Musketeers, Butterfinger, Crunch Bar, Skittles, Starburst, Gummy Bears, Gummy Worms, Swedish Fish, Sour Patch Kids, Jelly Beans, Candy Corn, Lollipop, Jawbreaker, Rock Candy, Cotton Candy, Licorice, Saltwater Taffy, Toffee, Peppermint, Candy Cane, Tic Tacs, Andes Mints, Milk Duds, Cadbury Creme Egg, Pixy Stix, Nerds, Marshmallow Peeps, Chewing Gum, Candy Bar
+
+## Cookies and bakery sweets
+Cookie, Chocolate Chip Cookie, Oatmeal Cookie, Sugar Cookie, Peanut Butter Cookie, Oreo, Fortune Cookie, Biscotti, Gingerbread, Brownie, Cake, Cupcake, Muffin, Donut, Glazed Donut, Jelly Donut, Powdered Donut, Donut Holes, Cinnamon Roll, Danish, Pie, Apple Pie, Cherry Pie, Pumpkin Pie, Pecan Pie, Key Lime Pie, Cheesecake, Carrot Cake, Red Velvet Cake, Chocolate Cake, Coffee Cake, Pound Cake, Banana Bread, Twinkie, Cake Pop, Macaron, Eclair, Churro
+
+## Desserts
+Ice Cream, Sundae, Banana Split, Milkshake, Float, Gelato, Sorbet, Frozen Yogurt, Pudding, Chocolate Pudding, Rice Pudding, Custard, Flan, Creme Brulee, Tiramisu, Jell-O, Cobbler, Peach Cobbler, S'mores, Rice Krispies Treat, Fudge, Caramel Apple, Chocolate-Covered Strawberry, Baklava, Knafeh, Mochi, Kheer, Shaved Ice, Snow Cone, Strawberry Shortcake
+
+## Ice cream shop
+Ice Cream, Ice Cream Cone, Waffle Cone, Sundae, Banana Split, Milkshake, Chocolate Milkshake, Float, Root Beer Float, Ice Cream Cake, Ice Cream Sandwich, Cookies and Cream, Mint Chocolate Chip, Rocky Road, Neapolitan, Sprinkles, Hot Fudge, McFlurry, Frosty, Dippin' Dots
+
+## Coffee shop
+Coffee, Espresso, Americano, Latte, Cappuccino, Mocha, Macchiato, Flat White, Iced Coffee, Cold Brew, Frappuccino, Pumpkin Spice Latte, Hot Chocolate, Hot Cocoa, Chai, Chai Latte, Matcha Latte, Steamed Milk, Turkish Coffee, Croissant, Muffin, Scone, Cake Pop
+
+## Tea
+Tea, Green Tea, Herbal Tea, Mint Tea, Chamomile, Matcha, Milk Tea, Boba, Sweet Tea, Iced Tea, Arnold Palmer, Kombucha, Chai, Lemon Tea, Earl Grey
+
+## Soft drinks, juice and water
+Water, Ice Water, Sparkling Water, Bottled Water, LaCroix, Soda, Cola, Sprite, Fanta, Root Beer, Ginger Ale, Dr Pepper, Mountain Dew, Lemonade, Pink Lemonade, Orange Juice, Apple Juice, Grape Juice, Cranberry Juice, Tomato Juice, Coconut Water, Smoothie, Green Smoothie, Smoothie Bowl, Slushie, Kool-Aid, Gatorade, Energy Drink, Agua Fresca, Horchata, Lassi, Mango Lassi
+
+## Alcohol (basic only - no cocktails)
+Beer, Wine, Cider, Sake, Vodka, Rum, Whiskey, Tequila
+
+#############################################################################
+# RESTAURANT MENUS
+#############################################################################
+
+## Fast food
+Burger, Cheeseburger, Double Cheeseburger, Bacon Burger, Big Mac, Quarter Pounder, Whopper, Filet-O-Fish, McFlurry, McGriddle, Egg McMuffin, Happy Meal, Combo Meal, French Fries, Curly Fries, Onion Rings, Chicken Nuggets, Chicken Tenders, Chicken Sandwich, Bucket of Chicken, Hot Dog, Corn Dog, Taco, Doritos Locos Taco, Crunchwrap Supreme, Mexican Pizza, Stuffed Crust Pizza, Frosty, Frappuccino, Donut Holes, Hash Browns, Apple Pie, Mozzarella Sticks
+
+## Diner and breakfast plates
+Pancakes, Waffle, French Toast, Bacon and Eggs, Steak and Eggs, Fried Egg, Scrambled Eggs, Omelette, Poached Egg, Boiled Egg, Eggs Benedict, Hash Browns, Biscuits and Gravy, Chicken and Waffles, Grilled Cheese, Patty Melt, BLT, Club Sandwich, Meatloaf, Milkshake, Pot Roast, Breakfast Burrito, Avocado Toast, Bagel and Cream Cheese, Lox Bagel
+
+## Pizzeria
+Pizza, Cheese Pizza, Pepperoni Pizza, Margherita Pizza, Hawaiian Pizza, Mushroom Pizza, Meat Lover's Pizza, Veggie Pizza, Deep Dish Pizza, Stuffed Crust Pizza, Calzone, Garlic Bread, Garlic Knots, Pizza Bagel, Breadsticks, Buffalo Wings
+
+## Steakhouse and barbecue
+Steak, Ribs, Brisket, Pulled Pork, BBQ Chicken, Barbecue, Baked Potato, Mashed Potatoes, Creamed Spinach, Corn on the Cob, Coleslaw, Baked Beans, Surf and Turf, Roast Beef, Prime Rib
+
+## Sandwich shop and soups
+Sandwich, Sub, Panini, Wrap, Chicken Wrap, PB&J, Ham Sandwich, Grilled Cheese, Cheesesteak, Reuben, Meatball Sub, Tuna Sandwich, Egg Salad Sandwich, Soup and Sandwich, Chicken Noodle Soup, Tomato Soup, French Onion Soup, Clam Chowder, Potato Soup, Corn Chowder, Minestrone, Vegetable Soup, Chicken Soup, Chili, Stew, Beef Stew, Salad, Caesar Salad, Greek Salad, Garden Salad, Fruit Salad
+
+## Seafood shack
+Fish and Chips, Fried Fish, Fish Sticks, Popcorn Shrimp, Shrimp Cocktail, Lobster Roll, Crab Cakes, Clam Chowder, Seafood Boil, Oysters, Fish Tacos, Grilled Salmon
+
+#############################################################################
+# THE COOKBOOKS - each cuisine's classics
+#############################################################################
+
+## American
+Apple Pie, Burger, Cheeseburger, Hot Dog, Mac and Cheese, PB&J, BLT, Cheesesteak, Corn Dog, Chili Dog, Buffalo Wings, Chicken and Waffles, Thanksgiving Dinner, Pulled Pork, Ribs, Brisket, Cornbread, Clam Chowder, Pumpkin Pie, Red Velvet Cake, S'mores, Meatloaf, Biscuits and Gravy, Lobster Roll, Key Lime Pie, Pecan Pie, Fried Chicken, Jambalaya, Gumbo, Deep Dish Pizza
+
+## Italian
+Pizza, Margherita Pizza, Pepperoni Pizza, Calzone, Spaghetti, Spaghetti and Meatballs, Spaghetti Bolognese, Lasagna, Alfredo, Carbonara, Pesto Pasta, Ravioli, Gnocchi, Risotto, Minestrone, Bruschetta, Focaccia, Caprese Salad, Chicken Parmesan, Eggplant Parmesan, Tiramisu, Gelato, Cannoli, Panna Cotta, Biscotti, Espresso, Cappuccino, Prosciutto, Polenta, Garlic Bread
+
+## Mexican
+Taco, Burrito, Burrito Bowl, Quesadilla, Nachos, Enchilada, Tamale, Fajitas, Carne Asada, Carnitas, Al Pastor, Torta, Tostada, Chimichanga, Elote, Guacamole, Salsa, Pico de Gallo, Chips and Salsa, Refried Beans, Mexican Rice, Pozole, Mole, Churro, Flan, Tres Leches Cake, Horchata, Agua Fresca, Takis
+
+## East Asian
+Sushi, Sashimi, California Roll, Sushi Roll, Onigiri, Ramen, Udon, Pho, Fried Rice, Lo Mein, Chow Mein, Kung Pao Chicken, Orange Chicken, General Tso's Chicken, Sweet and Sour Chicken, Beef and Broccoli, Egg Rolls, Spring Rolls, Dumplings, Bao, Peking Duck, Bulgogi, Bibimbap, Korean Fried Chicken, Kimchi, Tempura, Teriyaki, Miso Soup, Egg Drop Soup, Hot and Sour Soup, Congee, Donburi, Mochi, Mochi Ice Cream, Boba, Matcha Latte, Sake, Fortune Cookie
+
+## Indian
+Curry, Butter Chicken, Chicken Tikka Masala, Tandoori Chicken, Biryani, Dal, Saag Paneer, Palak Paneer, Chana Masala, Aloo Gobi, Samosa, Pakora, Naan, Garlic Naan, Roti, Paratha, Dosa, Idli, Raita, Chutney, Lassi, Mango Lassi, Chai, Kheer, Gulab Jamun, Jalebi
+
+## Middle Eastern
+Hummus, Falafel, Falafel Wrap, Shawarma, Kebab, Shish Tawook, Kofta, Mansaf, Maqluba, Kabsa, Mandi, Musakhan, Tabbouleh, Fattoush, Baba Ganoush, Mutabal, Labneh, Halloumi, Pita, Manakish, Za'atar, Stuffed Grape Leaves, Kibbeh, Shakshuka, Ful Medames, Knafeh, Baklava, Halva, Ma'amoul, Turkish Coffee, Mint Tea, Dates
+
+#############################################################################
+# OCCASIONS
+#############################################################################
+
+## Thanksgiving
+Thanksgiving Dinner, Turkey, Roast Turkey, Stuffing, Mashed Potatoes, Gravy, Cranberry Sauce, Sweet Potato Casserole, Green Bean Casserole, Pumpkin Pie, Pecan Pie, Dinner Roll, Cornbread
+
+## Halloween
+Candy Corn, Caramel Apple, Pumpkin, Pumpkin Seeds, Candy Bar, Popcorn Ball, Jack-o'-Lantern Cookie
+
+## Christmas and winter
+Gingerbread, Gingerbread House, Candy Cane, Eggnog, Hot Cocoa, Sugar Cookie, Fruitcake, Roast Beef, Ham, Chestnuts, Yule Log
+
+## Ramadan and Eid
+Dates, Lentil Soup, Samosa, Qatayef, Ma'amoul, Knafeh, Mansaf, Kabsa, Jallab, Qamar al-Din
+
+## Birthday and party
+Birthday Cake, Cupcake, Ice Cream Cake, Pizza, Chips and Dip, Punch, Cake Pop, Sprinkles
+
+## Movie theater, ballpark and the fair
+Movie Theater Popcorn, Nachos, Hot Dog, Ballpark Hot Dog, Pretzel, Cracker Jack, Peanuts, Corn Dog, Funnel Cake, Cotton Candy, Snow Cone, Slushie, Candy, Soda, Kettle Corn, Churro
+
+## Summer cookout
+Burger, Hot Dog, BBQ Chicken, Ribs, Corn on the Cob, Potato Salad, Coleslaw, Watermelon, Lemonade, Iced Tea, Popsicle, S'mores, Baked Beans

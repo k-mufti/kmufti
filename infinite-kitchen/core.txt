@@ -265,7 +265,7 @@ Herbs + Blender = Pesto
 Herbs + Fridge = Mint
 Herbs + Tomato = Basil
 Herbs + Salt = Seasoning
-Herbs + Clock = Spices
+Herbs + Clock = Thyme
 Herbs + Tea = Herbal Tea [drink]
 Spices + Tree = Cinnamon
 Spices + Salt = Pepper
@@ -805,7 +805,6 @@ Milk + Pot = Evaporated Milk
 Bread + Oven = Toast
 Bread + Knife = Sliced Bread
 Tomato + Blender = Tomato Juice [drink]
-Tomato Juice + Vodka = Bloody Mary [drink]
 Tomato + Knife = Pico de Gallo
 Tomato + Clock = Sun-Dried Tomatoes
 Chicken + Knife = Chicken Tenders [dish]
@@ -884,7 +883,7 @@ Cow + Ice = Ice Cream
 Cow + Meat = Beef
 Fruit + Caramel = Caramel Apple
 Fruit + Ice = Sorbet [dish]
-Seaweed + Broth = Miso Soup
+Seaweed + Broth = Seaweed Soup
 Bee + Bee = Honeycomb
 Bee + Crackers = Graham Crackers
 Bee + Oats = Honey Bunches of Oats [dish]
@@ -1180,3 +1179,109 @@ Fish Fillet + Fast Food = Filet-O-Fish
 Fish Fillet + East Asian = Sashimi
 Roast Duck + East Asian = Peking Duck
 Steamed Buns + Meat = Bao
+
+#############################################################################
+# Catalog batch 1 (2026-10-09): produce, herbs, spices, nuts. Recipe-first:
+# each missing food gets the route it's really made by; no honest route,
+# no entry.
+#############################################################################
+
+## Vegetables
+Lettuce + Cabbage = Kale
+Kale + Oven = Kale Chips
+Kale + Blender = Green Smoothie
+Beans + Plant = Green Beans
+Green Beans + Salt = Edamame [dish]
+Green Beans + Cream of Mushroom = Green Bean Casserole [dish]
+Cucumber + Plant = Celery
+Celery + Peanut Butter = Ants on a Log [dish]
+Pumpkin + Vegetables = Squash
+Squash + Cucumber = Zucchini
+Zucchini + Bread = Zucchini Bread [dish]
+Egg + Plant = Eggplant
+Eggplant + Parmesan = Eggplant Parmesan [dish]
+Eggplant + Blender = Baba Ganoush [dish]
+Cabbage + Knife = Brussels Sprouts
+Brussels Sprouts + Bacon = Brussels Sprouts and Bacon [dish]
+Onion + Plant = Green Onion
+Green Onion + Green Onion = Leek
+Green Onion + Pancakes = Scallion Pancakes [dish]
+Vegetables + Pepper = Radish
+Radish + Sugar = Beet
+Beet + Salad = Beet Salad [dish]
+
+## Fruit
+Berries + Berries = Raspberry
+Berries + Clock = Blackberry
+Berries + Water = Cranberry
+Cranberry + Pot = Cranberry Sauce
+Cranberry + Blender = Cranberry Juice [drink]
+Watermelon + Orange = Cantaloupe
+Fruit + Hen = Kiwi
+Grapes + Orange = Grapefruit
+Raspberry + Lemonade = Pink Lemonade [drink]
+
+## Herbs and spices
+Herbs + Herbs = Parsley
+Parsley + Salad = Tabbouleh
+Herbs + Pizza = Oregano
+Oregano + Tomato Sauce = Marinara
+Herbs + Tomato Sauce = Marinara
+Herbs + Pickles = Dill
+Dill + Cucumber = Pickles
+Bell Pepper + Blender = Paprika
+Nuts + Spices = Nutmeg
+Custard + Nutmeg = Eggnog [drink]
+Ginger + Indian = Turmeric
+Turmeric + Milk = Golden Milk [drink]
+Turmeric + Spices = Curry Powder
+Curry Powder + Pot = Curry
+Chili Pepper + Oven = Chili Powder
+Chili Powder + Beans = Chili
+Flower + Spices = Saffron
+Thyme + Chicken = Roast Chicken [dish]
+
+## Nuts
+Nuts + Nuts = Mixed Nuts [dish]
+Nuts + Salt = Pistachios
+Nuts + Pie = Pecan Pie [dish]
+
+## Dairy, bread and baking
+Butter + Milk = Buttermilk
+Yogurt + Yogurt = Greek Yogurt
+Buttermilk + Flour = Biscuit [dish]
+Biscuit + Gravy = Biscuits and Gravy [dish]
+Bread + Butter = Dinner Roll [dish]
+Muffin + Bread = English Muffin [dish]
+Sugarcane + Pot = Molasses
+Sugar + Molasses = Brown Sugar
+Candy + Knife = Sprinkles
+Cake + Sprinkles = Birthday Cake [dish]
+Pasta + Grain = Couscous
+Pasta + Knife = Macaroni
+Rice Flour + Water = Rice Noodles
+Rice Noodles + Broth = Pho
+Rice Noodles + Peanuts = Pad Thai
+
+## Frozen, canned and condiments
+Pizza + Fridge = Frozen Pizza [dish]
+Potato + Fridge = Tater Tots [dish]
+Tuna + Oil = Canned Tuna
+Canned Tuna + Mayonnaise = Tuna Salad [dish]
+Tuna Salad + Bread = Tuna Sandwich [dish]
+Olive + Olive = Olives
+Coconut + Blender = Coconut Milk
+Anchovies + Clock = Fish Sauce
+Anchovies + Mayonnaise = Caesar Dressing
+Salad + Caesar Dressing = Caesar Salad [dish]
+Anchovies + Vinegar = Worcestershire Sauce
+Pickles + Knife = Relish
+Hot Sauce + Butter = Buffalo Sauce
+Chicken + Buffalo Sauce = Buffalo Wings
+
+## The seafood shack
+Shrimp + Ketchup = Shrimp Cocktail [dish]
+Lobster + Bread = Lobster Roll [dish]
+Crab + Breadcrumbs = Crab Cakes [dish]
+Fish + Tortilla = Fish Tacos [dish]
+Salmon + Stove = Grilled Salmon [dish]

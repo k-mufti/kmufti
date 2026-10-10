@@ -15,7 +15,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
-import { foodMesh, onPicture } from "./food3d.js?v=2";
+import { foodMesh, onPicture } from "./food3d.js?v=3";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js";

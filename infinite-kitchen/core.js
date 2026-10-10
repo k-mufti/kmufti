@@ -181,6 +181,37 @@ if (LIST) {
   }
 } else console.log("\n(node core.js --list for every open pair)");
 
+// Red flags - things a quick batch tends to get wrong:
+//  - a cuisine's named dish two steps from the start: two everyday things
+//    should make something plain (Rice + Meat = Rice and Meat), not a
+//    regional dish, or the cookbooks unlock in the first minute
+//  - one result reached by many routes: usually a lazy repeat
+const shallow = Object.keys(cuisineOf).filter((n) => depth.get(n) <= 2);
+const routes = new Map();
+for (const [a, b, r] of combos) if (r !== a && r !== b && items[a] !== "cuisine" && items[b] !== "cuisine") routes.set(r, (routes.get(r) || 0) + 1);
+const many = [...routes].filter(([, n]) => n >= 5).sort((x, y) => y[1] - x[1]);
+console.log(`\nRed flags:`);
+console.log(`  cuisine dishes within 2 steps: ${shallow.length ? shallow.map((n) => `${n} (${cuisineOf[n]})`).join(", ") : "none"}`);
+console.log(`  results with 5+ routes: ${many.length ? many.map(([n, k]) => `${n} ${k}`).join(", ") : "none"}`);
+
+// The catalog: every food we want in the game, by aisle, menu and occasion.
+const CATALOG = path.join(__dirname, "catalog.txt");
+if (fs.existsSync(CATALOG)) {
+  const sections = [];
+  for (const line of fs.readFileSync(CATALOG, "utf8").split("\n")) {
+    const h = line.match(/^## (.+)$/);
+    if (h) sections.push({ name: h[1], items: [] });
+    else if (sections.length && line.trim() && !line.startsWith("#")) sections.at(-1).items.push(...line.split(",").map((n) => n.trim()).filter(Boolean));
+  }
+  const all = new Set(sections.flatMap((x) => x.items));
+  const have = [...all].filter((n) => n in items).length;
+  console.log(`\nCatalog - ${have} of ${all.size} foods in the game (${pct(have, all.size)}):`);
+  for (const x of sections) {
+    const missing = x.items.filter((n) => !(n in items));
+    console.log(`  ${x.name.padEnd(42)} ${String(x.items.length - missing.length).padStart(3)} / ${String(x.items.length).padEnd(3)}` + (LIST && missing.length ? `  missing: ${missing.join(", ")}` : ""));
+  }
+}
+
 const over = [];
 if (nothing.length > combos.length * NOTHING_MAX) over.push(`too many [nothing] combos: ${nothing.length} is over ${NOTHING_MAX * 100}%`);
 if (trash > combos.length * TRASH_MAX) over.push(`too much goes in the bin: ${trash} is over ${TRASH_MAX * 100}%`);
