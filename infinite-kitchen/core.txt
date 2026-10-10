@@ -1531,3 +1531,144 @@ Dough + Cream = Cream Puff [dish]
 Yogurt + Fruit = Parfait
 Apple + Banana = Fruit Salad
 Banana + Pie = Banana Cream Pie [dish]
+
+## Batch 3a (2026-10-09): finished dishes and drinks as inputs
+# Toppings, upgrades, dish + dish, and what a tool honestly does to a finished
+# dish. Split agreed with the other session: it did the catalog gaps and the
+# common ingredients; every line here has a dish or a drink on one side,
+# mostly ones that were dead ends (made, but never used in anything).
+# Recipe-first: each line is how the thing is actually made or what it's
+# actually called. Pairs with no honest answer are left open.
+
+## Pizza
+Pizza + String Cheese = Stuffed Crust Pizza
+Pizza + Knife = Pizza Slice [dish]
+Frozen Pizza + Oven = Pizza
+BBQ Chicken + Pizza = BBQ Chicken Pizza [dish]
+
+## Burgers and hot dogs
+Cheeseburger + Burger = Double Cheeseburger
+Burger + BBQ Sauce = BBQ Burger [dish]
+Hot Dog + Cornmeal = Corn Dog
+Hot Dog + Pretzel = Pretzel Dog [dish]
+
+## Fries and potatoes
+Cheese Fries + Chili = Chili Cheese Fries [dish]
+French Fries + Garlic = Garlic Fries [dish]
+Fried Fish + French Fries = Fish and Chips
+Carne Asada + French Fries = Carne Asada Fries [dish]
+Baked Potato + Bacon = Loaded Baked Potato [dish]
+Mashed Potatoes + Garlic = Garlic Mashed Potatoes [dish]
+Corn on the Cob + Mayonnaise = Elote
+
+## Sandwiches, chicken, barbecue
+Pulled Pork + Hamburger Bun = Pulled Pork Sandwich [dish]
+Fried Chicken + Biscuit = Chicken Biscuit [dish]
+Fried Chicken + Hot Sauce = Nashville Hot Chicken [dish]
+Caesar Salad + Chicken = Chicken Caesar Salad [dish]
+BLT + Turkey = Club Sandwich
+Tuna Sandwich + Cheese = Tuna Melt [dish]
+Cheese and Crackers + Cold Cuts = Lunchables
+Clam Chowder + Sourdough = Bread Bowl [dish]
+Chili + Spaghetti = Cincinnati Chili [dish]
+
+## Pasta and Italian
+Spaghetti + Meat Sauce = Spaghetti Bolognese
+Alfredo + Chicken = Chicken Alfredo [dish]
+Mac and Cheese + Oven = Baked Mac and Cheese [dish]
+Mac and Cheese + Lobster = Lobster Mac and Cheese [dish]
+Garlic Bread + Cheese = Cheesy Garlic Bread [dish]
+Risotto + Stove = Arancini [dish]
+Ravioli + Stove = Toasted Ravioli [dish]
+Gelato + Espresso = Affogato [dish]
+
+## Mexican
+Fried Fish + Tortilla = Fish Tacos
+Tortilla Chips + Queso = Chips and Queso [dish]
+Elote + Knife = Esquites [dish]
+
+## East Asian, Indian
+Dumplings + Stove = Potstickers [dish]
+Dumplings + Broth = Wonton Soup [dish]
+Fried Rice + Kimchi = Kimchi Fried Rice [dish]
+Curry + Rice = Curry and Rice [dish]
+Naan + Cheese = Cheese Naan [dish]
+Dosa + Potato = Masala Dosa [dish]
+
+## Breakfast
+Pancakes + Blueberry = Blueberry Pancakes [dish]
+Muffin + Blueberry = Blueberry Muffin [dish]
+Bagel and Cream Cheese + Salmon = Lox Bagel
+Cheerios + Honey = Honey Nut Cheerios
+
+## Coffee and tea
+Iced Coffee + Milk = Iced Latte [drink]
+Iced Coffee + Blender = Frappuccino
+Latte + Vanilla = Vanilla Latte [drink]
+Mocha + Peppermint = Peppermint Mocha [drink]
+Tea + Ice = Iced Tea
+Iced Tea + Sugar = Sweet Tea
+Sweet Tea + Clock = Kombucha
+
+## Juice, soda, shakes
+Lemonade + Strawberry = Pink Lemonade
+Cola + Ice Cream = Float
+Lassi + Mango = Mango Lassi
+Apple Juice + Clock = Cider
+Grape Juice + Clock = Wine
+Cider + Clock = Vinegar
+Orange Juice + Fridge = Popsicle
+Smoothie + Spinach = Green Smoothie
+Fruit Salad + Blender = Smoothie
+Milkshake + Strawberry = Strawberry Milkshake [drink]
+
+## Ice cream
+Sundae + Banana = Banana Split
+Ice Cream + Chocolate Chip Cookie = Ice Cream Sandwich
+Ice Cream + Apple Pie = Pie a la Mode [dish]
+Ice Cream + Mochi = Mochi Ice Cream
+Ice Cream + Brownie = Brownie Sundae [dish]
+Ice Cream + Matcha = Green Tea Ice Cream [dish]
+Ice Cream + Coffee = Coffee Ice Cream [dish]
+
+## Cakes, cookies, donuts, sweets
+Cake + Fruit = Fruitcake
+Cheesecake + Strawberry = Strawberry Cheesecake [dish]
+Chocolate Chip Cookie + Milk = Milk and Cookies
+Chocolate Chip Cookie + Brownie = Brookie [dish]
+Croissant + Donut = Cronut [dish]
+Donut + Icing = Glazed Donut
+Glazed Donut + Chocolate = Chocolate Donut [dish]
+Pudding + Banana = Banana Pudding [dish]
+Pretzel + Chocolate = Chocolate-Covered Pretzels [dish]
+Toffee + Chocolate = Heath Bar [dish]
+
+## More upgrades
+Pancakes + Chocolate Chips = Chocolate Chip Pancakes [dish]
+Nachos + Meat = Loaded Nachos [dish]
+Quesadilla + Chicken = Chicken Quesadilla [dish]
+Fried Fish + Hamburger Bun = Fish Sandwich [dish]
+Hot Dog + Bacon = Bacon-Wrapped Hot Dog [dish]
+Lemonade + Blender = Frozen Lemonade [drink]
+Iced Tea + Peach = Peach Tea [drink]
+Chai + Espresso = Dirty Chai [drink]
+Pudding + Oreo = Dirt Cup [dish]
+Gingerbread + Icing = Gingerbread House
+Ice Cream + Strawberry = Strawberry Ice Cream [dish]
+Steamed Rice + Nori = Rice Ball
+Fried Rice + Shrimp = Shrimp Fried Rice [dish]
+Chicken Soup + Pie Crust = Chicken Pot Pie
+Mashed Potatoes + Meat = Shepherd's Pie [dish]
+Pancakes + Banana = Banana Pancakes [dish]
+Scrambled Eggs + Tortilla = Breakfast Burrito
+Steamed Buns + Pork = Bao
+Sashimi + Rice = Poke Bowl [dish]
+Biscuit + Strawberry = Strawberry Shortcake
+French Fries + Chili = Chili Fries [dish]
+
+## Batch 3a: new regional dishes join their cookbooks
+Italian: Chicken Alfredo, Arancini, Affogato
+Mexican: Chips and Queso, Esquites, Carne Asada Fries
+East Asian: Potstickers, Wonton Soup, Kimchi Fried Rice
+Indian: Cheese Naan, Masala Dosa
+American: Nashville Hot Chicken, Cincinnati Chili, Toasted Ravioli

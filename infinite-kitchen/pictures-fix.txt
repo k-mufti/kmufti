@@ -130,3 +130,14 @@ Chicken Dinner = Roast chicken
 Meat and Potatoes = Meat and potatoes
 Cream Puff = Profiterole
 Fish Sandwich = Fish sandwich
+
+# batch 3a (2026-10-09)
+Blueberry Pancakes = Pancake
+Banana Pancakes = Pancake
+Chocolate Chip Pancakes = Pancake
+Iced Latte = Iced coffee
+Vanilla Latte = Latte
+Brookie = Chocolate brownie
+BBQ Burger = Hamburger
+Pretzel Dog = Pretzel
+Chili Fries = Chili cheese fries
