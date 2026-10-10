@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=21" />
+  <link rel="stylesheet" href="styles.css?v=22" />
 </head>
 <body>
   <header class="site-header">
@@ -62,13 +62,20 @@
         </svg>
         <div class="table-veil" id="veil"><span id="veilText">finding the table&hellip;</span></div>
       </div>
+      <!-- The conveyor belt: pieces still in the box ride along here. Drag
+           one up onto the table; drop one back here to box it again. -->
+      <div class="belt" id="belt">
+        <div class="belt-window" id="beltWindow"><div class="belt-track" id="beltTrack"></div></div>
+        <div class="belt-count" id="beltCount"></div>
+      </div>
     </div>
   </section>
 
   <!-- Under the table: your name on the left, the way down to the shelf in
        the middle. Nothing else. -->
   <div class="under-table">
-    <button class="shuffle-btn" id="shuffleBtn" title="tip the loose pieces back out">shuffle</button>
+    <button class="shuffle-btn" id="shuffleBtn" title="tip the loose pieces back into the box">shuffle</button>
+    <button class="shuffle-btn" id="viewBtn">table view</button>
     <button class="shelf-jump" id="shelfJump">
       <span>the shelf</span>
       <svg viewBox="0 0 24 14" aria-hidden="true"><path d="M2 2 L12 12 L22 2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -93,6 +100,6 @@
   </div>
 
   <script src="../you.js?v=2"></script>
-  <script src="app.js?v=21"></script>
+  <script src="app.js?v=22"></script>
 </body>
 </html>

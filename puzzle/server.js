@@ -15,7 +15,8 @@
 //   {t:"move", x, y}               drag what you're holding (x, y = piece p's spot)
 //   {t:"drop", x, y}               let go - server decides if it snaps home,
 //                                  or onto a matching neighbour anywhere on the table
-//   {t:"shuffle"}                  tip the loose pieces back out across the table
+//   {t:"drop", x, y, box:true}     ...or drop it back in the box (onto the belt)
+//   {t:"shuffle"}                  tip the loose pieces back into the box
 //
 // Protocol, server -> client:
 //   {t:"init", ...}                whole world: puzzle, pieces, peers, shelf
@@ -23,6 +24,7 @@
 //   {t:"tick", cur, pos}           batched cursors + piece positions (~50ms)
 //   {t:"held", p, by} / {t:"freed", p}   p's whole group is meant
 //   {t:"joined", g, ps, pos}       pieces ps clicked together into group g
+//   {t:"boxed", p, pos}            p went back in the box (onto the belt)
 //   {t:"placed", ps, by, count}    pieces went home - permanent
 //   {t:"solved", entry, nextIn}    last piece placed; celebration window
 //   {t:"deny", p}                  your grab lost the race; put it back
@@ -353,7 +355,11 @@ function newTable(queueIndex) {
       const s = scatter(pw, ph, board);
       // g: which group this piece belongs to. Every piece starts as a group
       // of one; pieces that click together share a g (see joinNeighbours).
-      pieces.push({ x: s.x, y: s.y, r: 0, placed: false, by: null, g: r * cols + c });
+      // boxed: still in the box - nobody has picked it up yet. The clients
+      // show boxed pieces on a conveyor belt under the table instead of
+      // scattered on it; picking one up takes it out of the box for good
+      // (unless it's dropped back on the belt).
+      pieces.push({ x: s.x, y: s.y, r: 0, placed: false, by: null, g: r * cols + c, boxed: true });
     }
   }
   return {
@@ -417,6 +423,13 @@ function restoreTable() {
   }
   // Saved before pieces could join up: every piece is its own group.
   pieces.forEach((p, i) => { if (!Number.isInteger(p.g)) p.g = i; });
+  // Saved before the box existed: loose pieces that aren't joined to
+  // anything go back in the box; groups somebody built stay on the table.
+  if (pieces.every((p) => p.boxed === undefined)) {
+    const size = {};
+    for (const p of pieces) size[p.g] = (size[p.g] || 0) + 1;
+    for (const p of pieces) p.boxed = !p.placed && size[p.g] === 1;
+  }
   return {
     def, queueIndex: idx, cols: snap.cols, rows: snap.rows, board,
     pw: board.w / snap.cols, ph: board.h / snap.rows,
@@ -619,7 +632,7 @@ function initPayload(peer) {
       cols: table.cols, rows: table.rows,
     },
     edges: table.edges,
-    pieces: table.pieces.map((p) => ({ x: Math.round(p.x), y: Math.round(p.y), r: p.r, placed: p.placed, g: p.g })),
+    pieces: table.pieces.map((p) => ({ x: Math.round(p.x), y: Math.round(p.y), r: p.r, placed: p.placed, g: p.g, b: p.boxed ? 1 : 0 })),
     held: heldMap(),
     placedCount: table.placedCount,
     startedAt: table.startedAt,
@@ -700,6 +713,7 @@ function onGrab(peer, i) {
     broadcast({ t: "freed", p: prev });
   }
   peer.holding = i;
+  piece.boxed = false;               // out of the box (clients read "held" as that too)
   broadcast({ t: "held", p: i, by: peer.id });
 }
 
@@ -734,7 +748,7 @@ function joinNeighbours(i) {
       if (r < table.rows - 1) around.push(j + table.cols);
       for (const k of around) {
         const pk = table.pieces[k];
-        if (pk.placed || pk.g === mine || holderOf(k)) continue;
+        if (pk.placed || pk.boxed || pk.g === mine || holderOf(k)) continue;
         // Where k would have to be for j and k to fit together.
         const hj = homeOf(j), hk = homeOf(k), pj = table.pieces[j];
         const wantX = pj.x + hk.x - hj.x, wantY = pj.y + hk.y - hj.y;
@@ -754,13 +768,24 @@ function joinNeighbours(i) {
   return joined;
 }
 
-function onDrop(peer, x, y) {
+function onDrop(peer, x, y, box) {
   if (peer.holding == null) return;
   const i = peer.holding;
   const piece = table.pieces[i];
   peer.holding = null;
   if (!piece || piece.placed) return;
   let members = membersOf(i);
+  // Dropped back on the belt: a single piece goes back in the box, with a
+  // fresh spot in the margin for anyone looking at the table view. A group
+  // stays a group, so it can't be boxed.
+  if (box && members.length === 1) {
+    const s = scatter(table.pw, table.ph, table.board);
+    piece.x = s.x; piece.y = s.y; piece.boxed = true;
+    broadcast({ t: "boxed", p: i, pos: [Math.round(s.x), Math.round(s.y)] });
+    broadcast({ t: "freed", p: i });
+    scheduleSave();
+    return;
+  }
   const at = clampGroup(members, i, x, y);
   placeGroup(members, i, at.x, at.y);
 
@@ -847,7 +872,8 @@ function onShuffle(peer) {
   lastShuffle = now;
 
   // Groups go out whole: tipping the box doesn't undo work already joined.
-  const pos = [];
+  // Single pieces go back in the box (onto the belt).
+  const pos = [], boxed = [];
   const done = new Set();
   for (let i = 0; i < table.pieces.length; i++) {
     const p = table.pieces[i];
@@ -864,11 +890,12 @@ function onShuffle(peer) {
     const s = scatter(maxX - minX, maxY - minY, table.board);
     const hi = homeOf(i);
     placeGroup(members, i, s.x + hi.x - minX, s.y + hi.y - minY);
+    if (members.length === 1) { table.pieces[i].boxed = true; boxed.push(i); }
     for (const k of members) pos.push([k, Math.round(table.pieces[k].x), Math.round(table.pieces[k].y)]);
   }
   if (!pos.length) return;
   scheduleSave();
-  broadcast({ t: "shuffled", pos, by: peer.name });
+  broadcast({ t: "shuffled", pos, boxed, by: peer.name });
 }
 
 function nextPuzzle() {
@@ -911,7 +938,7 @@ function handle(peer, raw) {
       break;
     case "grab": onGrab(peer, m.p | 0); break;
     case "move": onMove(peer, m.x, m.y); break;
-    case "drop": onDrop(peer, m.x, m.y); break;
+    case "drop": onDrop(peer, m.x, m.y, m.box === true); break;
     case "shuffle": onShuffle(peer); break;
     case "name":
       peer.name = cleanName(m.name);

@@ -108,7 +108,7 @@ a { color: inherit; text-decoration: none; }
      shelf button underneath. The desk is height-constrained, so every pixel
      the chrome gives up goes straight into the picture - which is why this
      budget is kept as tight as the button will allow. */
-  width: min(calc(100% - 8px), max(calc((100vh - 150px) * 1.774), 560px));
+  width: min(calc(100% - 8px), max(calc((100vh - 150px - var(--belt-room)) * 1.774), 560px));
   max-width: 1760px;
 }
 
@@ -646,3 +646,87 @@ a { color: inherit; text-decoration: none; }
 }
 .replay-btn:hover:not(:disabled) { border-color: var(--amber); color: var(--amber); }
 .replay-btn:disabled { opacity: 0.45; cursor: default; }
+
+/* ---------- The conveyor belt (app.js) ---------------------------------
+   Pieces still in the box ride a dark rubber belt under the table. The
+   table gives up exactly the belt's height so everything still fits on the
+   first screen; "table view" (body.no-belt) hands it back. */
+:root { --belt-room: 104px; }
+body.no-belt { --belt-room: 0px; }
+body.no-belt .belt { display: none; }
+body:not(.no-belt) .piece.boxed { display: none; }
+
+.belt {
+  position: relative;
+  margin-top: 10px;
+  height: 94px;
+  border-radius: 10px;
+  overflow: hidden;
+  --tread: 0px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0) 22%, rgba(0, 0, 0, 0) 78%, rgba(0, 0, 0, 0.35)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 26px) var(--tread) 0 / auto,
+    #17120e;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.7), 0 14px 30px rgba(0, 0, 0, 0.5);
+}
+/* the rollers at each end */
+.belt::before,
+.belt::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 26px;
+  z-index: 2;
+  pointer-events: none;
+}
+.belt::before { left: 0; background: linear-gradient(90deg, #17120e 20%, rgba(23, 18, 14, 0)); }
+.belt::after { right: 0; background: linear-gradient(270deg, #17120e 20%, rgba(23, 18, 14, 0)); }
+
+.belt-window {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+}
+.belt-track {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 100%;
+  padding: 0 18px;
+  width: max-content;
+  will-change: transform;
+}
+.belt-track.fits { width: 100%; justify-content: center; }
+.belt-piece {
+  flex: none;
+  height: 78px;
+  overflow: visible;
+  cursor: grab;
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.6));
+  transition: transform 0.15s ease;
+}
+.belt-piece:hover { transform: translateY(-4px) scale(1.06); }
+.belt-piece .pc-edge { pointer-events: none; }
+.belt-ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 78px;
+  z-index: 100;
+  pointer-events: none;
+  filter: drop-shadow(0 14px 12px rgba(0, 0, 0, 0.6));
+}
+.belt-count {
+  position: absolute;
+  right: 12px;
+  bottom: 6px;
+  z-index: 3;
+  font-size: 10.5px;
+  letter-spacing: 1px;
+  text-transform: lowercase;
+  color: rgba(239, 230, 216, 0.45);
+  pointer-events: none;
+}
+.belt.empty .belt-count { right: 50%; transform: translateX(50%); bottom: 38px; }

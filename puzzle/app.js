@@ -186,7 +186,7 @@
     ph = board.h / rows;
     total = init.pieces.length;
     placedCount = init.placedCount;
-    pieces = init.pieces.map((p, i) => ({ x: p.x, y: p.y, placed: p.placed, g: Number.isInteger(p.g) ? p.g : i }));
+    pieces = init.pieces.map((p, i) => ({ x: p.x, y: p.y, placed: p.placed, g: Number.isInteger(p.g) ? p.g : i, boxed: p.b === 1 }));
     nodes = [];
     holders = new Map();
     drag = null;
@@ -250,13 +250,15 @@
       g.appendChild(hold);
       g.appendChild(el("path", { class: "pc-hit", d }));
 
-      nodes[i] = { g, hold };
+      nodes[i] = { g, hold, d };
       applyPiece(i, true);
     }
 
     for (const id in init.held) holders.set(Number(id), init.held[id]);
     holders.forEach((by, i) => paintHold(i, by));
 
+    beltOrder = beltShuffle(init.puzzle.id);
+    refreshBelt();
     titleEl.textContent = `“${init.puzzle.title}”`;
     renderShelf(init.shelf || []);
     veil.classList.add("gone");
@@ -271,6 +273,7 @@
     n.g.style.transform = `translate(${r2(p.x - home.x)}px, ${r2(p.y - home.y)}px)`;
     const layer = p.placed ? placedLayer : looseLayer;
     n.g.classList.toggle("placed", p.placed);
+    n.g.classList.toggle("boxed", !!p.boxed && !p.placed);   // hidden while the belt is on
     if (insert || n.g.parentNode !== layer) layer.appendChild(n.g);
   }
 
@@ -361,6 +364,7 @@
     if (drag) {
       const p = pieces[drag.i];
       moveGroup(drag.members, drag.i, at.x - drag.offX, at.y - drag.offY);
+      moveGhost(e);
       if (now - lastMoveSend > 30) {
         lastMoveSend = now;
         send({ t: "move", x: Math.round(p.x), y: Math.round(p.y) });
@@ -376,8 +380,13 @@
     if (!drag) return;
     const i = drag.i, p = pieces[i];
     for (const k of drag.members) nodes[k].g.classList.remove("dragging");
+    // let go over the belt: a single piece goes back in the box
+    const box = !!e && beltOn && drag.members.length === 1 && overBelt(e);
+    dropGhost();
     drag = null;
-    send({ t: "drop", x: Math.round(p.x), y: Math.round(p.y) });
+    if (box) { p.boxed = true; applyPiece(i); refreshBelt(); }
+    send(box ? { t: "drop", x: Math.round(p.x), y: Math.round(p.y), box: true }
+             : { t: "drop", x: Math.round(p.x), y: Math.round(p.y) });
     if (e) { try { svg.releasePointerCapture(e.pointerId); } catch { /* fine */ } }
   }
   window.addEventListener("pointerup", endDrag);
@@ -386,6 +395,169 @@
   // Park your cursor off the table when you leave it, so your arrow doesn't
   // sit frozen mid-board for everyone else.
   svg.addEventListener("pointerleave", () => send({ t: "cursor", x: -150, y: -150 }));
+
+  /* =========================================================================
+     The conveyor belt
+
+     Pieces nobody has picked up yet are still "in the box". With the belt
+     on, they ride a slow belt under the table instead of lying scattered
+     across it; drag one up onto the table to use it, or drop a piece back on
+     the belt to box it again. The server knows what's boxed, so everyone's
+     belt carries the same pieces. "table view" goes back to the scatter.
+     ========================================================================= */
+  const beltEl = document.getElementById("belt");
+  const beltWindow = document.getElementById("beltWindow");
+  const beltTrack = document.getElementById("beltTrack");
+  const beltCount = document.getElementById("beltCount");
+  const viewBtn = document.getElementById("viewBtn");
+  let beltOn = store("kmufti-puzzle-belt", "on") !== "off";
+  let beltOrder = [];          // the order pieces ride in: shuffled, never the grid
+  let beltOffset = 0;          // px scrolled
+  let beltHover = false;
+  const BELT_SPEED = 26;       // px a second
+
+  function showBeltMode() {
+    document.body.classList.toggle("no-belt", !beltOn);
+    viewBtn.textContent = beltOn ? "table view" : "belt view";
+    viewBtn.title = beltOn ? "show every piece scattered on the table" : "put the unused pieces on a conveyor belt";
+  }
+  viewBtn.addEventListener("click", () => {
+    beltOn = !beltOn;
+    remember("kmufti-puzzle-belt", beltOn ? "on" : "off");
+    showBeltMode();
+    refreshBelt();
+  });
+  showBeltMode();
+
+  // A fixed shuffle per puzzle, so the belt order is the same for everyone
+  // and never gives away where a piece goes.
+  function beltShuffle(seed) {
+    let h = 2166136261 >>> 0;
+    for (const ch of String(seed)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
+    const rnd = () => { h ^= h << 13; h >>>= 0; h ^= h >>> 17; h ^= h << 5; h >>>= 0; return h / 4294967296; };
+    const order = pieces.map((_, i) => i);
+    for (let k = order.length - 1; k > 0; k--) { const j = Math.floor(rnd() * (k + 1)); [order[k], order[j]] = [order[j], order[k]]; }
+    return order;
+  }
+
+  // One belt item: the piece, cut out, drawn from the same clip and picture
+  // as on the table.
+  function beltPiece(i) {
+    const home = homeOf(i), m = 0.24 * Math.min(pw, ph);
+    const vb = `${r2(home.x - m)} ${r2(home.y - m)} ${r2(pw + 2 * m)} ${r2(ph + 2 * m)}`;
+    const item = document.createElementNS(SVGNS, "svg");
+    item.setAttribute("viewBox", vb);
+    item.setAttribute("class", "belt-piece");
+    item.dataset.i = String(i);
+    item.style.width = (BELT_H * (pw + 2 * m) / (ph + 2 * m)).toFixed(1) + "px";
+    const win = el("g", { "clip-path": `url(#pc-${i})` });
+    const use = el("use");
+    use.setAttribute("href", "#puzImg");
+    use.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#puzImg");
+    win.appendChild(use);
+    item.appendChild(win);
+    item.appendChild(el("path", { class: "pc-edge", d: nodes[i].d }));
+    return item;
+  }
+  const BELT_H = 78;
+
+  let beltPending = false;
+  function refreshBelt() {
+    if (beltPending) return;
+    beltPending = true;
+    requestAnimationFrame(() => { beltPending = false; buildBelt(); });
+  }
+  function buildBelt() {
+    if (!board || !beltOn) { beltTrack.textContent = ""; return; }
+    const want = beltOrder.filter((i) => pieces[i] && pieces[i].boxed && !pieces[i].placed && !holders.has(i) && !inDrag(i));
+    // keep the items already riding where they are; add and drop the rest
+    const have = new Map([...beltTrack.children].map((c) => [Number(c.dataset.i), c]));
+    const wantSet = new Set(want);
+    for (const [i, c] of have) if (!wantSet.has(i)) c.remove();
+    for (const i of want) if (!have.has(i)) beltTrack.appendChild(beltPiece(i));
+    beltCount.textContent = want.length ? `${want.length} in the box` : "the box is empty";
+    beltEl.classList.toggle("empty", !want.length);
+  }
+
+  // The belt moves on its own, pauses under your hand, and scrolls with a
+  // wheel or trackpad. Items loop round: whoever leaves on the left comes
+  // back in on the right.
+  let beltLast = performance.now();
+  function beltTick(now) {
+    const dt = Math.min(0.1, (now - beltLast) / 1000); beltLast = now;
+    if (beltOn && !beltHover && !drag && beltTrack.children.length) slideBelt(BELT_SPEED * dt);
+    requestAnimationFrame(beltTick);
+  }
+  function slideBelt(dx) {
+    const fits = beltTrack.scrollWidth <= beltWindow.clientWidth;
+    beltTrack.classList.toggle("fits", fits);
+    if (fits) { beltOffset = 0; beltTrack.style.transform = ""; return; }
+    beltOffset += dx;
+    const gap = 14;
+    let first = beltTrack.firstElementChild;
+    while (first && beltOffset > first.getBoundingClientRect().width + gap) {
+      beltOffset -= first.getBoundingClientRect().width + gap;
+      beltTrack.appendChild(first);
+      first = beltTrack.firstElementChild;
+    }
+    while (beltOffset < 0 && beltTrack.lastElementChild) {
+      const last = beltTrack.lastElementChild;
+      beltTrack.insertBefore(last, beltTrack.firstElementChild);
+      beltOffset += last.getBoundingClientRect().width + gap;
+    }
+    beltTrack.style.transform = `translateX(${-beltOffset.toFixed(1)}px)`;
+    beltEl.style.setProperty("--tread", `${-beltOffset.toFixed(1)}px`);
+  }
+  requestAnimationFrame(beltTick);
+  beltWindow.addEventListener("pointerenter", () => { beltHover = true; });
+  beltWindow.addEventListener("pointerleave", () => { beltHover = false; });
+  beltWindow.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    slideBelt(Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY);
+  }, { passive: false });
+
+  function overBelt(e) {
+    const r = beltEl.getBoundingClientRect();
+    return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+  }
+
+  // Pick a piece up off the belt: it leaves the box and follows your hand.
+  // Over the belt it's shown as a floating copy (the table can't draw past
+  // its own edge); over the table it's the real piece.
+  beltTrack.addEventListener("pointerdown", (e) => {
+    if (e.button != null && e.button !== 0) return;
+    unlockSound();
+    const item = e.target.closest ? e.target.closest(".belt-piece") : null;
+    if (!item || !board || drag) return;
+    const i = Number(item.dataset.i), p = pieces[i];
+    if (!p || p.placed || (holders.has(i) && holders.get(i) !== myId)) return;
+    const at = stageXY(e);
+    drag = { i, offX: pw / 2, offY: ph / 2, members: [i], from: [[i, p.x, p.y]], fromBelt: true };
+    p.boxed = false;
+    p.x = at.x - pw / 2; p.y = at.y - ph / 2;
+    applyPiece(i);
+    nodes[i].g.classList.add("dragging");
+    looseLayer.appendChild(nodes[i].g);
+    drag.ghost = item.cloneNode(true);
+    drag.ghost.classList.add("belt-ghost");
+    document.body.appendChild(drag.ghost);
+    moveGhost(e);
+    item.remove();
+    refreshBelt();
+    send({ t: "grab", p: i });
+    send({ t: "move", x: Math.round(p.x), y: Math.round(p.y) });
+    e.preventDefault();
+  });
+  function moveGhost(e) {
+    if (!drag || !drag.ghost) return;
+    const r = svg.getBoundingClientRect();
+    const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    drag.ghost.style.display = inside ? "none" : "block";
+    drag.ghost.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+  }
+  function dropGhost() {
+    if (drag && drag.ghost) { drag.ghost.remove(); drag.ghost = null; }
+  }
 
   /* =========================================================================
      Other people
@@ -1044,6 +1216,8 @@
       }
 
       case "shuffled": {
+        for (const i of m.boxed || []) if (pieces[i] && !inDrag(i)) pieces[i].boxed = true;
+        refreshBelt();
         for (const [i, x, y] of m.pos) {
           if (inDrag(i)) continue;                // your own hand wins locally
           if (!pieces[i] || pieces[i].placed) continue;
@@ -1056,7 +1230,18 @@
 
       case "held":
         holders.set(m.p, m.by);
+        // picked up = out of the box, for everyone
+        if (pieces[m.p] && pieces[m.p].boxed) { pieces[m.p].boxed = false; applyPiece(m.p); refreshBelt(); }
         paintHold(m.p, m.by);
+        break;
+
+      case "boxed":
+        if (pieces[m.p]) {
+          pieces[m.p].boxed = true;
+          pieces[m.p].x = m.pos[0]; pieces[m.p].y = m.pos[1];
+          applyPiece(m.p);
+          refreshBelt();
+        }
         break;
 
       case "freed":
@@ -1094,9 +1279,12 @@
           for (const [k, x, y] of drag.from) {
             pieces[k].x = x; pieces[k].y = y;
             nodes[k].g.classList.remove("dragging");
+            if (drag.fromBelt) pieces[k].boxed = true;
             applyPiece(k);
           }
+          dropGhost();
           drag = null;
+          refreshBelt();
         }
         break;
       }
