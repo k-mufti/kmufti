@@ -748,7 +748,9 @@ function joinNeighbours(i) {
       if (r < table.rows - 1) around.push(j + table.cols);
       for (const k of around) {
         const pk = table.pieces[k];
-        if (pk.placed || pk.boxed || pk.g === mine || holderOf(k)) continue;
+        // (boxed pieces join too: they lie on the table like any other, the
+        // belt only mirrors them)
+        if (pk.placed || pk.g === mine || holderOf(k)) continue;
         // Where k would have to be for j and k to fit together.
         const hj = homeOf(j), hk = homeOf(k), pj = table.pieces[j];
         const wantX = pj.x + hk.x - hj.x, wantY = pj.y + hk.y - hj.y;

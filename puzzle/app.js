@@ -186,7 +186,7 @@
     ph = board.h / rows;
     total = init.pieces.length;
     placedCount = init.placedCount;
-    pieces = init.pieces.map((p, i) => ({ x: p.x, y: p.y, placed: p.placed, g: Number.isInteger(p.g) ? p.g : i, boxed: p.b === 1 }));
+    pieces = init.pieces.map((p, i) => ({ x: p.x, y: p.y, placed: p.placed, g: Number.isInteger(p.g) ? p.g : i }));
     nodes = [];
     holders = new Map();
     drag = null;
@@ -273,7 +273,6 @@
     n.g.style.transform = `translate(${r2(p.x - home.x)}px, ${r2(p.y - home.y)}px)`;
     const layer = p.placed ? placedLayer : looseLayer;
     n.g.classList.toggle("placed", p.placed);
-    n.g.classList.toggle("boxed", !!p.boxed && !p.placed);   // hidden while the belt is on
     if (insert || n.g.parentNode !== layer) layer.appendChild(n.g);
   }
 
@@ -380,13 +379,14 @@
     if (!drag) return;
     const i = drag.i, p = pieces[i];
     for (const k of drag.members) nodes[k].g.classList.remove("dragging");
-    // let go over the belt: a single piece goes back in the box
-    const box = !!e && beltOn && drag.members.length === 1 && overBelt(e);
+    // Let go over the belt: changed your mind - it goes back where it was.
+    if (e && overBelt(e)) {
+      for (const [k, x, y] of drag.from) { pieces[k].x = x; pieces[k].y = y; applyPiece(k); }
+    }
     dropGhost();
     drag = null;
-    if (box) { p.boxed = true; applyPiece(i); refreshBelt(); }
-    send(box ? { t: "drop", x: Math.round(p.x), y: Math.round(p.y), box: true }
-             : { t: "drop", x: Math.round(p.x), y: Math.round(p.y) });
+    refreshBelt();
+    send({ t: "drop", x: Math.round(p.x), y: Math.round(p.y) });
     if (e) { try { svg.releasePointerCapture(e.pointerId); } catch { /* fine */ } }
   }
   window.addEventListener("pointerup", endDrag);
@@ -399,35 +399,47 @@
   /* =========================================================================
      The conveyor belt
 
-     Pieces nobody has picked up yet are still "in the box". With the belt
-     on, they ride a slow belt under the table instead of lying scattered
-     across it; drag one up onto the table to use it, or drop a piece back on
-     the belt to box it again. The server knows what's boxed, so everyone's
-     belt carries the same pieces. "table view" goes back to the scatter.
+     A second way to reach the pieces: every loose piece that isn't joined to
+     anything rides a slow belt under the table, while the table keeps its
+     scatter exactly as it was. Same pieces, not copies - hover one on the
+     belt and it lights up where it lies; pick it up off the belt and that
+     piece leaves its spot for your hand. Placed and joined pieces drop off,
+     so the belt thins out as the puzzle comes together. It folds away.
      ========================================================================= */
   const beltEl = document.getElementById("belt");
   const beltWindow = document.getElementById("beltWindow");
   const beltTrack = document.getElementById("beltTrack");
   const beltCount = document.getElementById("beltCount");
-  const viewBtn = document.getElementById("viewBtn");
-  let beltOn = store("kmufti-puzzle-belt", "on") !== "off";
+  const beltFold = document.getElementById("beltFold");
+  const beltEdges = document.getElementById("beltEdges");
+  let beltFolded = store("kmufti-puzzle-belt-fold", "") === "1";
+  let edgesOnly = false;
   let beltOrder = [];          // the order pieces ride in: shuffled, never the grid
   let beltOffset = 0;          // px scrolled
   let beltHover = false;
   const BELT_SPEED = 26;       // px a second
+  const beltOn = () => !beltFolded;
 
-  function showBeltMode() {
-    document.body.classList.toggle("no-belt", !beltOn);
-    viewBtn.textContent = beltOn ? "table view" : "belt view";
-    viewBtn.title = beltOn ? "show every piece scattered on the table" : "put the unused pieces on a conveyor belt";
+  function showFold() {
+    document.body.classList.toggle("belt-folded", beltFolded);
+    beltFold.textContent = beltFolded ? "show belt" : "hide belt";
+    beltFold.setAttribute("aria-expanded", String(!beltFolded));
   }
-  viewBtn.addEventListener("click", () => {
-    beltOn = !beltOn;
-    remember("kmufti-puzzle-belt", beltOn ? "on" : "off");
-    showBeltMode();
+  beltFold.addEventListener("click", () => {
+    beltFolded = !beltFolded;
+    remember("kmufti-puzzle-belt-fold", beltFolded ? "1" : "");
+    showFold();
     refreshBelt();
   });
-  showBeltMode();
+  beltEdges.addEventListener("click", () => {
+    edgesOnly = !edgesOnly;
+    beltEdges.classList.toggle("on", edgesOnly);
+    beltTrack.textContent = "";          // a different set: start the belt over
+    beltOffset = 0;
+    refreshBelt();
+  });
+  showFold();
+  const isEdge = (i) => { const c = i % cols, r = (i / cols) | 0; return c === 0 || r === 0 || c === cols - 1 || r === rows - 1; };
 
   // A fixed shuffle per puzzle, so the belt order is the same for everyone
   // and never gives away where a piece goes.
@@ -468,14 +480,15 @@
     requestAnimationFrame(() => { beltPending = false; buildBelt(); });
   }
   function buildBelt() {
-    if (!board || !beltOn) { beltTrack.textContent = ""; return; }
-    const want = beltOrder.filter((i) => pieces[i] && pieces[i].boxed && !pieces[i].placed && !holders.has(i) && !inDrag(i));
+    if (!board || !beltOn()) { beltTrack.textContent = ""; beltCount.textContent = ""; return; }
+    const want = beltOrder.filter((i) => pieces[i] && !pieces[i].placed && membersOf(i).length === 1 &&
+      !holders.has(i) && !inDrag(i) && (!edgesOnly || isEdge(i)));
     // keep the items already riding where they are; add and drop the rest
     const have = new Map([...beltTrack.children].map((c) => [Number(c.dataset.i), c]));
     const wantSet = new Set(want);
     for (const [i, c] of have) if (!wantSet.has(i)) c.remove();
     for (const i of want) if (!have.has(i)) beltTrack.appendChild(beltPiece(i));
-    beltCount.textContent = want.length ? `${want.length} in the box` : "the box is empty";
+    beltCount.textContent = want.length ? `${want.length} loose` : (edgesOnly ? "no loose edges" : "nothing loose");
     beltEl.classList.toggle("empty", !want.length);
   }
 
@@ -485,7 +498,7 @@
   let beltLast = performance.now();
   function beltTick(now) {
     const dt = Math.min(0.1, (now - beltLast) / 1000); beltLast = now;
-    if (beltOn && !beltHover && !drag && beltTrack.children.length) slideBelt(BELT_SPEED * dt);
+    if (beltOn() && !beltHover && !drag && beltTrack.children.length) slideBelt(BELT_SPEED * dt);
     requestAnimationFrame(beltTick);
   }
   function slideBelt(dx) {
@@ -521,7 +534,8 @@
     return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
   }
 
-  // Pick a piece up off the belt: it leaves the box and follows your hand.
+  // Pick a piece up off the belt: that piece leaves its spot on the table
+  // and follows your hand.
   // Over the belt it's shown as a floating copy (the table can't draw past
   // its own edge); over the table it's the real piece.
   beltTrack.addEventListener("pointerdown", (e) => {
@@ -532,8 +546,8 @@
     const i = Number(item.dataset.i), p = pieces[i];
     if (!p || p.placed || (holders.has(i) && holders.get(i) !== myId)) return;
     const at = stageXY(e);
+    beacon(null);
     drag = { i, offX: pw / 2, offY: ph / 2, members: [i], from: [[i, p.x, p.y]], fromBelt: true };
-    p.boxed = false;
     p.x = at.x - pw / 2; p.y = at.y - ph / 2;
     applyPiece(i);
     nodes[i].g.classList.add("dragging");
@@ -548,6 +562,20 @@
     send({ t: "move", x: Math.round(p.x), y: Math.round(p.y) });
     e.preventDefault();
   });
+  // Hover a piece on the belt and the same piece lights up on the table,
+  // lifted to the top of the pile so a buried one shows too.
+  let beaconOn = null;
+  function beacon(i) {
+    if (beaconOn != null && nodes[beaconOn]) nodes[beaconOn].g.classList.remove("beacon");
+    beaconOn = i;
+    if (i != null && nodes[i]) { nodes[i].g.classList.add("beacon"); looseLayer.appendChild(nodes[i].g); }
+  }
+  beltTrack.addEventListener("pointerover", (e) => {
+    const item = e.target.closest ? e.target.closest(".belt-piece") : null;
+    if (!drag) beacon(item ? Number(item.dataset.i) : null);
+  });
+  beltWindow.addEventListener("pointerleave", () => beacon(null));
+
   function moveGhost(e) {
     if (!drag || !drag.ghost) return;
     const r = svg.getBoundingClientRect();
@@ -1216,8 +1244,6 @@
       }
 
       case "shuffled": {
-        for (const i of m.boxed || []) if (pieces[i] && !inDrag(i)) pieces[i].boxed = true;
-        refreshBelt();
         for (const [i, x, y] of m.pos) {
           if (inDrag(i)) continue;                // your own hand wins locally
           if (!pieces[i] || pieces[i].placed) continue;
@@ -1230,23 +1256,14 @@
 
       case "held":
         holders.set(m.p, m.by);
-        // picked up = out of the box, for everyone
-        if (pieces[m.p] && pieces[m.p].boxed) { pieces[m.p].boxed = false; applyPiece(m.p); refreshBelt(); }
         paintHold(m.p, m.by);
-        break;
-
-      case "boxed":
-        if (pieces[m.p]) {
-          pieces[m.p].boxed = true;
-          pieces[m.p].x = m.pos[0]; pieces[m.p].y = m.pos[1];
-          applyPiece(m.p);
-          refreshBelt();
-        }
+        refreshBelt();             // in someone's hand: off the belt for now
         break;
 
       case "freed":
         holders.delete(m.p);
         paintHold(m.p, null);
+        refreshBelt();
         if (drag && drag.i === m.p) { for (const k of drag.members) nodes[k].g.classList.remove("dragging"); drag = null; }
         break;
 
@@ -1269,6 +1286,7 @@
           setTimeout(() => n.g.classList.remove("join-flash"), 340);
         }
         play("click", m.by === myId ? 0.7 : 0.4);
+        refreshBelt();             // joined pieces leave the belt
         break;
       }
 
@@ -1279,7 +1297,6 @@
           for (const [k, x, y] of drag.from) {
             pieces[k].x = x; pieces[k].y = y;
             nodes[k].g.classList.remove("dragging");
-            if (drag.fromBelt) pieces[k].boxed = true;
             applyPiece(k);
           }
           dropGhost();
@@ -1313,6 +1330,7 @@
           }
         }
         placedCount = m.count;
+        refreshBelt();
         play("click", m.by.id === myId ? 1 : 0.55);
         break;
       }

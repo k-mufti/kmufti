@@ -648,18 +648,22 @@ a { color: inherit; text-decoration: none; }
 .replay-btn:disabled { opacity: 0.45; cursor: default; }
 
 /* ---------- The conveyor belt (app.js) ---------------------------------
-   Pieces still in the box ride a dark rubber belt under the table. The
-   table gives up exactly the belt's height so everything still fits on the
-   first screen; "table view" (body.no-belt) hands it back. */
-:root { --belt-room: 104px; }
-body.no-belt { --belt-room: 0px; }
-body.no-belt .belt { display: none; }
-body:not(.no-belt) .piece.boxed { display: none; }
+   Every loose piece also rides a dark rubber belt under the table (the
+   table keeps its scatter). The table gives up the belt's height so it all
+   still fits on the first screen; folded, the belt is just its bar. */
+:root { --belt-room: 124px; }
+body.belt-folded { --belt-room: 34px; }
+body.belt-folded .belt-window { display: none; }
+body.belt-folded .belt { height: 26px; }
+
+/* the same piece on the table, while you hover it on the belt */
+.piece.beacon { filter: drop-shadow(0 0 10px rgba(255, 200, 120, 0.95)) drop-shadow(0 0 22px rgba(255, 160, 60, 0.7)); }
+.piece.beacon .pc-hold { stroke: #ffce8c; }
 
 .belt {
   position: relative;
   margin-top: 10px;
-  height: 94px;
+  height: 114px;
   border-radius: 10px;
   overflow: hidden;
   --tread: 0px;
@@ -669,25 +673,14 @@ body:not(.no-belt) .piece.boxed { display: none; }
     #17120e;
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.7), 0 14px 30px rgba(0, 0, 0, 0.5);
 }
-/* the rollers at each end */
-.belt::before,
-.belt::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 26px;
-  z-index: 2;
-  pointer-events: none;
-}
-.belt::before { left: 0; background: linear-gradient(90deg, #17120e 20%, rgba(23, 18, 14, 0)); }
-.belt::after { right: 0; background: linear-gradient(270deg, #17120e 20%, rgba(23, 18, 14, 0)); }
-
 .belt-window {
   position: absolute;
-  inset: 0;
+  left: 0; right: 0; top: 0;
+  height: 90px;
   overflow: hidden;
   touch-action: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 26px, #000 calc(100% - 26px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 26px, #000 calc(100% - 26px), transparent);
 }
 .belt-track {
   display: flex;
@@ -718,15 +711,30 @@ body:not(.no-belt) .piece.boxed { display: none; }
   pointer-events: none;
   filter: drop-shadow(0 14px 12px rgba(0, 0, 0, 0.6));
 }
-.belt-count {
+.belt-bar {
   position: absolute;
-  right: 12px;
-  bottom: 6px;
-  z-index: 3;
+  left: 0; right: 0; bottom: 0;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
   font-size: 10.5px;
   letter-spacing: 1px;
   text-transform: lowercase;
   color: rgba(239, 230, 216, 0.45);
-  pointer-events: none;
 }
-.belt.empty .belt-count { right: 50%; transform: translateX(50%); bottom: 38px; }
+.belt-count { margin-right: auto; }
+.belt-chip {
+  padding: 1px 9px;
+  border: 1px solid rgba(239, 230, 216, 0.16);
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(239, 230, 216, 0.6);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+.belt-chip:hover { color: var(--ink); border-color: rgba(239, 230, 216, 0.35); }
+.belt-chip.on { color: #17120e; background: var(--amber, #e8b45e); border-color: transparent; }
