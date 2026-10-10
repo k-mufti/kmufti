@@ -15,6 +15,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { foodMesh, onPicture } from "./food3d.js?v=3";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
@@ -1453,7 +1454,118 @@ function fall(f, v, spin = 1.5) {
   dirty();
 }
 
-window.K3 = { ready: false, pickAny,
+/* ---------- a close look ----------
+   Clicking a thing brings it right up to the camera while the room behind
+   goes soft. The room isn't touched: the thing is copied into a second,
+   see-through canvas laid over it, starting exactly where it stands (same
+   camera), and flown up to just in front of the lens. The room's own copy
+   hides meanwhile, and its canvas is blurred with CSS. */
+const lookCanvas = document.createElement("canvas");
+lookCanvas.className = "look-view";
+room.appendChild(lookCanvas);
+let CLOSE = null;          // { r2, scene, cam, pivot, from, to, q0, q1, t0, closing, hidden, resolve }
+let lookR = null, lookEnv = null;
+function lookRenderer() {
+  if (lookR) return lookR;
+  lookR = new THREE.WebGLRenderer({ canvas: lookCanvas, antialias: true, alpha: true });
+  lookR.setPixelRatio(renderer.getPixelRatio());
+  lookR.outputColorSpace = THREE.SRGBColorSpace;
+  lookR.toneMapping = THREE.ACESFilmicToneMapping;
+  lookR.toneMappingExposure = 1.05;
+  const pm = new THREE.PMREMGenerator(lookR);
+  lookEnv = pm.fromScene(new RoomEnvironment(), 0.04).texture;
+  pm.dispose();
+  return lookR;
+}
+function inspect(target) {
+  if (CLOSE) return false;
+  const obj = target.type === "food" ? FOOD.get(target.id)?.g : spots.get(target.id)?.group;
+  if (!obj) return false;
+  const r2 = lookRenderer();
+  const w = room.clientWidth, h = room.clientHeight;
+  r2.setSize(w, h, false);
+  const cam = camera.clone();
+  cam.aspect = w / h;
+  cam.updateProjectionMatrix();
+  const look = new THREE.Scene();
+  look.environment = lookEnv;
+  const key = new THREE.DirectionalLight(0xfff1dd, 2.2);
+  key.position.copy(camera.position).add(new THREE.Vector3(-2, 3, 1));
+  look.add(key, new THREE.AmbientLight(0xffffff, 0.35));
+  // the copy, hung on a pivot at its middle so it turns about its centre
+  obj.updateWorldMatrix(true, true);
+  const box = new THREE.Box3().setFromObject(obj), c = box.getCenter(new THREE.Vector3());
+  const radius = box.getSize(new THREE.Vector3()).length() / 2;
+  const copy = obj.clone(true);
+  copy.traverse((o) => { if (o.isMesh) { const s = [...spots.values()].flatMap((x) => x.meshes).find((m) => m.mesh === o); if (s) o.material = s.base; } });
+  const wp = new THREE.Vector3(), wq = new THREE.Quaternion(), ws = new THREE.Vector3();
+  obj.matrixWorld.decompose(wp, wq, ws);
+  copy.position.copy(wp).sub(c);
+  copy.quaternion.copy(wq);
+  copy.scale.copy(ws);
+  const pivot = new THREE.Group();
+  pivot.position.copy(c);
+  pivot.add(copy);
+  look.add(pivot);
+  // where it ends up: in front of the lens, a little left of centre (the
+  // notes go on the right), big enough to fill about two thirds of the height
+  const half = Math.tan(THREE.MathUtils.degToRad(cam.fov / 2));
+  const dist = radius / (0.6 * half);
+  const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(cam.quaternion);
+  const right = new THREE.Vector3(1, 0, 0).applyQuaternion(cam.quaternion);
+  const to = cam.position.clone().addScaledVector(fwd, dist).addScaledVector(right, -dist * half * cam.aspect * 0.28);
+  // Facing you: a card's picture straight on (its front is +z, and the
+  // camera looks down its own -z); anything else turned a little, so it
+  // reads as an object rather than a cut-out. The pivot's turn is whatever
+  // takes the thing's current orientation to that one.
+  const camUp = new THREE.Vector3(0, 1, 0).applyQuaternion(cam.quaternion);
+  const finalQ = new THREE.Quaternion().setFromAxisAngle(camUp, target.type === "food" ? 0 : -0.5).multiply(cam.quaternion);
+  // things that lie flat (the knife) are tipped up toward you, or you'd see them edge-on
+  const tip = LOOK_TIP[target.id];
+  if (tip) finalQ.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), tip));
+  const q1 = finalQ.multiply(wq.clone().invert());
+  obj.visible = false;
+  dirty();
+  room.classList.add("looking");
+  CLOSE = { r2, scene: look, cam, pivot, from: c.clone(), to, q0: new THREE.Quaternion(), q1, t0: performance.now(), closing: false, hidden: obj, spin: target.type !== "food", up: camUp };
+  lookCanvas.style.opacity = "1";
+  requestAnimationFrame(lookFrame);
+  return true;
+}
+const CLOSE_MS = 420;
+const LOOK_TIP = { Cut: 1.15 };   // radians, about the camera's left-right axis
+function lookFrame(now) {
+  if (!CLOSE) return;
+  const L = CLOSE, u = Math.min(1, (now - L.t0) / CLOSE_MS), e = u * u * (3 - 2 * u);
+  const k = L.closing ? 1 - e : e;
+  L.pivot.position.lerpVectors(L.from, L.to, k);
+  L.pivot.quaternion.slerpQuaternions(L.q0, L.q1, k);
+  // once it's up close: a slow sway, so it feels held rather than pasted on
+  if (!L.closing && u >= 1) {
+    const t = (now - L.t0 - CLOSE_MS) / 1000;
+    L.pivot.quaternion.setFromAxisAngle(L.up, (L.spin ? 0.35 : 0.18) * Math.sin(t * 0.9)).multiply(L.q1);
+  }
+  L.r2.render(L.scene, L.cam);
+  if (L.closing && u >= 1) {
+    L.hidden.visible = true;
+    dirty();
+    L.r2.clear();
+    lookCanvas.style.opacity = "0";
+    CLOSE = null;
+    L.resolve?.();
+    return;
+  }
+  requestAnimationFrame(lookFrame);
+}
+function closeInspect() {
+  if (!CLOSE || CLOSE.closing) return Promise.resolve();
+  CLOSE.closing = true;
+  CLOSE.t0 = performance.now();
+  room.classList.remove("looking");
+  return new Promise((res) => { CLOSE.resolve = res; });
+}
+
+window.K3 = { ready: false, pickAny, inspect, closeInspect, inspecting: () => !!CLOSE,
   food: { add: addFood, remove: removeFood, clear: clearFood, pick: pickFood, name: foodName, list: listFood,
     spawnHeld, grab: grabFood, hold: holdFood, drop: dropFood, throw: throwFood, screenPos: foodScreenPos,
     held: () => HELD_FOOD.id },

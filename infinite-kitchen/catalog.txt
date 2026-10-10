@@ -42,7 +42,7 @@ Bread, Sliced Bread, Whole Wheat Bread, Sourdough, Toast, Bagel, Croissant, Bagu
 Cold Cuts, Salami, Pepperoni, Prosciutto, Rotisserie Chicken, Potato Salad, Coleslaw, Pickles, Hummus, Sub, Club Sandwich, Ham Sandwich
 
 ## Frozen
-Ice Cream, Frozen Yogurt, Popsicle, Ice Pop, Fish Sticks, Frozen Pizza, Waffle, Ice, Peas, Chicken Nuggets, Tater Tots, Ice Cream Sandwich, Mochi Ice Cream
+Ice Cream, Frozen Yogurt, Popsicle, Fish Sticks, Frozen Pizza, Waffle, Ice, Peas, Chicken Nuggets, Tater Tots, Ice Cream Sandwich, Mochi Ice Cream
 
 ## Pantry: grains, pasta, flour, baking
 Grain, Wheat, Barley, Rice, Brown Rice, Wild Rice, Basmati Rice, Oats, Quinoa, Couscous, Corn, Cornmeal, Flour, Rice Flour, Oat Flour, Pasta, Spaghetti, Macaroni, Egg Noodles, Ramen, Rice Noodles, Lasagna, Dough, Batter, Cake Mix, Pie Crust, Yeast, Baking Soda, Sugar, Powdered Sugar, Brown Sugar, Sugar Cubes, Honey, Maple Syrup, Corn Syrup, Syrup, Molasses, Cocoa, Chocolate Chips, Sprinkles, Marshmallow, Gelatin, Oil, Olive Oil, Vinegar
@@ -72,7 +72,7 @@ Cookie, Chocolate Chip Cookie, Oatmeal Cookie, Sugar Cookie, Peanut Butter Cooki
 Ice Cream, Sundae, Banana Split, Milkshake, Float, Gelato, Sorbet, Frozen Yogurt, Pudding, Chocolate Pudding, Rice Pudding, Custard, Flan, Creme Brulee, Tiramisu, Jell-O, Cobbler, Peach Cobbler, S'mores, Rice Krispies Treat, Fudge, Caramel Apple, Chocolate-Covered Strawberry, Baklava, Knafeh, Mochi, Kheer, Shaved Ice, Snow Cone, Strawberry Shortcake
 
 ## Ice cream shop
-Ice Cream, Ice Cream Cone, Waffle Cone, Sundae, Banana Split, Milkshake, Chocolate Milkshake, Float, Root Beer Float, Ice Cream Cake, Ice Cream Sandwich, Cookies and Cream, Mint Chocolate Chip, Rocky Road, Neapolitan, Sprinkles, Hot Fudge, McFlurry, Frosty, Dippin' Dots
+Ice Cream, Ice Cream Cone, Sundae, Banana Split, Milkshake, Chocolate Milkshake, Float, Root Beer Float, Ice Cream Cake, Ice Cream Sandwich, Cookies and Cream, Mint Chocolate Chip, Rocky Road, Neapolitan, Sprinkles, Hot Fudge, McFlurry, Frosty, Dippin' Dots
 
 ## Coffee shop
 Coffee, Espresso, Americano, Latte, Cappuccino, Mocha, Macchiato, Flat White, Iced Coffee, Cold Brew, Frappuccino, Pumpkin Spice Latte, Hot Chocolate, Hot Cocoa, Chai, Chai Latte, Matcha Latte, Steamed Milk, Turkish Coffee, Croissant, Muffin, Scone, Cake Pop
@@ -97,7 +97,7 @@ Burger, Cheeseburger, Double Cheeseburger, Bacon Burger, Big Mac, Quarter Pounde
 Pancakes, Waffle, French Toast, Bacon and Eggs, Steak and Eggs, Fried Egg, Scrambled Eggs, Omelette, Poached Egg, Boiled Egg, Eggs Benedict, Hash Browns, Biscuits and Gravy, Chicken and Waffles, Grilled Cheese, Patty Melt, BLT, Club Sandwich, Meatloaf, Milkshake, Pot Roast, Breakfast Burrito, Avocado Toast, Bagel and Cream Cheese, Lox Bagel
 
 ## Pizzeria
-Pizza, Cheese Pizza, Pepperoni Pizza, Margherita Pizza, Hawaiian Pizza, Mushroom Pizza, Meat Lover's Pizza, Veggie Pizza, Deep Dish Pizza, Stuffed Crust Pizza, Calzone, Garlic Bread, Garlic Knots, Pizza Bagel, Breadsticks, Buffalo Wings
+Pizza, Pepperoni Pizza, Margherita Pizza, Hawaiian Pizza, Mushroom Pizza, Meat Lover's Pizza, Veggie Pizza, Deep Dish Pizza, Stuffed Crust Pizza, Calzone, Garlic Bread, Garlic Knots, Pizza Bagel, Breadsticks, Buffalo Wings
 
 ## Steakhouse and barbecue
 Steak, Ribs, Brisket, Pulled Pork, BBQ Chicken, Barbecue, Baked Potato, Mashed Potatoes, Creamed Spinach, Corn on the Cob, Coleslaw, Baked Beans, Surf and Turf, Roast Beef, Prime Rib
@@ -122,10 +122,10 @@ Pizza, Margherita Pizza, Pepperoni Pizza, Calzone, Spaghetti, Spaghetti and Meat
 Taco, Burrito, Burrito Bowl, Quesadilla, Nachos, Enchilada, Tamale, Fajitas, Carne Asada, Carnitas, Al Pastor, Torta, Tostada, Chimichanga, Elote, Guacamole, Salsa, Pico de Gallo, Chips and Salsa, Refried Beans, Mexican Rice, Pozole, Mole, Churro, Flan, Tres Leches Cake, Horchata, Agua Fresca, Takis
 
 ## East Asian
-Sushi, Sashimi, California Roll, Sushi Roll, Onigiri, Ramen, Udon, Pho, Fried Rice, Lo Mein, Chow Mein, Kung Pao Chicken, Orange Chicken, General Tso's Chicken, Sweet and Sour Chicken, Beef and Broccoli, Egg Rolls, Spring Rolls, Dumplings, Bao, Peking Duck, Bulgogi, Bibimbap, Korean Fried Chicken, Kimchi, Tempura, Teriyaki, Miso Soup, Egg Drop Soup, Hot and Sour Soup, Congee, Donburi, Mochi, Mochi Ice Cream, Boba, Matcha Latte, Sake, Fortune Cookie
+Sushi, Sashimi, California Roll, Sushi Roll, Ramen, Udon, Pho, Fried Rice, Lo Mein, Chow Mein, Kung Pao Chicken, Orange Chicken, General Tso's Chicken, Sweet and Sour Chicken, Beef and Broccoli, Egg Rolls, Spring Rolls, Dumplings, Bao, Peking Duck, Bulgogi, Bibimbap, Korean Fried Chicken, Kimchi, Tempura, Teriyaki, Miso Soup, Egg Drop Soup, Hot and Sour Soup, Congee, Donburi, Mochi, Mochi Ice Cream, Boba, Matcha Latte, Sake, Fortune Cookie
 
 ## Indian
-Curry, Butter Chicken, Chicken Tikka Masala, Tandoori Chicken, Biryani, Dal, Saag Paneer, Palak Paneer, Chana Masala, Aloo Gobi, Samosa, Pakora, Naan, Garlic Naan, Roti, Paratha, Dosa, Idli, Raita, Chutney, Lassi, Mango Lassi, Chai, Kheer, Gulab Jamun, Jalebi
+Curry, Butter Chicken, Chicken Tikka Masala, Tandoori Chicken, Biryani, Dal, Saag Paneer, Chana Masala, Aloo Gobi, Samosa, Pakora, Naan, Garlic Naan, Roti, Paratha, Dosa, Idli, Raita, Chutney, Lassi, Mango Lassi, Chai, Kheer, Gulab Jamun, Jalebi
 
 ## Middle Eastern
 Hummus, Falafel, Falafel Wrap, Shawarma, Kebab, Shish Tawook, Kofta, Mansaf, Maqluba, Kabsa, Mandi, Musakhan, Tabbouleh, Fattoush, Baba Ganoush, Mutabal, Labneh, Halloumi, Pita, Manakish, Za'atar, Stuffed Grape Leaves, Kibbeh, Shakshuka, Ful Medames, Knafeh, Baklava, Halva, Ma'amoul, Turkish Coffee, Mint Tea, Dates

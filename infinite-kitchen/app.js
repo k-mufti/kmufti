@@ -603,6 +603,15 @@
       const hurl = f.speed > HARD_PX_S && f.dwell < DWELL_MS;
       const aimed = !hurl;
 
+      // never moved: a click. Set it back down and, unless a second tap
+      // follows (that makes another one), take a close look at it.
+      if (trail.every((p) => Math.hypot(p.x - sx, p.y - sy) < DRAG_START_PX) && Math.hypot(ev.clientX - sx, ev.clientY - sy) < DRAG_START_PX) {
+        food().drop(id);
+        saveFood();
+        clearTimeout(lookTimer);
+        lookTimer = setTimeout(() => lookAt({ type: "food", id }), 280);
+        return;
+      }
       if (overPantry(ev)) { food().remove(id); saveFood(); return; }        // back in the pantry: gone
       const other = aimed ? food().pick(ev.clientX, ev.clientY, id) : null;
       if (other) { combineFood(id, other); return; }
@@ -685,9 +694,7 @@
       highlightFood(null);
       if (!held && !ghost) {                      // a click, not a carry
         if (!isTool) src.click();                 // the bin and the books open
-        else if (cuisine) toast(`The ${esc(cuisine)} cookbook: drag it onto food to cook it ${esc(cuisine)}-style.`);
-        else if (src.classList.contains("hand")) toast(`The ${esc(src.dataset.label.toLowerCase())}: drag it onto food to ${esc(tech.toLowerCase())} it.`);
-        else toast(`The ${esc(src.dataset.label.toLowerCase())}: drag food onto it to ${esc(tech.toLowerCase())} it.`);
+        else lookAt({ type: "spot", id: name }, src);
         return;
       }
       ghost?.remove();
@@ -740,6 +747,7 @@
     const now = performance.now();
     if (lastFoodTap.id === id && now - lastFoodTap.at < 350) {
       lastFoodTap = { id: null, at: 0 };
+      clearTimeout(lookTimer);              // it was a double-tap, not a look
       const p = food().screenPos(id);
       const made = food().spawnHeld(food().name(id), kindOf(food().name(id)), p.x + 14, p.y - 10);
       food().drop(made);
@@ -751,6 +759,91 @@
     carryFood(e, id);
   });
   let lastFoodTap = { id: null, at: 0 };
+
+  /* ---------- a close look ----------
+     A plain click on a tool, a cookbook or a piece of food brings it right up
+     to the camera (scene3d.js) with the room blurred behind, and a card of
+     notes beside it: for food, what made it; for a tool, what it does, with
+     a few things you've already made with it. */
+  let lookTimer = 0;
+  const TOOL_NOTES = {
+    Heat: "A gas hob. Put food on it to cook it in the pan: toast it, fry it, melt it, sear it. Leave something on too long and it burns.",
+    Bake: "Dry heat, all the way round. Dough rises into bread, batter sets into cake, and raw things come out golden.",
+    Boil: "A pot of water on the boil. Soften grains and pasta, cook eggs and potatoes, simmer things down into soups and sauces.",
+    Cut: "The one tool you pick up and carry: drag it onto food to slice, chop or carve it. Butchers a whole animal, too.",
+    Blend: "Spins anything to a pulp or a powder: grain into flour, fruit into a smoothie, chickpeas into something spreadable.",
+    Wait: "Time, as a tool. Put food on it and let it sit: milk sours into cheese, cheese ages, juice ferments, eggs get laid.",
+    Freeze: "Cold storage. Water turns to ice, cream to ice cream, and some things just keep.",
+  };
+  const KIND_LABEL = { ingredient: "Ingredient", dish: "Dish", drink: "Drink", technique: "Tool", cuisine: "Cookbook", trash: "Bin" };
+  const lookCard = document.createElement("aside");
+  lookCard.className = "look-card";
+  lookCard.hidden = true;
+  room.appendChild(lookCard);
+  const lookShade = document.createElement("div");
+  lookShade.className = "look-shade";
+  lookShade.hidden = true;
+  room.appendChild(lookShade);
+  // things you've made with a tool or cookbook (only ones you've found)
+  function madeWith(tool, n) {
+    const out = [];
+    for (const [a, b, res] of DATA.combos || []) {
+      const other = a === tool ? b : b === tool ? a : null;
+      if (!other || !has(res) || !has(other) || other === res) continue;
+      out.push([other, res]);
+      if (out.length >= n) break;
+    }
+    return out;
+  }
+  function lookAt(target, el) {
+    if (!k3()?.inspect || k3().inspecting()) return;
+    let html = "";
+    if (target.type === "food") {
+      const name = food().name(target.id);
+      if (!name) return;
+      const kind = kindOf(name), rec = S.found[name] || {}, cuisine = UNLOCKS.get(name), stripe = stripeOf(name);
+      const from = rec.from;
+      let how;
+      if (!from) how = "One of the six things every kitchen starts with.";
+      else if (rec.via) how = `<span class="look-chip">${esc(from[0])}</span> <span class="look-op">+</span> <span class="look-chip tool">${esc(toolFor(rec.via) ? labelOf(rec.via) : rec.via + " cookbook")}</span>`;
+      else how = `<span class="look-chip">${esc(from[0])}</span> <span class="look-op">+</span> <span class="look-chip">${esc(from[1])}</span>`;
+      html = `<p class="look-kind">${KIND_LABEL[kind] || "Food"}${cuisine ? ` · ${esc(cuisine)}` : ""}</p>
+        ${stripe ? `<div class="look-stripe" style="--stripe:${stripeCss(stripe)}"></div>` : ""}
+        <h2>${esc(name)}</h2>
+        ${from ? `<p class="look-sub">You made it from</p>` : ""}
+        <p class="look-how">${how}</p>`;
+    } else {
+      const id = target.id, cuisine = el?.dataset.cuisine, tech = el?.dataset.tech;
+      const made = madeWith(id, 4);
+      const examples = made.length ? `<p class="look-sub">You've made</p><ul class="look-list">${made.map(([a, b]) => `<li><span class="look-chip">${esc(a)}</span> <span class="look-op">→</span> <span class="look-chip">${esc(b)}</span></li>`).join("")}</ul>` : "";
+      if (cuisine) {
+        const stripe = STRIPES[cuisine];
+        html = `<p class="look-kind">Cookbook</p>
+          ${stripe ? `<div class="look-stripe" style="--stripe:${stripeCss(stripe)}"></div>` : ""}
+          <h2>${esc(cuisine)}</h2>
+          <p class="look-what">Drag it onto food to cook it ${esc(cuisine)}-style.</p>${examples}`;
+      } else {
+        html = `<p class="look-kind">Tool · ${esc(tech)}</p>
+          <h2>${esc(el?.dataset.label || id)}</h2>
+          <p class="look-what">${TOOL_NOTES[tech] || ""}</p>
+          <p class="look-use">${el?.classList.contains("hand") ? `Drag it onto food to ${esc(tech.toLowerCase())} it.` : `Drag food onto it to ${esc(tech.toLowerCase())} it.`}</p>${examples}`;
+      }
+    }
+    if (!k3().inspect(target)) return;
+    hover(null);
+    lookCard.innerHTML = html + `<p class="look-close">click anywhere to put it back</p>`;
+    lookCard.hidden = lookShade.hidden = false;
+    requestAnimationFrame(() => lookCard.classList.add("open"));
+  }
+  async function closeLook() {
+    if (lookCard.hidden) return;
+    lookCard.classList.remove("open");
+    await k3()?.closeInspect();
+    lookCard.hidden = lookShade.hidden = true;
+  }
+  lookShade.addEventListener("pointerdown", (e) => { e.preventDefault(); e.stopPropagation(); closeLook(); });
+  lookCard.addEventListener("pointerdown", (e) => { e.stopPropagation(); closeLook(); });
+  window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLook(); });
   room.addEventListener("contextmenu", (e) => {
     if (!FOOD3D || !k3()) return;
     const id = food().pick(e.clientX, e.clientY);

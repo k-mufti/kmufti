@@ -972,12 +972,12 @@ Cuisine: Indian
 Cuisine: Middle Eastern
 Cuisine: Fast Food
 
-American: Apple Pie, Burger, Cheeseburger, Mac and Cheese, PB&J, BLT, Cheesesteak, Chili Dog, Chicken and Waffles, Thanksgiving Dinner, Pulled Pork, Clam Chowder, Pumpkin Pie, Red Velvet Cake, S'mores, Sweet Potato Casserole, Fluffernutter, Root Beer, Deep Dish Pizza
-Italian: Pizza, Pepperoni Pizza, Mushroom Pizza, Calzone, Spaghetti, Lasagna, Alfredo, Pesto Pasta, Carbonara, Spaghetti Bolognese, Spaghetti and Meatballs, Chicken Parmesan, Risotto, Minestrone, Tiramisu, Gelato, Focaccia, Polenta, Bruschetta, Biscotti, Panini, Espresso, Cappuccino
-Mexican: Taco, Burrito, Quesadilla, Nachos, Enchilada, Tamale, Fajitas, Carne Asada, Carnitas, Torta, Elote, Churro, Horchata, Agua Fresca, Chips and Salsa, Chips and Guac, Burrito Bowl, Takis
-East Asian: Sushi, Sashimi, Donburi, Congee, California Roll, Sushi Roll, Ramen, Lo Mein, Chow Mein, Kung Pao Chicken, Beef and Broccoli, Miso Soup, Bao, Peking Duck, Bulgogi, Tempura, Mochi, Mochi Ice Cream, Boba, Matcha Latte, Fortune Cookie
-Indian: Curry, Biryani, Naan, Samosa, Tandoori Chicken, Butter Chicken, Saag Paneer, Dal, Lassi, Mango Lassi, Chai, Kheer
-Middle Eastern: Hummus, Falafel, Kabsa, Falafel Wrap, Shawarma, Kebab, Mansaf, Maqluba, Tabbouleh, Fattoush, Knafeh, Baklava, Turkish Coffee, Hummus and Pita
+American: Apple Pie, Burger, Cheeseburger, Mac and Cheese, PB&J, BLT, Cheesesteak, Chili Dog, Chicken and Waffles, Thanksgiving Dinner, Pulled Pork, Clam Chowder, Pumpkin Pie, Red Velvet Cake, S'mores, Sweet Potato Casserole, Fluffernutter, Root Beer, Deep Dish Pizza, Key Lime Pie, Jambalaya, Gumbo, Biscuits and Gravy, Pecan Pie, Lobster Roll
+Italian: Pizza, Pepperoni Pizza, Mushroom Pizza, Calzone, Spaghetti, Lasagna, Alfredo, Pesto Pasta, Carbonara, Spaghetti Bolognese, Spaghetti and Meatballs, Chicken Parmesan, Risotto, Minestrone, Tiramisu, Gelato, Focaccia, Polenta, Bruschetta, Biscotti, Panini, Espresso, Cappuccino, Margherita Pizza, Ravioli, Gnocchi, Caprese Salad, Cannoli, Panna Cotta, Eggplant Parmesan
+Mexican: Taco, Burrito, Quesadilla, Nachos, Enchilada, Tamale, Fajitas, Carne Asada, Carnitas, Torta, Elote, Churro, Horchata, Agua Fresca, Chips and Salsa, Chips and Guac, Burrito Bowl, Takis, Al Pastor, Tostada, Chimichanga, Mexican Rice, Pozole, Tres Leches Cake, Fish Tacos
+East Asian: Sushi, Sashimi, Donburi, Congee, California Roll, Sushi Roll, Ramen, Lo Mein, Chow Mein, Kung Pao Chicken, Beef and Broccoli, Miso Soup, Bao, Peking Duck, Bulgogi, Tempura, Mochi, Mochi Ice Cream, Boba, Matcha Latte, Fortune Cookie, Orange Chicken, General Tso's Chicken, Sweet and Sour Chicken, Korean Fried Chicken, Spring Rolls, Egg Rolls, Bibimbap, Hot and Sour Soup, Scallion Pancakes
+Indian: Curry, Biryani, Naan, Samosa, Tandoori Chicken, Butter Chicken, Saag Paneer, Dal, Lassi, Mango Lassi, Chai, Kheer, Chicken Tikka Masala, Chana Masala, Aloo Gobi, Pakora, Garlic Naan, Roti, Paratha, Dosa, Idli, Raita, Gulab Jamun, Jalebi
+Middle Eastern: Hummus, Falafel, Kabsa, Falafel Wrap, Shawarma, Kebab, Mansaf, Maqluba, Tabbouleh, Fattoush, Knafeh, Baklava, Turkish Coffee, Hummus and Pita, Baba Ganoush, Shish Tawook, Kofta, Mandi, Musakhan, Mutabal, Manakish, Stuffed Grape Leaves, Kibbeh, Shakshuka, Ful Medames, Ma'amoul, Qatayef, Jallab, Qamar al-Din
 Fast Food: Combo Meal, Big Mac, Whopper, Filet-O-Fish, Quarter Pounder, Double Cheeseburger, Happy Meal, McGriddle, Egg McMuffin, McFlurry, Frosty, Doritos Locos Taco, Crunchwrap Supreme, Mexican Pizza, Stuffed Crust Pizza, Bucket of Chicken, Frappuccino, Pumpkin Spice Latte, Donut Holes
 
 ## American
@@ -1285,3 +1285,100 @@ Lobster + Bread = Lobster Roll [dish]
 Crab + Breadcrumbs = Crab Cakes [dish]
 Fish + Tortilla = Fish Tacos [dish]
 Salmon + Stove = Grilled Salmon [dish]
+
+#############################################################################
+# Catalog batch 2 (2026-10-09): the cookbooks and the occasions. Most named
+# dishes come through a cookbook or one more real ingredient, never from two
+# everyday things.
+#############################################################################
+
+## Indian
+Tandoori Chicken + Tomato Sauce = Chicken Tikka Masala [dish]
+Curry + Beans = Chana Masala [dish]
+Cauliflower + Indian = Aloo Gobi [dish]
+Onion + Indian = Pakora [dish]
+Naan + Garlic = Garlic Naan [dish]
+Tortilla + Indian = Roti [dish]
+Roti + Ghee = Paratha [dish]
+Pancakes + Indian = Dosa [dish]
+Rice Cakes + Indian = Idli [dish]
+Tzatziki + Indian = Raita [dish]
+Jam + Indian = Chutney
+Donut Holes + Syrup = Gulab Jamun [dish]
+Churro + Indian = Jalebi [dish]
+
+## Middle Eastern
+Kebab + Chicken = Shish Tawook [dish]
+Kebab + Ground Beef = Kofta [dish]
+Lamb and Rice + Oven = Mandi [dish]
+Roast Chicken + Middle Eastern = Musakhan [dish]
+Baba Ganoush + Yogurt = Mutabal [dish]
+Pita + Za'atar = Manakish [dish]
+Grapes + Middle Eastern = Stuffed Grape Leaves [dish]
+Kofta + Wheat = Kibbeh [dish]
+Egg + Tomato Sauce = Shakshuka [dish]
+Refried Beans + Middle Eastern = Ful Medames [dish]
+Cookie + Dates = Ma'amoul [dish]
+Pancakes + Middle Eastern = Qatayef [dish]
+Dal + Broth = Lentil Soup [dish]
+Dates + Grape Juice = Jallab [drink]
+Peach + Orange = Apricot
+Apricot + Blender = Qamar al-Din [drink]
+
+## American
+Lime + Pie = Key Lime Pie [dish]
+Rice and Meat + American = Jambalaya [dish]
+Seafood Soup + Sausage = Gumbo [dish]
+
+## Italian
+Pizza + Basil = Margherita Pizza [dish]
+Dumplings + Italian = Ravioli [dish]
+Potato + Dough = Gnocchi [dish]
+Mozzarella + Tomato = Caprese Salad [dish]
+Ricotta + Pie Crust = Cannoli [dish]
+Cream + Jell-O = Panna Cotta [dish]
+
+## Mexican
+Pork + Pineapple = Al Pastor [dish]
+Tortilla Chips + Refried Beans = Tostada [dish]
+Burrito + Stove = Chimichanga [dish]
+Rice + Salsa = Mexican Rice [dish]
+Stew + Mexican = Pozole [dish]
+Cake + Condensed Milk = Tres Leches Cake [dish]
+
+## East Asian
+Fried Chicken + Orange = Orange Chicken [dish]
+Fried Chicken + East Asian = General Tso's Chicken [dish]
+Fried Chicken + Pineapple = Sweet and Sour Chicken [dish]
+Buffalo Wings + East Asian = Korean Fried Chicken [dish]
+Wrap + East Asian = Spring Rolls [dish]
+Spring Rolls + Stove = Egg Rolls [dish]
+Rice and Meat + Fried Egg = Bibimbap [dish]
+Egg Drop Soup + Hot Sauce = Hot and Sour Soup [dish]
+
+## Pizzeria
+Pizza + Meat = Meat Lover's Pizza [dish]
+Pizza + Vegetables = Veggie Pizza [dish]
+Dough + Garlic = Garlic Knots [dish]
+Garlic Bread + Knife = Breadsticks [dish]
+
+## Ice cream shop and coffee shop
+Root Beer + Ice Cream = Root Beer Float [drink]
+Ice Cream + Mint = Mint Chocolate Chip [dish]
+Ice Cream + Marshmallow = Rocky Road [dish]
+Ice Cream + Ice Cream = Neapolitan [dish]
+Fudge + Stove = Hot Fudge
+Ice Cream + Hot Fudge = Sundae
+Latte + Caramel = Caramel Macchiato [drink]
+Chai + Milk = Chai Latte [drink]
+Biscuit + Tea = Scone [dish]
+
+## The occasions
+Croutons + Broth = Stuffing [dish]
+Popcorn + Marshmallow = Popcorn Ball [dish]
+Peppermint + Tree = Candy Cane [dish]
+Cookie + Sugar = Sugar Cookie [dish]
+Cake + Dried Fruit = Fruitcake [dish]
+Nuts + Stove = Chestnuts
+Chocolate Cake + Tree = Yule Log [dish]
+Orange Juice + Soda = Punch [drink]
