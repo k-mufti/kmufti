@@ -1945,3 +1945,125 @@ Water + Hot Dog = Hot Dog Water [trash]
 Water + Crackers = Slop
 Cow + Bee = Honey Butter
 Cow + Fridge = Ice Cream
+
+## Dead ends batch (2026-10-13): things you can make but couldn't use
+# Each line gives an item that went nowhere a real next step.
+
+# Sauces and spreads finding their food
+BBQ Sauce + Chicken = BBQ Chicken
+BBQ Sauce + Potato Chips = BBQ Chips
+BBQ Sauce + Pork = Ribs
+BBQ Chicken + Dough = BBQ Chicken Pizza
+Caramel Sauce + Ice Cream = Sundae
+Caramel Sauce + Latte = Caramel Macchiato
+Caramel Sauce + Apple = Caramel Apple
+Gravy + French Fries = Poutine
+Ranch + Potato Chips = Chips and Dip
+Sea Salt + Caramel = Salted Caramel
+Relish + Hot Dog = Ballpark Hot Dog
+Pico de Gallo + Tortilla Chips = Chips and Salsa
+# mayonnaise and hollandaise are both built on egg yolk
+Yolk + Oil = Mayonnaise
+
+# Eggs
+Boiled Egg + Brine = Pickled Egg
+Fried Egg + Bacon = Bacon and Eggs
+Fried Egg + English Muffin = Egg McMuffin
+Poached Egg + Hollandaise = Eggs Benedict
+
+# Rice and noodles
+Steamed Rice + Curry = Curry and Rice
+Chicken and Rice + Indian = Biryani
+Chicken and Rice + Middle Eastern = Kabsa
+Egg Noodles + Chicken Soup = Chicken Noodle Soup
+Egg Noodles + Butter = Buttered Noodles
+Chicken Stir-Fry + Egg Noodles = Lo Mein
+Imitation Crab + Sushi Roll = California Roll
+
+# Meat, fish and dinners
+Beer-Battered Fish + French Fries = Fish and Chips
+Fish Sticks + Bread = Fish Sandwich
+Tuna + Mayonnaise = Tuna Salad
+Roast Chicken + Potato = Chicken Dinner
+Beef Stew + Bread = Bread Bowl
+Cheddar + Burger = Cheeseburger
+Tofu + Broth = Miso Soup
+
+# Vegetables
+Broccoli + Steam = Steamed Vegetables
+Mushroom + Cream = Cream of Mushroom
+Roasted Vegetables + Pasta = Veggie Pasta
+Iceberg Lettuce + Tomato = Salad
+Croutons + Salad = Caesar Salad
+# chestnut stuffing, the Thanksgiving kind
+Chestnuts + Turkey = Stuffing
+
+# Sweets
+Corn Syrup + Gelatin = Marshmallow
+Graham Crackers + Butter = Pie Crust
+Fruit Cocktail + Gelatin = Jell-O
+Bear + Candy = Gummy Bears
+Oatmeal + Cookie = Oatmeal Cookie
+Shaved Ice + Syrup = Snow Cone
+
+# Drinks
+Green Smoothie + Granola = Smoothie Bowl
+
+# Breakfast
+Cheerios + Milk = Breakfast
+Animal Crackers + Milk = Milk and Cookies
+Dried Fruit + Nuts = Trail Mix
+Dried Fruit + Oats = Muesli
+
+# Ingredients that went nowhere
+Capers + Mayonnaise = Tartar Sauce
+Tartar Sauce + Fish Sandwich = Filet-O-Fish
+Tartar Sauce + Fried Fish = Fish and Chips
+# Old Bay is the seafood-boil seasoning, bay leaf and all
+Bay Leaves + Seafood = Seafood Boil
+Brown Rice + Beans = Rice and Beans
+Honeycomb + Knife = Honey
+Lavender + Tea = Herbal Tea
+# the McGriddle's buns are soaked in syrup
+Maple Syrup + Sausage = McGriddle
+# samosa filling is potato and peas
+Peas + Potato = Samosa
+# jallab is grape molasses and rose water
+Rose Water + Molasses = Jallab
+Seasoning + Chili Pepper = Taco Seasoning
+# eleven herbs and spices
+Seasoning + Fried Chicken = Bucket of Chicken
+Shredded Wheat + Sugar = Frosted Mini-Wheats
+Watermelon + Blender = Agua Fresca
+Apple Cider Vinegar + Cabbage = Coleslaw
+Apple Slices + Pie Crust = Apple Pie
+Apple Slices + Caramel Sauce = Caramel Apple
+Blackberry + Sugar = Jam
+Blue Cheese + Iceberg Lettuce = Salad
+Bok Choy + Steam = Steamed Vegetables
+Evaporated Milk + Pumpkin = Pumpkin Pie
+Evaporated Milk + Sugar = Condensed Milk
+Evaporated Milk + Cake = Tres Leches Cake
+Fish Sauce + Rice Noodles = Pad Thai
+Olives + Blender = Olive Oil
+Olives + Feta = Greek Salad
+Prosciutto + Bread = Panini
+Prosciutto + Cheese = Charcuterie Board
+# saffron is what turns paella yellow
+Saffron + Rice = Paella
+Salami + Crackers = Lunchables
+Salami + Cheese = Charcuterie Board
+Sliced Cheese + Burger = Cheeseburger
+Worcestershire Sauce + Mayonnaise = Caesar Dressing
+
+# Dishes with an obvious next step
+Ceviche + Tortilla Chips = Tostada
+Chocolate Milk + Ice Cream = Chocolate Milkshake
+Cornbread + Turkey = Stuffing
+Oat Milk + Espresso = Latte
+Teriyaki + Rice = Donburi
+Salted Caramel + Popcorn = Caramel Corn
+Baked Beans + Hot Dog = Pork and Beans
+Baked Beans + Toast = Beans on Toast
+Cheese Bread + Garlic = Cheesy Garlic Bread
+Green Tea + Ice Cream = Green Tea Ice Cream
