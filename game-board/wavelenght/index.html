@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Wavelenght</title>
+  <link rel="icon" href="favicon.svg?v=1" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=1" />
+</head>
+<body>
+  <header class="bar">
+    <a class="back" href="../">&larr; Game Board</a>
+    <span class="logo">Wavelenght</span>
+    <span class="code" id="codeChip" hidden></span>
+  </header>
+
+  <!-- Not in a room yet: make one or join one -->
+  <section class="screen" id="home">
+    <div class="home-card">
+      <h1 class="title">Wavelenght</h1>
+      <p class="pitch">One of you knows where the target is. Give a clue, and your team turns the dial to find it.</p>
+      <label class="field">
+        <span>Your name</span>
+        <input id="nameInput" maxlength="18" autocomplete="nickname" spellcheck="false" />
+      </label>
+      <button class="btn big" id="createBtn">Start a room</button>
+      <div class="or"><span>or join one</span></div>
+      <form class="join" id="joinForm">
+        <input id="codeInput" maxlength="4" placeholder="CODE" autocomplete="off" spellcheck="false" autocapitalize="characters" />
+        <button class="btn" type="submit">Join</button>
+      </form>
+      <p class="status" id="homeStatus"></p>
+    </div>
+  </section>
+
+  <!-- In a room, before the game -->
+  <section class="screen" id="lobby" hidden>
+    <div class="lobby-card">
+      <p class="room-line">Room code</p>
+      <p class="room-code" id="lobbyCode"></p>
+      <p class="room-hint">Everyone opens this page on their own phone and types the code.</p>
+
+      <div class="mode" id="modeRow">
+        <button class="mode-btn" data-mode="teams">Two teams</button>
+        <button class="mode-btn" data-mode="coop">All together</button>
+      </div>
+      <p class="mode-hint" id="modeHint"></p>
+
+      <div class="teams" id="lobbyTeams"></div>
+
+      <button class="btn big" id="startBtn">Start</button>
+      <p class="status" id="lobbyStatus"></p>
+      <button class="link" id="leaveBtn">Leave room</button>
+    </div>
+  </section>
+
+  <!-- The game -->
+  <section class="screen" id="game" hidden>
+    <div class="score" id="scoreBoard"></div>
+
+    <p class="banner" id="banner"></p>
+
+    <div class="table">
+      <button class="side-btn left" id="leftBtn" hidden><span>&larr;</span>Left</button>
+
+      <div class="device">
+        <svg class="dial" id="dial" viewBox="-232 -215 464 290" aria-label="The dial"></svg>
+      </div>
+
+      <button class="side-btn right" id="rightBtn" hidden>Right<span>&rarr;</span></button>
+    </div>
+
+    <div class="spectrum" id="spectrum" hidden>
+      <span class="end l" id="endL"></span>
+      <span class="end r" id="endR"></span>
+    </div>
+
+    <p class="clue" id="clue" hidden></p>
+
+    <div class="actions" id="actions"></div>
+
+    <div class="who" id="who"></div>
+  </section>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../../you.js?v=2"></script>
+  <script type="module" src="app.js?v=1"></script>
+</body>
+</html>

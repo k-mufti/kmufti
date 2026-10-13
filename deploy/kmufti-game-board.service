@@ -1,0 +1,27 @@
+# systemd unit for Game Board, the board-game rooms (WebSocket).
+# Install:
+#   sudo cp deploy/kmufti-game-board.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now kmufti-game-board
+#
+# After changing game-board/server.js (or a game's rules.js / cards.js):
+#   sudo systemctl restart kmufti-game-board
+#
+# Nothing is persisted. Rooms live in memory; a restart drops games in
+# progress.
+
+[Unit]
+Description=kmufti Game Board (board-game rooms)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/kmufti-hub/game-board
+ExecStart=/usr/bin/node server.js
+Environment=PORT=8028
+Restart=always
+RestartSec=3
+User=www-data
+
+[Install]
+WantedBy=multi-user.target

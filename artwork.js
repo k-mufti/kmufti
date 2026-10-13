@@ -490,6 +490,48 @@ const ARTWORK = {
       <!-- a little spilt flour -->
       <g fill="#fbf1dc" opacity="0.55"><circle cx="69.5" cy="181.6" r="1.2"/><circle cx="70.4" cy="181.1" r="1.0"/><circle cx="52.9" cy="181.1" r="1.0"/><circle cx="90.7" cy="176.9" r="0.7"/><circle cx="47.1" cy="184.1" r="1.1"/><circle cx="44.1" cy="185.8" r="1.3"/><circle cx="82.0" cy="182.2" r="0.6"/><circle cx="42.4" cy="181.3" r="0.5"/><circle cx="53.3" cy="178.4" r="0.5"/><circle cx="70.3" cy="180.4" r="1.2"/><circle cx="73.7" cy="182.4" r="0.9"/><circle cx="82.6" cy="180.6" r="0.7"/><circle cx="103.4" cy="186.0" r="1.2"/><circle cx="85.4" cy="179.2" r="0.7"/></g>
     </svg>`,
+  /* Game Board — the shelf: Wavelenght's box standing on a plank, its dial
+     on the lid, with gaps beside it for the games still to come. */
+  "game-board": `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="gb-wall" cx="0.5" cy="0.1" r="0.9">
+          <stop offset="0" stop-color="#4a3a2e"/>
+          <stop offset="1" stop-color="#1e1712"/>
+        </radialGradient>
+        <linearGradient id="gb-wood" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#9a6a40"/>
+          <stop offset="1" stop-color="#5e3a20"/>
+        </linearGradient>
+        <clipPath id="gb-lid"><rect x="-62" y="-60" width="124" height="72"/></clipPath>
+      </defs>
+      <rect width="320" height="200" fill="url(#gb-wall)"/>
+      <!-- the gaps for games to come -->
+      <rect x="196" y="74" width="46" height="88" rx="4" fill="none" stroke="#c9b8a6" stroke-opacity="0.28" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <rect x="252" y="74" width="46" height="88" rx="4" fill="none" stroke="#c9b8a6" stroke-opacity="0.18" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <!-- the box, its side in shadow -->
+      <rect x="168" y="50" width="10" height="112" fill="#bfb6a6"/>
+      <rect x="40" y="46" width="130" height="116" rx="5" fill="#efe8da"/>
+      <text x="105" y="73" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-weight="700" font-size="17" fill="#1d3d5c">Wavelenght</text>
+      <g transform="translate(105 150)" clip-path="url(#gb-lid)">
+        <circle r="54" fill="#fbfaf6"/>
+        <circle r="50" fill="#1d3d5c"/>
+        <circle r="46" fill="#f4efe4"/>
+        <path d="M0 0L-24 -39A46 46 0 0 1 -16 -43Z" fill="#f3b52f"/>
+        <path d="M0 0L-16 -43A46 46 0 0 1 -8 -45Z" fill="#ee7a33"/>
+        <path d="M0 0L-8 -45A46 46 0 0 1 0 -46Z" fill="#a8d4e6"/>
+        <path d="M0 0L0 -46A46 46 0 0 1 8 -45Z" fill="#ee7a33"/>
+        <path d="M0 0L8 -45A46 46 0 0 1 16 -43Z" fill="#f3b52f"/>
+        <rect x="-56" y="0" width="112" height="14" fill="#1d3d5c"/>
+        <rect x="-60" y="-2.5" width="12" height="5" rx="2.5" fill="#7fd8c3"/>
+        <rect x="48" y="-2.5" width="12" height="5" rx="2.5" fill="#7fd8c3"/>
+        <path d="M-2 0L0 -42L2 0Z" fill="#d8342b" transform="rotate(-14)"/>
+        <circle r="8" fill="#d8342b"/>
+      </g>
+      <!-- the plank -->
+      <rect x="0" y="162" width="320" height="12" fill="url(#gb-wood)"/>
+      <rect x="0" y="174" width="320" height="26" fill="#000" opacity="0.25"/>
+    </svg>`,
   /* Destroy — the word half blown away: a chunk bitten out of it, pixel
      fire where the rocket landed, and a few loose letters on the floor. */
   destroy: `

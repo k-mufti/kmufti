@@ -41,6 +41,16 @@ const PROJECTS = [
     status: "live",
   },
   {
+    slug: "game-board",
+    title: "Game Board",
+    description: "Board games, off the shelf and onto your phones. First up: Wavelenght — one of you knows where the target is, the rest turn the dial.",
+    tags: ["game", "realtime", "party"],
+    accent: "#ee7a33",
+    accentBg: "linear-gradient(135deg, #3a2d24 0%, #1e1712 100%)",
+    href: "game-board/",
+    status: "live",
+  },
+  {
     slug: "white-canvas",
     title: "White Canvas",
     description: "A shared pixel wall. Everyone draws on the same canvas, live — and every pixel stays.",
