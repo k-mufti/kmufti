@@ -360,7 +360,10 @@
     const at = stageXY(e);
     const now = performance.now();
 
-    if (drag) {
+    if (drag && drag.fly) {
+      // mid-flight off the belt: just move where it's heading (flyStep)
+      drag.fly.tx = at.x - drag.offX; drag.fly.ty = at.y - drag.offY;
+    } else if (drag) {
       const p = pieces[drag.i];
       moveGroup(drag.members, drag.i, at.x - drag.offX, at.y - drag.offY);
       moveGhost(e);
@@ -378,6 +381,8 @@
   function endDrag(e) {
     if (!drag) return;
     const i = drag.i, p = pieces[i];
+    // let go mid-flight: it lands where it was heading
+    if (drag.fly) { p.x = drag.fly.tx; p.y = drag.fly.ty; applyPiece(i); drag.fly = null; }
     for (const k of drag.members) nodes[k].g.classList.remove("dragging");
     // Let go over the belt: changed your mind - it goes back where it was.
     if (e && overBelt(e)) {
@@ -481,7 +486,10 @@
     requestAnimationFrame(() => { beltPending = false; buildBelt(); });
   }
   function buildBelt() {
-    if (!board || !beltOn()) { beltTrack.textContent = ""; beltCount.textContent = ""; return; }
+    if (!board) { beltTrack.textContent = ""; beltCount.textContent = ""; return; }
+    // folded: leave the pieces where they are so they can fade out (and back
+    // in when it opens); it stops moving on its own while folded
+    if (!beltOn()) return;
     const want = beltOrder.filter((i) => pieces[i] && !pieces[i].placed && membersOf(i).length === 1 &&
       !holders.has(i) && !inDrag(i) && (!edgesOnly || isEdge(i)));
     // keep the items already riding where they are; add and drop the rest
@@ -549,27 +557,49 @@
     const at = stageXY(e);
     beacon(null);
     drag = { i, offX: pw / 2, offY: ph / 2, members: [i], from: [[i, p.x, p.y]], fromBelt: true };
-    // Into your hand at once: mark it as dragging (which switches off the
-    // table's 70ms smoothing) BEFORE moving it, or it glides over from
-    // wherever it was lying.
+    // Mark it as dragging first: that switches off the table's 70ms
+    // smoothing, which would otherwise drag it over on its own schedule.
     const g = nodes[i].g;
     g.classList.add("dragging");
-    g.style.transition = "none";
-    p.x = at.x - pw / 2; p.y = at.y - ph / 2;
-    applyPiece(i);
     looseLayer.appendChild(g);
-    void g.getBoundingClientRect();          // commit the jump before smoothing can return
-    g.style.transition = "";
     drag.ghost = item.cloneNode(true);
     drag.ghost.classList.add("belt-ghost");
     document.body.appendChild(drag.ghost);
-    moveGhost(e);
+    // Then it lifts from where it lies and flies to your hand (FLY_MS),
+    // still chasing the cursor while it travels so it never trails behind.
+    drag.fly = { x0: p.x, y0: p.y, tx: at.x - pw / 2, ty: at.y - ph / 2, t0: performance.now() };
+    flyStep();
     item.remove();
     refreshBelt();
     send({ t: "grab", p: i });
-    send({ t: "move", x: Math.round(p.x), y: Math.round(p.y) });
     e.preventDefault();
   });
+
+  // The flight from the table to your hand: a quick ease-out (0.18s), so it
+  // leaves fast and settles gently into your hand. The copy over the belt
+  // flies with it.
+  const FLY_MS = 180;
+  function flyStep() {
+    if (!drag || !drag.fly) return;
+    const f = drag.fly, p = pieces[drag.i];
+    const t = FLY_MS ? Math.min(1, (performance.now() - f.t0) / FLY_MS) : 1;
+    const k = 1 - (1 - t) ** 3;
+    p.x = f.x0 + (f.tx - f.x0) * k;
+    p.y = f.y0 + (f.ty - f.y0) * k;
+    applyPiece(drag.i);
+    // the copy shows only where the table can't draw: below its edge
+    const r = svg.getBoundingClientRect(), sc = r.width / STAGE_W;
+    const sx = r.left + (p.x + pw / 2) * sc, sy = r.top + (p.y + ph / 2) * sc;
+    const inside = sx >= r.left && sx <= r.right && sy >= r.top && sy <= r.bottom;
+    drag.ghost.style.display = inside ? "none" : "block";
+    drag.ghost.style.transform = `translate(${sx}px, ${sy}px) translate(-50%, -50%)`;
+    const now = performance.now();
+    if (now - lastMoveSend > 30 || t === 1) { lastMoveSend = now; send({ t: "move", x: Math.round(p.x), y: Math.round(p.y) }); }
+    if (t < 1) requestAnimationFrame(flyStep);
+    else drag.fly = null;
+  }
+
+
   // Hover a piece on the belt and the same piece lights up on the table,
   // lifted to the top of the pile so a buried one shows too.
   let beaconOn = null;
