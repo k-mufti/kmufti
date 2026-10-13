@@ -48,6 +48,9 @@
       border-radius: 6px; padding: 4px 8px; cursor: pointer; }
     .reorder-panel button:hover { background: #3a3a3a; }
     .reorder-panel .hint { color: #888; font-size: 11px; margin: 0; }
+    .reorder-panel.off { width: auto; display: flex; align-items: center; gap: 10px; padding: 8px 10px; }
+    .reorder-panel.off h4 { margin: 0; }
+    .reorder-panel.off .hint, .reorder-panel.off ol, .reorder-panel.off [data-act="copy"], .reorder-panel.off [data-act="reset"] { display: none; }
     body.reordering #apps .app { cursor: grab; }
     body.reordering #apps .app * { pointer-events: none; }
     #apps .app.reorder-ghost { opacity: .35; }
@@ -75,8 +78,11 @@
   }
   showOrder();
 
-  let on = true;
-  document.body.classList.add("reordering");
+  // Starts off: the tiles open their projects like on the live site until
+  // you switch it on. Off, the panel shrinks to its title and an "on" button.
+  let on = false;
+  toggleBtn.textContent = "on";
+  panel.classList.add("off");
   panel.addEventListener("click", async (e) => {
     const act = e.target.dataset.act;
     if (act === "copy") {
@@ -93,6 +99,7 @@
       document.body.classList.toggle("reordering", on);
       sortable?.option("disabled", !on);
       toggleBtn.textContent = on ? "off" : "on";
+      panel.classList.toggle("off", !on);
     }
   });
 
@@ -109,6 +116,7 @@
       ghostClass: "reorder-ghost",
       chosenClass: "reorder-chosen",
       dragClass: "reorder-drag",
+      disabled: !on,
       onEnd() { write(current()); showOrder(); },
     });
   };
