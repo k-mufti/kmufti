@@ -144,3 +144,4 @@ Chili Fries = Chili cheese fries
 Turtles = -
 Apple Fritter = -
 Baked Fish = Fish as food
+Veggie Dog = Vegetarian hot dog

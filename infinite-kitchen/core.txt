@@ -1824,3 +1824,124 @@ Crackers + Clock = Spoiled
 Flour + Knife = Flour [nothing]
 Vegetable Soup + Oven = Casserole
 Stir-Fry + Oven = Roasted Vegetables
+
+## Opening batch (2026-10-13): the pairs among the first 54 items
+# Everything you can make in one step, with the elements, the tools and each
+# other - the pairs every new player tries in their first minutes. Pairs with
+# no honest answer stay open.
+
+# The tools on early things
+Wheat + Knife = Bulgur
+Wheat + Oven = Shredded Wheat
+Tree + Oven = Chestnuts
+Farm + Stove = Barbecue
+Farm + Oven = Roast
+Cereal + Pot = Porridge
+Fruit + Pot = Jam
+Flour + Clock = Sourdough
+Crackers + Knife = Breadcrumbs
+Brine + Pot = Salt
+Salted Caramel + Pot = Caramel Sauce
+Flower + Pot = Chamomile
+Sugar Cubes + Blender = Powdered Sugar
+Sugar Cubes + Stove = Caramel
+# the sea dries into salt pans, given time
+Ocean + Clock = Sea Salt
+
+# Bulgur is cracked wheat: the base of tabbouleh and kibbeh
+Bulgur + Herbs = Tabbouleh
+Bulgur + Meat = Kibbeh
+
+# Animals and where they live
+Animal + Hen = Farm
+Animal + Flower = Bee
+Animal + Mint = Lamb
+Tree + Farm = Apple
+Hen + Egg = Chick
+# chickens eat corn
+Animal + Corn = Hen
+
+# Cooked versions of the animal
+Hen + Roast = Roast Chicken
+Hen + Barbecue = BBQ Chicken
+Hen + Stir-Fry = Chicken Stir-Fry
+Hen + Popcorn = Popcorn Chicken [dish]
+Cow + Roast = Roast Beef
+Cow + Barbecue = Brisket
+Cow + Vegetable Soup = Beef Stew
+Cow + Jerky = Beef Jerky
+Cow + Clock = Cheese
+Meat + Salt = Jerky
+Meat + Flour = Meat Pie
+
+# Milk straight from the cow
+Cow + Popcorn = Buttered Popcorn
+Cow + Cereal = Breakfast
+Cow + Steam = Steamed Milk
+
+# Fish
+Fish + Popcorn = Popcorn Shrimp
+Fish + Boiling Water = Fish Soup
+Fish + Barbecue = Grilled Salmon
+
+# Plants and vegetables
+Plant + Broth = Vegetable Soup
+Plant + Steam = Steamed Vegetables
+Vegetables + Corn = Succotash
+Vegetables + Rock Salt = Sauerkraut
+Vegetables + Ice = Iceberg Lettuce
+Corn + Barbecue = Corn on the Cob
+Corn + Steam = Corn on the Cob
+Boiling Water + Seaweed = Seaweed Soup
+
+# Fruit
+Fruit + Syrup = Fruit Cocktail
+Fruit + Granola = Parfait
+Fruit + Green Smoothie = Smoothie
+Brine + Fruit = Olive
+
+# Flowers: capers are flower buds packed in brine
+Brine + Flower = Capers
+Water + Flower = Rose Water
+
+# Grains and breakfast
+Flour + Beer = Batter
+Flour + Steam = Steamed Buns
+Flour + Hot Dog = Pigs in a Blanket
+Bee + Granola = Granola Bar
+Porridge + Oats = Oatmeal
+Porridge + Wheat = Cream of Wheat
+Grain + Egg = Egg Noodles
+Fruit + Oats = Muesli [dish]
+Sugar + Cereal = Frosted Flakes
+Egg + Herbs = Omelette
+Egg + Powdered Sugar = Meringue
+
+# Sweet things
+Ice + Candy = Popsicle
+Caramel + Sparkling Water = Cola
+Sugar + Barbecue = BBQ Sauce
+Water + Rock Candy = Syrup
+
+# The ballpark
+Hot Dog + Beer = Ballpark Hot Dog
+
+# The snack aisle and the frozen aisle: real things that only click once you
+# stop thinking about cooking
+Plant + Hot Dog = Veggie Dog [dish]
+Plant + Meat = Impossible Burger [dish]
+Grain + Fish = Goldfish
+Candy + Popcorn = Cracker Jack
+Egg + Cow = Eggnog
+Fish + Ice = Fish Sticks
+Hen + Ice = Chicken Nuggets
+Candy + Hen = Peeps
+Candy + Rice = Crunch Bar
+Candy + Caramel = Candy Bar
+# bears and honey, like Mouse + Swiss
+Animal + Bee = Bear
+# jokes, where nothing real fits
+Water + Hot Dog = Hot Dog Water [trash]
+Water + Crackers = Slop
+Cow + Bee = Honey Butter
+Cow + Fridge = Ice Cream
