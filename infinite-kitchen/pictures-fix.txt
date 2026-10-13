@@ -141,3 +141,6 @@ Brookie = Chocolate brownie
 BBQ Burger = Hamburger
 Pretzel Dog = Pretzel
 Chili Fries = Chili cheese fries
+Turtles = -
+Apple Fritter = -
+Baked Fish = Fish as food

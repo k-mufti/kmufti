@@ -1672,3 +1672,155 @@ Mexican: Chips and Queso, Esquites, Carne Asada Fries
 East Asian: Potstickers, Wonton Soup, Kimchi Fried Rice
 Indian: Cheese Naan, Masala Dosa
 American: Nashville Hot Chicken, Cincinnati Chili, Toasted Ravioli
+
+## Notebook batch (2026-10-13): pairs players tried with no recipe
+# Kareem's notebook, minus pairs already written and ones naming the old
+# tools (Fry, Mix, Grill, Ferment). Room tools: Stove = Heat, Oven = Bake,
+# Pot = Boil, Knife = Cut, Blender = Blend, Clock = Wait, Fridge = Freeze.
+
+# The farm
+Farm + Rice = Rice and Meat
+Farm + Knife = Meat
+Farm + Blender = Sausage
+Farm + Meat = Meat and Potatoes
+Farm + Steak = Steak and Eggs
+Farm + Salt = Ham
+Farm + Pig = Bacon
+Chicken + Farm = Chicken Dinner
+Animal + Rice = Rice and Meat
+Cow + Rice = Rice Pudding
+Animal + Egg = Chick
+Animal + Meat = Beef
+Meat + Steak = Barbecue
+# put it back together
+Animal + Ground Beef = Cow
+
+# Pig
+Pig + Pig = Pigs in a Blanket [dish]
+Pig + Salt = Ham
+Pig + Stove = Bacon
+Pig + Oven = Roast
+Pig + Pot = Stew
+Pig + Clock = Prosciutto
+Pig + Fridge = Pig [nothing]
+
+# Ground beef, cold cuts, meatloaf
+Ground Beef + Stove = Burger
+Ground Beef + Ground Beef = Meatloaf
+Ground Beef + Pot = Chili
+# blended smooth is how a hot dog is made
+Ground Beef + Blender = Hot Dog
+Ground Beef + Knife = Ground Beef [nothing]
+Ground Beef + Fridge = Ground Beef [nothing]
+Cold Cuts + Stove = Fried Bologna [dish]
+Cold Cuts + Oven = Ham
+Cold Cuts + Pot = Hot Dog
+Cold Cuts + Blender = Sausage
+Apple + Cold Cuts = Charcuterie Board
+Meatloaf + Boiling Water = Broth
+Meatloaf + Knife = Cold Cuts
+Meatloaf + Blender = Baby Food
+Steak + Clock = Jerky
+Steak + Fridge = Steak [nothing]
+Hot Dog + Fridge = Hot Dog [nothing]
+Roast Beef + Stove = Gravy
+Rotisserie Chicken + Oven = Burnt
+Fried Chicken + Pot = Chicken Soup
+
+# Jerky and caramel
+Animal + Jerky = Beef Jerky
+Jerky + Caramel = Teriyaki
+Caramel + Sashimi = Teriyaki
+Animal + Caramel = Turtles [dish]
+Caramel + Water = Syrup
+Boiling Water + Caramel = Caramel Sauce
+Caramel + Pot = Caramel Sauce
+Caramel + Blender = Caramel Sauce
+Caramel + Knife = Candy
+Caramel + Oven = Toffee
+
+# The sea
+Ocean + Ocean = Seafood
+Ocean + Pot = Seafood Boil
+Fish + Oven = Baked Fish [dish]
+Fish + Fruit = Ceviche [dish]
+Sashimi + Plant = Sushi Roll
+# cedar plank
+Sashimi + Tree = Grilled Salmon
+Fish Sticks + Pot = Slop
+Fish Sticks + Knife = Fish Sticks [nothing]
+
+# Trees and fruit
+# an orchard
+Tree + Tree = Fruit
+# a date palm
+Coconut + Tree = Dates
+Fruit + Grain = Granola
+Fruit + Rice = Mango Sticky Rice
+Apple + Fruit = Pear
+Apple + Grapes = Fruit Salad
+# a vineyard
+Grapes + Grapes = Wine
+Apple + Sugar = Candy Apple [dish]
+Apple + Vinegar = Apple Cider Vinegar
+Apple + Pot = Applesauce
+Apple + Stove = Apple Fritter [dish]
+Apple + Oven = Apple Chips [dish]
+Apple + Knife = Apple Slices
+Apple + Fridge = Sorbet
+Raisins + Stove = Chutney
+Raisins + Blender = Jam
+Raisins + Knife = Raisins [nothing]
+
+# Herbs and flowers
+Flower + Blender = Rose Water
+Mint + Oven = Spices
+Herbs + Stove = Spices
+Mint + Pot = Mint Tea
+# green chutney
+Mint + Blender = Chutney
+
+# Drinks
+Tea + Knife = Tea [nothing]
+Sweet Tea + Knife = Sweet Tea [nothing]
+Boiling Water + Tea = Tea [nothing]
+Ice + Sweet Tea = Iced Tea
+Apple Juice + Ice Water = Agua Fresca
+Apple Juice + Fridge = Popsicle
+Apple Juice + Pot = Cider
+Ice Water + Blender = Slushie
+Slushie + Syrup = Snow Cone
+Slushie + Ice Water = Slushie [nothing]
+Boiling Water + Stove = Steam
+Syrup + Pot = Candy
+Beer + Water = Beer [nothing]
+Beer + Blender = Beer [nothing]
+
+# Coconut milk
+Animal + Coconut Milk = Curry
+Coconut Milk + Pot = Curry
+Coconut Milk + Stove = Condensed Milk
+Coconut Milk + Oven = Custard
+Coconut Milk + Fridge = Ice Cream
+
+# Rice flour and rice noodles
+Rice Flour + Pot = Mochi
+# dosa batter is rice, cooked on a griddle
+Rice Flour + Stove = Dosa
+Rice Flour + Blender = Rice Flour [nothing]
+Rice Noodles + Pot = Pho
+Rice Noodles + Stove = Pad Thai
+Rice Noodles + Oven = Casserole
+Rice Noodles + Blender = Baby Food
+Rice Noodles + Fridge = Rice Noodles [nothing]
+Rice Noodles + Knife = Rice Noodles [nothing]
+
+# Leftovers that are already cooked
+Potstickers + Stove = Burnt
+Potstickers + Oven = Potstickers [nothing]
+Potstickers + Knife = Potstickers [nothing]
+Crackers + Oven = Croutons
+Crackers + Clock = Spoiled
+Flour + Knife = Flour [nothing]
+Vegetable Soup + Oven = Casserole
+Stir-Fry + Oven = Roasted Vegetables

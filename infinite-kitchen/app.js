@@ -1050,7 +1050,7 @@
   window.addEventListener("resize", layout);
 
   /* ---------- start ---------- */
-  fetch("recipes.json?v=376cbf23")
+  fetch("recipes.json?v=010246aa")
     .then((r) => r.json())
     .then((data) => {
       DATA = data;
@@ -1071,6 +1071,10 @@
         // technique (Simmer, Whip...) just goes
         if (f.k && f.k !== "technique" && f.k !== "cuisine") data.items[n] = f.k; else delete S.found[n];
       }
+      // The notebook keeps only pairs that are still open: once a pair gets
+      // a recipe, or names something the game no longer has (an old tool
+      // like Fry), it's crossed off.
+      S.missing = S.missing.filter(([a, b]) => a in data.items && b in data.items && !RECIPES.has(key(a, b)));
       // Tools and cookbooks live in the room now, not on the board.
       if (!FOOD3D) {
         for (const b of S.board) {
