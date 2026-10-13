@@ -1,5 +1,5 @@
 /* =========================================================================
-   The bust — a block of marble standing on top of the launcher. The mouse
+   The bust — a block of marble standing on a board (bust/index.html). The mouse
    is the gun: click (or hold) on it and it chips away where you hit it.
 
    It's meant to feel heavy, not rendered. So: it never moves on its own,
@@ -39,6 +39,9 @@ const MAX_YAW = 0.6;        // how far a drag can turn him, radians either way
 const MAX_CHIPS = 360, MAX_DUST = 110;
 const YAW = 0;              // square to the viewer: he's symmetrical, show it
 const GRAVITY = 2.4;
+const LASER_R = 0.2;         // the laser's slot radius, as a multiple of HIT_R
+const CHAR_N = 512;         // the scorch map: texels across the bust, about a millimetre each
+const HEAT_N = 40;          // stretches of beam path still glowing at once
 const MARBLE_SCALE = 1.6;   // texture repeats per metre: one slab covers about two thirds of the bust
 
 const wrap = document.getElementById("bust");
@@ -47,7 +50,7 @@ if (wrap) start(wrap);
 function start(wrap) {
   const canvas = wrap.querySelector("canvas");
   const restoreBtn = wrap.querySelector(".bust-restore");
-  const board = document.getElementById("app-board");
+  const board = document.getElementById("board");
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -113,6 +116,15 @@ function start(wrap) {
     uImpacts: { value: Array.from({ length: MAX_IMPACTS }, () => new THREE.Vector4()) },   // xyz (bust space), radius
     uImpactCount: { value: 0 },
     uDust: { value: 0 },                       // 0..1: how much dust has settled in the craters since the last shot
+    // laser burns (see Laser burns): the scorch map, seen down the bust's
+    // z axis, and the stretches of beam path still hot
+    uChar: { value: null },
+    uCharBox: { value: new THREE.Vector4(0, 0, 1, 1) },   // x, y of the map's corner, its width, height (bust space)
+    uCharZ: { value: new THREE.Vector2(0, 1) },           // z the map's depth channel starts at, and its range
+    uHeatA: { value: Array.from({ length: HEAT_N }, () => new THREE.Vector4()) },   // xyz, time it was burnt
+    uHeatB: { value: Array.from({ length: HEAT_N }, () => new THREE.Vector4()) },
+    uHeatCount: { value: 0 },
+    uTime: { value: 0 },
   };
   // where every shot so far landed (for the cracks), in order; the newest
   // MAX_IMPACTS of them are drawn
@@ -177,7 +189,7 @@ function start(wrap) {
   // drawing whatever geometry it last sent back. Everything is in the
   // bust's own space (the model group's).
   const model = new THREE.Group();
-  const worker = new Worker(new URL("carve-worker.js?v=8", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("carve-worker.js?v=10", import.meta.url), { type: "module" });
   let originals = [], blocks = [];   // blocks[id]: Mesh, or null once carved away
 
   function setGeometry(mesh, geometry, keepOld) {
@@ -463,6 +475,7 @@ function start(wrap) {
     for (const g of originals) { g.computeBoundingBox(); box.union(g.boundingBox); }
     const c = box.getCenter(new THREE.Vector3());
     model.position.set(-c.x, -box.min.y, -c.z);   // plinth flat on y = 0, turning about its middle
+    charFrame(box);
     pivot.add(model);
     buildBlocks();
     worker.postMessage({ type: "init", blocks: originals.map((g) => ({
@@ -487,16 +500,7 @@ function start(wrap) {
     scene.remove(warm);
     fireball.visible = beam.visible = beamSpot.visible = false;
 
-    // Loaded, but kept out of sight: the heat word behind him warms up
-    // first (heat-word.js), and he drops in once it has, so the two don't
-    // play at once - and the warm-up isn't fighting all the loading above.
-    window.bustLoaded = true;
-    window.dispatchEvent(new Event("bust:loaded"));
-    if (window.heatWarm) appear();
-    else {
-      window.addEventListener("heat:warm", appear, { once: true });
-      setTimeout(appear, 5000);   // the word never got going: don't wait on it
-    }
+    appear();
   });
   }
 
@@ -527,6 +531,13 @@ function start(wrap) {
         uniform vec4 uImpacts[${MAX_IMPACTS}];
         uniform int uImpactCount;
         uniform float uDust;
+        uniform sampler2D uChar;
+        uniform vec4 uCharBox;
+        uniform vec2 uCharZ;
+        uniform vec4 uHeatA[${HEAT_N}];
+        uniform vec4 uHeatB[${HEAT_N}];
+        uniform int uHeatCount;
+        uniform float uTime;
         varying float vRim;
         varying float vAO;
         varying vec3 vObj;
@@ -607,13 +618,39 @@ function start(wrap) {
         ${inner ? `
         // dust from the shots settles on whatever in a crater faces up
         float dusty = smoothstep(0.3, 0.85, normalize(vObjN).y) * uDust * (0.7 + 0.3 * grain);
-        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.9, 0.88, 0.84), dusty * 0.7);` : ""}`)
+        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.9, 0.88, 0.84), dusty * 0.7);` : ""}
+        // laser burns: where the beam has been, the stone is scorched - the
+        // groove it cut black, and a brown halo round its lip
+        vec4 sChar = texture2D(uChar, (vObj.xy - uCharBox.xy) / uCharBox.zw);
+        // (the map holds the depth it was burnt at, and the skin only takes
+        // it close to that, so the back of his head isn't scorched too. A
+        // crater's walls take it at any depth: the groove opens up the
+        // walls between blocks, and those weren't cut by the beam itself.)
+        float charred = sChar.r${inner ? "" : " * (1.0 - smoothstep(0.03, 0.05, abs(vObj.z - uCharZ.x - sChar.g * uCharZ.y)))"};
+        charred = max(charred, step(1.25, vAO) * 0.9);   // the groove's own walls: cut by the beam
+        charred = clamp(charred * (0.8 + 0.4 * grain), 0.0, 1.0);
+        vec3 soot = mix(vec3(0.42, 0.31, 0.21), vec3(0.035, 0.03, 0.028), smoothstep(0.35, 0.85, charred));
+        diffuseColor.rgb = mix(diffuseColor.rgb, soot, smoothstep(0.0, 0.45, charred));
+        // ...and right behind the beam it's still hot: white where it is
+        // now, cooling through orange and red over about three seconds
+        float sHeat = 0.0;
+        for (int i = 0; i < ${HEAT_N}; i++) {
+          if (i >= uHeatCount) break;
+          vec3 a = uHeatA[i].xyz, ab = uHeatB[i].xyz - a;
+          float h = clamp(dot(vObj - a, ab) / max(dot(ab, ab), 1e-10), 0.0, 1.0);
+          vec3 dv = vObj - a - ab * h;
+          dv.z *= 0.12;   // all the way down the groove it just cut, just as hot
+          float age = uTime - mix(uHeatA[i].w, uHeatB[i].w, h);
+          sHeat = max(sHeat, exp(-age * 1.3) * (1.0 - smoothstep(${(HIT_R * LASER_R * 0.6).toFixed(5)}, ${(HIT_R * LASER_R * 1.8).toFixed(5)}, length(dv))));
+        }`)
+      .replace("#include <emissivemap_fragment>", `#include <emissivemap_fragment>
+        totalEmissiveRadiance += vec3(smoothstep(0.03, 0.4, sHeat) * 3.0, smoothstep(0.25, 0.75, sHeat) * 2.0, smoothstep(0.6, 1.0, sHeat) * 1.5);`)
       .replace("#include <roughnessmap_fragment>", `#include <roughnessmap_fragment>
         ${inner ? "" : "// honed, not polished: a soft sheen that varies a little across the block; rough where it's chipped\n        roughnessFactor = mix(roughnessFactor + (grime - 0.5) * 0.12 + hollow * 0.2, 1.0, lip);"}`)
       .replace("#include <aomap_fragment>", `#include <aomap_fragment>
         // baked occlusion: all of the bounce light, a little of the key, so
         // the sockets and creases read even where the sun reaches
-        float ao = vAO;
+        float ao = min(vAO, 1.0);   // over 1 only marks a laser burn (see the worker's rock)
         reflectedLight.indirectDiffuse *= ao;
         reflectedLight.indirectSpecular *= ao * ao;
         reflectedLight.directDiffuse *= mix(0.55, 1.0, smoothstep(0.15, 0.85, ao));
@@ -644,10 +681,10 @@ function start(wrap) {
   //   beam    the laser: fired continuously while held (see laserSample)
   //   rocket  fires a projectile that explodes where it lands (see launch)
   const WEAPONS = [
-    { name: "pistol", every: 0.12, pellets: 1, spread: 0, r: 1, deep: 1.25, chips: 16, shake: 0.35, sound: (b) => impactSound(b) },
+    { name: "pistol", every: 0.12, pellets: 1, spread: 0, r: 1, deep: 1.25, chips: 16, shake: 0.35, sound: (b) => impactSound(b, true) },
     { name: "shotgun", every: 0.55, pellets: 7, spread: 0.07, r: 0.55, deep: 1.0, chips: 6, shake: 0.8, sound: () => shotgunSound() },
     { name: "sledgehammer", every: 0.9, pellets: 1, spread: 0, r: 2.3, deep: 0.75, chips: 40, shake: 1.6, sound: () => hammerSound() },
-    { name: "laser", every: 0.04, beam: true, r: 0.32, deep: 5, chips: 0, shake: 0.05 },
+    { name: "laser", every: 0.04, beam: true, r: LASER_R, deep: 5, chips: 0, shake: 0.05 },
     { name: "rocket launcher", every: 1.4, rocket: true, r: 3.0, deep: 1.0, chips: 70, shake: 2.4 },
   ];
   let weapon = WEAPONS[0];
@@ -663,6 +700,25 @@ function start(wrap) {
       quaternion: rockQ.toArray(),
       scale: [r * rnd(0.9, 1.1), r * rnd(0.9, 1.1), r * deep],
       detail: r > HIT_R * 1.5 ? 2 : 1,     // a big hollow needs a finer ball, or it's all flat planes
+    };
+  }
+  // The laser's cut from a to b: a capsule lying along the path (the
+  // worker stretches the ball into one), sunk the same way down the beam.
+  const slotX = new THREE.Vector3(), slotY = new THREE.Vector3(), slotM = new THREE.Matrix4();
+  function slotSpec(a, b, inward, r, sink, deep) {
+    slotX.subVectors(b, a);
+    slotX.addScaledVector(inward, -slotX.dot(inward));   // across the beam, not along it
+    const half = slotX.length() / 2;
+    if (half < 1e-6) return rockSpec(b, inward, r, sink, deep);
+    slotX.normalize();
+    slotY.crossVectors(inward, slotX);
+    rockQ.setFromRotationMatrix(slotM.makeBasis(slotX, slotY, inward));
+    return {
+      position: a.clone().lerp(b, 0.5).addScaledVector(inward, r * sink).toArray(),
+      quaternion: rockQ.toArray(),
+      scale: [r, r, r * deep],
+      stretch: half / r,
+      burnt: true,
     };
   }
 
@@ -772,10 +828,12 @@ function start(wrap) {
 
   // ---------- Laser ----------
   // Held down, it's a beam: drawn every frame from the muzzle to whatever it
-  // touches, and every LASER_EVERY a thin, deep needle of stone is cut where
-  // it lands. Sweep it and the needles join into a clean slice. The needles
-  // are sent to the cutter in batches, so it keeps up with a held beam.
+  // touches. It draws on him: every sample cuts a thin, deep slot from where
+  // it last cut to where it is now, so a sweep is one groove, and burns the
+  // stone along the way (see Laser burns). The slots are sent to the cutter
+  // in batches, so it keeps up with a held beam.
   const LASER_BATCH = 0.14;   // seconds of beam per message to the cutter
+  const LASER_JOIN = 0.06;    // metres: a jump further than this (off one edge, onto another) starts a new line
   const beamCore = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 8, 1, true),
     new THREE.MeshBasicMaterial({ color: 0xfff6f0, transparent: true, opacity: 0.95, blending: THREE.AdditiveBlending, depthWrite: false }));
   const beamGlow = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 12, 1, true),
@@ -786,7 +844,8 @@ function start(wrap) {
   beam.visible = beamSpot.visible = false;
   beamCore.renderOrder = beamGlow.renderOrder = beamSpot.renderOrder = 10;
   scene.add(beam, beamSpot);
-  const laser = { on: false, rocks: [], age: 0, end: new THREE.Vector3(), from: new THREE.Vector3(), touching: false };
+  // prev: where the line last got to (bust space), or null when it's broken
+  const laser = { on: false, rocks: [], age: 0, end: new THREE.Vector3(), from: new THREE.Vector3(), touching: false, prev: null };
   const beamUp = new THREE.Vector3(0, 1, 0), beamDir = new THREE.Vector3();
 
   // where the beam ends this frame: the first stone along the aim, or far past him
@@ -820,6 +879,7 @@ function start(wrap) {
   function laserStop() {
     if (!laser.on) return;
     laser.on = false;
+    laser.prev = null;
     beam.visible = beamSpot.visible = false;
     flushLaser();
     laserHum(false);
@@ -827,13 +887,19 @@ function start(wrap) {
   function laserSample() {
     if (!laser.on) laserStart();
     const hit = beamTarget();
-    if (!hit) return;
-    if (hit.object.userData.piece) { shatter(hit.object.userData.piece, hit, weapon, true); return; }
-    // straight down the beam, a long thin needle sunk well past the surface
+    if (!hit) { laser.prev = null; return; }
+    if (hit.object.userData.piece) { laser.prev = null; shatter(hit.object.userData.piece, hit, weapon, true); return; }
+    // straight down the beam, a thin slot sunk well past the surface, from
+    // where the line had got to; a fresh line starts with a single needle.
+    // Held still, it waits until it has moved a little before cutting again.
     const local = model.worldToLocal(hit.point.clone());
     const dirLocal = ray.ray.direction.clone().transformDirection(new THREE.Matrix4().copy(model.matrixWorld).invert());
-    const r = HIT_R * weapon.r * rnd(0.9, 1.1);
-    laser.rocks.push(rockSpec(local, dirLocal, r, 1.2, weapon.deep));
+    const r = HIT_R * weapon.r;
+    const from = laser.prev && laser.prev.distanceTo(local) < LASER_JOIN ? laser.prev : null;
+    if (!from) laser.rocks.push({ ...rockSpec(local, dirLocal, r, 1.2, weapon.deep), burnt: true });
+    else if (from.distanceTo(local) > r * 0.35) laser.rocks.push(slotSpec(from, local, dirLocal, r, 1.2, weapon.deep));
+    burn(from || local, local, r);
+    if (!from || from.distanceTo(local) > r * 0.35) laser.prev = local;
     lastShotDir.copy(ray.ray.direction);
     // sparks: a few hot flecks and a wisp of smoke off the cut
     const n = hit.face.normal.clone().transformDirection(hit.object.matrixWorld);
@@ -854,6 +920,66 @@ function start(wrap) {
     postCut(laser.rocks, []);           // a clean cut: no cracks spreading from it
     laser.rocks = [];
     uniforms.uDust.value *= 0.7;
+  }
+
+  // ---------- Laser burns ----------
+  // Two parts. The scorch is a map of the bust seen straight down its z
+  // axis (he only turns a little, so that's the side you can shoot): how
+  // burnt each spot is, and how deep it was, so the back of his head at the
+  // same x, y isn't scorched too. It only ever builds up, until restore.
+  // The heat is the last HEAT_N stretches of beam path with the time each
+  // end was burnt; the shader glows them white-hot and lets them cool.
+  const charData = new Uint8Array(CHAR_N * CHAR_N * 4);
+  const charTex = new THREE.DataTexture(charData, CHAR_N, CHAR_N);
+  charTex.magFilter = charTex.minFilter = THREE.LinearFilter;
+  charTex.needsUpdate = true;
+  uniforms.uChar.value = charTex;
+  const heat = [];   // { a, b, ta, tb }, oldest first
+  const t0 = performance.now(), clock = () => (performance.now() - t0) / 1000;
+  let heatUntil = 0, lastBurn = 0;
+  // the map's frame, once his size is known: a square round his front
+  function charFrame(box) {
+    const pad = 0.02, size = Math.max(box.max.x - box.min.x, box.max.y - box.min.y) + pad * 2;
+    const cx = (box.min.x + box.max.x) / 2, cy = (box.min.y + box.max.y) / 2;
+    uniforms.uCharBox.value.set(cx - size / 2, cy - size / 2, size, size);
+    uniforms.uCharZ.value.set(box.min.z - pad, box.max.z - box.min.z + pad * 2);
+  }
+  function burn(a, b, r) {
+    const now = clock();
+    heat.push({ a: a.clone(), b: b.clone(), ta: a === b ? now : Math.max(lastBurn, now - 0.1), tb: now });
+    if (heat.length > HEAT_N) heat.shift();
+    lastBurn = now;
+    heatUntil = now + 3.5;
+    heat.forEach((h, i) => {
+      uniforms.uHeatA.value[i].set(h.a.x, h.a.y, h.a.z, h.ta);
+      uniforms.uHeatB.value[i].set(h.b.x, h.b.y, h.b.z, h.tb);
+    });
+    uniforms.uHeatCount.value = heat.length;
+    // scorch the map along a..b: full at the line, a soft brown edge out
+    // to about 2 slot radii, and darker every time the beam passes
+    const box = uniforms.uCharBox.value, zr = uniforms.uCharZ.value;
+    const k = CHAR_N / box.z;
+    const ax = (a.x - box.x) * k, ay = (a.y - box.y) * k, bx = (b.x - box.x) * k, by = (b.y - box.y) * k;
+    const R = r * 2 * k, dx = bx - ax, dy = by - ay, ll = dx * dx + dy * dy;
+    const x0 = Math.max(0, Math.floor(Math.min(ax, bx) - R)), x1 = Math.min(CHAR_N - 1, Math.ceil(Math.max(ax, bx) + R));
+    const y0 = Math.max(0, Math.floor(Math.min(ay, by) - R)), y1 = Math.min(CHAR_N - 1, Math.ceil(Math.max(ay, by) + R));
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+      const h = ll > 0 ? Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / ll)) : 0;
+      const d = Math.hypot(x - ax - dx * h, y - ay - dy * h);
+      if (d >= R) continue;
+      const e = Math.min(1, Math.max(0, (d - R * 0.35) / (R * 0.65)));
+      const v = (1 - e * e * (3 - 2 * e)) * 0.5;
+      const i = (y * CHAR_N + x) * 4;
+      if (charData[i] < 20) charData[i + 1] = Math.round(Math.min(1, Math.max(0, (a.z + (b.z - a.z) * h - zr.x) / zr.y)) * 255);
+      charData[i] = Math.min(255, charData[i] + v * 255);
+    }
+    charTex.needsUpdate = true;
+  }
+  function clearBurns() {
+    charData.fill(0);
+    charTex.needsUpdate = true;
+    heat.length = 0;
+    uniforms.uHeatCount.value = 0;
   }
 
   // ---------- Rocket launcher ----------
@@ -1047,7 +1173,7 @@ function start(wrap) {
   }
 
   // The canvas hangs over the top of the board and takes no pointer events
-  // itself, so the board under it stays clickable. The page listens instead
+  // itself, so the board under it stays clickable (the page's links). The page listens instead
   // and only claims a click that actually lands on stone; the crosshair
   // likewise only shows while you're over the bust.
   let hoverQueued = false, aiming = false;
@@ -1114,6 +1240,7 @@ function start(wrap) {
     pointer.down = false;
     laser.rocks = [];    // dropped first, or stopping the beam would send them
     laserStop();
+    clearBurns();
     for (const rk of rockets.splice(0)) { scene.remove(rk.mesh); rk.sound?.stop(); }
     rewind = {
       t: 0, shots: history.length,
@@ -1130,12 +1257,15 @@ function start(wrap) {
 
   // ---------- Sound ----------
   // Real recordings where they exist (bust/sfx: Kenney's CC0 packs -- rock
-  // struck with a pick, grit, explosions, a laser, a thruster), layered with
+  // struck with a pick, grit, explosions, a laser, a thruster -- plus the
+  // pistol's and the shotgun's own shots), layered with
   // synthesis for what no recording does (a gun's crack, a beam's hum). Every
   // sound goes through one mix: a small room's reverb so it all sits in the
   // same space, and a limiter so a burst of fire never clips.
+  // name: how many takes (name-0.mp3, name-1.mp3...), or the one file it is
   const SFX = {
     stone: 5, grit: 5, blast: 4, boom: 2, zap: 3, thrust: 1,
+    gunshot: "classic-gunshot", shotgun: "shotgun-meme",
   };
   let actx = null, noise = null, out = null, verb = null, sfx = null;
   function audio() {
@@ -1162,8 +1292,8 @@ function start(wrap) {
     sfx = {};
     for (const [name, n] of Object.entries(SFX)) {
       sfx[name] = [];
-      for (let i = 0; i < n; i++) {
-        const file = n > 1 ? `${name}-${i}` : name;
+      for (let i = 0; i < (typeof n === "string" ? 1 : n); i++) {
+        const file = typeof n === "string" ? n : n > 1 ? `${name}-${i}` : name;
         fetch(new URL(`sfx/${file}.mp3`, import.meta.url))
           .then((r) => r.arrayBuffer())
           .then((b) => actx.decodeAudioData(b))
@@ -1183,7 +1313,8 @@ function start(wrap) {
     return ir;
   }
   // play a recording (a random take of it), or say it isn't loaded yet
-  function play(name, { at = actx.currentTime, gain = 1, rate = 1, take, dur } = {}) {
+  // (offset: seconds into the recording to start from)
+  function play(name, { at = actx.currentTime, gain = 1, rate = 1, take, dur, offset = 0 } = {}) {
     const list = sfx?.[name];
     const buf = list && list[take ?? Math.floor(Math.random() * list.length)];
     if (!buf) return null;
@@ -1192,7 +1323,7 @@ function start(wrap) {
     src.playbackRate.value = rate;
     g.gain.value = gain;
     src.connect(g).connect(out);
-    src.start(at);
+    src.start(at, offset);
     if (dur) {
       g.gain.setValueAtTime(gain, at + dur - 0.08);
       g.gain.linearRampToValueAtTime(0.0001, at + dur);
@@ -1242,16 +1373,19 @@ function start(wrap) {
         burst(at, { type: "highpass", f0: rnd(2500, 6000), q: 0.7, gain: rnd(0.012, 0.03), dur: rnd(0.012, 0.03) });
     }
   }
-  // The pistol: the sledgehammer's recipe, smaller. Real stone struck,
-  // pitched a little lower and heavier than it was recorded, a low thump
-  // under it, a short boom for punch, grit after. Duller where he's
-  // already broken.
-  function impactSound(broken) {
+  // A bullet into stone: the sledgehammer's recipe, smaller. Real stone
+  // struck, pitched a little lower and heavier than it was recorded, a low
+  // thump under it, a short boom for punch, grit after. Duller where he's
+  // already broken. Fired from the pistol, the gunshot recording stands in
+  // for the thump and boom.
+  function impactSound(broken, fired) {
     try {
       audio();
       const t = actx.currentTime;
-      thump(t, rnd(105, 125), 0.28, 0.16);
-      play("boom", { at: t, gain: 0.22, rate: rnd(1.9, 2.3), take: 1 });
+      if (!(fired && play("gunshot", { at: t, gain: 0.8, rate: rnd(0.97, 1.03) }))) {
+        thump(t, rnd(105, 125), 0.28, 0.16);
+        play("boom", { at: t, gain: 0.22, rate: rnd(1.9, 2.3), take: 1 });
+      }
       stoneHit(t, { gain: broken ? 0.7 : 0.85, rate: broken ? rnd(0.68, 0.76) : rnd(0.8, 0.9), grit: 2 + Math.floor(Math.random() * 3) });
     } catch (e) { /* no audio, no problem */ }
   }
@@ -1288,14 +1422,25 @@ function start(wrap) {
       tone(t + dur - 0.02, 1400, 2200, 0.05, 0.12);   // and a soft click as he's whole again
     } catch (e) { /* no audio, no problem */ }
   }
-  // The shotgun: one deep boom and thump, and the pellets' stone hits
-  // landing as a ragged cluster right after it.
+  // The shotgun: its recording (skipping the silence it opens with), and
+  // the pellets' stone hits landing as a ragged cluster right after it.
+  // The recording rings for seconds, longer than a reload, so the next
+  // shot cuts the last one off rather than piling up on it. Until it has
+  // loaded: one deep boom and thump.
+  let lastShotgun = null;
   function shotgunSound() {
     try {
       audio();
       const t = actx.currentTime;
-      thump(t, rnd(80, 92), 0.42, 0.24);
-      play("boom", { at: t, gain: 0.5, rate: rnd(1.45, 1.6), take: 1 });
+      if (lastShotgun) {
+        lastShotgun.g.gain.setTargetAtTime(0, t, 0.02);
+        lastShotgun.src.stop(t + 0.15);
+      }
+      lastShotgun = play("shotgun", { at: t, gain: 0.85, offset: 0.42 });
+      if (!lastShotgun) {
+        thump(t, rnd(80, 92), 0.42, 0.24);
+        play("boom", { at: t, gain: 0.5, rate: rnd(1.45, 1.6), take: 1 });
+      }
       for (let i = 0; i < 4; i++)
         stoneHit(t + 0.01 + Math.random() * 0.07, { gain: rnd(0.35, 0.5), rate: rnd(0.75, 1.0), grit: 2 });
     } catch (e) { /* no audio, no problem */ }
@@ -1489,6 +1634,12 @@ function start(wrap) {
       }
     }
     if (rockets.length) { stepRockets(dt); busy = true; }
+    // laser burns cooling
+    if (uniforms.uHeatCount.value) {
+      uniforms.uTime.value = clock();
+      if (clock() < heatUntil) busy = true;
+      else { heat.length = 0; uniforms.uHeatCount.value = 0; }
+    }
     if (fireballT > 0) {
       fireballT = Math.max(0, fireballT - dt);
       const f = 1 - fireballT / FIREBALL;

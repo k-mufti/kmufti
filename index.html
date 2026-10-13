@@ -9,13 +9,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@1,600;1,700&family=Paytone+One&family=Inter:wght@100;200;300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=58" />
+  <link rel="stylesheet" href="styles.css?v=59" />
 </head>
 <body>
   <header class="site-header">
     <span class="header-left">
       <!-- Your name in every game (you.js), in the brand's place (the KMUFTI
-           behind the bust already says whose site it is): a person
+           above the tiles already says whose site it is): a person
            mark in your colour, the name (just type to change it), and a die
            that rolls a random one. -->
       <span class="you" id="you" hidden>
@@ -45,16 +45,10 @@
   <!-- The launcher: tiles on a mounting board. (The shared pixel canvas that
        used to live behind these tiles is now its own project: white-canvas/) -->
   <main class="hub">
-    <!-- The bust: a marble head you can shoot to pieces (bust/bust.js). -->
-    <div class="bust" id="bust">
-      <!-- "KMUFTI" as a thermal image, behind his head (heat-word.js). The
-           cursor melts it in rings; it warms back up. -->
+    <!-- "KMUFTI" as a thermal image (heat-word.js). The cursor melts it in
+         rings; it warms back up. -->
+    <div class="masthead">
       <svg class="heat-word" id="heatWord" viewBox="0 0 1000 380" aria-hidden="true" focusable="false"></svg>
-      <canvas aria-label="A marble bust. Click on it to chip it away."></canvas>
-      <p class="bust-hint">go on, shoot it</p>
-      <button class="bust-restore" type="button" hidden>restore</button>
-      <p class="bust-stats" hidden></p>
-      <button class="bust-weapon" type="button" title="switch weapon (or press 1 to 5)" hidden>pistol</button>
     </div>
 
     <div class="app-board" id="app-board">
@@ -79,15 +73,11 @@
   </footer>
 
   <script src="you.js?v=2"></script>
-  <script src="projects.js?v=16"></script>
-  <script src="artwork.js?v=45"></script>
-  <script src="app.js?v=24"></script>
-  <script src="heat-word.js?v=21"></script>
+  <script src="projects.js?v=17"></script>
+  <script src="artwork.js?v=46"></script>
+  <script src="app.js?v=25"></script>
+  <script src="heat-word.js?v=22"></script>
   <!-- layout mode for trying tile orders; does nothing off localhost -->
   <script src="reorder.js?v=3"></script>
-  <script type="importmap">{ "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
-  <script type="module" src="bust/bust.js?v=33"></script>
 </body>
 </html>

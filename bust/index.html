@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Bust — kmufti.com</title>
+  <link rel="icon" href="../favicon.svg?v=1" type="image/svg+xml" />
+  <meta name="description" content="A marble bust and five weapons. Shoot it to pieces, then put it back together." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=2" />
+</head>
+<body>
+  <a class="home" href="../">&larr; kmufti.com</a>
+
+  <main class="stage">
+    <!-- The bust: a marble head you can shoot to pieces (bust.js). -->
+    <div class="bust" id="bust">
+      <canvas aria-label="A marble bust. Click on it to chip it away."></canvas>
+      <p class="bust-hint">go on, shoot it</p>
+      <button class="bust-restore" type="button" hidden>restore</button>
+      <p class="bust-stats" hidden></p>
+      <button class="bust-weapon" type="button" title="switch weapon (or press 1 to 5)" hidden>pistol</button>
+    </div>
+
+    <!-- What he stands on: bust.js pulls this up until its top border meets
+         the plinth, jolts it when he lands, and lets the rubble fall on it. -->
+    <div class="board" id="board">
+      <h1>BUST</h1>
+      <dl class="controls">
+        <dt>click</dt><dd>shoot &middot; hold to keep firing</dd>
+        <dt>1 &ndash; 5</dt><dd>pistol, shotgun, sledgehammer, laser, rocket launcher</dd>
+        <dt>restore</dt><dd>runs it all backwards</dd>
+      </dl>
+    </div>
+  </main>
+
+  <script type="importmap">{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+  <script type="module" src="bust.js?v=40"></script>
+</body>
+</html>

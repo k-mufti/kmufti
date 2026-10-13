@@ -137,18 +137,27 @@ function pack(soup) {
 // and overlapping ones melt into one bigger hollow instead of a jumble of
 // flat facets at clashing angles. Big rocks get a finer ball, so a sledge or
 // a rocket doesn't leave a few huge planes. (The shader adds the grit.)
-function rock({ position, quaternion, scale, detail = 1 }) {
+// stretch: pulls the ball's two halves apart along x by that much (in units
+// of its radius) into a capsule - the laser's slot from one point of the
+// beam to the next, so a sweep cuts one groove instead of a row of holes.
+// A slot is barely lumpy: a beam cuts clean.
+// burnt: the faces it leaves are scorched (the laser's). That rides in their
+// occlusion, which is otherwise never over 1: 1.5 reads as burnt, and the
+// shader takes it as 1 for the light.
+function rock({ position, quaternion, scale, detail = 1, stretch = 0, burnt = false }) {
   let g = new IcosahedronGeometry(1, detail);
   g.deleteAttribute("uv");
   g.deleteAttribute("normal");
   g = mergeVertices(g, 1e-4);
   const p = g.attributes.position;
+  const lump = stretch ? 0.06 : 0.24;
   for (let i = 0; i < p.count; i++) {
-    const s = 0.86 + Math.random() * 0.24;
-    p.setXYZ(i, p.getX(i) * s, p.getY(i) * s, p.getZ(i) * s);
+    const s = 1 - lump * 0.58 + Math.random() * lump;
+    const x = p.getX(i) * s;
+    p.setXYZ(i, x + Math.sign(x) * stretch, p.getY(i) * s, p.getZ(i) * s);
   }
   g.computeVertexNormals();
-  g.setAttribute("_ao", new BufferAttribute(new Float32Array(p.count).fill(1), 1));
+  g.setAttribute("_ao", new BufferAttribute(new Float32Array(p.count).fill(burnt ? 1.5 : 1), 1));
   g.setAttribute("_rim", new BufferAttribute(new Float32Array(p.count), 1));
   const b = new Brush(g, inner);
   b.position.fromArray(position);

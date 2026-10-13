@@ -1,0 +1,180 @@
+/* =========================================================================
+   Bust — a marble bust standing on a board, to be shot to pieces (bust.js).
+   Plain black behind him, so the stone is all there is to look at.
+   ========================================================================= */
+:root {
+  --ink: #efe6d8;
+  --ink-dim: rgba(239, 230, 216, 0.6);
+  --ink-faint: rgba(239, 230, 216, 0.38);
+  --board: rgba(255, 255, 255, 0.04);
+  --board-line: rgba(239, 230, 216, 0.1);
+}
+* { box-sizing: border-box; }
+html { overflow-x: hidden; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: #000;
+  color: var(--ink);
+  font-family: "JetBrains Mono", monospace;
+}
+a { color: inherit; text-decoration: none; }
+
+.home {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  z-index: 10;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--ink-faint);
+}
+.home:hover { color: var(--ink); }
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 34px;
+  padding: 48px 24px 72px;
+}
+
+/* ---------- The board he stands on ------------------------------------- */
+.board {
+  position: relative;
+  width: min(980px, 100%);
+  padding: 34px 30px 30px;
+  background: var(--board);
+  border: 1px solid var(--board-line);
+  border-radius: 26px;
+  text-align: center;
+}
+.board h1 {
+  margin: 0 0 18px;
+  font-family: "Anton", Impact, sans-serif;
+  font-weight: 400;
+  font-size: 34px;
+  letter-spacing: 6px;
+  color: var(--ink);
+}
+.controls {
+  display: grid;
+  grid-template-columns: max-content minmax(0, auto);
+  justify-content: center;
+  gap: 8px 18px;
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-align: left;
+}
+.controls dt { color: var(--ink); text-align: right; }
+.controls dd { margin: 0; color: var(--ink-dim); }
+
+/* ---------- The bust ------------------------------------------------------ */
+/* A marble bust standing on the board's top edge (bust/bust.js). The canvas
+   is see-through and hangs over the board's top; bust.js pulls the board up
+   (negative margin) until its border meets the plinth, and sets --foot to
+   how far below the plinth the canvas runs. The canvas takes no pointer
+   events; the page does the hit-testing, so the board stays clickable. */
+.bust {
+  position: relative;
+  z-index: 6;               /* above the board it stands on */
+  width: min(980px, 100%);
+  height: min(640px, 72vh);
+  pointer-events: none;
+  --foot: 40px;
+}
+.bust canvas {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.2s linear;
+}
+.bust.ready canvas { opacity: 1; }
+html.bust-aim, html.bust-aim * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cg stroke='%23111' stroke-width='2' fill='none'%3E%3Ccircle cx='16' cy='16' r='9'/%3E%3Cpath d='M16 2v8M16 22v8M2 16h8M22 16h8'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='1.5' fill='%23e23b2e'/%3E%3C/svg%3E") 16 16, crosshair !important;
+}
+.bust-hint,
+.bust-restore {
+  position: absolute;
+  left: calc(50% + 300px);
+  bottom: calc(var(--foot) + 10px);
+  margin: 0;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: lowercase;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+.bust-hint {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.bust.ready .bust-hint { opacity: 1; transition-delay: 1.2s; }
+.bust.shot .bust-hint { opacity: 0; transition-delay: 0s; }
+.bust-restore {
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.bust-restore:hover { color: var(--ink); }
+/* the weapon in hand (click to switch), and above it the damage so far:
+   on the other side of him from restore */
+.bust-weapon {
+  position: absolute;
+  right: calc(50% + 300px);
+  bottom: calc(var(--foot) + 10px);
+  padding: 0;
+  background: none;
+  border: 0;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--ink-faint);
+  cursor: pointer;
+  pointer-events: auto;
+}
+.bust-weapon::before { content: "\2316  "; }   /* a small crosshair-ish mark */
+.bust-weapon:hover { color: var(--ink); }
+.bust-stats {
+  position: absolute;
+  right: calc(50% + 300px);
+  bottom: calc(var(--foot) + 28px);
+  margin: 0;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+/* On touch, a sideways drag over him turns him: leave only vertical
+   scrolling (and zoom) to the browser here. */
+.stage { touch-action: pan-y pinch-zoom; }
+
+/* The landing: the board takes the weight and settles. */
+@keyframes bust-thud {
+  0%   { transform: translateY(0); }
+  18%  { transform: translateY(5px); }
+  42%  { transform: translateY(-1.5px); }
+  70%  { transform: translateY(0.8px); }
+  100% { transform: translateY(0); }
+}
+.board.thud { animation: bust-thud 0.42s cubic-bezier(0.2, 0.7, 0.3, 1); }
+
+@media (max-width: 620px) {
+  .stage { padding: 44px 14px 56px; }
+  .bust { height: 400px; }   /* no bigger: at phone width his shoulders already fill it */
+  .bust-hint, .bust-restore { left: auto; right: 16px; }
+  .bust-stats, .bust-weapon { right: auto; left: 16px; }
+  .board { padding: 26px 16px 24px; border-radius: 20px; }
+}

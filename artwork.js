@@ -490,6 +490,9 @@ const ARTWORK = {
       <!-- a little spilt flour -->
       <g fill="#fbf1dc" opacity="0.55"><circle cx="69.5" cy="181.6" r="1.2"/><circle cx="70.4" cy="181.1" r="1.0"/><circle cx="52.9" cy="181.1" r="1.0"/><circle cx="90.7" cy="176.9" r="0.7"/><circle cx="47.1" cy="184.1" r="1.1"/><circle cx="44.1" cy="185.8" r="1.3"/><circle cx="82.0" cy="182.2" r="0.6"/><circle cx="42.4" cy="181.3" r="0.5"/><circle cx="53.3" cy="178.4" r="0.5"/><circle cx="70.3" cy="180.4" r="1.2"/><circle cx="73.7" cy="182.4" r="0.9"/><circle cx="82.6" cy="180.6" r="0.7"/><circle cx="103.4" cy="186.0" r="1.2"/><circle cx="85.4" cy="179.2" r="0.7"/></g>
     </svg>`,
+  /* Bust — a photo of the real thing: the bust page's own render, cropped
+     to the tile (bust/cover.jpg). */
+  bust: `<img src="bust/cover.jpg?v=2" alt="" loading="lazy" />`,
   /* Game Board — the shelf: Wavelenght's box standing on a plank, its dial
      on the lid, with gaps beside it for the games still to come. */
   "game-board": `

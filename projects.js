@@ -71,6 +71,16 @@ const PROJECTS = [
     status: "live",
   },
   {
+    slug: "bust",
+    title: "Bust",
+    description: "A marble bust and five weapons, pistol to rocket launcher. Every shot carves real stone out of him; restore runs it all backwards.",
+    tags: ["game", "3d", "js"],
+    accent: "#efe6d8",
+    accentBg: "linear-gradient(135deg, #2a1830 0%, #0c0812 100%)",
+    href: "bust/",
+    status: "live",
+  },
+  {
     slug: "wishlist",
     title: "Wishlist",
     description: "Paste any product link and it unfurls into a clean card — title, image, and price scraped automatically.",

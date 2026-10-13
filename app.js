@@ -24,12 +24,12 @@
     art.innerHTML = custom
       || `<div class="app-art-fallback" style="background:${p.accentBg || "#111"}">${p.title.charAt(0)}</div>`;
 
-    const label = document.createElement("div");
-    label.className = "app-label";
-    label.textContent = p.title;
+    // No caption under the tile: the cover art already says what it is.
+    // The name stays for screen readers and as a hover tooltip.
+    el.setAttribute("aria-label", p.title);
+    el.title = p.title;
 
     el.appendChild(art);
-    el.appendChild(label);
 
     if (!live) {
       const sub = document.createElement("div");

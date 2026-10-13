@@ -1,5 +1,5 @@
 /* =========================================================================
-   The heat word behind the bust - "KMUFTI" as a thermal image.
+   The heat word above the launcher - "KMUFTI" as a thermal image.
 
    Each letter is blurred and recoloured through a thermal palette (how
    solid a point is picks its colour: a dark blue core out through white
@@ -14,7 +14,7 @@
    ========================================================================= */
 (function heatWord() {
   const svg = document.getElementById("heatWord");
-  if (!svg) { window.heatWarm = true; window.dispatchEvent(new Event("heat:warm")); return; }
+  if (!svg) return;
 
   const S = {
     text: "KMUFTI", font: "Paytone One", weight: "400", size: 360, spacing: 22,
@@ -237,9 +237,7 @@
   // warms back up letter by letter, K first: each one comes back through
   // the layers (pink, orange, white, blue) at the cursor's recovery speed,
   // as if a cursor with just one layer, big enough to cover the word, had
-  // swiped across it. It waits for the bust to finish loading (bust.js) so
-  // the warm-up has the page to itself, and the bust only drops in once
-  // it's warm (the "heat:warm" event).
+  // swiped across it.
   //
   // A one-layer melt is the same all over a letter, so it isn't drawn into
   // the cooling map at all: it's an offset in each letter's composite,
@@ -266,9 +264,9 @@
       c.text.setAttribute("opacity", o >= 1 ? 1 : Math.max(0.004, o * o * (3 - 2 * o)).toFixed(3));
     });
   }
-  let warmed = false, built = false, bustIn = !!window.bustLoaded;
+  let warmed = false;
   function warmUp() {
-    if (warmed || !built || !bustIn) return;
+    if (warmed) return;
     warmed = true;
     const end = INTRO.gap * (comps.length - 1) + INTRO.fade + FIRST / S.cRecover;
     let prev = performance.now();
@@ -277,24 +275,14 @@
       prev = now;
       introLetters();
       if (introT < end) requestAnimationFrame(step);
-      else warmDone();
     });
   }
-  function warmDone() {
-    if (window.heatWarm) return;
-    window.heatWarm = true;
-    window.dispatchEvent(new Event("heat:warm"));
-  }
-  window.addEventListener("bust:loaded", () => { bustIn = true; warmUp(); }, { once: true });
-  // If the bust never loads (no WebGL, the 3D library didn't load), don't
-  // leave the word blank.
-  setTimeout(() => { bustIn = true; warmUp(); }, 8000);
 
   // The letters are measured, so wait for the font before building.
   // Then a short beat on the blank before it starts warming.
   const go = () => {
     build();
-    setTimeout(() => { built = true; warmUp(); }, INTRO.hold * 1000);
+    setTimeout(warmUp, INTRO.hold * 1000);
   };
   if (document.fonts && document.fonts.load) {
     document.fonts.load(`${S.weight} 100px "${S.font}"`, S.text).then(go, go);
