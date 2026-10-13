@@ -487,12 +487,26 @@ function start(wrap) {
     scene.remove(warm);
     fireball.visible = beam.visible = beamSpot.visible = false;
 
+    // Loaded, but kept out of sight: the heat word behind him warms up
+    // first (heat-word.js), and he drops in once it has, so the two don't
+    // play at once - and the warm-up isn't fighting all the loading above.
+    window.bustLoaded = true;
+    window.dispatchEvent(new Event("bust:loaded"));
+    if (window.heatWarm) appear();
+    else {
+      window.addEventListener("heat:warm", appear, { once: true });
+      setTimeout(appear, 5000);   // the word never got going: don't wait on it
+    }
+  });
+  }
+
+  function appear() {
+    if (ready) return;
     ready = true;
     wrap.classList.add("ready");
     if (weaponBtn) weaponBtn.hidden = false;
     resize();
     dropIn();
-  });
   }
 
   function dropIn() {

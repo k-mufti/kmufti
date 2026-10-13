@@ -8,12 +8,13 @@
    down to a last layer that never goes, then it warms back up.
 
    Tuned in the lab (_lab/heat.html, local only); these are the settings it
-   was locked in with. The word doesn't animate by itself: the only moving
-   part is the cursor's cooling map, so it costs nothing while untouched.
+   was locked in with. Apart from warming up once on load, the word doesn't
+   animate by itself: the only moving part is the cursor's cooling map, so
+   it costs nothing while untouched.
    ========================================================================= */
 (function heatWord() {
   const svg = document.getElementById("heatWord");
-  if (!svg) return;
+  if (!svg) { window.heatWarm = true; window.dispatchEvent(new Event("heat:warm")); return; }
 
   const S = {
     text: "KMUFTI", font: "Paytone One", weight: "400", size: 360, spacing: 22,
@@ -64,12 +65,12 @@
   mctx.fillStyle = "#fff"; mctx.fillRect(0, 0, MW, MH);
 
   /* ---------- build the letters, one filter each ---------- */
-  let letters = [];
+  let letters = [], comps = [];
   function build() {
     const defs = mk("defs"), g = mk("g");
     svg.textContent = "";
     svg.append(defs, g);
-    letters = [];
+    letters = []; comps = [];
     const fam = `"${S.font}", sans-serif`;
     const probe = mk("text", { "font-family": fam, "font-weight": S.weight, "font-size": S.size });
     g.appendChild(probe);
@@ -102,12 +103,13 @@
           xChannelSelector: "R", yChannelSelector: "G", result: "warp" }),
       );
       // the cooling map, brightness -> alpha, then heat x (1 - drop + drop x map)
+      let comp;
       const cool = mk("feImage", { x: 0, y: 0, width: 1000, height: 380, preserveAspectRatio: "none", result: "coolImg" });
       setHref(cool, url);
       fl.append(
         cool,
         mk("feColorMatrix", { in: "coolImg", type: "matrix", values: "0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1 0 0 0 0", result: "cool" }),
-        mk("feComposite", { in: "warp", in2: "cool", operator: "arithmetic", k1: drop.toFixed(3), k2: (1 - drop).toFixed(3), k3: 0, k4: 0, result: "cooled" }),
+        comp = mk("feComposite", { in: "warp", in2: "cool", operator: "arithmetic", k1: drop.toFixed(3), k2: (1 - drop).toFixed(3), k3: 0, k4: 0, result: "cooled" }),
         mk("feColorMatrix", { in: "cooled", type: "matrix", values: "0 0 0 1 0  0 0 0 1 0  0 0 0 1 0  0 0 0 1 0" }),
       );
       const ct = mk("feComponentTransfer", { result: "col" });
@@ -132,8 +134,10 @@
       t.textContent = ch;
       g.appendChild(t);
       letters.push(cool);
+      comps.push(comp);
       x += widths[i] * fit + S.spacing * fit;
     });
+    setIntro();
     svg.classList.add("ready");
   }
 
@@ -217,7 +221,7 @@
   // The bust's canvas sits on top of the word, so listen on the page and
   // work out where the pointer is in the word's own coordinates.
   window.addEventListener("pointermove", (e) => {
-    if (!letters.length) return;
+    if (!letters.length || !warmed) return;
     const m = svg.getScreenCTM();
     if (!m) return;
     const pt = svg.createSVGPoint();
@@ -228,8 +232,47 @@
   }, { passive: true });
   document.addEventListener("pointerleave", () => { lastPt = null; });
 
+  // On open, the whole word starts melted down to its last layer - as deep
+  // as the cursor ever goes - and warms back up at the same speed as after
+  // a cursor pass. It waits for the bust to finish loading (bust.js) so the
+  // warm-up has the page to itself, and the bust only drops in once it's
+  // done (the "heat:warm" event).
+  //
+  // The melt is the same all over, so rather than repaint the cooling map
+  // and re-encode it as an image ~30 times a second (fine for a cursor, but
+  // steppy for the whole word at once), it's just the multiplier in each
+  // letter's composite, eased every frame: heat x (1 - drop + drop x level).
+  let level = 1 - depthAt(0);          // the map's brightness, 0..1; 1 = warm
+  let warmed = false, built = false, bustIn = !!window.bustLoaded;
+  function setIntro() {
+    const drop = Math.max(0, 1 - S.cFloor);
+    const k1 = level >= 1 ? drop : 0, k2 = level >= 1 ? 1 - drop : 1 - drop + drop * level;
+    for (const c of comps) { c.setAttribute("k1", k1.toFixed(4)); c.setAttribute("k2", k2.toFixed(4)); }
+  }
+  function warmUp() {
+    if (warmed || !built) return;
+    warmed = true;
+    let prev = performance.now();
+    requestAnimationFrame(function intro(now) {
+      level = Math.min(1, level + Math.min(0.1, (now - prev) / 1000) * S.cRecover);
+      prev = now;
+      setIntro();
+      if (level < 1) requestAnimationFrame(intro);
+      else warmDone();
+    });
+  }
+  function warmDone() {
+    if (window.heatWarm) return;
+    window.heatWarm = true;
+    window.dispatchEvent(new Event("heat:warm"));
+  }
+  window.addEventListener("bust:loaded", () => { bustIn = true; warmUp(); }, { once: true });
+  // If the bust never loads (no WebGL, the 3D library didn't load), don't
+  // leave the word melted.
+  setTimeout(() => { bustIn = true; warmUp(); }, 8000);
+
   // The letters are measured, so wait for the font before building.
-  const go = () => build();
+  const go = () => { build(); built = true; if (bustIn) warmUp(); };
   if (document.fonts && document.fonts.load) {
     document.fonts.load(`${S.weight} 100px "${S.font}"`, S.text).then(go, go);
   } else go();

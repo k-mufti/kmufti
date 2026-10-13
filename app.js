@@ -151,7 +151,7 @@
 })();
 
 /* =========================================================================
-   Your name, top right: the one every game uses (you.js), laid out like
+   Your name, top left: the one every game uses (you.js), laid out like
    Jigsaw's. Type to change it (Enter or clicking away saves, Escape backs
    out), or roll the die for a random one.
    ========================================================================= */

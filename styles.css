@@ -105,33 +105,20 @@ a {
   text-transform: lowercase;
 }
 
+/* Top left: your name where the brand used to be, and the count. */
 .header-left {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 14px;
   min-width: 0;
 }
 
-.brand {
-  color: var(--ink);
-  font-weight: 500;
-}
-
-/* The front-door count, up beside the brand. Amber so it reads as the one
+/* The front-door count, up beside your name. Amber so it reads as the one
    live number on an otherwise still page. */
 .header-users {
   color: #b8791f;
   font-weight: 500;
   white-space: nowrap;
-}
-
-/* Top right: the link, and your name tucked under it - the same layout
-   and the same quiet field as Jigsaw's, so it feels like one site. */
-.header-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
 }
 
 .you {
@@ -147,7 +134,7 @@ a {
 /* Always outlined, so it reads as something you can type in. */
 .you-name {
   width: 150px;
-  text-align: right;
+  text-align: left;
   padding: 3px 8px;
   border: 1px solid var(--field-line, rgba(17, 17, 17, 0.16));
   border-radius: 6px;
