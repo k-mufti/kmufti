@@ -422,7 +422,8 @@
 
   function showFold() {
     document.body.classList.toggle("belt-folded", beltFolded);
-    beltFold.textContent = beltFolded ? "show belt" : "hide belt";
+    beltFold.title = beltFolded ? "show the belt" : "hide the belt";
+    beltFold.setAttribute("aria-label", beltFold.title);
     beltFold.setAttribute("aria-expanded", String(!beltFolded));
   }
   beltFold.addEventListener("click", () => {
@@ -548,10 +549,17 @@
     const at = stageXY(e);
     beacon(null);
     drag = { i, offX: pw / 2, offY: ph / 2, members: [i], from: [[i, p.x, p.y]], fromBelt: true };
+    // Into your hand at once: mark it as dragging (which switches off the
+    // table's 70ms smoothing) BEFORE moving it, or it glides over from
+    // wherever it was lying.
+    const g = nodes[i].g;
+    g.classList.add("dragging");
+    g.style.transition = "none";
     p.x = at.x - pw / 2; p.y = at.y - ph / 2;
     applyPiece(i);
-    nodes[i].g.classList.add("dragging");
-    looseLayer.appendChild(nodes[i].g);
+    looseLayer.appendChild(g);
+    void g.getBoundingClientRect();          // commit the jump before smoothing can return
+    g.style.transition = "";
     drag.ghost = item.cloneNode(true);
     drag.ghost.classList.add("belt-ghost");
     document.body.appendChild(drag.ghost);
