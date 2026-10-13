@@ -134,10 +134,10 @@
       t.textContent = ch;
       g.appendChild(t);
       letters.push(cool);
-      comps.push(comp);
+      comps.push({ el: comp, text: t });
       x += widths[i] * fit + S.spacing * fit;
     });
-    setIntro();
+    introLetters();
     svg.classList.add("ready");
   }
 
@@ -218,8 +218,9 @@
     else running = false;
   }
 
-  // The bust's canvas sits on top of the word, so listen on the page and
-  // work out where the pointer is in the word's own coordinates.
+  // The svg takes no pointer events (so nothing it overhangs loses clicks),
+  // so listen on the page and work out where the pointer is in the word's
+  // own coordinates.
   window.addEventListener("pointermove", (e) => {
     if (!letters.length || !warmed) return;
     const m = svg.getScreenCTM();
@@ -232,32 +233,50 @@
   }, { passive: true });
   document.addEventListener("pointerleave", () => { lastPt = null; });
 
-  // On open, the whole word starts melted down to its last layer - as deep
-  // as the cursor ever goes - and warms back up at the same speed as after
-  // a cursor pass. It waits for the bust to finish loading (bust.js) so the
-  // warm-up has the page to itself, and the bust only drops in once it's
-  // done (the "heat:warm" event).
+  // On open, the word starts blank - melted past even the last layer - and
+  // warms back up letter by letter, K first: each one comes back through
+  // the layers (pink, orange, white, blue) at the cursor's recovery speed,
+  // as if a cursor with just one layer, big enough to cover the word, had
+  // swiped across it. It waits for the bust to finish loading (bust.js) so
+  // the warm-up has the page to itself, and the bust only drops in once
+  // it's warm (the "heat:warm" event).
   //
-  // The melt is the same all over, so rather than repaint the cooling map
-  // and re-encode it as an image ~30 times a second (fine for a cursor, but
-  // steppy for the whole word at once), it's just the multiplier in each
-  // letter's composite, eased every frame: heat x (1 - drop + drop x level).
-  let level = 1 - depthAt(0);          // the map's brightness, 0..1; 1 = warm
-  let warmed = false, built = false, bustIn = !!window.bustLoaded;
-  function setIntro() {
-    const drop = Math.max(0, 1 - S.cFloor);
-    const k1 = level >= 1 ? drop : 0, k2 = level >= 1 ? 1 - drop : 1 - drop + drop * level;
-    for (const c of comps) { c.setAttribute("k1", k1.toFixed(4)); c.setAttribute("k2", k2.toFixed(4)); }
+  // A one-layer melt is the same all over a letter, so it isn't drawn into
+  // the cooling map at all: it's an offset in each letter's composite,
+  // heat x (floor + drop x (1 - off)), eased every frame.
+  // gap: seconds between one letter starting and the next; hold: seconds
+  // from loading to the first letter; fade: seconds each letter takes to
+  // appear, pink
+  const INTRO = { gap: 0.2, hold: 0.5, fade: 0.18 };
+  const DROP = Math.max(0, 1 - S.cFloor);
+  const FIRST = 1 - 0.03 / DROP;      // the offset where it's just the pink fringe
+  let introT = 0;
+  function introLetters() {
+    comps.forEach((c, i) => {
+      // Barely-there heat shows as a grey ghost (the film grain over almost
+      // no colour), so the first layer isn't grown from nothing: the letter
+      // fades in already pink, over the time that layer would have taken,
+      // and only then starts warming through the rest.
+      const t = Math.max(0, introT - INTRO.gap * i) - INTRO.fade;
+      const off = t < 0 ? FIRST : Math.max(0, FIRST - t * S.cRecover);
+      c.el.setAttribute("k2", (S.cFloor - DROP * off).toFixed(4));
+      const o = Math.min(1, Math.max(0, introT - INTRO.gap * i) / INTRO.fade);
+      // Never quite 0: at 0 the browser skips the filter, then pays for
+      // building it all in one frame just as the letter first shows.
+      c.text.setAttribute("opacity", o >= 1 ? 1 : Math.max(0.004, o * o * (3 - 2 * o)).toFixed(3));
+    });
   }
+  let warmed = false, built = false, bustIn = !!window.bustLoaded;
   function warmUp() {
-    if (warmed || !built) return;
+    if (warmed || !built || !bustIn) return;
     warmed = true;
+    const end = INTRO.gap * (comps.length - 1) + INTRO.fade + FIRST / S.cRecover;
     let prev = performance.now();
-    requestAnimationFrame(function intro(now) {
-      level = Math.min(1, level + Math.min(0.1, (now - prev) / 1000) * S.cRecover);
+    requestAnimationFrame(function step(now) {
+      introT += Math.min(0.1, (now - prev) / 1000);
       prev = now;
-      setIntro();
-      if (level < 1) requestAnimationFrame(intro);
+      introLetters();
+      if (introT < end) requestAnimationFrame(step);
       else warmDone();
     });
   }
@@ -268,11 +287,15 @@
   }
   window.addEventListener("bust:loaded", () => { bustIn = true; warmUp(); }, { once: true });
   // If the bust never loads (no WebGL, the 3D library didn't load), don't
-  // leave the word melted.
+  // leave the word blank.
   setTimeout(() => { bustIn = true; warmUp(); }, 8000);
 
   // The letters are measured, so wait for the font before building.
-  const go = () => { build(); built = true; if (bustIn) warmUp(); };
+  // Then a short beat on the blank before it starts warming.
+  const go = () => {
+    build();
+    setTimeout(() => { built = true; warmUp(); }, INTRO.hold * 1000);
+  };
   if (document.fonts && document.fonts.load) {
     document.fonts.load(`${S.weight} 100px "${S.font}"`, S.text).then(go, go);
   } else go();

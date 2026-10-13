@@ -408,8 +408,9 @@ a {
   --foot: 40px;
 }
 /* The thermal "KMUFTI" behind his head (heat-word.js). The canvas above it
-   is transparent, so it shows all round the head. Fades in once the font
-   has loaded and the letters are built. */
+   is transparent, so it shows all round the head. Hidden until the font
+   has loaded and the letters are built; no fade, as the letters start
+   blank and come in one by one. */
 .heat-word {
   position: absolute;
   left: 50%;
@@ -424,7 +425,6 @@ a {
   overflow: visible;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.6s ease;
 }
 .heat-word.ready { opacity: 1; }
 .bust canvas {
