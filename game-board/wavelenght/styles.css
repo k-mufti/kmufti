@@ -151,7 +151,14 @@ input:focus { border-color: var(--navy); }
 .team li.empty { color: var(--ink-soft); font-style: italic; font-weight: 400; }
 
 /* ---------- the game ---------- */
-#game { max-width: 760px; margin: 0 auto; text-align: center; }
+#game { max-width: 760px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; }
+#game .score { order: 1; }
+#game .console { display: contents; }
+#game .banner { order: 2; }
+#game .table { order: 3; }
+#game .spectrum { order: 4; width: 100%; }
+#game .clue { order: 5; }
+#game .actions { order: 6; }
 
 .score { display: flex; flex-direction: column; gap: 6px; margin: 4px auto 10px; max-width: 520px; }
 .track { display: flex; align-items: center; gap: 10px; padding: 6px 12px; border-radius: 12px; font-size: 14px; transition: background 0.2s ease; }
@@ -442,30 +449,56 @@ body.tv #home .field, body.tv #home .starts, body.tv #home .or, body.tv #home .j
     max-width: 1700px;
     padding: 0 32px 32px;
     display: grid;
-    grid-template-columns: minmax(130px, 1fr) minmax(0, min(1040px, calc((100vh - 420px) * 1.6))) minmax(130px, 1fr);
+    grid-template-columns: minmax(130px, 1fr) minmax(0, min(1040px, calc((100vh - 400px) * 1.6))) minmax(130px, 1fr);
     grid-template-areas:
       "score score score"
-      "banner banner banner"
       "endL table endR"
-      "clue clue clue"
-      "actions actions actions";
+      ". console .";
     column-gap: 28px;
     align-content: center;
     min-height: calc(100vh - 100px);
   }
   .table { grid-area: table; gap: 16px; }
   .device { max-width: none; }
-  .score { grid-area: score; max-width: 640px; width: 100%; margin: 0 auto 10px; }
-  .track { font-size: 18px; padding: 7px 14px; }
-  .track .tn { width: 120px; }
-  .track .dots i { height: 14px; max-width: none; }
-  .track b { width: 32px; font-size: 22px; }
-  .coop { font-size: 20px; }
-  .coop b { font-size: 30px; }
-  .banner { grid-area: banner; max-width: 900px; margin: 0 auto 8px; font-size: 21px; min-height: 1.4em; }
-  .banner .final { font-size: 30px; }
-  .pts { font-size: 28px; }
-  .drum { font-size: 30px; }
+  /* the score: a small tag up top */
+  .score { grid-area: score; max-width: 380px; width: 100%; margin: 0 auto 14px; gap: 2px; }
+  .track { font-size: 13px; padding: 2px 6px; gap: 8px; }
+  .track .tn { width: 84px; }
+  .track .dots i { height: 7px; max-width: none; }
+  .track b { width: 22px; font-size: 14px; }
+  .coop { font-size: 14px; }
+  .coop b { font-size: 17px; }
+  .coop span { margin: 0 6px; }
+
+  /* the base the dial stands in, carrying everything you read and press */
+  #game .console {
+    grid-area: console;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: -1px;
+    min-height: 150px;
+    padding: 18px 32px 26px;
+    background: var(--navy-deep);
+    color: var(--paper);
+    border-radius: 6px 6px 30px 30px;
+    box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.55);
+  }
+  .console .banner { margin: 0; max-width: none; font-size: 18px; min-height: 0; color: rgba(248, 243, 233, 0.85); }
+  .console .banner:empty { display: none; }
+  .console .banner .final { font-size: 26px; color: #fff; }
+  .console .pts { font-size: 22px; color: var(--ink); }
+  .console .pts.p3 { color: #fff; }
+  .console .pts.p0 { background: rgba(248, 243, 233, 0.2); color: #fff; }
+  .console .drum { font-size: 26px; color: #fff; }
+  .console .clue { margin: 4px 0 0; max-width: none; font-size: 50px; line-height: 1.1; color: #fff; }
+  .console .clue small { font-size: 13px; margin-bottom: 2px; color: var(--teal); }
+  .console .actions { margin: 12px 0 0; max-width: none; width: 100%; }
+  .console .btn { background: var(--red); }
+  .console .btn:hover { background: var(--red-deep); }
+  .console .btn.ghost { background: transparent; color: var(--paper); box-shadow: inset 0 0 0 2px rgba(248, 243, 233, 0.55); }
+  .console .btn.ghost:hover { background: rgba(248, 243, 233, 0.1); }
   /* the card's two colours split the whole page, its two ends written
      big on either side of the dial */
   body.split::before, body.split::after {
@@ -483,17 +516,15 @@ body.tv #home .field, body.tv #home .starts, body.tv #home .or, body.tv #home .j
   @keyframes sweepL { from { transform: translateX(-100%); } }
   @keyframes sweepR { from { transform: translateX(100%); } }
   body.split .back, body.split .logo { color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
-  body.split .score, body.split .banner, body.split .clue {
+  body.split .score {
     justify-self: center;
     width: auto;
+    min-width: 0;
     background: var(--paper);
-    border-radius: 18px;
-    padding: 8px 22px;
-    box-shadow: 0 4px 18px -8px rgba(0, 0, 0, 0.35);
+    border-radius: 999px;
+    padding: 4px 16px;
+    box-shadow: 0 3px 12px -6px rgba(0, 0, 0, 0.35);
   }
-  body.split .banner:empty { display: none; }
-  body.split .clue { padding: 8px 30px 12px; }
-  body.split .btn.ghost { background: var(--paper); }
   .spectrum { display: contents; }
   .spectrum .end {
     align-self: center;
@@ -512,9 +543,6 @@ body.tv #home .field, body.tv #home .starts, body.tv #home .or, body.tv #home .j
   .spectrum .end.r { grid-area: endR; align-items: flex-end; text-align: right; flex-direction: column-reverse; }
   .spectrum .end i { font-size: 1.1em; }
   .card-end { font-size: 22px; padding: 22px 18px; }
-  .clue { grid-area: clue; max-width: none; margin: 6px 0 0; font-size: 56px; line-height: 1.1; }
-  .clue small { font-size: 15px; margin-bottom: 2px; }
-  .actions { grid-area: actions; max-width: 900px; width: 100%; margin: 14px auto 0; }
   .pick { flex-direction: row; gap: 16px; }
   .card-btn { max-width: none; border-radius: 18px; }
   .clue-form { max-width: 640px; }

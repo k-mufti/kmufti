@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=7" />
+  <link rel="stylesheet" href="styles.css?v=9" />
 </head>
 <body>
   <header class="bar">
@@ -73,8 +73,6 @@
   <section class="screen" id="game" hidden>
     <div class="score" id="scoreBoard"></div>
 
-    <p class="banner" id="banner"></p>
-
     <div class="table">
       <button class="side-btn left" id="leftBtn" hidden><span>&larr;</span>Left</button>
 
@@ -90,9 +88,12 @@
       <span class="end r" id="endR"></span>
     </div>
 
-    <p class="clue" id="clue" hidden></p>
-
-    <div class="actions" id="actions"></div>
+    <!-- the base the dial stands in: what's happening, the clue, the buttons -->
+    <div class="console">
+      <p class="banner" id="banner"></p>
+      <p class="clue" id="clue" hidden></p>
+      <div class="actions" id="actions"></div>
+    </div>
 
   </section>
 
