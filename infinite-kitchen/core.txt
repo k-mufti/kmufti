@@ -4089,3 +4089,300 @@ Granola + Stir-Fry = Stir-Fry [nothing]
 Granola + Herbs = Herbs [nothing]
 Granola + Mint = Mint [nothing]
 Granola + Barbecue = Barbecue [nothing]
+
+## Step 1 to 100%, batch 7 (2026-10-13): Porridge through Rock Candy, the last of step 1
+
+# Porridge
+Porridge + Porridge = Cream of Wheat
+Porridge + Stove = Oatmeal
+Porridge + Pot = Oatmeal
+Porridge + Sugar Cubes = Oatmeal
+Porridge + Powdered Sugar = Cream of Wheat
+Porridge + Rock Candy = Rice Pudding
+# whiskey starts as a grain porridge, the mash
+Porridge + Beer = Whiskey
+Porridge + Kale Chips = Breakfast
+Porridge + Vegetable Soup = Stew
+Porridge + Stir-Fry = Fried Rice
+Porridge + Herbs = Stuffing
+Porridge + Green Smoothie = Smoothie Bowl
+Porridge + Flower = Honey
+Porridge + Barbecue = Cornbread
+Porridge + Roast = Gravy
+Porridge + Broth = Rice Soup
+Porridge + Meat = Meatloaf
+Porridge + Oven = Granola Bar
+Porridge + Blender = Baby Food
+# left overnight
+Porridge + Clock = Overnight Oats
+Porridge + Mint = Mint [nothing]
+Porridge + Knife = Porridge [nothing]
+
+# Oats
+Oats + Oats = Granola
+Oats + Kale Chips = Trail Mix
+Oats + Vegetable Soup = Stew
+Oats + Broth = Porridge
+# herb oatcakes
+Oats + Herbs = Crackers
+Oats + Roast = Stuffing
+Oats + Green Smoothie = Overnight Oats
+Oats + Clock = Overnight Oats
+# honey, from the flowers
+Oats + Flower = Honey Bunches of Oats
+# a veggie burger for the grill
+Oats + Barbecue = Impossible Burger
+Oats + Meat = Meatloaf
+Oats + Sugar Cubes = Oatmeal Cookie
+Oats + Powdered Sugar = Granola Bar
+Oats + Rock Candy = Cheerios
+Oats + Beer = Beer [nothing]
+Oats + Stir-Fry = Stir-Fry [nothing]
+Oats + Mint = Mint [nothing]
+
+# Beer
+Beer + Kale Chips = Potato Chips
+# beer stew
+Beer + Vegetable Soup = Stew
+Beer + Broth = Beef Stew
+Beer + Herbs = Ginger Ale
+Beer + Flower = Cider
+# beer breath
+Beer + Mint = Tic Tacs
+Beer + Barbecue = Ribs
+# beer-braised
+Beer + Roast = Pot Roast
+# beer brats
+Beer + Meat = Sausage
+Beer + Pot = Sausage
+Beer + Sugar Cubes = Soda
+Beer + Powdered Sugar = Soda
+Beer + Rock Candy = Cola
+Beer + Stove = Steam
+# beer bread
+Beer + Oven = Bread
+Beer + Beer = Beer [nothing]
+Beer + Stir-Fry = Stir-Fry [nothing]
+# green beer is still beer
+Beer + Green Smoothie = Beer [nothing]
+Beer + Knife = Beer [nothing]
+Beer + Fridge = Beer [nothing]
+
+# Kale Chips
+Kale Chips + Vegetable Soup = Croutons
+Kale Chips + Stir-Fry = Kale
+Kale Chips + Pot = Kale
+Kale Chips + Herbs = Salad
+# edible flowers
+Kale Chips + Flower = Salad
+Kale Chips + Fridge = Salad
+Kale Chips + Green Smoothie = Smoothie Bowl
+Kale Chips + Mint = Tic Tacs
+Kale Chips + Barbecue = BBQ Chips
+Kale Chips + Roast = Roasted Vegetables
+Kale Chips + Broth = Vegetable Soup
+Kale Chips + Meat = Lunchables
+Kale Chips + Sugar Cubes = Apple Chips
+Kale Chips + Powdered Sugar = Apple Chips
+Kale Chips + Rock Candy = Trail Mix
+Kale Chips + Stove = Burnt
+Kale Chips + Oven = Burnt
+Kale Chips + Blender = Green Smoothie
+Kale Chips + Clock = Spoiled
+Kale Chips + Kale Chips = Kale Chips [nothing]
+Kale Chips + Knife = Kale Chips [nothing]
+
+# Vegetable Soup
+Vegetable Soup + Vegetable Soup = Stew
+Vegetable Soup + Stove = Stew
+Vegetable Soup + Pot = Stew
+Vegetable Soup + Stir-Fry = Casserole
+Vegetable Soup + Herbs = Broth
+# cold green soup
+Vegetable Soup + Green Smoothie = Gazpacho
+# pea and mint soup
+Vegetable Soup + Mint = Peas
+Vegetable Soup + Barbecue = Chili
+Vegetable Soup + Roast = Beef Stew
+Vegetable Soup + Sugar Cubes = Tomato Soup
+Vegetable Soup + Powdered Sugar = Tomato Soup
+Vegetable Soup + Rock Candy = Slop
+Vegetable Soup + Blender = Baby Food
+Vegetable Soup + Clock = Spoiled
+Vegetable Soup + Flower = Flower [nothing]
+Vegetable Soup + Broth = Broth [nothing]
+Vegetable Soup + Knife = Vegetable Soup [nothing]
+
+# Stir-Fry
+Stir-Fry + Stir-Fry = Fried Rice
+Stir-Fry + Meat = Chicken Stir-Fry
+# Thai basil
+Stir-Fry + Herbs = Basil
+Stir-Fry + Green Smoothie = Bok Choy
+# flower, cauliflower
+Stir-Fry + Flower = Cauliflower
+Stir-Fry + Mint = Tic Tacs
+Stir-Fry + Barbecue = Teriyaki
+Stir-Fry + Sugar Cubes = Teriyaki
+Stir-Fry + Powdered Sugar = Teriyaki
+Stir-Fry + Rock Candy = Teriyaki
+Stir-Fry + Roast = Roasted Vegetables
+Stir-Fry + Broth = Vegetable Soup
+Stir-Fry + Pot = Vegetable Soup
+# cooked twice
+Stir-Fry + Stove = Burnt
+Stir-Fry + Blender = Baby Food
+Stir-Fry + Clock = Spoiled
+Stir-Fry + Fridge = Leftovers
+Stir-Fry + Knife = Stir-Fry [nothing]
+
+# Herbs
+Herbs + Green Smoothie = Herbal Tea
+Herbs + Sugar Cubes = Herbal Tea
+Herbs + Mint = Mint Tea
+# a dry rub
+Herbs + Barbecue = Seasoning
+Herbs + Roast = Roast Chicken
+Herbs + Broth = Vegetable Soup
+Herbs + Meat = Meatballs
+# anise
+Herbs + Powdered Sugar = Licorice
+Herbs + Rock Candy = Licorice
+
+# Green Smoothie
+Green Smoothie + Green Smoothie = Wheatgrass
+Green Smoothie + Flower = Smoothie Bowl
+# green and minty
+Green Smoothie + Mint = Mint Chocolate Chip
+Green Smoothie + Barbecue = Impossible Burger
+Green Smoothie + Meat = Impossible Burger
+Green Smoothie + Roast = Salad
+Green Smoothie + Broth = Vegetable Soup
+Green Smoothie + Pot = Vegetable Soup
+Green Smoothie + Sugar Cubes = Smoothie
+Green Smoothie + Powdered Sugar = Smoothie
+Green Smoothie + Blender = Smoothie
+Green Smoothie + Rock Candy = Slushie
+Green Smoothie + Stove = Spinach
+# baked greens
+Green Smoothie + Oven = Kale Chips
+Green Smoothie + Clock = Spoiled
+# smoothie pops
+Green Smoothie + Fridge = Popsicle
+Green Smoothie + Knife = Green Smoothie [nothing]
+
+# Flower
+Flower + Flower = Honey
+Flower + Sugar Cubes = Honey
+Flower + Powdered Sugar = Honey
+Flower + Rock Candy = Lollipop
+Flower + Mint = Herbal Tea
+Flower + Oven = Herbal Tea
+Flower + Broth = Chamomile
+Flower + Stove = Chamomile
+# date night
+Flower + Meat = Steak
+# saffron is picked by hand from crocus flowers
+Flower + Knife = Saffron
+Flower + Barbecue = Flower [nothing]
+Flower + Roast = Flower [nothing]
+Flower + Fridge = Flower [nothing]
+
+# Mint
+Mint + Mint = Peppermint
+Mint + Powdered Sugar = Peppermint
+Mint + Sugar Cubes = Tic Tacs
+Mint + Rock Candy = Candy Cane
+# lamb and mint
+Mint + Barbecue = Lamb
+Mint + Roast = Lamb
+Mint + Broth = Mint Tea
+Mint + Stove = Mint Tea
+Mint + Knife = Herbs
+Mint + Clock = Herbal Tea
+Mint + Fridge = Mint Chocolate Chip
+
+# Barbecue
+# a cookout feast
+Barbecue + Barbecue = Feast
+Barbecue + Roast = Feast
+Barbecue + Broth = Stew
+Barbecue + Meat = Ribs
+Barbecue + Sugar Cubes = BBQ Sauce
+Barbecue + Powdered Sugar = BBQ Sauce
+Barbecue + Rock Candy = BBQ Sauce
+Barbecue + Blender = BBQ Sauce
+Barbecue + Stove = Burnt
+Barbecue + Oven = Brisket
+Barbecue + Knife = Brisket
+Barbecue + Pot = Chili
+Barbecue + Fridge = Leftovers
+
+# Roast
+Roast + Roast = Feast
+Roast + Broth = Pot Roast
+Roast + Stove = Gravy
+Roast + Meat = Roast Beef
+# glazed
+Roast + Sugar Cubes = Ham
+Roast + Powdered Sugar = Ham
+Roast + Rock Candy = Ham
+Roast + Oven = Burnt
+Roast + Blender = Ground Beef
+# the next day it's sandwich meat
+Roast + Clock = Cold Cuts
+Roast + Fridge = Leftovers
+
+# Broth
+Broth + Broth = Stew
+Broth + Stove = Gravy
+Broth + Sugar Cubes = Teriyaki
+Broth + Powdered Sugar = Teriyaki
+Broth + Rock Candy = Slop
+Broth + Oven = Casserole
+Broth + Pot = Chicken Soup
+Broth + Blender = Baby Food
+Broth + Clock = Spoiled
+Broth + Knife = Broth [nothing]
+
+# Meat
+Meat + Sugar Cubes = Teriyaki
+Meat + Powdered Sugar = Teriyaki
+Meat + Rock Candy = Bacon
+Meat + Fridge = Cold Cuts
+
+# Sugar Cubes
+Sugar Cubes + Sugar Cubes = Rock Candy
+Sugar Cubes + Clock = Rock Candy
+Sugar Cubes + Powdered Sugar = Candy
+Sugar Cubes + Rock Candy = Candy
+Sugar Cubes + Oven = Caramel
+Sugar Cubes + Pot = Syrup
+# crushed
+Sugar Cubes + Knife = Powdered Sugar
+# they look like ice cubes
+Sugar Cubes + Fridge = Ice
+
+# Powdered Sugar
+Powdered Sugar + Powdered Sugar = Pixy Stix
+Powdered Sugar + Blender = Pixy Stix
+Powdered Sugar + Rock Candy = Candy
+Powdered Sugar + Stove = Caramel
+Powdered Sugar + Oven = Caramel
+Powdered Sugar + Pot = Syrup
+# it clumps
+Powdered Sugar + Clock = Sugar Cubes
+# cold, and it looks like snow
+Powdered Sugar + Fridge = Snow Cone
+Powdered Sugar + Knife = Powdered Sugar [nothing]
+
+# Rock Candy
+Rock Candy + Rock Candy = Jawbreaker
+Rock Candy + Clock = Jawbreaker
+Rock Candy + Stove = Caramel
+Rock Candy + Oven = Toffee
+Rock Candy + Pot = Syrup
+Rock Candy + Knife = Sprinkles
+Rock Candy + Blender = Powdered Sugar
+# it looks like ice
+Rock Candy + Fridge = Ice
