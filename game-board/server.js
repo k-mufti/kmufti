@@ -13,6 +13,10 @@
 //                           you were in one); server replies "welcome"
 //   {t:"create"}            open a room, get a code back
 //   {t:"join", code}        join a room
+//   {t:"quick"}             join an open quick game (co-op, strangers), or
+//                           open one and wait; it starts by itself at 2+
+//   {t:"watch", code}       watch a room as a TV: sees everything everyone
+//                           sees, never the target before the reveal
 //   {t:"leave"}             leave your room
 //   {t:"name", name}        change your name
 //   {t:"team", team}        switch to team 0 or 1
@@ -26,7 +30,8 @@
 //   {t:"side", side}        the other team calls "left" or "right"
 //   {t:"next"}              after a reveal: on to the next round
 //   {t:"skip"}              the psychic has gone: skip to the next one
-//   {t:"again"}             after the game: back to the lobby
+//   {t:"again"}             after the game: back to the lobby (a quick
+//                           game then starts itself again)
 //
 // Protocol, server -> client:
 //   {t:"welcome", id}
@@ -34,6 +39,7 @@
 //                           after every change
 //   {t:"needle", a, by}     someone turned the dial
 //   {t:"spun", by}          the psychic spun the target (for the sound)
+//   {t:"locked", by}        the guessers locked the dial (for the sound)
 //   {t:"idle"}              you're not in a room
 //   {t:"error", msg}
 //
@@ -47,6 +53,8 @@ const crypto = require("crypto");
 
 const PORT = process.env.PORT || 8028;
 const EMPTY_ROOM_MS = 10 * 60 * 1000;   // a room nobody's in goes after this
+const QUICK_START_MS = 5000;           // a quick game's countdown once 2 are in
+const QUICK_MAX = 8;                   // a quick game stops taking strangers here
 
 let R = null, CARDS = null;            // loaded below (ES modules)
 
@@ -129,7 +137,7 @@ function makeParser(onMessage, onClose, onPing) {
 /* ========================================================================
    People
    ======================================================================== */
-const peers = new Set();   // { socket, id, name, room }
+const peers = new Set();   // { socket, id, name, room, watching }
 
 function send(peer, obj) {
   if (!peer || !peer.socket) return;
@@ -167,11 +175,15 @@ function shuffled(n) {
   return a;
 }
 
-function makeRoom(host) {
+function makeRoom(host, quick) {
   const room = {
     code: newCode(),
     host: host.id,
-    mode: "teams",
+    quick: !!quick,          // a quick game: open to strangers, co-op, starts itself
+    startAt: 0,              // a quick game's countdown, when it's running
+    startTimer: null,
+    watchers: new Set(),     // TVs: peers watching, not playing
+    mode: quick ? "coop" : "teams",
     players: [],             // { id, name, team, peer } - peer null while away
     phase: "lobby",          // lobby, pick, clue, guess, side, reveal
     scores: [0, 0],
@@ -190,6 +202,7 @@ function makeRoom(host) {
     result: null,
     winner: null,            // 0, 1, or "coop" once the game's over
     round: 0,
+    history: [],             // every revealed round this game, for the stats
     emptySince: 0,
   };
   rooms.set(room.code, room);
@@ -227,11 +240,25 @@ function viewFor(room, viewer) {
     winner: room.winner,
     round: room.round,
     win: R.WIN,
+    history: room.history,   // past rounds only, so their targets are public
+    quick: room.quick,
+    startsIn: room.startAt ? Math.max(0, room.startAt - Date.now()) : 0,
+    tv: !viewer,
+    watchers: room.watchers.size,
   };
 }
 
 function pushState(room) {
   for (const p of room.players) if (p.peer) send(p.peer, viewFor(room, p));
+  if (room.watchers.size) {
+    const tv = viewFor(room, null);
+    for (const w of room.watchers) send(w, tv);
+  }
+}
+// to everyone in the room, players and TVs
+function broadcast(room, obj, except) {
+  for (const p of room.players) if (p.peer && p.peer !== except) send(p.peer, obj);
+  for (const w of room.watchers) send(w, obj);
 }
 
 /* ========================================================================
@@ -260,6 +287,8 @@ function startGame(room) {
   room.deck = shuffled(CARDS.length);
   room.winner = null;
   room.round = 0;
+  room.history = [];
+  stopCountdown(room);
   beginRound(room);
 }
 
@@ -315,6 +344,19 @@ function reveal(room) {
     result.again = !room.winner && points === 4 && room.scores[me] < room.scores[them];
   }
   room.result = result;
+  room.history.push({
+    round: room.round,
+    team: room.mode === "teams" ? room.activeTeam : null,
+    psychic: room.psychic,
+    psychicName: playerOf(room, room.psychic)?.name || "someone",
+    card: room.card,
+    clue: room.clue,
+    target: room.target,
+    needle: room.needle,
+    points,
+    side: room.side,
+    sidePoint: result.sidePoint,
+  });
   room.phase = "reveal";
   pushState(room);
 }
@@ -346,6 +388,7 @@ function joinRoom(peer, code) {
     room.players.push(p);
   }
   attach(peer, room, p);
+  quickCheck(room);
   pushState(room);
 }
 
@@ -373,10 +416,83 @@ function afterDeparture(room, id) {
   if (room.phase !== "lobby" && room.mode === "teams" && (!teamOf(room, 0).length || !teamOf(room, 1).length)) {
     room.phase = "lobby";
   }
+  if (room.phase !== "lobby" && room.mode === "coop" && room.players.length < 2) toLobby(room);
+  quickCheck(room);
+  pushState(room);
+}
+
+function toLobby(room) {
+  room.phase = "lobby";
+  room.winner = null;
+  room.result = null;
+  room.psychic = null;
+  room.card = null;
+  room.clue = "";
+  room.target = null;
+}
+
+/* ---------- quick games ---------- */
+// A quick game counts down by itself once two people are in its lobby, and
+// stops counting if one of them goes.
+function quickCheck(room) {
+  if (!room.quick) return;
+  const ready = room.phase === "lobby" && room.players.filter(online).length >= 2;
+  if (ready && !room.startAt) {
+    room.startAt = Date.now() + QUICK_START_MS;
+    room.startTimer = setTimeout(() => {
+      room.startAt = 0;
+      if (rooms.get(room.code) === room && room.phase === "lobby" && room.players.filter(online).length >= 2) startGame(room);
+      else pushState(room);
+    }, QUICK_START_MS);
+  } else if (!ready) stopCountdown(room);
+}
+function stopCountdown(room) {
+  clearTimeout(room.startTimer);
+  room.startTimer = null;
+  room.startAt = 0;
+}
+
+function quickJoin(peer) {
+  leaveRoom(peer);
+  unwatch(peer);
+  // the open quick game with the most people in it, so strangers bunch up
+  let best = null;
+  for (const room of rooms.values()) {
+    if (!room.quick || room.winner !== null) continue;
+    const here = room.players.filter(online).length;
+    if (!here || room.players.length >= QUICK_MAX) continue;
+    if (!best || here > best.players.filter(online).length) best = room;
+  }
+  if (best) return joinRoom(peer, best.code);
+  const room = makeRoom(peer, true);
+  const p = { id: peer.id, name: peer.name, team: 0, peer: null };
+  room.players.push(p);
+  attach(peer, room, p);
+  pushState(room);
+}
+
+/* ---------- TVs ---------- */
+function watch(peer, code) {
+  const room = rooms.get(String(code || "").toUpperCase().trim());
+  if (!room) return send(peer, { t: "error", msg: "No room with that code." });
+  leaveRoom(peer);
+  unwatch(peer);
+  room.watchers.add(peer);
+  peer.watching = room.code;
+  room.emptySince = 0;
+  pushState(room);
+}
+function unwatch(peer) {
+  const room = peer.watching ? rooms.get(peer.watching) : null;
+  peer.watching = null;
+  if (!room) return;
+  room.watchers.delete(peer);
+  if (!room.players.some(online) && !room.watchers.size) room.emptySince = Date.now();
   pushState(room);
 }
 
 function dropped(peer) {
+  unwatch(peer);
   const room = peer.room ? rooms.get(peer.room) : null;
   if (!room) return;
   const p = playerOf(room, peer.id);
@@ -385,7 +501,9 @@ function dropped(peer) {
 
 setInterval(() => {
   const now = Date.now();
-  for (const room of rooms.values()) if (room.emptySince && now - room.emptySince > EMPTY_ROOM_MS) rooms.delete(room.code);
+  for (const room of rooms.values()) {
+    if (room.emptySince && now - room.emptySince > EMPTY_ROOM_MS) { stopCountdown(room); rooms.delete(room.code); }
+  }
 }, 60000);
 
 /* ---------- messages ---------- */
@@ -404,6 +522,7 @@ function onMessage(peer, raw) {
       if (p) {
         if (p.peer && p.peer !== peer) send(p.peer, { t: "idle" });
         attach(peer, room, p);
+        quickCheck(room);
         return pushState(room);
       }
     }
@@ -413,14 +532,17 @@ function onMessage(peer, raw) {
 
   if (m.t === "create") {
     leaveRoom(peer);
+    unwatch(peer);
     const room = makeRoom(peer);
     const p = { id: peer.id, name: peer.name, team: 0, peer: null };
     room.players.push(p);
     attach(peer, room, p);
     return pushState(room);
   }
-  if (m.t === "join") return joinRoom(peer, m.code);
-  if (m.t === "leave") { leaveRoom(peer); return send(peer, { t: "idle" }); }
+  if (m.t === "join") { unwatch(peer); return joinRoom(peer, m.code); }
+  if (m.t === "quick") return quickJoin(peer);
+  if (m.t === "watch") return watch(peer, m.code);
+  if (m.t === "leave") { leaveRoom(peer); unwatch(peer); return send(peer, { t: "idle" }); }
 
   const room = peer.room ? rooms.get(peer.room) : null;
   const me = room && playerOf(room, peer.id);
@@ -440,7 +562,7 @@ function onMessage(peer, raw) {
       me.team = m.team;
       return pushState(room);
     case "mode":
-      if (!isHost || room.phase !== "lobby" || (m.mode !== "teams" && m.mode !== "coop")) return;
+      if (!isHost || room.quick || room.phase !== "lobby" || (m.mode !== "teams" && m.mode !== "coop")) return;
       room.mode = m.mode;
       return pushState(room);
     case "start": {
@@ -461,7 +583,7 @@ function onMessage(peer, raw) {
       // either end, as it can on the real wheel
       room.target = Math.round(crypto.randomInt(0, 1801)) / 10;
       room.spun = true;
-      for (const p of room.players) if (p.peer) send(p.peer, { t: "spun", by: me.id });
+      broadcast(room, { t: "spun", by: me.id });
       return pushState(room);
     case "clue": {
       if (!isPsychic || room.phase !== "clue" || !room.spun) return;
@@ -476,11 +598,12 @@ function onMessage(peer, raw) {
       const a = R.clampAngle(m.a);
       if (a === null) return;
       room.needle = Math.round(a * 10) / 10;
-      for (const p of room.players) if (p.peer && p !== me) send(p.peer, { t: "needle", a: room.needle, by: me.id });
+      broadcast(room, { t: "needle", a: room.needle, by: me.id }, peer);
       return;
     }
     case "lock":
       if (room.phase !== "guess" || !isGuesser(room, me)) return;
+      broadcast(room, { t: "locked", by: me.id });
       if (room.mode === "coop") return reveal(room);
       room.phase = "side";
       return pushState(room);
@@ -499,13 +622,8 @@ function onMessage(peer, raw) {
     }
     case "again":
       if (room.winner === null) return;
-      room.phase = "lobby";
-      room.winner = null;
-      room.result = null;
-      room.psychic = null;
-      room.card = null;
-      room.clue = "";
-      room.target = null;
+      toLobby(room);
+      quickCheck(room);
       return pushState(room);
   }
 }
@@ -518,7 +636,7 @@ const server = http.createServer((req, res) => {
   const route = url.pathname.replace(/^\/game-board/, "");
   if (route === "/api/health") {
     res.writeHead(200, { "content-type": "application/json" });
-    res.end(JSON.stringify({ ok: true, peers: peers.size, rooms: rooms.size }));
+    res.end(JSON.stringify({ ok: true, peers: peers.size, rooms: rooms.size, quick: [...rooms.values()].filter((r) => r.quick).length }));
     return;
   }
   res.writeHead(404).end();
@@ -539,7 +657,7 @@ server.on("upgrade", (req, socket) => {
   );
   socket.setNoDelay(true);
 
-  const peer = { socket, id: null, name: "someone", room: null };
+  const peer = { socket, id: null, name: "someone", room: null, watching: null };
   peers.add(peer);
 
   const bye = () => {

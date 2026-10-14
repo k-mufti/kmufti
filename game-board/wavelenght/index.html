@@ -8,14 +8,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=1" />
+  <link rel="stylesheet" href="styles.css?v=5" />
 </head>
 <body>
   <header class="bar">
     <a class="back" href="../">&larr; Game Board</a>
     <span class="logo">Wavelenght</span>
     <span class="code" id="codeChip" hidden></span>
+    <button class="mute" id="muteBtn" aria-label="Sound on">🔊</button>
   </header>
+  <p class="tv-join" id="tvJoin"></p>
 
   <!-- Not in a room yet: make one or join one -->
   <section class="screen" id="home">
@@ -26,22 +28,27 @@
         <span>Your name</span>
         <input id="nameInput" maxlength="18" autocomplete="nickname" spellcheck="false" />
       </label>
-      <button class="btn big" id="createBtn">Start a room</button>
+      <div class="starts">
+        <button class="btn big" id="createBtn">Start a room</button>
+        <button class="btn big quick" id="quickBtn">Quick game<small>play with whoever's around</small></button>
+      </div>
       <div class="or"><span>or join one</span></div>
       <form class="join" id="joinForm">
         <input id="codeInput" maxlength="4" placeholder="CODE" autocomplete="off" spellcheck="false" autocapitalize="characters" />
         <button class="btn" type="submit">Join</button>
+        <button class="btn ghost" type="button" id="tvBtn" title="Show this room on a TV">📺 TV</button>
       </form>
       <p class="status" id="homeStatus"></p>
+      <div class="home-stats" id="homeStats"></div>
     </div>
   </section>
 
   <!-- In a room, before the game -->
   <section class="screen" id="lobby" hidden>
     <div class="lobby-card">
-      <p class="room-line">Room code</p>
+      <p class="room-line" id="roomLine">Room code</p>
       <p class="room-code" id="lobbyCode"></p>
-      <p class="room-hint">Everyone opens this page on their own phone and types the code.</p>
+      <p class="room-hint" id="roomHint">Everyone opens this page on their own phone and types the code.</p>
 
       <div class="mode" id="modeRow">
         <button class="mode-btn" data-mode="teams">Two teams</button>
@@ -53,6 +60,11 @@
 
       <button class="btn big" id="startBtn">Start</button>
       <p class="status" id="lobbyStatus"></p>
+      <div class="tv-row" id="tvRow">
+        <a class="link" id="tvLink" target="_blank" rel="noopener">📺 Show it on a TV</a>
+        <span>Open that link on a TV or laptop everyone can see. It shows the dial big, never the target.</span>
+      </div>
+      <p class="tv-on" id="tvOn"></p>
       <button class="link" id="leaveBtn">Leave room</button>
     </div>
   </section>
@@ -82,12 +94,14 @@
 
     <div class="actions" id="actions"></div>
 
-    <div class="who" id="who"></div>
   </section>
+
+  <!-- The end of a game: who won, the awards, every round -->
+  <section class="over" id="over" hidden></section>
 
   <div class="toast" id="toast" hidden></div>
 
   <script src="../../you.js?v=2"></script>
-  <script type="module" src="app.js?v=1"></script>
+  <script type="module" src="app.js?v=4"></script>
 </body>
 </html>
