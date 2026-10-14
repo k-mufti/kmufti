@@ -481,6 +481,7 @@ function renderScore() {
   }).join("");
 }
 
+let cardShown = "";     // the card whose colours are on the page
 function renderTable() {
   const psy = nameOf(S.psychic);
   const actions = $("actions");
@@ -500,6 +501,17 @@ function renderTable() {
     document.body.style.setProperty("--right", b);
   }
   document.body.classList.toggle("split", !!S.card);
+  // a new card: its two colours sweep in from the edges and meet in the middle
+  const key = S.card ? S.card.join("|") + S.round : "";
+  if (key !== cardShown) {
+    cardShown = key;
+    document.body.classList.remove("split-in");
+    if (key) {
+      void document.body.offsetWidth;            // restart the sweep
+      document.body.classList.add("split-in");
+      if (matchMedia("(min-width: 900px)").matches) snd.swoosh(0.8);
+    }
+  }
   $("clue").hidden = !S.clue;
   $("clue").innerHTML = S.clue ? `<small>${esc(psy)}'s clue</small>${esc(S.clue)}` : "";
 

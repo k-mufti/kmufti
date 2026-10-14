@@ -468,7 +468,20 @@ body.tv #home .field, body.tv #home .starts, body.tv #home .or, body.tv #home .j
   .drum { font-size: 30px; }
   /* the card's two colours split the whole page, its two ends written
      big on either side of the dial */
-  body.split { background: linear-gradient(90deg, var(--left) 50%, var(--right) 50%); }
+  body.split::before, body.split::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    z-index: -1;
+  }
+  body.split::before { left: 0; background: var(--left); }
+  body.split::after { right: 0; background: var(--right); }
+  body.split-in::before { animation: sweepL 0.75s cubic-bezier(.2, .8, .2, 1) both; }
+  body.split-in::after { animation: sweepR 0.75s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes sweepL { from { transform: translateX(-100%); } }
+  @keyframes sweepR { from { transform: translateX(100%); } }
   body.split .back, body.split .logo { color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
   body.split .score, body.split .banner, body.split .clue {
     justify-self: center;
