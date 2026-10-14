@@ -405,7 +405,7 @@
      The conveyor belt
 
      A second way to reach the pieces: every loose piece that isn't joined to
-     anything rides a slow belt under the table, while the table keeps its
+     anything sits on a belt under the table (scroll it to see more), while the table keeps its
      scatter exactly as it was. Same pieces, not copies - hover one on the
      belt and it lights up where it lies; pick it up off the belt and that
      piece leaves its spot for your hand. Placed and joined pieces drop off,
@@ -421,8 +421,6 @@
   let edgesOnly = false;
   let beltOrder = [];          // the order pieces ride in: shuffled, never the grid
   let beltOffset = 0;          // px scrolled
-  let beltHover = false;
-  const BELT_SPEED = 26;       // px a second
   const beltOn = () => !beltFolded;
 
   function showFold() {
@@ -488,7 +486,7 @@
   function buildBelt() {
     if (!board) { beltTrack.textContent = ""; beltCount.textContent = ""; return; }
     // folded: leave the pieces where they are so they can fade out (and back
-    // in when it opens); it stops moving on its own while folded
+    // in when it opens)
     if (!beltOn()) return;
     const want = beltOrder.filter((i) => pieces[i] && !pieces[i].placed && membersOf(i).length === 1 &&
       !holders.has(i) && !inDrag(i) && (!edgesOnly || isEdge(i)));
@@ -499,17 +497,11 @@
     for (const i of want) if (!have.has(i)) beltTrack.appendChild(beltPiece(i));
     beltCount.textContent = want.length ? `${want.length} loose` : (edgesOnly ? "no loose edges" : "nothing loose");
     beltEl.classList.toggle("empty", !want.length);
+    slideBelt(0);                         // settle it: centred if it all fits
   }
 
-  // The belt moves on its own, pauses under your hand, and scrolls with a
-  // wheel or trackpad. Items loop round: whoever leaves on the left comes
-  // back in on the right.
-  let beltLast = performance.now();
-  function beltTick(now) {
-    const dt = Math.min(0.1, (now - beltLast) / 1000); beltLast = now;
-    if (beltOn() && !beltHover && !drag && beltTrack.children.length) slideBelt(BELT_SPEED * dt);
-    requestAnimationFrame(beltTick);
-  }
+  // The belt stays still until you scroll it with a wheel or trackpad.
+  // Items loop round: whoever leaves on the left comes back in on the right.
   function slideBelt(dx) {
     const fits = beltTrack.scrollWidth <= beltWindow.clientWidth;
     beltTrack.classList.toggle("fits", fits);
@@ -530,9 +522,7 @@
     beltTrack.style.transform = `translateX(${-beltOffset.toFixed(1)}px)`;
     beltEl.style.setProperty("--tread", `${-beltOffset.toFixed(1)}px`);
   }
-  requestAnimationFrame(beltTick);
-  beltWindow.addEventListener("pointerenter", () => { beltHover = true; });
-  beltWindow.addEventListener("pointerleave", () => { beltHover = false; });
+  window.addEventListener("resize", () => slideBelt(0));
   beltWindow.addEventListener("wheel", (e) => {
     e.preventDefault();
     slideBelt(Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY);
