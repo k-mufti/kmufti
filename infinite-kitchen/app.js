@@ -575,13 +575,21 @@
   window.kitchenReady = () => { sceneReady = true; restoreFood(); };
 
   // Dragging a piece of food: out of the pantry, or up off the board.
-  function carryFood(e, id) {
+  // Food already on the board isn't lifted until the pointer actually moves:
+  // picking it up on press made a plain click drop it back with a bounce
+  // before the close look.
+  function carryFood(e, id, lifted = true) {
     if (e.button > 0) return;
     e.preventDefault();
     const sx = e.clientX, sy = e.clientY;
     let trail = [{ x: sx, y: sy, t: performance.now() }];
     let over = null;
     const move = (ev) => {
+      if (!lifted) {
+        if (Math.hypot(ev.clientX - sx, ev.clientY - sy) < DRAG_START_PX) return;
+        food().grab(id, ev.clientX, ev.clientY);
+        lifted = true;
+      }
       trail.push({ x: ev.clientX, y: ev.clientY, t: performance.now() });
       if (trail.length > 12) trail.shift();
       food().hold(ev.clientX, ev.clientY);
@@ -603,13 +611,11 @@
       const hurl = f.speed > HARD_PX_S && f.dwell < DWELL_MS;
       const aimed = !hurl;
 
-      // never moved: a click. Set it back down and, unless a second tap
-      // follows (that makes another one), take a close look at it.
-      if (trail.every((p) => Math.hypot(p.x - sx, p.y - sy) < DRAG_START_PX) && Math.hypot(ev.clientX - sx, ev.clientY - sy) < DRAG_START_PX) {
-        food().drop(id);
-        saveFood();
-        clearTimeout(lookTimer);
-        lookTimer = setTimeout(() => lookAt({ type: "food", id }), 280);
+      // never moved: a click. Set it back down if it was lifted and take a
+      // close look at it straight away (a quick second tap still makes a copy).
+      if (!lifted || (trail.every((p) => Math.hypot(p.x - sx, p.y - sy) < DRAG_START_PX) && Math.hypot(ev.clientX - sx, ev.clientY - sy) < DRAG_START_PX)) {
+        if (lifted) { food().drop(id); saveFood(); }
+        lookAt({ type: "food", id });
         return;
       }
       if (overPantry(ev)) { food().remove(id); saveFood(); return; }        // back in the pantry: gone
@@ -747,25 +753,25 @@
     const now = performance.now();
     if (lastFoodTap.id === id && now - lastFoodTap.at < 350) {
       lastFoodTap = { id: null, at: 0 };
-      clearTimeout(lookTimer);              // it was a double-tap, not a look
-      const p = food().screenPos(id);
-      const made = food().spawnHeld(food().name(id), kindOf(food().name(id)), p.x + 14, p.y - 10);
-      food().drop(made);
-      saveFood();
+      copyFood(id);
       return;
     }
     lastFoodTap = { id, at: now };
-    food().grab(id, e.clientX, e.clientY);
-    carryFood(e, id);
+    carryFood(e, id, false);
   });
   let lastFoodTap = { id: null, at: 0 };
+  function copyFood(id) {
+    const p = food().screenPos(id);
+    const made = food().spawnHeld(food().name(id), kindOf(food().name(id)), p.x + 14, p.y - 10);
+    food().drop(made);
+    saveFood();
+  }
 
   /* ---------- a close look ----------
      A plain click on a tool, a cookbook or a piece of food brings it right up
      to the camera (scene3d.js) with the room blurred behind, and a card of
      notes beside it: for food, what made it; for a tool, what it does, with
      a few things you've already made with it. */
-  let lookTimer = 0;
   const TOOL_NOTES = {
     Heat: "A gas hob. Put food on it to cook it in the pan: toast it, fry it, melt it, sear it. Leave something on too long and it burns.",
     Bake: "Dry heat, all the way round. Dough rises into bread, batter sets into cake, and raw things come out golden.",
@@ -841,7 +847,19 @@
     await k3()?.closeInspect();
     lookCard.hidden = lookShade.hidden = true;
   }
-  lookShade.addEventListener("pointerdown", (e) => { e.preventDefault(); e.stopPropagation(); closeLook(); });
+  // The close look opens on the first tap, so a quick second tap lands here:
+  // that was a double-tap, so put it back and make another one.
+  lookShade.addEventListener("pointerdown", async (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const tap = lastFoodTap;
+    if (tap.id && performance.now() - tap.at < 350) {
+      lastFoodTap = { id: null, at: 0 };
+      await closeLook();
+      copyFood(tap.id);
+      return;
+    }
+    closeLook();
+  });
   lookCard.addEventListener("pointerdown", (e) => { e.stopPropagation(); closeLook(); });
   window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLook(); });
   room.addEventListener("contextmenu", (e) => {

@@ -18,7 +18,8 @@
 //
 // Two limits keep the set honest, and the build fails past either:
 //   - "nothing happens" (Water + Knife = Water) has to be marked [nothing]
-//     on purpose, and stays under NOTHING_MAX of all combos
+//     on purpose, and stays under NOTHING_MAX of all combos (raised from
+//     5% to 8% on 2026-10-13, so every 1-step pair can have an answer)
 //   - the bin stays under TRASH_MAX of all combos
 "use strict";
 const fs = require("fs");
@@ -30,7 +31,7 @@ const TOOLS = {
 };
 const ROOM = Object.fromEntries(Object.entries(TOOLS).map(([room, tech]) => [tech, room]));
 const KINDS = new Set(["ingredient", "dish", "drink", "trash"]);
-const NOTHING_MAX = 0.05, TRASH_MAX = 0.03, FEW_USES = 3, DEPTHS = 4;
+const NOTHING_MAX = 0.08, TRASH_MAX = 0.03, FEW_USES = 3, DEPTHS = 4;
 const LIST = process.argv.includes("--list");
 
 const items = {};
@@ -234,12 +235,14 @@ const json = JSON.stringify(out) + "\n";
 fs.writeFileSync(path.join(__dirname, "recipes.json"), json);
 
 // Browsers keep recipes.json (and app.js) for an hour, so a new set needs a
-// new address or players keep the old one. Stamp both with a hash of the set.
+// new address or players keep the old one. Stamp recipes.json with a hash of the set.
 const stamp = require("crypto").createHash("sha1").update(json).digest("hex").slice(0, 8);
 const restamp = (file, re, to) => {
   const f = path.join(__dirname, file), was = fs.readFileSync(f, "utf8"), now = was.replace(re, to);
   if (now !== was) fs.writeFileSync(f, now);
 };
 restamp("app.js", /recipes\.json\?v=[\w]+/, `recipes.json?v=${stamp}`);
-restamp("index.html", /app\.js\?v=[\w]+/, `app.js?v=${stamp}`);
+// app.js's own stamp hashes the file itself, so code changes get a new address too
+const appStamp = require("crypto").createHash("sha1").update(fs.readFileSync(path.join(__dirname, "app.js"))).digest("hex").slice(0, 8);
+restamp("index.html", /app\.js\?v=[\w]+/, `app.js?v=${appStamp}`);
 console.log("\nwrote recipes.json");
