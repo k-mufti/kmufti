@@ -169,6 +169,57 @@
     }).catch(() => { /* offline or no backend: the local notebook still has it */ });
   }
 
+  /* ---------- burning something ----------
+     Burnt isn't handed back as a piece of food: the food goes up in a puff
+     of black smoke with a sizzle, and it still counts toward the bin. */
+  const BURNT = "Burnt";
+  function burn(p, what, from) {
+    if (p) {
+      const cloud = document.createElement("div");
+      cloud.className = "smoke";
+      cloud.style.left = p.x + "px";
+      cloud.style.top = p.y + "px";
+      for (let i = 0; i < 7; i++) {
+        const puff = document.createElement("i");
+        puff.style.setProperty("--dx", (Math.random() - 0.5) * 70 + "px");
+        puff.style.setProperty("--s", 0.7 + Math.random() * 0.7);
+        puff.style.animationDelay = i * 45 + "ms";
+        cloud.appendChild(puff);
+      }
+      document.body.appendChild(cloud);
+      setTimeout(() => cloud.remove(), 1600);
+    }
+    sizzle();
+    toast(`You burnt the <strong>${esc(what)}</strong>.`, "burnt");
+    discover(BURNT, from);
+  }
+  // a short hiss and crackle, made on the spot (no sound file needed)
+  let audio = null;
+  function sizzle() {
+    try {
+      audio ||= new (window.AudioContext || window.webkitAudioContext)();
+      const ac = audio, t = ac.currentTime, len = 0.9;
+      const buf = ac.createBuffer(1, ac.sampleRate * len, ac.sampleRate), d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) {
+        const crackle = Math.random() < 0.004 ? (Math.random() * 2 - 1) * 3 : 0;
+        d[i] = (Math.random() * 2 - 1) * 0.5 + crackle;
+      }
+      const src = ac.createBufferSource(); src.buffer = buf;
+      const hp = ac.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 2500;
+      const g = ac.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.35, t + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+      src.connect(hp).connect(g).connect(ac.destination);
+      src.start(t);
+      // and a soft low "poof"
+      const o = ac.createOscillator(), og = ac.createGain();
+      o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(50, t + 0.25);
+      og.gain.setValueAtTime(0.25, t); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+      o.connect(og).connect(ac.destination); o.start(t); o.stop(t + 0.3);
+    } catch { /* no sound, no matter */ }
+  }
+
   /* ---------- the room: tools and cookbooks ---------- */
   function renderRoom() {
     // every tool is out from the start: you find food, not tools
@@ -291,7 +342,12 @@
   function combine(moving, still) {
     const a = moving.dataset.name, b = still.dataset.name;
     const result = resultFor(a, b);
-    if (result) {
+    if (result === BURNT) {
+      const c = center(still);
+      moving.remove(); still.remove();
+      burn(c, `${a} and ${b}`, [a, b]);
+      renderShelf();
+    } else if (result) {
       const c = center(still);
       const cr = counter.getBoundingClientRect();
       moving.remove(); still.remove();
@@ -322,6 +378,14 @@
       if (t.isConnected) restart(t, "shake");
       toast(`Nobody has cooked <strong>${esc(a)} + ${esc(withName)}</strong> yet. It's in the notebook.`, "miss");
       noteMissing(a, withName);
+      save();
+      return;
+    }
+    if (result === BURNT) {
+      const c = center(t);
+      t.remove();
+      burn(c, a, [a, withName]);
+      renderShelf();
       save();
       return;
     }
@@ -525,6 +589,7 @@
     const p = food().screenPos(idB);
     food().remove(idA);
     food().remove(idB);
+    if (result === BURNT) { burn(p, `${a} and ${b}`, [a, b]); renderShelf(); saveFood(); return; }
     if (kindOf(result) !== "technique") dropAtPointer(result, p);
     if (result !== a || result !== b) found(result, a, b);
     $("hint").classList.add("gone");
@@ -545,6 +610,7 @@
     }
     const p = food().screenPos(id);
     food().remove(id);
+    if (result === BURNT) { burn(p, a, [a, withName]); renderShelf(); saveFood(); return; }
     if (kindOf(result) !== "technique") dropAtPointer(result, p);
     if (result !== a) found(result, a, withName);
     $("hint").classList.add("gone");
@@ -1068,7 +1134,7 @@
   window.addEventListener("resize", layout);
 
   /* ---------- start ---------- */
-  fetch("recipes.json?v=a0ba716a")
+  fetch("recipes.json?v=1373dc65")
     .then((r) => r.json())
     .then((data) => {
       DATA = data;

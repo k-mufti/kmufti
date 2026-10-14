@@ -2562,3 +2562,1530 @@ Steamed Rice + Egg = Fried Rice
 Sandwich + Egg = Egg Salad Sandwich
 Taco + Pineapple = Al Pastor
 Salad + Pasta = Pasta Salad
+
+# Round 10: sauces turn a dish into its named version
+Fried Chicken + Buffalo Sauce = Buffalo Wings
+Fried Chicken + BBQ Sauce = BBQ Chicken
+Fried Chicken + Soy Sauce = Korean Fried Chicken
+Steak + Soy Sauce = Bulgogi
+Nachos + Salsa = Loaded Nachos
+Fried Egg + Salsa = Huevos Rancheros [dish]
+Tortilla Chips + Hot Sauce = Takis
+
+# Round 10: toppings name the pizza or burger
+Pizza + Bell Pepper = Veggie Pizza
+Pizza + Egg = Breakfast Pizza [dish]
+Pizza + Fried Egg = Breakfast Pizza
+Pizza + Scrambled Eggs = Breakfast Pizza
+Cheeseburger + Bacon = Bacon Burger
+Burger + Fried Fish = Filet-O-Fish
+
+# Round 10: leftover remixes
+Leftovers + Steamed Rice = Fried Rice
+Leftovers + Tortilla = Burrito
+Leftovers + Bread = Sandwich
+Leftovers + Egg = Frittata
+Leftovers + Pot = Stew
+Leftovers + Pie Crust = Meat Pie
+Leftovers + Clock = Spoiled
+Thanksgiving Dinner + Bread = Sandwich
+
+# Round 10: real fusion food
+Taco + Bulgogi = Korean BBQ Tacos [dish]
+Burger + Ramen = Ramen Burger [dish]
+Cookie + Croissant = Crookie [dish]
+Brownie + Cookie = Brookie
+
+# Round 10: classic pairings
+Chili + Nachos = Loaded Nachos
+Steak + Baked Potato = Meat and Potatoes
+Steak + Mashed Potatoes = Meat and Potatoes
+Pie + Ice Cream = Pie a la Mode [dish]
+Corn on the Cob + Cheese = Elote
+Roast Turkey + Stuffing = Thanksgiving Dinner
+Roast Turkey + Cranberry Sauce = Thanksgiving Dinner
+Fried Chicken + Mashed Potatoes = Chicken Dinner
+Meatballs + Bread = Meatball Sub
+Ice Cream + Cherry = Sundae
+Ice Cream + Nuts = Sundae
+Coffee + Pumpkin = Pumpkin Spice Latte
+Coffee + Caramel = Caramel Macchiato
+Coffee + Vanilla = Vanilla Latte
+Yogurt + Oats = Overnight Oats
+Water + Matcha = Green Tea
+
+# Round 10: more remixes, toppings and fusion
+Cheeseburger + French Fries = Combo Meal
+Cheeseburger + Soda = Combo Meal
+Pizza + Meatballs = Meat Lover's Pizza
+Cold Pizza + Scrambled Eggs = Breakfast Pizza
+Fried Chicken + Steamed Rice = Chicken and Rice
+Steak + Steamed Rice = Rice and Meat
+Bulgogi + Tortilla = Korean BBQ Tacos
+Taco + Fried Fish = Fish Tacos
+Bread + Fried Fish = Fish Sandwich
+Croissant + Waffle = Croffle [dish]
+Croissant + Muffin = Cruffin [dish]
+Donut + Mochi = Mochi Donut [dish]
+
+## Feast (2026-10-13): dishes that go together
+# The opposite of Slop: two dishes that belong on the same table make
+# something bigger. Finger foods make a Platter, two Platters (or a holiday
+# table) make a Feast, and Feasts make a Buffet. Only pairs that really get
+# served together - this is never a default for any two dishes.
+
+# Finger foods: a Platter
+Buffalo Wings + Mozzarella Sticks = Platter [dish]
+Mozzarella Sticks + Onion Rings = Platter
+Deviled Eggs + Pigs in a Blanket = Platter
+Charcuterie Board + Shrimp Cocktail = Platter
+Charcuterie Board + Cheese and Crackers = Platter
+Chips and Guac + Chips and Salsa = Platter
+Pakora + Samosa = Platter
+Egg Rolls + Spring Rolls = Platter
+
+# Small plates have their own names where they come from
+Falafel + Hummus and Pita = Mezze [dish]
+Baba Ganoush + Tabbouleh = Mezze
+Platter + Middle Eastern = Mezze
+Bao + Potstickers = Dim Sum [dish]
+Platter + East Asian = Dim Sum
+Platter + Indian = Thali [dish]
+
+# Two platters, or a holiday table: a Feast
+Platter + Platter = Feast [dish]
+Ham + Roast Turkey = Feast
+Pumpkin Pie + Thanksgiving Dinner = Feast
+Brisket + Ribs = Feast
+Platter + Barbecue = Feast
+
+# A cookbook sets the table its own way
+Feast + American = Thanksgiving Dinner
+Feast + Middle Eastern = Mansaf
+Feast + East Asian = Hot Pot [dish]
+
+# The biggest table there is
+Feast + Feast = Buffet [dish]
+Feast + Platter = Buffet
+
+Middle Eastern: Mezze
+East Asian: Dim Sum, Hot Pot
+Indian: Thali
+
+# Round 11: chip flavours
+Potato Chips + Sour Cream = Sour Cream and Onion Chips [dish]
+Potato Chips + Onion = Sour Cream and Onion Chips
+Potato Chips + Pickles = Dill Pickle Chips [dish]
+Potato Chips + Ketchup = Ketchup Chips [dish]
+Doritos + Ranch = Cool Ranch Doritos [dish]
+Cheetos + Hot Sauce = Flamin' Hot Cheetos
+Fritos + Chili = Frito Pie [dish]
+
+# Round 11: candy store mashups
+Reese's + Cereal = Reese's Puffs [dish]
+Ice Cream + Reese's = McFlurry
+Oreo + Milk = Milk and Cookies
+Candy Bar + Peanuts = Snickers
+Candy Bar + Crackers = Kit Kat
+Candy Bar + Toffee = Heath Bar
+Chocolate + Coconut = Mounds [dish]
+Chocolate + Peppermint = York Peppermint Pattie [dish]
+Chocolate + Caramel = Rolo [dish]
+Licorice + Strawberry = Twizzlers [dish]
+Gummy Bears + Lemon = Sour Patch Kids
+Candy + Soda = Pop Rocks [dish]
+Animal Crackers + Frosting = Dunkaroos [dish]
+
+# Round 11: more real fusion
+Taco + Beef Stew = Birria Tacos [dish]
+Birria Tacos + Ramen = Birria Ramen [dish]
+Corn Dog + Cheese = Korean Corn Dog [dish]
+Dumplings + Chicken Soup = Wonton Soup
+
+# Round 11: cereal aisle and odds
+Cereal + Peanut Butter = Reese's Puffs
+Rice Krispies + Chocolate = Cocoa Puffs
+Mac and Cheese + Breadcrumbs = Baked Mac and Cheese
+English Muffin + Egg = Egg McMuffin
+Curry + Chicken = Chicken Tikka Masala
+Breakfast Pizza + Knife = Pizza Slice
+Pizza Burger + Knife = Sliders
+
+## Step 1 to 100%, batch 1 (2026-10-13): the six elements
+# Every pair among the first 54 items gets an answer. The closest real food
+# comes first; only when there truly isn't one, a far-fetched combo, a pun
+# that makes sense, or the item back unchanged.
+
+# Water
+Water + Seaweed = Seaweed Soup
+Water + Bee = Honey
+# masa: corn and water is what tortillas are made of
+Water + Corn = Tortilla
+# soggy
+Water + Popcorn = Slop
+# salt water plus water: back to the sea
+Water + Brine = Ocean
+# jerky soaks back into meat
+Water + Jerky = Meat
+Water + Salted Caramel = Caramel Sauce
+Water + Steam = Boiling Water
+# bircher muesli is soaked oats
+Water + Granola = Muesli
+# gruel
+Water + Porridge = Slop
+Water + Vegetable Soup = Broth
+Water + Stir-Fry = Vegetable Soup
+# water on hot coals
+Water + Barbecue = Steam
+# pan juices and water: gravy
+Water + Roast = Gravy
+Water + Ocean = Ocean [nothing]
+Water + Boiling Water = Water [nothing]
+Water + Sparkling Water = Water [nothing]
+Water + Green Smoothie = Green Smoothie [nothing]
+Water + Broth = Broth [nothing]
+Water + Kale Chips = Kale Chips [nothing]
+
+# Grain
+# rice is a grain grown in water
+Grain + Ocean = Rice
+Grain + Tree = Farm
+Grain + Candy = Granola Bar
+# pretzel salt is rock salt
+Grain + Rock Salt = Pretzel
+Grain + Cereal = Granola
+# grain-fed
+Grain + Cow = Beef
+Grain + Seaweed = Rice Ball
+Grain + Bee = Honey Nut Cheerios
+Grain + Flour = Whole Wheat Bread
+Grain + Corn = Cornmeal
+Grain + Caramel = Caramel Corn
+Grain + Ice = Overnight Oats
+Grain + Popcorn = Puffed Rice
+Grain + Hot Dog = Corn Dog
+Grain + Brine = Crackers
+Grain + Jerky = Trail Mix
+Grain + Salted Caramel = Granola Bar
+# couscous is steamed grain
+Grain + Steam = Couscous
+Grain + Sparkling Water = Beer
+Grain + Granola = Cereal
+Grain + Porridge = Oatmeal
+Grain + Oats = Muesli
+# whiskey is distilled from a grain beer
+Grain + Beer = Whiskey
+Grain + Vegetable Soup = Rice Soup
+Grain + Stir-Fry = Fried Rice
+Grain + Herbs = Stuffing
+Grain + Green Smoothie = Wheatgrass
+Grain + Flower = Sunflower Seeds
+Grain + Mint = Couscous
+Grain + Barbecue = Corn on the Cob
+Grain + Roast = Dinner Roll
+Grain + Broth = Porridge
+# the filler in meatloaf
+Grain + Meat = Meatloaf
+Grain + Sugar Cubes = Cereal
+Grain + Powdered Sugar = Frosted Flakes
+Grain + Rock Candy = Lucky Charms
+Grain + Kale Chips = Kale Chips [nothing]
+
+# Plant
+Plant + Rock Salt = Seaweed
+Plant + Fish = Seaweed
+# sap
+Plant + Syrup = Maple Syrup
+# hens eat greens and lay eggs
+Plant + Hen = Egg
+Plant + Cereal = Granola
+Plant + Seaweed = Seaweed Salad
+# spinach pasta
+Plant + Flour = Veggie Pasta
+Plant + Corn = Succotash
+Plant + Crackers = Wheat Thins
+Plant + Caramel = Caramel Apple
+# put it back
+Plant + Popcorn = Corn
+# mushroom jerky is the vegan kind
+Plant + Jerky = Mushroom
+Plant + Salted Caramel = Caramel Apple
+Plant + Sparkling Water = LaCroix
+Plant + Granola = Trail Mix
+Plant + Porridge = Oatmeal
+# plant milk
+Plant + Oats = Oat Milk
+Plant + Beer = Cider
+Plant + Kale Chips = Kale
+# the leafy green of a stir-fry
+Plant + Stir-Fry = Bok Choy
+Plant + Herbs = Basil
+Plant + Green Smoothie = Spinach
+# an artichoke is a flower bud
+Plant + Flower = Artichoke
+Plant + Mint = Herbs
+Plant + Barbecue = Roasted Vegetables
+Plant + Roast = Pot Roast
+Plant + Sugar Cubes = Sugarcane
+Plant + Powdered Sugar = Sugarcane
+Plant + Rock Candy = Licorice
+Plant + Vegetable Soup = Vegetable Soup [nothing]
+
+# Animal
+Animal + Wheat = Hen
+Animal + Rock Salt = Jerky
+Animal + Syrup = Bee
+# Tony the Tiger
+Animal + Cereal = Frosted Flakes
+Animal + Seaweed = Seafood
+Animal + Flour = Meat Pie
+# ice fishing
+Animal + Ice = Fish
+Animal + Popcorn = Popcorn Chicken
+# put it back
+Animal + Hot Dog = Pig
+Animal + Brine = Corned Beef
+Animal + Salted Caramel = Turtles
+Animal + Steam = Broth
+# a water bird
+Animal + Sparkling Water = Duck
+# chicken feed
+Animal + Granola = Hen
+# Goldilocks and the three bears
+Animal + Porridge = Bear
+# mares eat oats and does eat oats
+Animal + Oats = Goat
+# beer brats
+Animal + Beer = Sausage
+Animal + Kale Chips = Rabbit
+Animal + Vegetable Soup = Stew
+Animal + Stir-Fry = Chicken Stir-Fry
+Animal + Herbs = Roast Chicken
+Animal + Green Smoothie = Cow
+Animal + Barbecue = Ribs
+Animal + Roast = Roast Beef
+Animal + Broth = Chicken Soup
+Animal + Sugar Cubes = Bee
+Animal + Powdered Sugar = Bee
+Animal + Rock Candy = Gummy Bears
+
+# Salt
+# olive trees, and olives cured in salt
+Salt + Tree = Olive
+Salt + Syrup = Salted Caramel
+Salt + Hen = Chicken
+Salt + Cereal = Crackers
+Salt + Bee = Honey
+# salted fish eggs
+Salt + Egg = Caviar
+Salt + Hot Dog = Pretzel Dog
+Salt + Brine = Rock Salt
+Salt + Jerky = Beef Jerky
+# evaporate it
+Salt + Steam = Sea Salt
+# electrolytes
+Salt + Sparkling Water = Gatorade
+Salt + Granola = Trail Mix
+# oatcakes
+Salt + Oats = Crackers
+Salt + Beer = Pretzel
+Salt + Stir-Fry = Soy Sauce
+# capers come packed in salt
+Salt + Flower = Capers
+Salt + Mint = Seasoning
+# Texas brisket is salt, pepper and smoke
+Salt + Barbecue = Brisket
+# salt-crusted prime rib
+Salt + Roast = Prime Rib
+Salt + Sugar Cubes = Salted Caramel
+Salt + Powdered Sugar = Salted Caramel
+# they look the same
+Salt + Rock Candy = Rock Salt
+Salt + Salted Caramel = Salted Caramel [nothing]
+Salt + Kale Chips = Kale Chips [nothing]
+Salt + Vegetable Soup = Vegetable Soup [nothing]
+Salt + Green Smoothie = Green Smoothie [nothing]
+Salt + Porridge = Porridge [nothing]
+Salt + Broth = Broth [nothing]
+
+# Sugar
+Sugar + Hen = Peeps
+Sugar + Seaweed = Seaweed Snacks
+Sugar + Caramel = Toffee
+Sugar + Hot Dog = Corn Dog
+# bread-and-butter pickles are sweet
+Sugar + Brine = Pickles
+Sugar + Jerky = Teriyaki
+Sugar + Salted Caramel = Caramel
+# spun sugar
+Sugar + Steam = Cotton Candy
+Sugar + Granola = Granola Bar
+Sugar + Porridge = Cream of Wheat
+Sugar + Oats = Oatmeal Cookie
+Sugar + Beer = Soda
+Sugar + Kale Chips = Apple Chips
+Sugar + Vegetable Soup = Tomato Soup
+Sugar + Stir-Fry = Teriyaki
+Sugar + Herbs = Herbal Tea
+Sugar + Green Smoothie = Smoothie
+# nectar
+Sugar + Flower = Honey
+# glazed ham
+Sugar + Roast = Ham
+# sweet broth is just wrong
+Sugar + Broth = Slop
+Sugar + Sugar Cubes = Candy
+# Pixy Stix are flavoured powdered sugar
+Sugar + Powdered Sugar = Pixy Stix
+Sugar + Rock Candy = Jawbreaker
+
+## Step 1 to 100%, batch 2 (2026-10-13): Ocean, Wheat, Tree, Farm
+
+# Ocean
+Ocean + Wheat = Oyster Crackers
+# palm trees by the sea
+Ocean + Tree = Coconut
+# farmed salmon
+Ocean + Farm = Salmon
+Ocean + Rock Salt = Sea Salt
+Ocean + Syrup = Saltwater Taffy
+Ocean + Hen = Duck
+# surf and turf, literally
+Ocean + Cow = Surf and Turf
+Ocean + Flour = Fish Sticks
+# corn goes in every seafood boil
+Ocean + Corn = Seafood Boil
+# the lobster roll is a hot dog bun full of lobster
+Ocean + Hot Dog = Lobster
+Ocean + Brine = Sea Salt
+Ocean + Jerky = Anchovies
+Ocean + Salted Caramel = Saltwater Taffy
+Ocean + Steam = Sea Salt
+# Cap'n Crunch sails the seven seas
+Ocean + Granola = Cap'n Crunch
+Ocean + Porridge = Seafood Soup
+Ocean + Beer = Beer-Battered Fish
+# chips from the sea
+Ocean + Kale Chips = Seaweed Snacks
+Ocean + Vegetable Soup = Seaweed Soup
+Ocean + Stir-Fry = Shrimp
+Ocean + Herbs = Seasoning
+Ocean + Green Smoothie = Seaweed
+Ocean + Barbecue = Grilled Salmon
+Ocean + Roast = Baked Fish
+Ocean + Sugar Cubes = Saltwater Taffy
+Ocean + Powdered Sugar = Saltwater Taffy
+# crystals from the sea
+Ocean + Rock Candy = Sea Salt
+Ocean + Oven = Sea Salt
+Ocean + Knife = Crab
+Ocean + Blender = Imitation Crab
+Ocean + Seaweed = Seaweed [nothing]
+Ocean + Bee = Bee [nothing]
+Ocean + Sparkling Water = Ocean [nothing]
+Ocean + Oats = Oats [nothing]
+Ocean + Flower = Flower [nothing]
+Ocean + Mint = Mint [nothing]
+
+# Wheat
+# a field of wheat
+Wheat + Wheat = Farm
+# the mill on the farm
+Wheat + Farm = Flour
+Wheat + Candy = Frosted Mini-Wheats
+Wheat + Rock Salt = Saltines
+# rice and pasta: the San Francisco treat
+Wheat + Rice = Rice-A-Roni
+Wheat + Vegetables = Veggie Sandwich
+Wheat + Fish = Goldfish
+Wheat + Syrup = Granola
+Wheat + Hen = Egg
+Wheat + Cow = Beef
+# a pastry with fruit inside
+Wheat + Fruit = Pop-Tart
+Wheat + Seaweed = Seaweed Snacks
+# graham crackers are whole wheat and honey
+Wheat + Bee = Graham Crackers
+Wheat + Flour = Whole Wheat Bread
+Wheat + Corn = Cornbread
+# a cookie with caramel
+Wheat + Caramel = Twix
+Wheat + Ice = Overnight Oats
+Wheat + Popcorn = Cereal
+Wheat + Hot Dog = Pigs in a Blanket
+Wheat + Brine = Pretzel
+Wheat + Jerky = Lunchables
+Wheat + Salted Caramel = Cookie
+# couscous is steamed wheat
+Wheat + Steam = Couscous
+Wheat + Sparkling Water = Beer
+Wheat + Granola = Granola Bar
+Wheat + Oats = Granola
+Wheat + Beer = Whiskey
+Wheat + Kale Chips = Wheat Thins
+Wheat + Vegetable Soup = Croutons
+Wheat + Stir-Fry = Veggie Pasta
+Wheat + Herbs = Stuffing
+Wheat + Green Smoothie = Wheatgrass
+# flower, flour
+Wheat + Flower = Flour
+Wheat + Barbecue = Hamburger Bun
+Wheat + Roast = Gravy
+Wheat + Broth = Dumplings
+Wheat + Meat = Meat Pie
+Wheat + Sugar Cubes = Frosted Mini-Wheats
+Wheat + Powdered Sugar = Frosted Mini-Wheats
+Wheat + Rock Candy = Lucky Charms
+Wheat + Stove = Cereal
+Wheat + Tree = Tree [nothing]
+Wheat + Mint = Mint [nothing]
+Wheat + Fridge = Wheat [nothing]
+
+# Tree
+Tree + Rock Salt = Olive
+Tree + Rice = Wild Rice
+# cedar-plank salmon
+Tree + Fish = Grilled Salmon
+# a nest
+Tree + Hen = Egg
+Tree + Egg = Chick
+# cinnamon is tree bark
+Tree + Cereal = Cinnamon Toast Crunch
+Tree + Blender = Cinnamon
+Tree + Flour = Cinnamon Roll
+Tree + Crackers = Graham Crackers
+# goats climb trees
+Tree + Cow = Goat
+Tree + Caramel = Caramel Apple
+# the stick
+Tree + Ice = Popsicle
+Tree + Hot Dog = Corn Dog
+Tree + Rock Candy = Lollipop
+# popcorn strung on the Christmas tree
+Tree + Popcorn = Popcorn Ball
+Tree + Mint = Candy Cane
+Tree + Brine = Olive
+# hickory-smoked
+Tree + Jerky = Beef Jerky
+Tree + Barbecue = Brisket
+Tree + Meat = Barbecue
+Tree + Stove = Barbecue
+# pecan trees: turtles are pecans and caramel
+Tree + Salted Caramel = Turtles
+# boiling down the sap
+Tree + Steam = Maple Syrup
+Tree + Sugar Cubes = Maple Syrup
+Tree + Powdered Sugar = Maple Syrup
+Tree + Sparkling Water = Coconut Water
+Tree + Granola = Trail Mix
+Tree + Porridge = Oatmeal
+Tree + Oats = Granola
+Tree + Beer = Cider
+Tree + Kale Chips = Apple Chips
+Tree + Vegetable Soup = Cream of Mushroom
+# broccoli is a little tree
+Tree + Stir-Fry = Broccoli
+Tree + Green Smoothie = Avocado
+# chestnuts roasting
+Tree + Roast = Chestnuts
+Tree + Seaweed = Seaweed [nothing]
+Tree + Corn = Corn [nothing]
+Tree + Broth = Broth [nothing]
+Tree + Fridge = Tree [nothing]
+
+# Farm
+Farm + Candy = Candy Corn
+Farm + Rock Salt = Ham
+Farm + Vegetables = Salad
+Farm + Syrup = Sugarcane
+# put it back
+Farm + Cereal = Wheat
+Farm + Hot Dog = Pig
+Farm + Granola = Oats
+Farm + Beer = Barley
+Farm + Kale Chips = Kale
+Farm + Green Smoothie = Spinach
+Farm + Seaweed = Nori
+Farm + Egg = Chick
+Farm + Flour = Biscuit
+Farm + Corn = Cornbread
+Farm + Crackers = Animal Crackers
+Farm + Caramel = Caramel Apple
+# farm-fresh ice cream
+Farm + Ice = Ice Cream
+# the county fair
+Farm + Popcorn = Kettle Corn
+Farm + Brine = Pickles
+Farm + Jerky = Beef Jerky
+Farm + Steam = Steamed Vegetables
+Farm + Boiling Water = Corn on the Cob
+Farm + Sparkling Water = Cider
+Farm + Porridge = Oatmeal
+Farm + Oats = Granola
+Farm + Vegetable Soup = Stew
+Farm + Stir-Fry = Chicken Stir-Fry
+# ranch dressing
+Farm + Herbs = Ranch
+Farm + Mint = Lamb
+Farm + Barbecue = Ribs
+Farm + Roast = Chicken Dinner
+Farm + Broth = Chicken Soup
+Farm + Sugar Cubes = Sugarcane
+Farm + Powdered Sugar = Sugarcane
+Farm + Rock Candy = Candy Corn
+Farm + Pot = Pot Roast
+Farm + Fridge = Milk
+Farm + Salted Caramel = Salted Caramel [nothing]
+
+## Step 1 to 100%, batch 3 (2026-10-13): Candy, Rock Salt, Rice, Vegetables, Fish
+
+# Candy
+Candy + Candy = Candy Bar
+Candy + Rock Salt = Saltwater Taffy
+# candied yams
+Candy + Vegetables = Sweet Potato
+Candy + Syrup = Caramel
+Candy + Seaweed = Saltwater Taffy
+# honeycomb candy
+Candy + Bee = Honeycomb
+Candy + Flour = Sugar Cookie
+# a wafer in chocolate
+Candy + Crackers = Kit Kat
+# fair food
+Candy + Hot Dog = Corn Dog
+# salty and sour
+Candy + Brine = Sour Patch Kids
+Candy + Salted Caramel = Milk Duds
+Candy + Steam = Cotton Candy
+Candy + Boiling Water = Syrup
+Candy + Sparkling Water = Soda
+Candy + Granola = Trail Mix
+Candy + Porridge = Oatmeal
+Candy + Oats = Granola Bar
+Candy + Vegetable Soup = Tomato Soup
+Candy + Meat = Teriyaki
+# anise
+Candy + Herbs = Licorice
+Candy + Green Smoothie = Smoothie
+# the Valentine's Day gift
+Candy + Flower = Chocolate
+Candy + Barbecue = BBQ Sauce
+# glazed
+Candy + Roast = Ham
+# sweet broth
+Candy + Broth = Slop
+Candy + Sugar Cubes = Rock Candy
+Candy + Powdered Sugar = Pixy Stix
+Candy + Rock Candy = Jawbreaker
+Candy + Oven = Toffee
+Candy + Jerky = Jerky [nothing]
+Candy + Beer = Beer [nothing]
+Candy + Kale Chips = Kale Chips [nothing]
+Candy + Stir-Fry = Stir-Fry [nothing]
+
+# Rock Salt
+Rock Salt + Rice = Rice Crackers
+Rock Salt + Fish = Anchovies
+Rock Salt + Syrup = Salted Caramel
+# salt-crusted chicken
+Rock Salt + Hen = Roast Chicken
+Rock Salt + Cereal = Crackers
+# "corned" means cured with coarse grains of salt
+Rock Salt + Cow = Corned Beef
+Rock Salt + Fruit = Olive
+Rock Salt + Seaweed = Seaweed Snacks
+Rock Salt + Bee = Honey
+Rock Salt + Egg = Caviar
+Rock Salt + Flour = Pretzel
+Rock Salt + Corn = Corn Nuts
+Rock Salt + Crackers = Saltines
+Rock Salt + Caramel = Salted Caramel
+Rock Salt + Popcorn = Movie Theater Popcorn
+Rock Salt + Hot Dog = Pretzel Dog
+Rock Salt + Jerky = Beef Jerky
+Rock Salt + Steam = Salt
+Rock Salt + Boiling Water = Brine
+Rock Salt + Sparkling Water = Gatorade
+Rock Salt + Granola = Trail Mix
+Rock Salt + Oats = Crackers
+Rock Salt + Beer = Pretzel
+Rock Salt + Stir-Fry = Soy Sauce
+Rock Salt + Herbs = Seasoning
+Rock Salt + Mint = Seasoning
+Rock Salt + Flower = Capers
+Rock Salt + Barbecue = Brisket
+Rock Salt + Roast = Prime Rib
+Rock Salt + Meat = Jerky
+Rock Salt + Sugar Cubes = Salted Caramel
+Rock Salt + Powdered Sugar = Salted Caramel
+# the old-fashioned ice cream maker: ice packed in rock salt
+Rock Salt + Fridge = Ice Cream
+Rock Salt + Rock Salt = Rock Salt [nothing]
+Rock Salt + Brine = Brine [nothing]
+Rock Salt + Salted Caramel = Salted Caramel [nothing]
+Rock Salt + Porridge = Porridge [nothing]
+Rock Salt + Kale Chips = Kale Chips [nothing]
+Rock Salt + Vegetable Soup = Vegetable Soup [nothing]
+Rock Salt + Green Smoothie = Green Smoothie [nothing]
+Rock Salt + Broth = Broth [nothing]
+Rock Salt + Rock Candy = Rock Salt [nothing]
+Rock Salt + Oven = Rock Salt [nothing]
+Rock Salt + Pot = Rock Salt [nothing]
+
+# Rice
+Rice + Syrup = Sweet Rice
+Rice + Salted Caramel = Sweet Rice
+Rice + Sugar Cubes = Sweet Rice
+Rice + Powdered Sugar = Sweet Rice
+# honey rice cakes
+Rice + Bee = Rice Cakes
+Rice + Flour = Rice Flour
+Rice + Corn = Fried Rice
+Rice + Caramel = Rice Pudding
+Rice + Porridge = Rice Pudding
+Rice + Ice = Rice Milk
+# Spam musubi
+Rice + Hot Dog = Rice Ball
+Rice + Brine = Rice Crackers
+Rice + Jerky = Rice and Meat
+Rice + Barbecue = Rice and Meat
+Rice + Roast = Chicken and Rice
+# rice wine
+Rice + Sparkling Water = Sake
+Rice + Beer = Sake
+Rice + Granola = Rice Krispies
+Rice + Rock Candy = Rice Krispies Treat
+Rice + Oats = Porridge
+Rice + Kale Chips = Rice Crackers
+Rice + Vegetable Soup = Rice Soup
+Rice + Herbs = Wild Rice
+# fragrant rice
+Rice + Flower = Basmati Rice
+Rice + Rice = Rice [nothing]
+Rice + Green Smoothie = Green Smoothie [nothing]
+Rice + Mint = Mint [nothing]
+Rice + Fridge = Rice [nothing]
+
+# Vegetables
+Vegetables + Fish = Ceviche
+Vegetables + Syrup = Sweet Potato
+Vegetables + Sugar Cubes = Sweet Potato
+Vegetables + Rock Candy = Sweet Potato
+# carrots and frosting
+Vegetables + Powdered Sugar = Carrot Cake
+Vegetables + Hen = Chicken Stir-Fry
+Vegetables + Cow = Beef Stew
+# bees pollinate, plants fruit
+Vegetables + Bee = Fruit
+Vegetables + Flour = Dumplings
+Vegetables + Crackers = Salad
+Vegetables + Granola = Salad
+# caramelized onions
+Vegetables + Caramel = Onion
+Vegetables + Salted Caramel = Sweet Potato
+# popcorn is corn
+Vegetables + Popcorn = Corn
+Vegetables + Hot Dog = Relish
+Vegetables + Jerky = Mushroom
+Vegetables + Sparkling Water = Tomato Juice
+Vegetables + Porridge = Vegetable Soup
+# a veggie burger, held together with oats
+Vegetables + Oats = Impossible Burger
+# beer-battered
+Vegetables + Beer = Onion Rings
+# veggie chips
+Vegetables + Kale Chips = Potato Chips
+Vegetables + Green Smoothie = Kale
+# peas and mint
+Vegetables + Mint = Peas
+Vegetables + Barbecue = Roasted Vegetables
+Vegetables + Roast = Pot Roast
+Vegetables + Cereal = Cereal [nothing]
+Vegetables + Vegetable Soup = Vegetable Soup [nothing]
+Vegetables + Stir-Fry = Stir-Fry [nothing]
+
+# Fish
+Fish + Syrup = Swedish Fish
+Fish + Caramel = Swedish Fish
+Fish + Salted Caramel = Swedish Fish
+Fish + Sugar Cubes = Swedish Fish
+Fish + Powdered Sugar = Swedish Fish
+Fish + Rock Candy = Swedish Fish
+Fish + Hen = Surf and Turf
+# the sea captain's cereal
+Fish + Cereal = Cap'n Crunch
+# cornmeal-fried catfish
+Fish + Corn = Fried Fish
+Fish + Hot Dog = Fish Sandwich
+Fish + Jerky = Anchovies
+# tuna packed in water
+Fish + Sparkling Water = Canned Tuna
+Fish + Granola = Goldfish
+Fish + Porridge = Seafood Soup
+Fish + Oats = Fish Sticks
+# chips
+Fish + Kale Chips = Fish and Chips
+Fish + Vegetable Soup = Fish Soup
+Fish + Stir-Fry = Shrimp
+Fish + Herbs = Grilled Salmon
+Fish + Roast = Baked Fish
+Fish + Green Smoothie = Seaweed
+Fish + Bee = Bee [nothing]
+Fish + Flower = Flower [nothing]
+Fish + Mint = Mint [nothing]
+
+## Step 1 to 100%, batch 4 (2026-10-13): Syrup, Hen, Cereal, Cow, Fruit, Seaweed, Bee
+
+# Syrup
+# thick dark syrup
+Syrup + Syrup = Molasses
+Syrup + Hen = Peeps
+Syrup + Cereal = Granola
+# chocolate syrup in milk
+Syrup + Cow = Chocolate Milk
+Syrup + Seaweed = Seaweed Snacks
+Syrup + Egg = Meringue
+Syrup + Flour = Pancakes
+Syrup + Crackers = Graham Crackers
+Syrup + Caramel = Caramel Sauce
+Syrup + Salted Caramel = Caramel Sauce
+# maple breakfast sausage
+Syrup + Hot Dog = Sausage
+Syrup + Brine = Pickles
+Syrup + Jerky = Teriyaki
+Syrup + Stir-Fry = Teriyaki
+# maple bacon
+Syrup + Meat = Bacon
+Syrup + Steam = Caramel
+Syrup + Oven = Caramel
+Syrup + Boiling Water = Candy
+Syrup + Sugar Cubes = Candy
+Syrup + Rock Candy = Lollipop
+# powdered sugar and a little liquid is icing
+Syrup + Powdered Sugar = Icing
+Syrup + Granola = Granola Bar
+Syrup + Porridge = Oatmeal
+Syrup + Beer = Soda
+Syrup + Vegetable Soup = Tomato Soup
+Syrup + Herbs = Herbal Tea
+Syrup + Green Smoothie = Smoothie
+Syrup + Flower = Honey
+Syrup + Mint = Peppermint
+Syrup + Barbecue = BBQ Sauce
+Syrup + Roast = Ham
+Syrup + Broth = Slop
+Syrup + Kale Chips = Kale Chips [nothing]
+Syrup + Knife = Syrup [nothing]
+Syrup + Blender = Syrup [nothing]
+
+# Hen
+Hen + Cereal = Egg
+Hen + Granola = Egg
+# the birds and the bees
+Hen + Bee = Egg
+Hen + Flour = Fried Chicken
+Hen + Crackers = Chicken Nuggets
+Hen + Fridge = Chicken Nuggets
+Hen + Caramel = Peeps
+Hen + Sugar Cubes = Peeps
+Hen + Powdered Sugar = Peeps
+# a candy egg
+Hen + Rock Candy = Cadbury Creme Egg
+# chicken sausage
+Hen + Hot Dog = Sausage
+Hen + Brine = Pickled Egg
+Hen + Steam = Chicken
+Hen + Sparkling Water = Duck
+Hen + Porridge = Chicken and Rice
+# beer-can chicken
+Hen + Beer = Roast Chicken
+Hen + Vegetable Soup = Chicken Soup
+Hen + Herbs = Rotisserie Chicken
+Hen + Seaweed = Seaweed [nothing]
+Hen + Jerky = Jerky [nothing]
+Hen + Salted Caramel = Salted Caramel [nothing]
+Hen + Oats = Hen [nothing]
+Hen + Kale Chips = Kale Chips [nothing]
+Hen + Green Smoothie = Green Smoothie [nothing]
+Hen + Flower = Flower [nothing]
+Hen + Mint = Mint [nothing]
+
+# Cereal
+Cereal + Seaweed = Cap'n Crunch
+Cereal + Egg = Breakfast
+Cereal + Flour = Cookie
+Cereal + Crackers = Graham Crackers
+Cereal + Caramel = Granola Bar
+Cereal + Popcorn = Trail Mix
+Cereal + Jerky = Trail Mix
+Cereal + Steam = Porridge
+Cereal + Stove = Porridge
+Cereal + Oven = Granola
+Cereal + Granola = Muesli
+Cereal + Porridge = Cream of Wheat
+Cereal + Vegetable Soup = Slop
+# cornflake stuffing
+Cereal + Herbs = Stuffing
+Cereal + Roast = Stuffing
+# a smoothie bowl with cereal on top
+Cereal + Green Smoothie = Smoothie Bowl
+Cereal + Meat = Meatloaf
+Cereal + Sugar Cubes = Frosted Flakes
+Cereal + Powdered Sugar = Frosted Flakes
+Cereal + Rock Candy = Lucky Charms
+# crushed cornflakes as breading
+Cereal + Blender = Breadcrumbs
+# stale
+Cereal + Clock = Spoiled
+Cereal + Fridge = Overnight Oats
+Cereal + Cereal = Cereal [nothing]
+Cereal + Ice = Ice [nothing]
+Cereal + Hot Dog = Hot Dog [nothing]
+Cereal + Brine = Brine [nothing]
+Cereal + Salted Caramel = Salted Caramel [nothing]
+Cereal + Sparkling Water = Sparkling Water [nothing]
+Cereal + Beer = Beer [nothing]
+Cereal + Kale Chips = Kale Chips [nothing]
+Cereal + Stir-Fry = Stir-Fry [nothing]
+Cereal + Flower = Flower [nothing]
+Cereal + Mint = Mint [nothing]
+Cereal + Barbecue = Barbecue [nothing]
+Cereal + Knife = Cereal [nothing]
+
+# Cow
+Cow + Cow = Farm
+# buttermilk biscuits
+Cow + Flour = Biscuit
+Cow + Corn = Creamed Corn
+Cow + Crackers = Cheese and Crackers
+Cow + Caramel = Milk Duds
+Cow + Salted Caramel = Milk Duds
+Cow + Rock Candy = Milk Duds
+Cow + Brine = Corned Beef
+Cow + Boiling Water = Broth
+Cow + Broth = Beef Stew
+# soda and cream
+Cow + Sparkling Water = Float
+Cow + Granola = Breakfast
+Cow + Porridge = Oatmeal
+Cow + Oats = Oat Milk
+# wagyu cattle are famously fed beer
+Cow + Beer = Steak
+Cow + Stir-Fry = Beef
+Cow + Herbs = Roast Beef
+# grass in, milk out
+Cow + Green Smoothie = Milk
+Cow + Sugar Cubes = Chocolate Milk
+# cream and powdered sugar
+Cow + Powdered Sugar = Whipped Cream
+Cow + Seaweed = Seaweed [nothing]
+Cow + Hot Dog = Hot Dog [nothing]
+Cow + Kale Chips = Kale Chips [nothing]
+Cow + Flower = Flower [nothing]
+Cow + Mint = Mint [nothing]
+
+# Fruit
+Fruit + Bee = Honey
+Fruit + Egg = Lemon Curd
+Fruit + Flour = Pie
+Fruit + Crackers = Pop-Tart
+Fruit + Popcorn = Trail Mix
+# fruit leather
+Fruit + Jerky = Dried Fruit
+Fruit + Salted Caramel = Caramel Apple
+Fruit + Steam = Applesauce
+Fruit + Boiling Water = Jam
+Fruit + Sugar Cubes = Jam
+Fruit + Porridge = Oatmeal
+Fruit + Beer = Cider
+Fruit + Kale Chips = Apple Chips
+# tomatoes are fruit
+Fruit + Vegetable Soup = Gazpacho
+Fruit + Herbs = Fruit Salad
+# cherry blossoms
+Fruit + Flower = Cherry
+Fruit + Barbecue = Pineapple
+# pineapple ham
+Fruit + Roast = Ham
+Fruit + Meat = Charcuterie Board
+Fruit + Powdered Sugar = Candy Apple
+Fruit + Rock Candy = Skittles
+Fruit + Stove = Apple Fritter
+Fruit + Seaweed = Seaweed [nothing]
+Fruit + Corn = Corn [nothing]
+Fruit + Hot Dog = Hot Dog [nothing]
+Fruit + Stir-Fry = Stir-Fry [nothing]
+Fruit + Mint = Mint [nothing]
+Fruit + Broth = Broth [nothing]
+
+# Seaweed
+Seaweed + Seaweed = Nori
+Seaweed + Stove = Nori
+# sea eggs
+Seaweed + Egg = Caviar
+Seaweed + Crackers = Rice Crackers
+Seaweed + Ice = Seaweed Salad
+Seaweed + Knife = Seaweed Salad
+Seaweed + Stir-Fry = Seaweed Salad
+Seaweed + Popcorn = Seaweed Snacks
+Seaweed + Jerky = Seaweed Snacks
+Seaweed + Kale Chips = Seaweed Snacks
+Seaweed + Sugar Cubes = Seaweed Snacks
+Seaweed + Powdered Sugar = Seaweed Snacks
+Seaweed + Rock Candy = Saltwater Taffy
+# like Spam musubi
+Seaweed + Hot Dog = Rice Ball
+Seaweed + Brine = Pickles
+Seaweed + Steam = Seaweed Soup
+Seaweed + Vegetable Soup = Seaweed Soup
+# furikake
+Seaweed + Herbs = Seasoning
+# sea and land
+Seaweed + Meat = Surf and Turf
+Seaweed + Blender = Green Smoothie
+Seaweed + Bee = Bee [nothing]
+Seaweed + Flour = Flour [nothing]
+Seaweed + Corn = Corn [nothing]
+Seaweed + Caramel = Caramel [nothing]
+Seaweed + Salted Caramel = Salted Caramel [nothing]
+Seaweed + Sparkling Water = Sparkling Water [nothing]
+Seaweed + Granola = Granola [nothing]
+Seaweed + Porridge = Porridge [nothing]
+Seaweed + Oats = Oats [nothing]
+Seaweed + Beer = Beer [nothing]
+Seaweed + Green Smoothie = Green Smoothie [nothing]
+Seaweed + Flower = Flower [nothing]
+Seaweed + Mint = Mint [nothing]
+Seaweed + Barbecue = Barbecue [nothing]
+Seaweed + Roast = Roast [nothing]
+Seaweed + Clock = Seaweed [nothing]
+Seaweed + Fridge = Seaweed [nothing]
+
+# Bee
+Bee + Flour = Graham Crackers
+# honey cornbread
+Bee + Corn = Cornbread
+Bee + Caramel = Honeycomb
+Bee + Rock Candy = Honeycomb
+Bee + Knife = Honeycomb
+Bee + Popcorn = Kettle Corn
+Bee + Jerky = Beef Jerky
+Bee + Steam = Honey
+Bee + Boiling Water = Honey
+Bee + Pot = Honey
+Bee + Blender = Honey
+Bee + Herbs = Honey
+Bee + Sugar Cubes = Honey
+Bee + Powdered Sugar = Honey
+Bee + Porridge = Oatmeal
+Bee + Stir-Fry = Teriyaki
+Bee + Green Smoothie = Smoothie
+Bee + Mint = Herbal Tea
+# honey barbecue
+Bee + Barbecue = BBQ Sauce
+# honey ham
+Bee + Meat = Ham
+Bee + Roast = Roast Chicken
+Bee + Egg = Egg [nothing]
+Bee + Ice = Ice [nothing]
+Bee + Hot Dog = Hot Dog [nothing]
+Bee + Brine = Brine [nothing]
+Bee + Salted Caramel = Salted Caramel [nothing]
+Bee + Sparkling Water = Sparkling Water [nothing]
+Bee + Beer = Beer [nothing]
+Bee + Kale Chips = Kale Chips [nothing]
+Bee + Vegetable Soup = Vegetable Soup [nothing]
+Bee + Broth = Broth [nothing]
+Bee + Stove = Bee [nothing]
+Bee + Oven = Bee [nothing]
+Bee + Fridge = Bee [nothing]
+
+## Step 1 to 100%, batch 5 (2026-10-13): Egg, Flour, Corn, Crackers, Caramel, Ice, Popcorn, Hot Dog
+
+# Egg
+# eggs and cornmeal
+Egg + Corn = Cornbread
+# what holds a meatloaf together: egg and crackers
+Egg + Crackers = Meatloaf
+Egg + Ice = Eggnog
+Egg + Hot Dog = Breakfast
+Egg + Granola = Breakfast
+Egg + Jerky = Steak and Eggs
+Egg + Roast = Steak and Eggs
+Egg + Salted Caramel = Flan
+# steamed egg custard
+Egg + Steam = Custard
+Egg + Porridge = Rice Pudding
+Egg + Oats = Oatmeal Cookie
+Egg + Beer = Batter
+Egg + Stir-Fry = Omelette
+# spring
+Egg + Flower = Easter Egg
+# cookout side
+Egg + Barbecue = Deviled Eggs
+Egg + Sugar Cubes = Meringue
+Egg + Oven = Meringue
+Egg + Rock Candy = Cadbury Creme Egg
+Egg + Popcorn = Popcorn [nothing]
+Egg + Sparkling Water = Sparkling Water [nothing]
+Egg + Kale Chips = Kale Chips [nothing]
+Egg + Vegetable Soup = Vegetable Soup [nothing]
+Egg + Green Smoothie = Green Smoothie [nothing]
+Egg + Mint = Mint [nothing]
+Egg + Fridge = Egg [nothing]
+
+# Flour
+Flour + Crackers = Breadcrumbs
+Flour + Caramel = Twix
+# ice water and flour: pie crust
+Flour + Ice = Pie Crust
+# pretzels get a dip before baking
+Flour + Brine = Pretzel
+Flour + Jerky = Meat Pie
+Flour + Salted Caramel = Cookie
+# tempura batter is made with sparkling water
+Flour + Sparkling Water = Batter
+Flour + Granola = Oatmeal Cookie
+Flour + Porridge = Dough
+Flour + Oats = Oat Flour
+# flour thickens it
+Flour + Vegetable Soup = Stew
+Flour + Stir-Fry = Veggie Pasta
+Flour + Herbs = Dinner Roll
+# spinach pasta
+Flour + Green Smoothie = Pasta
+Flour + Barbecue = Hamburger Bun
+# a roux with the drippings
+Flour + Roast = Gravy
+Flour + Sugar Cubes = Cake Mix
+# fried dough and powdered sugar
+Flour + Powdered Sugar = Funnel Cake
+Flour + Rock Candy = Sugar Cookie
+# it's already flour
+Flour + Flower = Flour [nothing]
+Flour + Flour = Flour [nothing]
+Flour + Popcorn = Popcorn [nothing]
+Flour + Kale Chips = Kale Chips [nothing]
+Flour + Mint = Mint [nothing]
+Flour + Fridge = Flour [nothing]
+
+# Corn
+Corn + Crackers = Tortilla Chips
+Corn + Kale Chips = Fritos
+Corn + Brine = Relish
+Corn + Jerky = Trail Mix
+Corn + Salted Caramel = Caramel Corn
+# soda is sweetened with corn syrup
+Corn + Sparkling Water = Soda
+Corn + Granola = Corn Flakes
+Corn + Oats = Cereal
+Corn + Porridge = Cornmeal
+# bourbon is made from corn
+Corn + Beer = Whiskey
+Corn + Vegetable Soup = Corn Chowder
+Corn + Stir-Fry = Succotash
+# a popped kernel looks like a little flower
+Corn + Flower = Popcorn
+Corn + Roast = Corn on the Cob
+Corn + Meat = Chili
+Corn + Knife = Creamed Corn
+Corn + Sugar Cubes = Candy Corn
+Corn + Rock Candy = Candy Corn
+Corn + Powdered Sugar = Kettle Corn
+Corn + Corn = Corn [nothing]
+Corn + Ice = Ice [nothing]
+Corn + Popcorn = Popcorn [nothing]
+Corn + Herbs = Herbs [nothing]
+Corn + Green Smoothie = Green Smoothie [nothing]
+Corn + Mint = Mint [nothing]
+Corn + Fridge = Corn [nothing]
+
+# Crackers
+# "Christmas crack": crackers baked under toffee
+Crackers + Caramel = Toffee
+Crackers + Salted Caramel = Twix
+Crackers + Popcorn = Trail Mix
+Crackers + Hot Dog = Pigs in a Blanket
+Crackers + Jerky = Lunchables
+Crackers + Brine = Saltines
+# soggy
+Crackers + Steam = Slop
+Crackers + Granola = Granola Bar
+Crackers + Oats = Graham Crackers
+Crackers + Sugar Cubes = Graham Crackers
+Crackers + Powdered Sugar = Cookie
+Crackers + Rock Candy = Kit Kat
+Crackers + Beer = Pretzel
+# soup crackers
+Crackers + Vegetable Soup = Oyster Crackers
+Crackers + Broth = Oyster Crackers
+Crackers + Herbs = Croutons
+Crackers + Stove = Croutons
+Crackers + Barbecue = BBQ Chips
+Crackers + Roast = Stuffing
+Crackers + Crackers = Crackers [nothing]
+Crackers + Ice = Ice [nothing]
+Crackers + Boiling Water = Boiling Water [nothing]
+Crackers + Sparkling Water = Sparkling Water [nothing]
+Crackers + Porridge = Porridge [nothing]
+Crackers + Kale Chips = Kale Chips [nothing]
+Crackers + Stir-Fry = Stir-Fry [nothing]
+Crackers + Green Smoothie = Green Smoothie [nothing]
+Crackers + Flower = Flower [nothing]
+Crackers + Mint = Mint [nothing]
+Crackers + Pot = Crackers [nothing]
+Crackers + Fridge = Crackers [nothing]
+
+# Caramel
+Caramel + Caramel = Toffee
+Caramel + Ice = Toffee
+# a pinch of brine: salted caramel
+Caramel + Brine = Salted Caramel
+Caramel + Salted Caramel = Caramel Sauce
+Caramel + Steam = Caramel Sauce
+Caramel + Granola = Granola Bar
+Caramel + Porridge = Oatmeal
+Caramel + Oats = Oatmeal Cookie
+# caramel colour
+Caramel + Beer = Cola
+Caramel + Stir-Fry = Teriyaki
+Caramel + Barbecue = BBQ Sauce
+Caramel + Roast = Ham
+# candied bacon
+Caramel + Meat = Bacon
+Caramel + Sugar Cubes = Candy
+Caramel + Powdered Sugar = Fudge
+Caramel + Rock Candy = Candy Bar
+Caramel + Hot Dog = Hot Dog [nothing]
+Caramel + Kale Chips = Kale Chips [nothing]
+Caramel + Vegetable Soup = Vegetable Soup [nothing]
+Caramel + Herbs = Herbs [nothing]
+Caramel + Green Smoothie = Green Smoothie [nothing]
+Caramel + Flower = Flower [nothing]
+Caramel + Mint = Mint [nothing]
+Caramel + Broth = Broth [nothing]
+
+# Ice
+Ice + Ice = Iceberg
+# salty ice is how ice cream gets frozen
+Ice + Brine = Ice Cream
+Ice + Salted Caramel = Toffee
+Ice + Steam = Water
+Ice + Sparkling Water = Ice Water
+Ice + Porridge = Overnight Oats
+Ice + Oats = Overnight Oats
+# cold soup
+Ice + Vegetable Soup = Gazpacho
+Ice + Green Smoothie = Smoothie
+Ice + Mint = Mint Chocolate Chip
+Ice + Broth = Gelatin
+Ice + Sugar Cubes = Snow Cone
+Ice + Powdered Sugar = Snow Cone
+Ice + Rock Candy = Popsicle
+Ice + Popcorn = Popcorn [nothing]
+Ice + Hot Dog = Hot Dog [nothing]
+Ice + Jerky = Jerky [nothing]
+Ice + Granola = Granola [nothing]
+Ice + Beer = Beer [nothing]
+Ice + Kale Chips = Kale Chips [nothing]
+Ice + Stir-Fry = Stir-Fry [nothing]
+Ice + Flower = Flower [nothing]
+Ice + Barbecue = Barbecue [nothing]
+Ice + Roast = Roast [nothing]
+Ice + Meat = Meat [nothing]
+
+# Popcorn
+# ballpark food
+Popcorn + Hot Dog = Ballpark Hot Dog
+Popcorn + Jerky = Trail Mix
+Popcorn + Kale Chips = Trail Mix
+# popcorn and a soda: the movies
+Popcorn + Sparkling Water = Movie Theater Popcorn
+Popcorn + Granola = Popcorn Ball
+Popcorn + Oats = Granola
+Popcorn + Beer = Pretzel
+Popcorn + Barbecue = BBQ Chips
+Popcorn + Meat = Popcorn Chicken
+Popcorn + Sugar Cubes = Kettle Corn
+Popcorn + Powdered Sugar = Kettle Corn
+Popcorn + Rock Candy = Cracker Jack
+Popcorn + Blender = Cornmeal
+# soggy, then stale
+Popcorn + Steam = Slop
+Popcorn + Clock = Spoiled
+Popcorn + Brine = Brine [nothing]
+Popcorn + Boiling Water = Boiling Water [nothing]
+Popcorn + Porridge = Porridge [nothing]
+Popcorn + Vegetable Soup = Vegetable Soup [nothing]
+Popcorn + Stir-Fry = Stir-Fry [nothing]
+Popcorn + Herbs = Herbs [nothing]
+Popcorn + Green Smoothie = Green Smoothie [nothing]
+Popcorn + Flower = Flower [nothing]
+Popcorn + Mint = Mint [nothing]
+Popcorn + Roast = Roast [nothing]
+Popcorn + Broth = Broth [nothing]
+Popcorn + Knife = Popcorn [nothing]
+Popcorn + Fridge = Popcorn [nothing]
+
+# Hot Dog
+# a hot dog and a burger is a cookout; two hot dogs, too
+Hot Dog + Hot Dog = Barbecue
+# pickle relish
+Hot Dog + Brine = Relish
+# and the green relish on a Chicago dog
+Hot Dog + Green Smoothie = Relish
+Hot Dog + Jerky = Sausage
+# ballparks steam their hot dogs
+Hot Dog + Steam = Ballpark Hot Dog
+Hot Dog + Boiling Water = Hot Dog Water
+Hot Dog + Pot = Hot Dog Water
+# a dog and a drink at the game
+Hot Dog + Sparkling Water = Ballpark Hot Dog
+Hot Dog + Meat = Bacon-Wrapped Hot Dog
+# over the campfire
+Hot Dog + Roast = Barbecue
+Hot Dog + Sugar Cubes = Corn Dog
+Hot Dog + Rock Candy = Corn Dog
+# fair food
+Hot Dog + Powdered Sugar = Funnel Cake
+Hot Dog + Blender = Slop
+Hot Dog + Clock = Spoiled
+Hot Dog + Salted Caramel = Salted Caramel [nothing]
+Hot Dog + Granola = Granola [nothing]
+Hot Dog + Porridge = Porridge [nothing]
+Hot Dog + Oats = Oats [nothing]
+Hot Dog + Kale Chips = Kale Chips [nothing]
+Hot Dog + Vegetable Soup = Vegetable Soup [nothing]
+Hot Dog + Stir-Fry = Stir-Fry [nothing]
+Hot Dog + Herbs = Herbs [nothing]
+Hot Dog + Flower = Flower [nothing]
+Hot Dog + Mint = Mint [nothing]
+Hot Dog + Barbecue = Barbecue [nothing]
+Hot Dog + Broth = Broth [nothing]
+Hot Dog + Stove = Hot Dog [nothing]
+Hot Dog + Oven = Hot Dog [nothing]
+Hot Dog + Knife = Hot Dog [nothing]
+
+## Step 1 to 100%, batch 6 (2026-10-13): Brine, Jerky, Salted Caramel, Steam, Boiling Water, Sparkling Water, Granola
+# The 8% cap on [nothing] stays, so the odd pairs get a theme instead of a
+# shrug: strong flavours + Mint = breath mints, flowers + drinks = tea, etc.
+
+# Brine
+Brine + Brine = Sea Salt
+Brine + Steam = Salt
+Brine + Oven = Salt
+Brine + Jerky = Corned Beef
+# salt water and candy
+Brine + Salted Caramel = Saltwater Taffy
+Brine + Rock Candy = Saltwater Taffy
+Brine + Boiling Water = Pickles
+Brine + Vegetable Soup = Pickles
+Brine + Green Smoothie = Pickles
+Brine + Sugar Cubes = Pickles
+Brine + Powdered Sugar = Pickles
+# refrigerator pickles
+Brine + Fridge = Pickles
+Brine + Sparkling Water = Gatorade
+Brine + Granola = Trail Mix
+Brine + Oats = Crackers
+Brine + Beer = Pretzel
+# fermented greens
+Brine + Kale Chips = Kimchi
+Brine + Stir-Fry = Soy Sauce
+# dill pickles
+Brine + Herbs = Dill
+# mint chutney
+Brine + Mint = Chutney
+Brine + Barbecue = Brisket
+# a brined turkey
+Brine + Roast = Roast Turkey
+Brine + Broth = Seafood Soup
+Brine + Knife = Olive
+Brine + Blender = Relish
+Brine + Porridge = Porridge [nothing]
+
+# Jerky
+Jerky + Jerky = Beef Jerky
+Jerky + Herbs = Beef Jerky
+Jerky + Oven = Beef Jerky
+Jerky + Salted Caramel = Teriyaki
+Jerky + Sugar Cubes = Teriyaki
+Jerky + Powdered Sugar = Teriyaki
+# candied bacon
+Jerky + Rock Candy = Bacon
+# it soaks back into meat
+Jerky + Steam = Meat
+Jerky + Boiling Water = Broth
+Jerky + Pot = Broth
+# gas-station snacks
+Jerky + Sparkling Water = Energy Drink
+Jerky + Granola = Trail Mix
+Jerky + Kale Chips = Trail Mix
+Jerky + Porridge = Rice and Meat
+Jerky + Oats = Meatloaf
+Jerky + Beer = Pretzel
+Jerky + Vegetable Soup = Stew
+Jerky + Broth = Beef Stew
+Jerky + Stir-Fry = Beef
+# gym snacks
+Jerky + Green Smoothie = Granola Bar
+# jerky bouquets are a real gift
+Jerky + Flower = Charcuterie Board
+# breath mints, after
+Jerky + Mint = Tic Tacs
+Jerky + Barbecue = Brisket
+Jerky + Stove = Barbecue
+Jerky + Roast = Roast Beef
+Jerky + Meat = Cold Cuts
+Jerky + Blender = Ground Beef
+Jerky + Fridge = Lunchables
+# jerky lasts forever
+Jerky + Clock = Jerky [nothing]
+Jerky + Knife = Jerky [nothing]
+
+# Salted Caramel
+Salted Caramel + Salted Caramel = Caramel Sauce
+Salted Caramel + Steam = Caramel Sauce
+Salted Caramel + Blender = Caramel Sauce
+Salted Caramel + Boiling Water = Syrup
+Salted Caramel + Sparkling Water = Cola
+Salted Caramel + Beer = Soda
+Salted Caramel + Granola = Granola Bar
+Salted Caramel + Porridge = Oatmeal
+Salted Caramel + Oats = Oatmeal Cookie
+# sweet and salty
+Salted Caramel + Kale Chips = Trail Mix
+Salted Caramel + Vegetable Soup = Sweet Potato
+Salted Caramel + Stir-Fry = Teriyaki
+Salted Caramel + Broth = Teriyaki
+Salted Caramel + Green Smoothie = Smoothie
+Salted Caramel + Flower = Honey
+Salted Caramel + Mint = Peppermint
+Salted Caramel + Barbecue = BBQ Sauce
+Salted Caramel + Roast = Ham
+Salted Caramel + Meat = Bacon
+Salted Caramel + Sugar Cubes = Caramel
+Salted Caramel + Powdered Sugar = Fudge
+Salted Caramel + Rock Candy = Saltwater Taffy
+Salted Caramel + Stove = Burnt
+Salted Caramel + Oven = Toffee
+Salted Caramel + Clock = Toffee
+Salted Caramel + Fridge = Toffee
+Salted Caramel + Knife = Candy
+Salted Caramel + Herbs = Herbs [nothing]
+
+# Steam
+Steam + Steam = Water
+Steam + Sparkling Water = Water
+# the kettle whistles
+Steam + Boiling Water = Tea
+Steam + Granola = Oatmeal
+Steam + Porridge = Oatmeal
+Steam + Oats = Oatmeal
+# stills run on steam
+Steam + Beer = Whiskey
+Steam + Kale Chips = Kale
+Steam + Vegetable Soup = Steamed Vegetables
+Steam + Stir-Fry = Dumplings
+Steam + Herbs = Herbal Tea
+Steam + Green Smoothie = Spinach
+Steam + Flower = Chamomile
+Steam + Mint = Mint Tea
+# barbecue pork buns
+Steam + Barbecue = Steamed Buns
+Steam + Roast = Pot Roast
+Steam + Broth = Vegetable Soup
+# steamed franks
+Steam + Meat = Hot Dog
+Steam + Sugar Cubes = Cotton Candy
+Steam + Powdered Sugar = Cotton Candy
+Steam + Rock Candy = Syrup
+Steam + Stove = Boiling Water
+# bakers steam the oven for a crusty loaf
+Steam + Oven = Bread
+# a couscoussier is a pot with a steamer on top
+Steam + Pot = Couscous
+Steam + Knife = Steam [nothing]
+Steam + Blender = Steam [nothing]
+
+# Boiling Water
+Boiling Water + Boiling Water = Steam
+Boiling Water + Barbecue = Steam
+Boiling Water + Oven = Steam
+Boiling Water + Pot = Steam
+Boiling Water + Sparkling Water = Water
+Boiling Water + Granola = Oatmeal
+Boiling Water + Porridge = Cream of Wheat
+# beer-boiled brats
+Boiling Water + Beer = Sausage
+Boiling Water + Kale Chips = Kale
+Boiling Water + Vegetable Soup = Broth
+Boiling Water + Stir-Fry = Vegetable Soup
+Boiling Water + Broth = Vegetable Soup
+Boiling Water + Green Smoothie = Green Tea
+Boiling Water + Roast = Gravy
+Boiling Water + Sugar Cubes = Syrup
+Boiling Water + Rock Candy = Syrup
+Boiling Water + Powdered Sugar = Icing
+Boiling Water + Blender = Sparkling Water
+Boiling Water + Knife = Boiling Water [nothing]
+
+# Sparkling Water
+Sparkling Water + Sparkling Water = Soda
+Sparkling Water + Sugar Cubes = Soda
+Sparkling Water + Powdered Sugar = Soda
+Sparkling Water + Barbecue = Soda
+Sparkling Water + Rock Candy = Cola
+# floral seltzer
+Sparkling Water + Flower = LaCroix
+Sparkling Water + Oats = Oat Milk
+# a fizzy health drink
+Sparkling Water + Kale Chips = Kombucha
+Sparkling Water + Vegetable Soup = Tomato Juice
+Sparkling Water + Herbs = Ginger Ale
+Sparkling Water + Green Smoothie = Energy Drink
+Sparkling Water + Mint = Iced Tea
+# cola-glazed ham is a real thing
+Sparkling Water + Roast = Ham
+Sparkling Water + Meat = Ham
+# soggy
+Sparkling Water + Granola = Slop
+Sparkling Water + Porridge = Slop
+Sparkling Water + Broth = Slop
+# it goes flat
+Sparkling Water + Stove = Water
+Sparkling Water + Oven = Water
+Sparkling Water + Pot = Boiling Water
+Sparkling Water + Fridge = Ice
+Sparkling Water + Beer = Beer [nothing]
+Sparkling Water + Stir-Fry = Stir-Fry [nothing]
+Sparkling Water + Knife = Sparkling Water [nothing]
+Sparkling Water + Blender = Sparkling Water [nothing]
+
+# Granola
+Granola + Granola = Granola Bar
+Granola + Oven = Granola Bar
+Granola + Powdered Sugar = Granola Bar
+Granola + Porridge = Oatmeal
+Granola + Pot = Oatmeal
+Granola + Oats = Muesli
+Granola + Knife = Muesli
+Granola + Kale Chips = Trail Mix
+Granola + Rock Candy = Trail Mix
+Granola + Vegetable Soup = Croutons
+Granola + Flower = Honey
+Granola + Roast = Stuffing
+Granola + Meat = Meatloaf
+Granola + Sugar Cubes = Cereal
+Granola + Broth = Slop
+# toasted twice
+Granola + Stove = Burnt
+Granola + Blender = Oat Flour
+# stale
+Granola + Clock = Spoiled
+Granola + Fridge = Overnight Oats
+Granola + Beer = Beer [nothing]
+Granola + Stir-Fry = Stir-Fry [nothing]
+Granola + Herbs = Herbs [nothing]
+Granola + Mint = Mint [nothing]
+Granola + Barbecue = Barbecue [nothing]

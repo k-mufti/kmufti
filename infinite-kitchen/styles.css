@@ -440,3 +440,19 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .look-card { right: 12px; left: 12px; width: auto; top: auto; bottom: 12px; transform: translateY(24px); }
   .look-card.open { transform: none; }
 }
+
+/* burning something: a puff of black smoke where the food was (app.js burn) */
+.smoke { position: fixed; z-index: 30; width: 0; height: 0; pointer-events: none; }
+.smoke i {
+  position: absolute; left: -22px; top: -22px; width: 44px; height: 44px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #3a3532, #141210 70%);
+  opacity: 0; scale: .3; filter: blur(2px);
+  animation: smoke 1.2s ease-out forwards;
+}
+@keyframes smoke {
+  0% { opacity: 0; scale: .3; translate: 0 0; }
+  15% { opacity: .9; }
+  100% { opacity: 0; scale: calc(var(--s) * 2.2); translate: var(--dx) -90px; }
+}
+.toast.burnt { background: #2b2522; color: #f0e6dc; border: 1px solid #6b5a4e; }
+@media (prefers-reduced-motion: reduce) { .smoke i { animation-duration: .01s; } }
