@@ -2067,3 +2067,498 @@ Baked Beans + Hot Dog = Pork and Beans
 Baked Beans + Toast = Beans on Toast
 Cheese Bread + Garlic = Cheesy Garlic Bread
 Green Tea + Ice Cream = Green Tea Ice Cream
+
+## Tools on finished dishes (2026-10-13): the tool does its real job
+
+# Pizza
+Pizza + Stove = Fried Pizza [dish]
+Pizza + Oven = Deep Dish Pizza
+Pizza + Blender = Pizza Smoothie [drink]
+Pizza + Clock = Cold Pizza [dish]
+
+# Sushi
+Sushi + Stove = Tempura Roll [dish]
+Sushi + Oven = Baked Sushi [dish]
+Sushi + Pot = Congee
+Sushi + Knife = Sashimi
+Sushi + Blender = Imitation Crab
+Sushi + Clock = Spoiled
+Sushi + Fridge = Gas Station Sushi [dish]
+
+# Fried Chicken
+Fried Chicken + Stove = Korean Fried Chicken
+Fried Chicken + Knife = Popcorn Chicken
+Fried Chicken + Blender = Chicken Nuggets
+
+# Ice Cream
+Ice Cream + Stove = Fried Ice Cream [dish]
+Ice Cream + Oven = Baked Alaska [dish]
+Ice Cream + Pot = Custard
+
+# Pancakes
+Pancakes + Oven = Dutch Baby [dish]
+
+# French Fries
+French Fries + Blender = Mashed Potatoes
+French Fries + Pot = Potato Soup
+
+# Burger
+Burger + Knife = Sliders [dish]
+Burger + Blender = Meatloaf
+
+# Taco
+Taco + Stove = Taquito [dish]
+Taco + Knife = Taco Salad [dish]
+
+# Grilled Cheese
+Grilled Cheese + Knife = Croutons
+
+# Spaghetti
+Spaghetti + Blender = Baby Food
+Spaghetti + Stove = Chow Mein
+Spaghetti + Knife = Macaroni
+
+# Cake
+Cake + Blender = Cake Pop
+Cake + Clock = Fruitcake
+Cake + Pot = Pudding
+
+# Scrambled Eggs
+Scrambled Eggs + Oven = Frittata [dish]
+Scrambled Eggs + Pot = Egg Drop Soup
+
+# Soda
+Soda + Fridge = Slushie
+Soda + Pot = Syrup
+
+# Steamed Rice
+Steamed Rice + Stove = Fried Rice
+Steamed Rice + Oven = Rice Crackers
+Steamed Rice + Pot = Congee
+Steamed Rice + Blender = Mochi
+Steamed Rice + Clock = Sake
+
+# Salad
+Salad + Blender = Green Smoothie
+Salad + Stove = Stir-Fry
+Salad + Pot = Vegetable Soup
+
+# Tomato Soup
+Tomato Soup + Fridge = Gazpacho
+Tomato Soup + Pot = Tomato Sauce
+
+# Odds and ends
+Hot Chocolate + Fridge = Chocolate Milk
+Toast + Blender = Breadcrumbs
+Milkshake + Fridge = Ice Cream
+Donut + Knife = Donut Holes
+Cookie + Blender = Pie Crust
+
+
+
+# Baked twice, cut, mashed
+Cookie + Oven = Biscotti
+Omelette + Oven = Frittata
+Custard + Oven = Flan
+Cheese and Crackers + Oven = Cheez-It
+Burrito + Oven = Enchilada
+Burrito + Knife = Burrito Bowl
+Bagel + Knife = Bagel Chips [dish]
+Prime Rib + Knife = Steak
+Roast + Knife = Roast Beef
+Pot Roast + Knife = Roast Beef
+Roast Beef + Knife = Cold Cuts
+Roast Turkey + Knife = Cold Cuts
+Sushi Roll + Knife = Sushi
+Sushi Roll + Stove = Tempura Roll
+Corn on the Cob + Knife = Corn
+Corn on the Cob + Stove = Elote
+Corn on the Cob + Blender = Creamed Corn
+Rice Ball + Stove = Arancini
+Baked Potato + Stove = Hash Browns
+Baked Potato + Blender = Mashed Potatoes
+Mashed Potatoes + Pot = Potato Soup
+Potato Soup + Fridge = Vichyssoise [dish]
+Sweet Potato Fries + Blender = Baby Food
+Steamed Vegetables + Blender = Baby Food
+Tortilla Chips + Blender = Cornmeal
+Cornbread + Blender = Stuffing
+Fried Fish + Blender = Fish Sticks
+Meatballs + Blender = Meat Sauce
+Chili + Blender = Bean Dip
+Baked Beans + Blender = Bean Dip
+Sundae + Blender = McFlurry
+Candy Cane + Blender = Peppermint
+Popsicle + Blender = Slushie
+
+# Boiled down or into soup
+Rotisserie Chicken + Pot = Chicken Soup
+Roast Chicken + Pot = Chicken Soup
+Roasted Vegetables + Pot = Vegetable Soup
+Dumplings + Pot = Wonton Soup
+Tomato Juice + Pot = Tomato Sauce
+Fruit Salad + Pot = Jam
+Grape Juice + Pot = Jam
+Gummy Bears + Pot = Gelatin
+Chocolate Milk + Pot = Hot Chocolate
+Wine + Pot = Mulled Wine [drink]
+
+# Time and cold
+Kombucha + Clock = Vinegar
+Sake + Clock = Vinegar
+Fondue + Fridge = Cheese
+Green Tea + Fridge = Iced Tea
+Lemonade + Fridge = Popsicle
+Muesli + Fridge = Overnight Oats
+
+# Round 3: deeper famous dishes
+
+# Pizza family acts like Pizza
+Pepperoni Pizza + Knife = Pizza Slice
+Margherita Pizza + Knife = Pizza Slice
+Pizza Slice + Clock = Cold Pizza
+Calzone + Stove = Panzerotti [dish]
+
+# Cakes act like Cake
+Wedding Cake + Knife = Cake
+Birthday Cake + Blender = Cake Pop
+Chocolate Cake + Blender = Cake Pop
+Carrot Cake + Blender = Cake Pop
+
+# Cut
+French Toast + Knife = French Toast Sticks [dish]
+Gingerbread + Knife = Gingerbread Man [dish]
+Pork Chop + Blender = Sausage
+Cheeseburger + Knife = Sliders
+Cheeseburger + Blender = Meatloaf
+
+# Fried
+Oreo + Stove = Fried Oreos [dish]
+Mac and Cheese + Stove = Fried Mac and Cheese [dish]
+Ham Sandwich + Stove = Croque Monsieur [dish]
+Garlic Rice + Stove = Fried Rice
+
+# Blended
+Oreo + Blender = Pie Crust
+Garlic Bread + Blender = Breadcrumbs
+Breadsticks + Blender = Breadcrumbs
+Orange Juice + Blender = Orange Julius [drink]
+Root Beer Float + Blender = Milkshake
+Frozen Yogurt + Blender = Smoothie
+Latte + Blender = Frappuccino
+Espresso + Blender = Frappuccino
+
+# Pot
+Nachos + Pot = Chilaquiles [dish]
+Cranberry Juice + Pot = Cranberry Sauce
+Pudding + Oven = Creme Brulee
+
+# Time and cold
+Coleslaw + Clock = Sauerkraut
+Thanksgiving Dinner + Fridge = Leftovers [dish]
+Espresso + Fridge = Iced Coffee
+Latte + Fridge = Iced Latte
+Hot Cocoa + Fridge = Chocolate Milk
+Pink Lemonade + Fridge = Popsicle
+
+# Round 4: variants follow their parent
+Cola + Fridge = Slushie
+Root Beer + Fridge = Slushie
+Sprite + Fridge = Slushie
+Dr Pepper + Fridge = Slushie
+Float + Blender = Milkshake
+Neapolitan + Blender = Milkshake
+Mint Chocolate Chip + Blender = Milkshake
+Mint Tea + Fridge = Iced Tea
+Lemon Tea + Fridge = Iced Tea
+Herbal Tea + Fridge = Iced Tea
+California Roll + Knife = Sushi
+California Roll + Stove = Tempura Roll
+Chicken Tenders + Knife = Popcorn Chicken
+Chicken Tenders + Blender = Chicken Nuggets
+Tater Tots + Blender = Mashed Potatoes
+Cupcake + Blender = Cake Pop
+Chocolate Chip Cookie + Blender = Pie Crust
+Sourdough + Oven = Toast
+Sourdough + Blender = Breadcrumbs
+Saltines + Blender = Breadcrumbs
+Queso + Fridge = Cheese
+Chicken Dinner + Fridge = Leftovers
+Oatmeal + Fridge = Overnight Oats
+Porridge + Fridge = Overnight Oats
+
+# Round 4: the tool does its real job
+Smoothie + Fridge = Popsicle
+Granola Bar + Blender = Granola
+Boiled Egg + Blender = Egg Salad
+Stew + Oven = Meat Pie
+Beef Stew + Oven = Meat Pie
+Meat and Potatoes + Pot = Stew
+Meat and Potatoes + Oven = Shepherd's Pie
+Brisket + Clock = Corned Beef
+Lo Mein + Stove = Chow Mein
+Corned Beef + Stove = Corned Beef Hash [dish]
+Applesauce + Pot = Apple Butter
+Muffin + Knife = Muffin Top [dish]
+Spaghetti + Fridge = Pasta Salad [dish]
+Candy Bar + Stove = Fried Candy Bar [dish]
+
+# Round 5: variants follow their parent
+Hawaiian Pizza + Knife = Pizza Slice
+Deep Dish Pizza + Knife = Pizza Slice
+Stuffed Crust Pizza + Knife = Pizza Slice
+Meat Lover's Pizza + Knife = Pizza Slice
+Veggie Pizza + Knife = Pizza Slice
+Mushroom Pizza + Knife = Pizza Slice
+BBQ Chicken Pizza + Knife = Pizza Slice
+Glazed Donut + Knife = Donut Holes
+Chocolate Donut + Knife = Donut Holes
+Whole Wheat Bread + Oven = Toast
+Whole Wheat Bread + Blender = Breadcrumbs
+Dinner Roll + Blender = Breadcrumbs
+Mocha + Blender = Frappuccino
+Caramel Macchiato + Blender = Frappuccino
+Pumpkin Spice Latte + Blender = Frappuccino
+Cold Brew + Blender = Frappuccino
+Cappuccino + Fridge = Iced Coffee
+Americano + Fridge = Iced Coffee
+Vanilla Latte + Fridge = Iced Latte
+Peach Tea + Fridge = Iced Tea
+Fanta + Fridge = Slushie
+Pesto Pasta + Fridge = Pasta Salad
+Veggie Pasta + Fridge = Pasta Salad
+
+# Round 5: the knife trims it
+Wrap + Knife = Pinwheels [dish]
+PB&J + Knife = Uncrustables [dish]
+
+# Round 6: famous dish + famous dish
+Burger + Pizza = Pizza Burger [dish]
+Pizza + Sandwich = Stromboli [dish]
+Burger + Hot Dog = Barbecue
+Burger + Soda = Combo Meal
+Burger + Toast = Patty Melt
+Burger + Donut = Luther Burger [dish]
+Burrito + Taco = Crunchwrap Supreme
+Salad + Taco = Taco Salad
+Burrito + Salad = Burrito Bowl
+Burrito + Scrambled Eggs = Breakfast Burrito
+Burrito + French Fries = California Burrito [dish]
+Fried Chicken + Spaghetti = Chicken Parmesan
+French Fries + Steak = Steak Frites [dish]
+Salad + Spaghetti = Pasta Salad
+Salad + Toast = Caesar Salad
+Steak + Scrambled Eggs = Steak and Eggs
+Sandwich + Steak = Cheesesteak
+Hot Dog + Pancakes = Pigs in a Blanket
+Pancakes + Scrambled Eggs = Breakfast
+Scrambled Eggs + Waffle = Breakfast
+Coffee + Toast = Breakfast
+Coffee + Donut = Breakfast
+Scrambled Eggs + Steamed Rice = Fried Rice
+
+# Round 7: famous dish + a common ingredient
+Pizza + Fruit = Hawaiian Pizza
+Pizza + Bacon = Meat Lover's Pizza
+Pizza + Ham = Meat Lover's Pizza
+Burger + Chicken = Chicken Sandwich
+Sushi + Tortilla = Sushirrito
+Taco + Fish = Fish Tacos
+Taco + Lettuce = Taco Salad
+Burrito + Egg = Breakfast Burrito
+Fried Chicken + Bread = Chicken Sandwich
+Fried Chicken + Tortilla = Chicken Wrap
+Fried Chicken + Lemon = Lemon Chicken
+Fried Chicken + Rice = Chicken and Rice
+Spaghetti + Meat = Spaghetti Bolognese
+Spaghetti + Egg = Carbonara
+Spaghetti + Bacon = Carbonara
+Spaghetti + Cream = Alfredo
+Spaghetti + Butter = Buttered Noodles
+Ice Cream + Milk = Milkshake
+Ice Cream + Syrup = Sundae
+Pancakes + Chocolate = Chocolate Chip Pancakes
+Pancakes + Bacon = McGriddle
+Waffle + Chicken = Chicken and Waffles
+Cake + Cheese = Cheesecake
+Cake + Milk = Tres Leches Cake
+Cake + Cinnamon = Coffee Cake
+Donut + Chocolate = Chocolate Donut
+Cookie + Cinnamon = Snickerdoodle [dish]
+Steak + Egg = Steak and Eggs
+Steak + Potato = Meat and Potatoes
+Steak + Fish = Surf and Turf
+Steak + Tortilla = Fajitas
+Sandwich + Bacon = Bacon Sandwich
+Sandwich + Chicken = Chicken Sandwich
+Sandwich + Fish = Fish Sandwich
+Grilled Cheese + Ham = Croque Monsieur
+Scrambled Eggs + Bacon = Bacon and Eggs
+Scrambled Eggs + Ham = Ham and Eggs
+Toast + Garlic = Garlic Bread
+Toast + Tomato = Bruschetta
+Toast + Cheese = Grilled Cheese
+Steamed Rice + Chicken = Chicken and Rice
+Steamed Rice + Meat = Rice and Meat
+Steamed Rice + Beans = Rice and Beans
+Steamed Rice + Milk = Rice Pudding
+Steamed Rice + Cheese = Cheesy Rice
+Steamed Rice + Garlic = Garlic Rice
+Salad + Cheese = Greek Salad
+Tea + Cinnamon = Chai
+Mashed Potatoes + Cheese = Cheesy Potatoes
+Pie + Apple = Apple Pie
+Baked Potato + Cheese = Cheesy Potatoes
+Popcorn + Peanuts = Cracker Jack
+Nachos + Guacamole = Loaded Nachos
+Ice Cream + Caramel = Sundae
+Ice Cream + Sprinkles = Sundae
+
+## Catalog gaps (2026-10-13): nuts, seafood and stragglers
+# Each one comes from how it's really made or where it really comes from.
+
+# Nuts: cashews grow on a fruit (the cashew apple); slivered almonds are
+# cut; pecans are the American nut
+Nuts + Knife = Almonds
+Nuts + Fruit = Cashews
+Nuts + American = Pecans
+Almonds + Water = Almond Milk
+Pecans + Pie = Pecan Pie
+Pecans + Caramel = Turtles
+Cashews + Chicken Stir-Fry = Cashew Chicken [dish]
+# chickpeas, the name says it
+Beans + Chick = Chickpeas
+Chickpeas + Tahini = Hummus
+Chickpeas + Stove = Falafel
+Chickpeas + Indian = Chana Masala
+# goat's milk, aged, the way Cow + Clock makes cheese
+Goat + Clock = Goat Cheese
+Goat Cheese + Beet = Beet Salad
+# brioche is dough enriched with egg yolks
+Dough + Yolk = Brioche
+Brioche + Lobster = Lobster Roll
+Cream Puff + Chocolate = Eclair [dish]
+# Earl Grey is tea with bergamot, a kind of orange
+Tea + Orange = Earl Grey [drink]
+
+## Common ingredients with each other (2026-10-13)
+# The everyday ingredients two or three steps in - milk, cream, tomato,
+# chicken, pork... - with each other. Generic pair, generic result; the
+# named dish comes a step later.
+
+# Milk and cream
+Milk + Strawberry = Strawberry Milk
+# a squeeze of lemon curdles milk into buttermilk; vinegar makes curds
+Milk + Vinegar = Cottage Cheese
+Cream + Lemon = Sour Cream
+Cream + Onion = French Onion Dip
+
+# Butter
+Butter + Peanuts = Peanut Butter
+
+# Tomato, onion, garlic
+Tomato + Beef = Meat Sauce
+Tomato + Vinegar = Ketchup
+Tomato + Rice = Mexican Rice
+Tomato + Bread = Bruschetta
+# eggs poached in tomato
+Onion + Flour = Onion Rings
+
+# Oil, vinegar, sauces
+Vinegar + Chili Pepper = Hot Sauce
+Chocolate + Chili Pepper = Mole
+Pepper + Salt = Seasoning
+Lemon + Pepper = Seasoning
+Spices + Chili Pepper = Chili Powder
+Cinnamon + Pumpkin = Pumpkin Spice
+
+# Meat
+Chicken + Yogurt = Tandoori Chicken
+Chicken + Orange = Orange Chicken
+Bell Pepper + Chicken = Fajitas
+Pork + Dough = Dumplings
+Ham + Bread = Ham Sandwich
+Ham + Egg = Ham and Eggs
+Dough + Sausage = Pigs in a Blanket
+Shrimp + Batter = Tempura
+
+# Beans, rice, vegetables
+Beans + Chili Pepper = Chili
+Mushroom + Rice = Risotto
+Lettuce + Cucumber = Salad
+Avocado + Lime = Guacamole
+
+# Sweet, fruit and baking
+Orange + Sugar = Jam
+
+# Drinks
+Yogurt + Water = Lassi
+# churned cream is butter; butter cooked down is ghee
+Cream + Cream = Butter
+Butter + Butter = Ghee
+# Cheez-Its really are cheese and flour
+Cheese + Flour = Cheez-It
+Cheese + Spinach = Saag Paneer
+Chicken + Peanuts = Kung Pao Chicken
+Chicken + Mayonnaise = Chicken Salad
+Chicken + Dough = Chicken Pot Pie
+Beef + Tortilla = Taco
+Pork + Tortilla = Carnitas
+Oil + Tortilla = Tortilla Chips
+# cocoa beans
+Beans + Chocolate = Cocoa
+Banana + Cookie = Banana Pudding
+Honey + Tea = Sweet Tea
+Chocolate + Peanuts = M&M's
+Ginger + Cookie = Gingerbread
+Avocado + Bread = Avocado Toast
+Chili Pepper + Lime = Tajin
+Chili Pepper + Garlic = Sriracha
+Egg + Mayonnaise = Egg Salad
+Bread + Turkey = Sandwich
+Mayonnaise + Potato = Potato Salad
+
+# Round 8: more dish + ingredient
+Hot Dog + Beans = Pork and Beans
+Grilled Cheese + Meat = Patty Melt
+Baked Potato + Meat = Meat and Potatoes
+Yogurt + Ice = Frozen Yogurt
+Yogurt + Strawberry = Parfait
+Oatmeal + Yogurt = Overnight Oats
+Cereal + Cinnamon = Cinnamon Toast Crunch
+Pizza + Spinach = Veggie Pizza
+Pizza + Sausage = Meat Lover's Pizza
+Taco + Pork = Al Pastor
+Pasta + Egg = Carbonara
+Pasta + Meat = Spaghetti Bolognese
+Steamed Rice + Mango = Mango Sticky Rice
+Steamed Rice + Fish = Donburi
+Pie + Chicken = Chicken Pot Pie
+Pie + Meat = Meat Pie
+Latte + Pumpkin = Pumpkin Spice Latte
+Latte + Chocolate = Mocha
+Latte + Ice = Iced Latte
+Tea + Peach = Peach Tea
+Tea + Mint = Mint Tea
+Spaghetti + Pesto = Pesto Pasta
+Sandwich + Meatballs = Meatball Sub
+Sandwich + Lobster = Lobster Roll
+Bagel + Fish = Lox Bagel
+Pita + Chicken = Shawarma
+Pita + Falafel = Falafel Wrap
+Chicken Soup + Rice = Rice Soup
+Chicken Soup + Egg = Egg Drop Soup
+Stew + Meat = Beef Stew
+Curry + Butter = Butter Chicken
+Steamed Rice + Seaweed = Rice Ball
+Tortilla + Egg = Breakfast Burrito
+Salad + Chicken = Chicken Salad
+Salad + Fish = Tuna Salad
+Hot Chocolate + Coffee = Mocha
+Soda + Lime = Sprite
+Bread + Cinnamon = Cinnamon Toast
+Pizza + Chicken = BBQ Chicken Pizza
+Steamed Rice + Egg = Fried Rice
+Sandwich + Egg = Egg Salad Sandwich
+Taco + Pineapple = Al Pastor
+Salad + Pasta = Pasta Salad
