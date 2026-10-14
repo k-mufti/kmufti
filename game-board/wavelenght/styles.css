@@ -442,7 +442,7 @@ body.tv #home .field, body.tv #home .starts, body.tv #home .or, body.tv #home .j
     max-width: 1700px;
     padding: 0 32px 32px;
     display: grid;
-    grid-template-columns: minmax(130px, 1fr) minmax(0, min(1040px, calc((100vh - 360px) * 1.6))) minmax(130px, 1fr);
+    grid-template-columns: minmax(130px, 1fr) minmax(0, min(1040px, calc((100vh - 420px) * 1.6))) minmax(130px, 1fr);
     grid-template-areas:
       "score score score"
       "banner banner banner"
