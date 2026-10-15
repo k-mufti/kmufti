@@ -68,6 +68,13 @@
       font-family: "Fraunces", serif; font-style: italic; font-weight: 700; font-size: 25px;
     }
     .box.wave .tag { position: absolute; top: 52px; left: 0; right: 0; text-align: center; font-size: 11px; color: #5b6573; }
+    .box.imp { background: #1f1535; color: #f6f0ff; }
+    .box.imp svg { position: absolute; left: 14px; right: 14px; bottom: 14px; width: calc(100% - 28px); }
+    .box.imp .name {
+      position: absolute; top: 18px; left: 0; right: 0; text-align: center;
+      font-family: "Fraunces", serif; font-weight: 800; font-size: 25px; letter-spacing: -0.5px;
+    }
+    .box.imp .tag { position: absolute; top: 52px; left: 0; right: 0; text-align: center; font-size: 11px; color: #ff6d8f; }
     .box.soon {
       border: 2px dashed rgba(201, 184, 166, 0.35);
       box-shadow: none;
@@ -77,7 +84,7 @@
     }
     @media (max-width: 520px) {
       .box { width: 140px; height: 168px; }
-      .box.wave .name { font-size: 21px; }
+      .box.wave .name, .box.imp .name { font-size: 21px; }
       .box.soon:nth-of-type(n+3) { display: none; }
     }
   </style>
@@ -108,7 +115,16 @@
           <circle r="14" fill="#d8342b"/>
         </svg>
       </a>
-      <div class="box soon">coming soon</div>
+      <a class="box imp" href="inposter/">
+        <span class="name">Inposter</span>
+        <span class="tag">one of you is faking it</span>
+        <svg viewBox="0 0 120 96" aria-hidden="true">
+          <rect x="10" y="22" width="44" height="62" rx="7" fill="#f6f0ff" transform="rotate(-12 32 53)"/>
+          <rect x="66" y="22" width="44" height="62" rx="7" fill="#f6f0ff" transform="rotate(12 88 53)"/>
+          <rect x="38" y="14" width="44" height="64" rx="7" fill="#ff3d6e"/>
+          <text x="60" y="58" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="34" fill="#fff">?</text>
+        </svg>
+      </a>
       <div class="box soon">coming soon</div>
       <div class="box soon">coming soon</div>
     </div>

@@ -1,5 +1,6 @@
 // Zero-dependency Node backend for Game Board, the shelf of board-game
-// spin-offs. For now it runs one game: Wavelenght.
+// spin-offs. It runs Wavelenght (here) and Inposter (./inposter-server.js,
+// which gets every message from a player who said hello from its page).
 //
 // The server keeps the secret. The target's position is chosen here when
 // the psychic spins, and it's only ever sent to the psychic - everyone else
@@ -57,6 +58,7 @@ const QUICK_START_MS = 5000;           // a quick game's countdown once 2 are in
 const QUICK_MAX = 8;                   // a quick game stops taking strangers here
 
 let R = null, CARDS = null;            // loaded below (ES modules)
+let IMP = null;                        // Inposter, once its words are loaded
 
 /* ========================================================================
    WebSocket, hand-rolled. Same codec as yahtzee/server.js - text frames,
@@ -165,7 +167,7 @@ function newCode() {
   for (;;) {
     let c = "";
     for (let i = 0; i < 4; i++) c += CODE_ALPHABET[crypto.randomInt(0, CODE_ALPHABET.length)];
-    if (!rooms.has(c)) return c;
+    if (!rooms.has(c) && !(IMP && IMP.rooms.has(c))) return c;
   }
 }
 
@@ -492,6 +494,7 @@ function unwatch(peer) {
 }
 
 function dropped(peer) {
+  if (peer.game === "inposter") return IMP && IMP.dropped(peer);
   unwatch(peer);
   const room = peer.room ? rooms.get(peer.room) : null;
   if (!room) return;
@@ -515,6 +518,12 @@ function onMessage(peer, raw) {
   if (m.t === "hello") {
     peer.id = cleanText(m.id, 40) || crypto.randomUUID();
     peer.name = cleanName(m.name);
+    peer.color = /^#[0-9a-f]{6}$/i.test(m.color || "") ? m.color : null;
+    if (m.game === "inposter") {
+      peer.game = "inposter";
+      send(peer, { t: "welcome", id: peer.id });
+      return IMP ? IMP.hello(peer) : send(peer, { t: "idle" });
+    }
     send(peer, { t: "welcome", id: peer.id });
     // back from a dropped connection: straight back into your room
     for (const room of rooms.values()) {
@@ -529,6 +538,7 @@ function onMessage(peer, raw) {
     return send(peer, { t: "idle" });
   }
   if (!peer.id) return;
+  if (peer.game === "inposter") return IMP && IMP.handle(peer, m);
 
   if (m.t === "create") {
     leaveRoom(peer);
@@ -636,7 +646,7 @@ const server = http.createServer((req, res) => {
   const route = url.pathname.replace(/^\/game-board/, "");
   if (route === "/api/health") {
     res.writeHead(200, { "content-type": "application/json" });
-    res.end(JSON.stringify({ ok: true, peers: peers.size, rooms: rooms.size, quick: [...rooms.values()].filter((r) => r.quick).length }));
+    res.end(JSON.stringify({ ok: true, peers: peers.size, rooms: rooms.size, quick: [...rooms.values()].filter((r) => r.quick).length, inposter: IMP ? IMP.rooms.size : 0 }));
     return;
   }
   res.writeHead(404).end();
@@ -680,5 +690,8 @@ server.on("upgrade", (req, socket) => {
 (async () => {
   R = await import("./wavelenght/rules.js");
   ({ CARDS } = await import("./wavelenght/cards.js"));
+  const W = await import("./inposter/words.js");
+  const IR = await import("./inposter/rules.js");
+  IMP = require("./inposter-server.js")({ send, cleanText, cleanName, newCode, W, R: IR });
   server.listen(PORT, () => console.log(`game-board server on :${PORT}`));
 })();
