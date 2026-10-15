@@ -1,0 +1,37 @@
+# Every push to main goes live: GitHub logs into the server with a deploy key
+# that can only run /usr/local/bin/kmufti-deploy (see deploy/kmufti-deploy.sh),
+# which pulls and restarts any backend whose server.js changed.
+#
+# Secrets (repo Settings -> Secrets -> Actions):
+#   DEPLOY_KEY          private half of the deploy key
+#   DEPLOY_KNOWN_HOSTS  the server's host key, so ssh knows it's really ours
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # a "Run workflow" button in the Actions tab
+
+# One deploy at a time; a push that lands mid-deploy waits its turn.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Pull onto the server
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy ubuntu@15.204.244.251
+
+      - name: Check the site answers
+        run: curl -fsS -o /dev/null --retry 3 --retry-delay 2 https://kmufti.com/

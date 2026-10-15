@@ -261,17 +261,36 @@ launcher tiles before it became its own project, and the folder name stuck.
 
 12. **DNS**: point `kmufti.com` (and `www`) at your VPS IP (A / AAAA records).
 
-## Updating (your git-pull workflow)
+## Updating (automatic)
 
-From your Mac, `./deploy.sh "what you changed"` commits, pushes, and pulls on
-the server. Or by hand:
+**Every push to `main` goes live by itself.** GitHub Actions
+(`.github/workflows/deploy.yml`) logs into the server and runs
+`/usr/local/bin/kmufti-deploy` (source: `deploy/kmufti-deploy.sh`), which pulls
+and restarts a backend only if its own `server.js` (or `*-server.js`) changed.
+Progress and failures show at github.com/k-mufti/kmufti/actions, and the
+"Run workflow" button there re-runs a deploy by hand.
 
-```bash
-cd /var/www/kmufti-hub
-sudo git pull
-```
+`./deploy.sh "what you changed"` from your Mac just commits and pushes; the
+Action does the rest.
 
-Then restart a service **only** if its own `server.js` changed:
+How it's wired:
+
+- A dedicated SSH key (`github-actions-deploy`) is in `~/.ssh/authorized_keys`
+  on the server with `command="/usr/local/bin/kmufti-deploy"`, so it can run
+  the deploy and nothing else. Its private half is the `DEPLOY_KEY` repo
+  secret; `DEPLOY_KNOWN_HOSTS` holds the server's host key. To revoke it,
+  delete that line from `authorized_keys`.
+- The script lives outside the repo, owned by root, so a push can't change
+  what the key runs. After editing `deploy/kmufti-deploy.sh`, reinstall it:
+  ```bash
+  sudo install -m 755 /var/www/kmufti-hub/deploy/kmufti-deploy.sh /usr/local/bin/kmufti-deploy
+  ```
+- nginx config and systemd unit files are still installed by hand; the deploy
+  prints a note when anything in `deploy/` changes.
+
+By hand on the server, `kmufti-deploy` does the same thing. A plain
+`git pull` works too, but then restart a service yourself if its `server.js`
+changed:
 
 ```bash
 sudo systemctl restart kmufti-wishlist   # wishlist/server.js
@@ -280,6 +299,8 @@ sudo systemctl restart kmufti-puzzle     # puzzle/server.js
 sudo systemctl restart kmufti-chameleon  # chameleon/server.js
 sudo systemctl restart kmufti-kitchen    # infinite-kitchen/server.js
 sudo systemctl restart kmufti-admin      # admin/server.js
+sudo systemctl restart kmufti-yahtzee    # yahtzee/server.js
+sudo systemctl restart kmufti-game-board # game-board/server.js
 ```
 
 Adding a puzzle needs no restart — `puzzle/puzzles.json` is re-read at every

@@ -5,15 +5,12 @@
 #     cd ~/Desktop/kmufti-hub
 #     ./deploy.sh "what you changed"
 #
-# It commits + pushes your changes, then pulls them onto the live server.
-# No passwords (SSH key), no sudo (you own the repo on the server).
-#
-# NOTE: if you changed wishlist/server.js (the backend), also run once:
-#     ssh ubuntu@15.204.244.251 "sudo systemctl restart kmufti-wishlist"
+# It commits + pushes your changes. GitHub Actions then puts them on the live
+# server and restarts any backend whose server.js changed
+# (.github/workflows/deploy.yml) - watch it at github.com/k-mufti/kmufti/actions
 #
 set -e
 
-VPS="ubuntu@15.204.244.251"
 cd "$(dirname "$0")"          # always run from the repo root
 
 MSG="${1:-update}"           # commit message (defaults to "update")
@@ -27,7 +24,4 @@ else
 fi
 git push
 
-echo "→ pulling on the server…"
-ssh "$VPS" "cd /var/www/kmufti-hub && git pull"
-
-echo "✓ live at https://kmufti.com"
+echo "✓ pushed - GitHub Actions deploys it to https://kmufti.com in about a minute"
