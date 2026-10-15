@@ -24,6 +24,7 @@ declare -A SERVICE=(
   [chameleon]=kmufti-chameleon
   [draw]=kmufti-draw
   [game-board]=kmufti-game-board
+  [human]=kmufti-human
   [infinite-kitchen]=kmufti-kitchen
   [puzzle]=kmufti-puzzle
   [wishlist]=kmufti-wishlist
@@ -45,7 +46,7 @@ failed=0
 for dir in "${!SERVICE[@]}"; do
   if grep -qE "^$dir/([^/]+-)?server\.js$" <<<"$changed"; then
     svc=${SERVICE[$dir]}
-    sudo systemctl restart "$svc"
+    sudo systemctl restart "$svc" || true   # is-active below reports it
     sleep 1
     if systemctl is-active -q "$svc"; then echo "restarted $svc"
     else echo "FAILED: $svc did not come back up"; failed=1; fi

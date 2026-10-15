@@ -737,7 +737,7 @@
     let meta = { title: "", image: "", price: "", domain: "" };
     let fetchFailed = false;
     try {
-      const res = await fetch(UNFURL_ENDPOINT, {
+      const res = await human.fetch(UNFURL_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: parsedUrl.href }),

@@ -210,7 +210,7 @@
     if (sendTimer) { clearTimeout(sendTimer); sendTimer = null; }
     if (!outbox.length) return;
     const batch = outbox; outbox = [];
-    fetch(`${DRAW_API}/paint`, {
+    human.fetch(`${DRAW_API}/paint`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: clientId, cells: batch }),

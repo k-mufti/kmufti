@@ -1,0 +1,31 @@
+# systemd unit for the "are you human" check (Cloudflare Turnstile).
+# Install:
+#   sudo mkdir -p /var/lib/kmufti-human && sudo chown www-data:www-data /var/lib/kmufti-human
+#   sudo cp deploy/kmufti-human.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now kmufti-human
+#
+# The keys live in /etc/kmufti/turnstile.env (root-only, never in the repo):
+#   TURNSTILE_SITEKEY=0x...
+#   TURNSTILE_SECRET=0x...
+# Without that file the check is off and every request is let through.
+# After changing it:  sudo systemctl restart kmufti-human
+
+[Unit]
+Description=kmufti human check (Turnstile)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/kmufti-hub/human
+ExecStart=/usr/bin/node server.js
+Environment=PORT=8029
+# Outside the repo: the key that signs the cookies.
+Environment=HUMAN_DATA=/var/lib/kmufti-human
+EnvironmentFile=-/etc/kmufti/turnstile.env
+Restart=always
+RestartSec=3
+User=www-data
+
+[Install]
+WantedBy=multi-user.target

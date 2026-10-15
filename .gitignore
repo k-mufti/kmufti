@@ -52,3 +52,6 @@ bust/model/head.glb
 
 # scratch pages for tweaking things locally, never deployed
 /_lab/
+
+# Human check: the key that signs its cookies (only when run locally)
+human/data/

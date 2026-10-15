@@ -18,6 +18,7 @@ persists in the visitor's browser (`localStorage`).
 | Jigsaw (`/puzzle/`) | static + **Node** (`puzzle/server.js`) | WebSocket table on port 8023; state in `/var/lib/kmufti-puzzle/` |
 | Infinite Kitchen (`/infinite-kitchen/`) | static + **Node** (`infinite-kitchen/server.js`) | recipes in `recipes.json` (static, in the repo); the list of pairs tried with no recipe on port 8027, in `/var/lib/kmufti-kitchen/missing.json` |
 | Yahtzee (`/yahtzee/`) | static + **Node** (`yahtzee/server.js`) | 1v1 matches over a WebSocket on port 8024. Nothing persisted — a match lives in memory, and solo-vs-bot works with the backend down |
+| Human check (`/human/api/`) | **Node** (`human/server.js`) | Cloudflare Turnstile, port 8029. Gates White Canvas painting and Wishlist link fetching through nginx `auth_request`; see "Turnstile" below |
 | Ops dashboard (`/admin/`) | static + **Node** (`admin/server.js`) | **private.** Uptime, traffic and host health on port 8026, bound to localhost and behind an nginx password. History in `/var/lib/kmufti-admin` |
 
 The hub's visit count is served by the **Jigsaw** backend (`GET`/`POST`
@@ -260,6 +261,41 @@ launcher tiles before it became its own project, and the folder name stuck.
    ```
 
 12. **DNS**: point `kmufti.com` (and `www`) at your VPS IP (A / AAAA records).
+
+## Turnstile (the "are you human" check)
+
+Pages that write to a backend load `/human.js` and send those writes through
+`human.fetch()`. In the background it runs Cloudflare Turnstile (invisible
+unless Cloudflare wants a click) and trades the token at
+`/human/api/verify` for a signed cookie that lasts a day. nginx checks that
+cookie with `auth_request /_human` on the protected routes - today
+`/draw/api/paint` and `/wishlist/api/unfurl` - so the backends themselves
+know nothing about it.
+
+To protect another write: add an exact `location =` for it with
+`auth_request /_human;` (copy the two in `deploy/nginx.conf`), load
+`/human.js` on its page, and switch that call to `human.fetch`.
+
+Setup, once:
+
+```bash
+sudo mkdir -p /var/lib/kmufti-human && sudo chown www-data:www-data /var/lib/kmufti-human
+sudo cp /var/www/kmufti-hub/deploy/kmufti-human.service /etc/systemd/system/
+sudo systemctl daemon-reload && sudo systemctl enable --now kmufti-human
+```
+
+The keys come from the Cloudflare dashboard (Turnstile -> Add widget, domain
+`kmufti.com`, mode Managed) and live in `/etc/kmufti/turnstile.env`,
+root-only and never in the repo:
+
+```bash
+sudo mkdir -p /etc/kmufti
+sudo sh -c 'umask 077; printf "TURNSTILE_SITEKEY=%s\nTURNSTILE_SECRET=%s\n" "SITE_KEY" "SECRET_KEY" > /etc/kmufti/turnstile.env'
+sudo systemctl restart kmufti-human
+```
+
+Without that file the check is **off**: everything is let through and pages
+don't load Turnstile. Delete the file and restart to switch it off again.
 
 ## Updating (automatic)
 
