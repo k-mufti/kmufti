@@ -4,7 +4,8 @@
 "use strict";
 
 const STANDARD_JEOPARDY_VALUES = [200, 400, 600, 800, 1000];
-const TEAM_COLORS = ['#ffcc00', '#64b5f6', '#81c784', '#ff8a65'];
+const TEAM_COLORS = ['#ffcc00', '#64b5f6', '#81c784', '#ff8a65', '#ba68c8',
+  '#4dd0e1', '#f06292', '#aed581', '#ffb74d', '#e0e0e0'];
 
 // Sets = curated collections, matched by explicit tag membership. A set and a
 // topic tag can be active at the same time (they AND together).
