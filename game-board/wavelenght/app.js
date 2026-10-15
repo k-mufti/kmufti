@@ -373,6 +373,8 @@ function clearPop() {
 function show(id) {
   for (const s of ["home", "lobby", "game"]) $(s).hidden = s !== id;
   if (id !== "game") document.body.classList.remove("split");
+  $("exitBtn").hidden = id !== "game" || TV;
+  if (id !== "game") armExit(false);
   $("codeChip").hidden = id === "home";
 }
 let toastTimer = null;
@@ -728,6 +730,10 @@ document.addEventListener("click", (e) => {
     case "skipBtn": return send({ t: "skip" });
     case "startBtn": return send({ t: "start" });
     case "leaveBtn": hideOver(); return send({ t: "leave" });
+    case "exitBtn":
+      if (!exitArmed) return armExit(true);
+      armExit(false); hideOver();
+      return send({ t: "leave" });
     case "quickBtn": saveName(); setStatus("Finding a game…"); return send({ t: "quick" });
     case "muteBtn": snd.setMuted(!snd.isMuted()); return paintMute();
     case "tvBtn": {
@@ -752,6 +758,16 @@ document.addEventListener("submit", (e) => {
 });
 $("createBtn").addEventListener("click", () => { saveName(); send({ t: "create" }); });
 $("codeInput").addEventListener("input", (e) => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""); });
+
+// The first tap asks "Sure?"; a second within a few seconds leaves.
+let exitArmed = false, exitTimer = null;
+function armExit(on) {
+  exitArmed = on;
+  clearTimeout(exitTimer);
+  $("exitBtn").classList.toggle("armed", on);
+  $("exitBtn").querySelector("b").textContent = on ? "Sure? Tap again" : "Leave game";
+  if (on) exitTimer = setTimeout(() => armExit(false), 3000);
+}
 
 function paintMute() {
   const m = snd.isMuted();

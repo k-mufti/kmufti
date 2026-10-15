@@ -151,7 +151,7 @@ input:focus { border-color: var(--navy); }
 .team li.empty { color: var(--ink-soft); font-style: italic; font-weight: 400; }
 
 /* ---------- the game ---------- */
-#game { max-width: 760px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; }
+#game { max-width: 760px; margin: 0 auto; padding-bottom: 80px; text-align: center; display: flex; flex-direction: column; }
 #game .score { order: 1; }
 #game .console { display: contents; }
 #game .banner { order: 2; }
@@ -291,6 +291,30 @@ input:focus { border-color: var(--navy); }
   .clue { font-size: 26px; }
   .spectrum .end, .card-end { font-size: 15px; padding: 12px 10px; }
   .track .tn { width: 78px; font-size: 13px; }
+}
+
+/* ---------- leaving a game ---------- */
+.exit {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 15;
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: var(--navy);
+  color: var(--paper);
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.45);
+  transition: background 0.15s ease, transform 0.08s ease;
+}
+.exit b { font-weight: 600; }
+.exit:hover { background: var(--navy-deep); }
+.exit:active { transform: scale(0.97); }
+.exit.armed { background: var(--red); }
+@media (min-width: 900px) {
+  .exit { left: 20px; bottom: 20px; padding: 7px 14px; font-size: 13px; }
 }
 
 /* ---------- sound switch ---------- */
@@ -461,14 +485,14 @@ body.tv #home .field, body.tv #home .starts, body.tv #home .or, body.tv #home .j
   .table { grid-area: table; gap: 16px; }
   .device { max-width: none; }
   /* the score: a small tag up top */
-  .score { grid-area: score; max-width: 380px; width: 100%; margin: 0 auto 14px; gap: 2px; }
-  .track { font-size: 13px; padding: 2px 6px; gap: 8px; }
-  .track .tn { width: 84px; }
-  .track .dots i { height: 7px; max-width: none; }
-  .track b { width: 22px; font-size: 14px; }
-  .coop { font-size: 14px; }
-  .coop b { font-size: 17px; }
-  .coop span { margin: 0 6px; }
+  .score { grid-area: score; max-width: 300px; width: 100%; margin: 0 auto 12px; gap: 1px; }
+  .track { font-size: 11px; padding: 1px 4px; gap: 6px; }
+  .track .tn { width: 70px; }
+  .track .dots i { height: 5px; max-width: none; }
+  .track b { width: 18px; font-size: 12px; }
+  .coop { font-size: 11px; }
+  .coop b { font-size: 13px; }
+  .coop span { margin: 0 4px; }
 
   /* the base the dial stands in, carrying everything you read and press */
   #game .console {
@@ -522,7 +546,7 @@ body.tv #home .field, body.tv #home .starts, body.tv #home .or, body.tv #home .j
     min-width: 0;
     background: var(--paper);
     border-radius: 999px;
-    padding: 4px 16px;
+    padding: 2px 11px;
     box-shadow: 0 3px 12px -6px rgba(0, 0, 0, 0.35);
   }
   .spectrum { display: contents; }

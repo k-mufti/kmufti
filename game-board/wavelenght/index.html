@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=9" />
+  <link rel="stylesheet" href="styles.css?v=11" />
 </head>
 <body>
   <header class="bar">
@@ -97,12 +97,15 @@
 
   </section>
 
+  <!-- out of the game, from anywhere in it: tap once, then again to be sure -->
+  <button class="exit" id="exitBtn" hidden><span aria-hidden="true">&larr;</span> <b>Leave game</b></button>
+
   <!-- The end of a game: who won, the awards, every round -->
   <section class="over" id="over" hidden></section>
 
   <div class="toast" id="toast" hidden></div>
 
   <script src="../../you.js?v=2"></script>
-  <script type="module" src="app.js?v=5"></script>
+  <script type="module" src="app.js?v=6"></script>
 </body>
 </html>
