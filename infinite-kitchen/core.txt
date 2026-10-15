@@ -4386,3 +4386,2204 @@ Rock Candy + Knife = Sprinkles
 Rock Candy + Blender = Powdered Sugar
 # it looks like ice
 Rock Candy + Fridge = Ice
+
+## Step 2, batch 1 (2026-10-14): the most-made 2-step items with the elements and tools
+# Step 2 starts with the pairs players try first on anything new: the six
+# elements and the seven tools.
+
+# Honey
+Honey + Water = Syrup
+Honey + Grain = Granola
+# honeydew melon
+Honey + Plant = Honeydew [ingredient]
+Honey + Animal = Bear
+# honey-cured ham
+Honey + Salt = Ham
+# honeycomb toffee
+Honey + Sugar = Honeycomb
+Honey + Stove = Glaze [ingredient]
+Honey + Oven = Honey Cake [dish]
+Honey + Pot = Candy
+Honey + Blender = Creamed Honey [ingredient]
+Honey + Fridge = Creamed Honey
+# honey never goes off - jars from the pyramids were still good
+Honey + Clock = Honey [nothing]
+# cutting the comb out of the frame
+Honey + Knife = Honeycomb
+
+# Oatmeal
+Oatmeal + Water = Porridge
+Oatmeal + Pot = Porridge
+# plant milk
+Oatmeal + Plant = Oat Milk
+# oatmeal and sheep, the Scottish way
+Oatmeal + Animal = Haggis [dish]
+# oatcakes
+Oatmeal + Salt = Crackers
+Oatmeal + Grain = Muesli
+Oatmeal + Sugar = Oatmeal Cookie
+Oatmeal + Stove = Pancakes
+# flapjacks
+Oatmeal + Oven = Granola Bar
+Oatmeal + Blender = Oat Flour
+Oatmeal + Clock = Overnight Oats
+Oatmeal + Knife = Granola Bar
+
+# Teriyaki
+Teriyaki + Water = Marinade [ingredient]
+Teriyaki + Clock = Marinade
+Teriyaki + Grain = Donburi
+Teriyaki + Plant = Stir-Fry
+# chicken on skewers with the same sweet soy glaze
+Teriyaki + Animal = Yakitori [dish]
+Teriyaki + Salt = Soy Sauce
+Teriyaki + Sugar = Glaze
+Teriyaki + Pot = Glaze
+Teriyaki + Stove = Hibachi [dish]
+# teriyaki jerky
+Teriyaki + Oven = Jerky
+Teriyaki + Fridge = Bento [dish]
+Teriyaki + Blender = Marinade
+Teriyaki + Knife = Yakitori
+
+# Trail Mix
+# Bircher muesli: oats, nuts and fruit soaked overnight
+Trail Mix + Water = Muesli
+Trail Mix + Grain = Granola
+Trail Mix + Plant = Peanuts
+# the other thing in your hiking bag
+Trail Mix + Animal = Jerky
+Trail Mix + Salt = Chex Mix [dish]
+Trail Mix + Sugar = M&M's
+Trail Mix + Stove = Roasted Nuts [ingredient]
+# monster cookies
+Trail Mix + Oven = Cookie
+Trail Mix + Blender = Peanut Butter
+# no-bake bars set in the fridge
+Trail Mix + Fridge = Granola Bar
+# the nuts boiled in sugar till it sets
+Trail Mix + Pot = Peanut Brittle [dish]
+Trail Mix + Knife = Nuts
+# it's made to last the whole hike
+Trail Mix + Clock = Trail Mix [nothing]
+
+# Granola Bar
+Granola Bar + Grain = Nutri-Grain [dish]
+Granola Bar + Plant = Nature Valley [dish]
+Granola Bar + Animal = Protein Bar [dish]
+# sweet and salty
+Granola Bar + Salt = Trail Mix
+Granola Bar + Sugar = Candy Bar
+Granola Bar + Stove = Granola
+Granola Bar + Knife = Granola
+Granola Bar + Oven = Oatmeal Cookie
+Granola Bar + Pot = Porridge
+Granola Bar + Water = Granola Bar [nothing]
+# an old one crumbles to bits
+Granola Bar + Clock = Granola
+Granola Bar + Fridge = Granola Bar [nothing]
+
+# Stew
+Stew + Water = Soup [dish]
+# served over rice
+Stew + Grain = Gumbo
+Stew + Plant = Ratatouille [dish]
+Stew + Animal = Beef Stew
+# stewed fruit
+Stew + Sugar = Compote [dish]
+Stew + Stove = Gravy
+Stew + Pot = Hot Pot
+Stew + Blender = Baby Food
+# slow-cooked all afternoon
+Stew + Clock = Pot Roast
+Stew + Fridge = Leftovers
+# salt beef, simmered: corned beef and cabbage
+Stew + Salt = Corned Beef
+Stew + Knife = Stew [nothing]
+
+# Ham
+# ham stock
+Ham + Water = Broth
+# rice and ham, the Cajun way
+Ham + Grain = Jambalaya
+# collards cooked with a ham hock
+Ham + Plant = Collard Greens [dish]
+Ham + Animal = Pig
+# salt-cured and aged
+Ham + Salt = Prosciutto
+Ham + Clock = Prosciutto
+Ham + Sugar = Glazed Ham [dish]
+Ham + Oven = Glazed Ham
+Ham + Stove = Bacon
+Ham + Pot = Split Pea Soup [dish]
+Ham + Knife = Cold Cuts
+# ground ham pressed into a can
+Ham + Blender = Spam
+Ham + Fridge = Leftovers
+
+# Fried Rice
+Fried Rice + Water = Congee
+Fried Rice + Pot = Rice Soup
+# wheat noodles fried the same way
+Fried Rice + Grain = Lo Mein
+Fried Rice + Plant = Stir-Fry
+Fried Rice + Animal = Chicken Fried Rice [dish]
+Fried Rice + Sugar = Pineapple Fried Rice [dish]
+# the crispy layer stuck to the bottom of the pan
+Fried Rice + Stove = Crispy Rice [ingredient]
+Fried Rice + Oven = Casserole
+Fried Rice + Fridge = Takeout [dish]
+Fried Rice + Clock = Leftovers
+Fried Rice + Blender = Slop
+Fried Rice + Salt = Fried Rice [nothing]
+Fried Rice + Knife = Fried Rice [nothing]
+
+# Overnight Oats
+Overnight Oats + Water = Muesli
+Overnight Oats + Grain = Granola
+# chia seeds soak up milk the same way
+Overnight Oats + Plant = Chia Pudding [dish]
+Overnight Oats + Animal = Smoothie Bowl
+# Scottish porridge is salted
+Overnight Oats + Salt = Porridge
+Overnight Oats + Sugar = Pudding
+Overnight Oats + Stove = Pancakes
+Overnight Oats + Oven = Muffin
+Overnight Oats + Blender = Smoothie
+# wait overnight: it's morning
+Overnight Oats + Clock = Breakfast
+Overnight Oats + Fridge = Breakfast
+Overnight Oats + Pot = Porridge
+Overnight Oats + Knife = Overnight Oats [nothing]
+
+# Pickles
+# pickle juice
+Pickles + Water = Brine
+Pickles + Salt = Brine
+# a pickle on the side of a deli sandwich on rye
+Pickles + Grain = Rye Bread [ingredient]
+Pickles + Plant = Dill
+Pickles + Animal = Pickled Herring
+# sweet pickles
+Pickles + Sugar = Relish
+Pickles + Blender = Relish
+Pickles + Stove = Fried Pickles [dish]
+Pickles + Oven = Fried Pickles
+# Polish ogorkowa
+Pickles + Pot = Pickle Soup [dish]
+Pickles + Clock = Sauerkraut
+Pickles + Fridge = Pickles [nothing]
+
+# Soda
+Soda + Water = Sparkling Water
+# a fizzy grain drink
+Soda + Grain = Beer
+# sassafras root
+Soda + Plant = Root Beer
+Soda + Animal = Red Bull [drink]
+# electrolytes
+Soda + Salt = Gatorade
+Soda + Sugar = Cola
+Soda + Stove = Syrup
+# Coca-Cola cake
+Soda + Oven = Cake
+Soda + Blender = Slushie
+Soda + Knife = Soda [nothing]
+# gone flat
+Soda + Clock = Soda [nothing]
+
+# Herbal Tea
+Herbal Tea + Grain = Barley Tea [drink]
+Herbal Tea + Plant = Mint Tea
+Herbal Tea + Animal = Milk Tea
+Herbal Tea + Sugar = Sweet Tea
+# simmered down with sugar: cough syrup
+Herbal Tea + Pot = Syrup
+Herbal Tea + Blender = Matcha
+Herbal Tea + Clock = Kombucha
+Herbal Tea + Oven = Chamomile
+# cold-brewed
+Herbal Tea + Water = Iced Tea
+Herbal Tea + Salt = Herbal Tea [nothing]
+# simmered with spices on the stove
+Herbal Tea + Stove = Chai
+Herbal Tea + Knife = Herbal Tea [nothing]
+
+# Salad
+# a cold soup of raw vegetables
+Salad + Water = Gazpacho
+# bulgur wheat
+Salad + Grain = Tabbouleh
+Salad + Plant = Coleslaw
+Salad + Knife = Coleslaw
+Salad + Animal = Chicken Salad
+Salad + Salt = Pickles
+Salad + Sugar = Fruit Salad
+Salad + Oven = Roasted Vegetables
+Salad + Clock = Kimchi
+Salad + Fridge = Leftovers
+
+## Step 2, batch 2 (2026-10-14): Breakfast through Beef Jerky
+
+# Breakfast
+Breakfast + Water = Coffee
+Breakfast + Grain = Toast
+Breakfast + Plant = Avocado Toast
+Breakfast + Animal = Bacon
+Breakfast + Salt = Hash Browns
+Breakfast + Sugar = Donut
+Breakfast + Stove = Scrambled Eggs
+Breakfast + Oven = Quiche [dish]
+Breakfast + Pot = Oatmeal
+# half a grapefruit, the old diner way
+Breakfast + Knife = Grapefruit
+Breakfast + Blender = Smoothie
+# a late breakfast
+Breakfast + Clock = Brunch [dish]
+Breakfast + Fridge = Orange Juice
+
+# Smoothie
+# fruit blended with water
+Smoothie + Water = Agua Fresca
+Smoothie + Grain = Smoothie Bowl
+Smoothie + Plant = Green Smoothie
+Smoothie + Animal = Milkshake
+# salted lassi is the classic one
+Smoothie + Salt = Lassi
+Smoothie + Sugar = Slushie
+Smoothie + Stove = Jam
+Smoothie + Pot = Compote
+# fruit puree dried out flat in a low oven
+Smoothie + Oven = Fruit Leather [dish]
+Smoothie + Clock = Spoiled
+Smoothie + Knife = Smoothie [nothing]
+# blended again with ice
+Smoothie + Blender = Slushie
+
+# Saltwater Taffy
+Saltwater Taffy + Water = Ocean
+# licorice is made with wheat flour
+Saltwater Taffy + Grain = Licorice
+Saltwater Taffy + Plant = Peppermint
+# a sea creature in the candy aisle
+Saltwater Taffy + Animal = Swedish Fish
+Saltwater Taffy + Salt = Salted Caramel
+Saltwater Taffy + Sugar = Laffy Taffy [dish]
+Saltwater Taffy + Stove = Caramel
+Saltwater Taffy + Oven = Caramel
+Saltwater Taffy + Pot = Caramel Sauce
+Saltwater Taffy + Knife = Tootsie Roll [dish]
+# left long enough it's hard as a rock
+Saltwater Taffy + Clock = Jawbreaker
+Saltwater Taffy + Fridge = Toffee
+Saltwater Taffy + Blender = Saltwater Taffy [nothing]
+
+# Toffee
+Toffee + Water = Caramel Sauce
+Toffee + Pot = Caramel Sauce
+# toffee popcorn
+Toffee + Grain = Caramel Corn
+# what the British call a caramel apple
+Toffee + Plant = Caramel Apple
+Toffee + Animal = Milk Duds
+Toffee + Salt = Salted Caramel
+Toffee + Sugar = Butterscotch [ingredient]
+Toffee + Stove = Burnt
+Toffee + Oven = Sticky Toffee Pudding [dish]
+Toffee + Knife = Toffee Bits [ingredient]
+Toffee + Blender = Toffee Bits
+Toffee + Clock = Toffee [nothing]
+Toffee + Fridge = Toffee [nothing]
+
+# Breadcrumbs
+Breadcrumbs + Water = Dough
+Breadcrumbs + Grain = Panko [ingredient]
+Breadcrumbs + Plant = Stuffing
+# breaded, then fried
+Breadcrumbs + Animal = Chicken Nuggets
+Breadcrumbs + Salt = Seasoning
+Breadcrumbs + Sugar = Crumble [dish]
+Breadcrumbs + Stove = Croutons
+# a crisp crumb top, browned in the oven
+Breadcrumbs + Oven = Gratin [dish]
+# bread dumplings, simmered
+Breadcrumbs + Pot = Dumplings
+# a crumb crust sets in the fridge
+Breadcrumbs + Fridge = Pie Crust
+Breadcrumbs + Clock = Spoiled
+Breadcrumbs + Knife = Breadcrumbs [nothing]
+Breadcrumbs + Blender = Breadcrumbs [nothing]
+
+# Caramel Sauce
+Caramel Sauce + Water = Syrup
+Caramel Sauce + Grain = Caramel Corn
+Caramel Sauce + Plant = Caramel Apple
+# milk cooked down with sugar
+Caramel Sauce + Animal = Dulce de Leche [ingredient]
+Caramel Sauce + Salt = Salted Caramel
+Caramel Sauce + Sugar = Butterscotch
+Caramel Sauce + Stove = Toffee
+Caramel Sauce + Pot = Toffee
+Caramel Sauce + Clock = Toffee
+# the caramel on top of a baked custard
+Caramel Sauce + Oven = Flan
+Caramel Sauce + Blender = Milkshake
+# it sets into chewy caramels
+Caramel Sauce + Fridge = Caramel
+Caramel Sauce + Knife = Caramel Sauce [nothing]
+
+# Chicken Soup
+Chicken Soup + Water = Broth
+Chicken Soup + Grain = Chicken Noodle Soup
+Chicken Soup + Plant = Vegetable Soup
+Chicken Soup + Animal = Stew
+# shio ramen: salt ramen
+Chicken Soup + Salt = Ramen
+Chicken Soup + Stove = Gravy
+Chicken Soup + Oven = Chicken Pot Pie
+Chicken Soup + Pot = Hot Pot
+# shred the chicken out of the soup
+Chicken Soup + Knife = Chicken Salad
+Chicken Soup + Blender = Baby Food
+Chicken Soup + Clock = Leftovers
+# cold chicken stock sets into jelly
+Chicken Soup + Fridge = Aspic [dish]
+Chicken Soup + Sugar = Teriyaki
+
+# Popsicle
+# melting
+Popsicle + Water = Slushie
+Popsicle + Clock = Slushie
+# pop + corn
+Popsicle + Grain = Popcorn
+# a Mexican fruit pop
+Popsicle + Plant = Paleta [dish]
+# orange and vanilla cream
+Popsicle + Animal = Creamsicle [dish]
+# salt and ice is how you churn ice cream by hand
+Popsicle + Salt = Ice Cream
+Popsicle + Sugar = Lollipop
+Popsicle + Stove = Syrup
+Popsicle + Pot = Syrup
+Popsicle + Oven = Baked Alaska
+Popsicle + Knife = Snow Cone
+Popsicle + Fridge = Popsicle [nothing]
+
+# Stuffing
+# bread dumplings are stuffing rolled into balls
+Stuffing + Water = Dumplings
+Stuffing + Pot = Dumplings
+Stuffing + Grain = Cornbread
+Stuffing + Plant = Stuffed Peppers [dish]
+Stuffing + Animal = Roast Turkey
+Stuffing + Sugar = Bread Pudding
+# Stove Top, the boxed kind
+Stuffing + Stove = Stove Top [dish]
+Stuffing + Oven = Casserole
+Stuffing + Blender = Breadcrumbs
+Stuffing + Clock = Leftovers
+Stuffing + Fridge = Leftovers
+Stuffing + Salt = Stove Top
+Stuffing + Knife = Stuffing [nothing]
+
+# Baby Food
+Baby Food + Water = Baby Formula [drink]
+# rice cereal: a baby's first
+Baby Food + Grain = Cereal
+Baby Food + Plant = Applesauce
+Baby Food + Animal = Milk
+Baby Food + Sugar = Pudding
+Baby Food + Stove = Soup
+Baby Food + Pot = Soup
+# teething biscuits
+Baby Food + Oven = Crackers
+# baby carrots are big carrots cut down
+Baby Food + Knife = Baby Carrots
+# the baby grows up
+Baby Food + Clock = Happy Meal
+# frozen into teething pops
+Baby Food + Fridge = Popsicle
+# no salt for babies
+Baby Food + Salt = Baby Food [nothing]
+Baby Food + Blender = Baby Food [nothing]
+
+# BBQ Sauce
+BBQ Sauce + Water = Marinade
+BBQ Sauce + Clock = Marinade
+BBQ Sauce + Blender = Marinade
+# a barbecue plate side
+BBQ Sauce + Grain = Cornbread
+BBQ Sauce + Plant = Baked Beans
+BBQ Sauce + Animal = Pulled Pork
+# a dry rub
+BBQ Sauce + Salt = Seasoning
+BBQ Sauce + Sugar = Glaze
+BBQ Sauce + Pot = Glaze
+BBQ Sauce + Stove = Barbecue
+BBQ Sauce + Oven = Ribs
+# sliced, sauce on the side
+BBQ Sauce + Knife = Brisket
+BBQ Sauce + Fridge = BBQ Sauce [nothing]
+
+# Beef Jerky
+Beef Jerky + Water = Broth
+Beef Jerky + Grain = Trail Mix
+# dried meat pounded with berries and fat
+Beef Jerky + Plant = Pemmican [dish]
+Beef Jerky + Blender = Pemmican
+# a meat stick
+Beef Jerky + Animal = Slim Jim [dish]
+# salt-and-vinegar cured beef, South African
+Beef Jerky + Salt = Biltong [dish]
+Beef Jerky + Sugar = Teriyaki
+Beef Jerky + Stove = Burnt
+Beef Jerky + Oven = Burnt
+# camp stew
+Beef Jerky + Pot = Stew
+Beef Jerky + Knife = Slim Jim
+# it's made to last
+Beef Jerky + Clock = Beef Jerky [nothing]
+# dried beef from the deli case
+Beef Jerky + Fridge = Cold Cuts
+
+## Step 2, batch 3 (2026-10-14): Slushie through Chicken Nuggets
+
+# Slushie
+Slushie + Water = Ice Water
+Slushie + Salt = Ice Water
+Slushie + Oven = Ice Water
+Slushie + Clock = Ice Water
+Slushie + Grain = Horchata
+Slushie + Plant = Lemonade
+Slushie + Animal = Milkshake
+Slushie + Sugar = Snow Cone
+Slushie + Knife = Snow Cone
+Slushie + Stove = Syrup
+Slushie + Pot = Syrup
+Slushie + Fridge = Italian Ice [dish]
+Slushie + Blender = Slushie [nothing]
+
+# Gravy
+Gravy + Water = Broth
+# bouillon: salty stock
+Gravy + Salt = Broth
+Gravy + Grain = Biscuits and Gravy
+Gravy + Plant = Mashed Potatoes
+Gravy + Animal = Roast
+Gravy + Sugar = Glaze
+Gravy + Stove = Burnt
+Gravy + Oven = Meat Pie
+Gravy + Pot = Stew
+Gravy + Clock = Leftovers
+# cold drippings set into jelly
+Gravy + Fridge = Aspic
+Gravy + Knife = Gravy [nothing]
+Gravy + Blender = Gravy [nothing]
+
+# Ice Cream
+# water ice, as Philadelphia calls it
+Ice Cream + Water = Italian Ice
+Ice Cream + Grain = Ice Cream Sandwich
+Ice Cream + Plant = Sorbet
+# a flavour, and tracks in the snow
+Ice Cream + Animal = Moose Tracks [dish]
+Ice Cream + Salt = Salted Caramel
+# a sugar cone
+Ice Cream + Sugar = Ice Cream Cone
+# sliced off the block
+Ice Cream + Knife = Neapolitan
+# melted ice cream is basically a milkshake
+Ice Cream + Clock = Milkshake
+Ice Cream + Fridge = Ice Cream [nothing]
+
+# Leftovers
+Leftovers + Water = Soup
+Leftovers + Grain = Fried Rice
+Leftovers + Plant = Stir-Fry
+# take it home
+Leftovers + Animal = Doggy Bag [dish]
+Leftovers + Sugar = Bread Pudding
+# hash is what leftovers become
+Leftovers + Stove = Corned Beef Hash
+Leftovers + Oven = Casserole
+Leftovers + Knife = Salad
+Leftovers + Blender = Baby Food
+# tomorrow's packed lunch
+Leftovers + Fridge = Bento
+Leftovers + Salt = Leftovers [nothing]
+
+# Caramel Apple
+Caramel Apple + Water = Apple Juice
+Caramel Apple + Clock = Cider
+# the oat topping
+Caramel Apple + Grain = Apple Crisp [dish]
+Caramel Apple + Plant = Apple Crisp
+# pork chops with caramelised apples
+Caramel Apple + Animal = Pork Chop
+Caramel Apple + Salt = Salted Caramel
+# the hard red candy kind
+Caramel Apple + Sugar = Candy Apple
+Caramel Apple + Stove = Apple Fritter
+Caramel Apple + Oven = Apple Pie
+Caramel Apple + Pot = Apple Butter
+Caramel Apple + Knife = Apple Slices
+Caramel Apple + Blender = Applesauce
+Caramel Apple + Fridge = Caramel Apple [nothing]
+
+# Cornbread
+Cornbread + Water = Polenta
+Cornbread + Grain = Bread
+Cornbread + Sugar = Muffin
+# stale cornbread is what dressing is made from
+Cornbread + Plant = Stuffing
+Cornbread + Clock = Stuffing
+Cornbread + Animal = Corn Dog
+# cornbread batter, deep-fried
+Cornbread + Stove = Hush Puppies [dish]
+Cornbread + Oven = Croutons
+Cornbread + Knife = Croutons
+Cornbread + Pot = Dumplings
+Cornbread + Fridge = Leftovers
+# Southern cornbread is salty already
+Cornbread + Salt = Cornbread [nothing]
+
+# Meatloaf
+Meatloaf + Water = Gravy
+Meatloaf + Grain = Sandwich
+Meatloaf + Plant = Stuffed Peppers
+Meatloaf + Animal = Meatballs
+# Spam is a meatloaf in a can
+Meatloaf + Salt = Spam
+# the sweet ketchup glaze on top
+Meatloaf + Sugar = Ketchup
+# a fried meatloaf slice
+Meatloaf + Stove = Burger
+Meatloaf + Oven = Meat Pie
+Meatloaf + Pot = Stew
+Meatloaf + Clock = Leftovers
+Meatloaf + Fridge = Cold Cuts
+
+# Pretzel
+# beer garden
+Pretzel + Water = Beer
+Pretzel + Grain = Chex Mix
+Pretzel + Plant = Mustard
+Pretzel + Animal = Pretzel Dog
+# cinnamon-sugar dough twist
+Pretzel + Sugar = Churro
+Pretzel + Stove = Burnt
+# baked all the way through, a soft pretzel goes hard
+Pretzel + Oven = Pretzel Sticks [dish]
+Pretzel + Knife = Pretzel Sticks
+Pretzel + Clock = Pretzel Sticks
+# boiled before baking, just like a pretzel
+Pretzel + Pot = Bagel
+# a pretzel crumb crust
+Pretzel + Blender = Breadcrumbs
+Pretzel + Salt = Pretzel [nothing]
+Pretzel + Fridge = Pretzel [nothing]
+
+# Sausage
+Sausage + Water = Hot Dog Water
+Sausage + Pot = Hot Dog
+Sausage + Grain = Pigs in a Blanket
+# plant-based
+Sausage + Plant = Veggie Dog
+Sausage + Animal = Bratwurst [ingredient]
+Sausage + Salt = Salami
+# maple sausage
+Sausage + Sugar = McGriddle
+Sausage + Stove = Breakfast
+# sausages baked in batter
+Sausage + Oven = Toad in the Hole [dish]
+# smooth, emulsified sausage
+Sausage + Blender = Bologna [ingredient]
+Sausage + Fridge = Cold Cuts
+
+# Sea Salt
+Sea Salt + Water = Brine
+Sea Salt + Pot = Brine
+Sea Salt + Grain = Pretzel
+Sea Salt + Plant = Seaweed
+Sea Salt + Animal = Fish
+Sea Salt + Salt = Rock Salt
+# salt crystals grow
+Sea Salt + Clock = Rock Salt
+Sea Salt + Sugar = Saltwater Taffy
+# ground fine, it's table salt
+Sea Salt + Blender = Salt
+Sea Salt + Knife = Salt
+# the old way: salt and ice churn ice cream
+Sea Salt + Fridge = Ice Cream
+Sea Salt + Stove = Sea Salt [nothing]
+Sea Salt + Oven = Sea Salt [nothing]
+
+# Seasoning
+# a bouillon cube
+Seasoning + Water = Broth
+Seasoning + Grain = Stuffing
+Seasoning + Plant = Kale Chips
+Seasoning + Animal = Sausage
+# sugar and spice
+Seasoning + Sugar = Pumpkin Spice
+# spices bloomed in a hot pan
+Seasoning + Stove = Curry
+Seasoning + Oven = Roast
+Seasoning + Pot = Soup
+Seasoning + Blender = Pesto
+Seasoning + Clock = Marinade
+Seasoning + Fridge = Marinade
+Seasoning + Salt = Seasoning [nothing]
+Seasoning + Knife = Herbs
+
+# Seaweed Snacks
+Seaweed Snacks + Water = Seaweed Soup
+Seaweed Snacks + Pot = Seaweed Soup
+# onigiri, wrapped in nori
+Seaweed Snacks + Grain = Rice Ball
+Seaweed Snacks + Plant = Seaweed Salad
+Seaweed Snacks + Fridge = Seaweed Salad
+Seaweed Snacks + Animal = Sushi Roll
+Seaweed Snacks + Sugar = Rice Crackers
+Seaweed Snacks + Stove = Tempura
+Seaweed Snacks + Oven = Burnt
+# shredded nori, the rice seasoning
+Seaweed Snacks + Knife = Furikake [ingredient]
+Seaweed Snacks + Blender = Furikake
+Seaweed Snacks + Salt = Seaweed Snacks [nothing]
+Seaweed Snacks + Clock = Seaweed Snacks [nothing]
+
+# Bacon
+Bacon + Water = Broth
+Bacon + Grain = Carbonara
+Bacon + Plant = BLT
+Bacon + Animal = Bacon and Eggs
+# salt-cured belly, the Italian way
+Bacon + Salt = Pancetta [ingredient]
+Bacon + Sugar = Candied Bacon [dish]
+Bacon + Oven = Candied Bacon
+Bacon + Pot = Split Pea Soup
+Bacon + Stove = Bacon Bits [ingredient]
+Bacon + Knife = Bacon Bits
+Bacon + Blender = Bacon Bits
+# the grease sets white in the fridge
+Bacon + Fridge = Lard [ingredient]
+Bacon + Clock = Spoiled
+
+# Beef Stew
+Beef Stew + Water = Soup
+Beef Stew + Grain = Beef Stroganoff [dish]
+Beef Stew + Plant = Chili
+Beef Stew + Animal = Hot Pot
+Beef Stew + Salt = Corned Beef
+# sweet soy beef
+Beef Stew + Sugar = Bulgogi
+Beef Stew + Stove = Gravy
+Beef Stew + Pot = Pot Roast
+Beef Stew + Blender = Baby Food
+Beef Stew + Clock = Leftovers
+Beef Stew + Fridge = Leftovers
+Beef Stew + Knife = Beef Stew [nothing]
+
+# Brisket
+# brisket in broth
+Brisket + Water = Pho
+Brisket + Grain = Rice and Meat
+# peppercorn and coriander crust, then smoked
+Brisket + Plant = Pastrami [ingredient]
+Brisket + Animal = Barbecue
+# corned beef is brined brisket
+Brisket + Salt = Corned Beef
+Brisket + Sugar = Burnt Ends [dish]
+Brisket + Stove = Burnt Ends
+Brisket + Oven = Roast Beef
+Brisket + Pot = Pot Roast
+Brisket + Knife = Cold Cuts
+# brisket is the classic burger grind
+Brisket + Blender = Ground Beef
+Brisket + Fridge = Leftovers
+
+# Chicken Nuggets
+Chicken Nuggets + Water = Chicken Soup
+Chicken Nuggets + Pot = Chicken Soup
+Chicken Nuggets + Grain = Chicken and Rice
+Chicken Nuggets + Plant = Chicken Salad
+Chicken Nuggets + Animal = Dinosaur Nuggets [dish]
+Chicken Nuggets + Sugar = Honey Mustard
+Chicken Nuggets + Stove = Fried Chicken
+Chicken Nuggets + Oven = Chicken Tenders
+Chicken Nuggets + Knife = Popcorn Chicken
+Chicken Nuggets + Blender = Slop
+Chicken Nuggets + Clock = Leftovers
+Chicken Nuggets + Fridge = TV Dinner [dish]
+# the salty side that comes with them
+Chicken Nuggets + Salt = French Fries
+
+## Step 2, batch 4 (2026-10-14): Cold Cuts through Oatmeal Cookie
+
+# Cold Cuts
+Cold Cuts + Water = Broth
+Cold Cuts + Grain = Sandwich
+Cold Cuts + Plant = Sub
+Cold Cuts + Animal = Charcuterie Board
+Cold Cuts + Salt = Salami
+Cold Cuts + Sugar = Glazed Ham
+Cold Cuts + Clock = Spoiled
+# the lunch kit in the fridge
+Cold Cuts + Fridge = Lunchables
+Cold Cuts + Knife = Cold Cuts [nothing]
+
+# Croutons
+# they float on top
+Croutons + Water = Soup
+Croutons + Grain = Chex Mix
+Croutons + Plant = Salad
+Croutons + Fridge = Salad
+# anchovies are in Caesar dressing
+Croutons + Animal = Caesar Salad
+Croutons + Salt = Saltines
+# little sugared toast squares
+Croutons + Sugar = Cinnamon Toast Crunch
+Croutons + Stove = Burnt
+Croutons + Oven = Stuffing
+Croutons + Pot = Dumplings
+Croutons + Knife = Breadcrumbs
+Croutons + Blender = Breadcrumbs
+Croutons + Clock = Breadcrumbs
+
+# Dumplings
+Dumplings + Water = Wonton Soup
+Dumplings + Grain = Dim Sum
+Dumplings + Knife = Dim Sum
+# potato-filled
+Dumplings + Plant = Pierogi [dish]
+Dumplings + Animal = Chicken and Dumplings [dish]
+# the dipping sauce
+Dumplings + Salt = Soy Sauce
+# sweet rice dumplings
+Dumplings + Sugar = Mochi
+# a baked dumpling
+Dumplings + Oven = Empanada [dish]
+Dumplings + Blender = Baby Food
+Dumplings + Clock = Leftovers
+# a bag of frozen potstickers
+Dumplings + Fridge = Potstickers
+
+# Meat Pie
+# pie and gravy
+Meat Pie + Water = Gravy
+Meat Pie + Grain = Empanada
+# a fried meat pie
+Meat Pie + Stove = Empanada
+# mashed potato on top
+Meat Pie + Plant = Shepherd's Pie
+Meat Pie + Animal = Chicken Pot Pie
+# Christmas mincemeat started out as real meat
+Meat Pie + Sugar = Mince Pie [dish]
+Meat Pie + Oven = Burnt
+Meat Pie + Pot = Stew
+# a log of meat in pastry, cut in pieces
+Meat Pie + Knife = Sausage Roll [dish]
+Meat Pie + Blender = Slop
+Meat Pie + Clock = Leftovers
+Meat Pie + Fridge = Leftovers
+Meat Pie + Salt = Meat Pie [nothing]
+
+# Rice and Meat
+Rice and Meat + Water = Congee
+Rice and Meat + Grain = Pilaf [dish]
+Rice and Meat + Plant = Stuffed Peppers
+# chicken and seafood
+Rice and Meat + Animal = Paella
+Rice and Meat + Salt = Fried Rice
+Rice and Meat + Sugar = Donburi
+Rice and Meat + Oven = Casserole
+Rice and Meat + Pot = Jambalaya
+Rice and Meat + Blender = Baby Food
+Rice and Meat + Clock = Leftovers
+Rice and Meat + Fridge = Bento
+Rice and Meat + Knife = Rice and Meat [nothing]
+
+# Chili
+Chili + Water = Soup
+Chili + Grain = Chili Mac [dish]
+# chili, the pepper
+Chili + Plant = Chili Pepper
+Chili + Animal = Chili Dog
+Chili + Salt = Taco Seasoning
+Chili + Sugar = Baked Beans
+Chili + Stove = Burnt
+# Frito pie, tamale pie
+Chili + Oven = Casserole
+Chili + Pot = Stew
+# it's always better the next day
+Chili + Clock = Leftovers
+Chili + Fridge = Leftovers
+Chili + Knife = Chili [nothing]
+
+# Corn Dog
+Corn Dog + Water = Hot Dog Water
+Corn Dog + Grain = Pigs in a Blanket
+Corn Dog + Oven = Pigs in a Blanket
+Corn Dog + Knife = Pigs in a Blanket
+Corn Dog + Plant = Mustard
+# it's a dog
+Corn Dog + Animal = Hot Dog
+# the batter falls off
+Corn Dog + Pot = Hot Dog
+Corn Dog + Salt = Pretzel Dog
+# the rest of the state fair
+Corn Dog + Sugar = Funnel Cake
+Corn Dog + Stove = Burnt
+Corn Dog + Blender = Slop
+Corn Dog + Fridge = TV Dinner
+Corn Dog + Clock = Corn Dog [nothing]
+
+# Corned Beef
+Corned Beef + Water = Broth
+Corned Beef + Salt = Brine
+# on rye
+Corned Beef + Grain = Reuben
+Corned Beef + Plant = Corned Beef and Cabbage [dish]
+Corned Beef + Pot = Corned Beef and Cabbage
+Corned Beef + Sugar = Glaze
+# pastrami is smoked corned beef
+Corned Beef + Oven = Pastrami
+Corned Beef + Knife = Cold Cuts
+Corned Beef + Fridge = Cold Cuts
+Corned Beef + Blender = Corned Beef Hash
+Corned Beef + Clock = Leftovers
+Corned Beef + Animal = Corned Beef [nothing]
+
+# Iced Tea
+Iced Tea + Water = Ice Water
+Iced Tea + Grain = Barley Tea
+# half lemonade
+Iced Tea + Plant = Arnold Palmer
+Iced Tea + Animal = Milk Tea
+# Southern sweet tea is brewed hot with the sugar in
+Iced Tea + Stove = Sweet Tea
+Iced Tea + Pot = Sweet Tea
+# a lemon wedge on the glass
+Iced Tea + Knife = Lemon
+Iced Tea + Blender = Slushie
+Iced Tea + Clock = Kombucha
+Iced Tea + Fridge = Popsicle
+Iced Tea + Salt = Iced Tea [nothing]
+Iced Tea + Oven = Iced Tea [nothing]
+
+# Jam
+Jam + Water = Syrup
+Jam + Pot = Syrup
+# jam inside a cereal bar
+Jam + Grain = Nutri-Grain
+# fruit and vegetables preserved together
+Jam + Plant = Chutney
+Jam + Salt = Chutney
+Jam + Animal = Charcuterie Board
+Jam + Sugar = Jelly Beans
+Jam + Stove = Compote
+Jam + Oven = Pop-Tart
+# the knife spreads it
+Jam + Knife = PB&J
+Jam + Blender = Smoothie
+Jam + Fridge = Sorbet
+# keeping fruit is the whole point of jam
+Jam + Clock = Jam [nothing]
+
+# Mint Tea
+Mint Tea + Water = Iced Tea
+Mint Tea + Grain = Barley Tea
+Mint Tea + Plant = Herbal Tea
+Mint Tea + Animal = Milk Tea
+# Moroccan mint tea is very sweet
+Mint Tea + Sugar = Sweet Tea
+Mint Tea + Pot = Syrup
+Mint Tea + Blender = Slushie
+Mint Tea + Clock = Kombucha
+# dried leaves
+Mint Tea + Oven = Herbs
+Mint Tea + Knife = Mint
+Mint Tea + Salt = Mint Tea [nothing]
+Mint Tea + Stove = Mint Tea [nothing]
+
+# Muesli
+# Bircher muesli
+Muesli + Water = Overnight Oats
+Muesli + Clock = Overnight Oats
+Muesli + Grain = Cereal
+Muesli + Plant = Trail Mix
+Muesli + Knife = Trail Mix
+Muesli + Animal = Breakfast
+Muesli + Sugar = Granola
+# toasted muesli is granola
+Muesli + Stove = Granola
+Muesli + Oven = Granola Bar
+Muesli + Pot = Porridge
+Muesli + Blender = Smoothie
+Muesli + Salt = Muesli [nothing]
+
+# Oatmeal Cookie
+Oatmeal Cookie + Water = Porridge
+Oatmeal Cookie + Pot = Oatmeal
+Oatmeal Cookie + Grain = Granola Bar
+Oatmeal Cookie + Plant = Oatmeal Raisin Cookie [dish]
+# Little Debbie's, cream between two
+Oatmeal Cookie + Animal = Oatmeal Creme Pie [dish]
+Oatmeal Cookie + Sugar = Oatmeal Creme Pie
+Oatmeal Cookie + Stove = Burnt
+# baked twice, crisp
+Oatmeal Cookie + Oven = Biscotti
+Oatmeal Cookie + Knife = Crumble
+Oatmeal Cookie + Blender = Pie Crust
+Oatmeal Cookie + Clock = Granola
+Oatmeal Cookie + Fridge = Ice Cream Sandwich
+Oatmeal Cookie + Salt = Oatmeal Cookie [nothing]
+
+## Step 2, batch 5 (2026-10-14): Casserole through Caramel Corn
+
+# Casserole
+Casserole + Water = Soup
+Casserole + Grain = Baked Mac and Cheese
+Casserole + Knife = Lasagna
+Casserole + Plant = Green Bean Casserole
+Casserole + Animal = Shepherd's Pie
+# with marshmallows on top
+Casserole + Sugar = Sweet Potato Casserole
+Casserole + Stove = Burnt
+# a browned crust on top
+Casserole + Oven = Gratin
+Casserole + Pot = Stew
+Casserole + Blender = Slop
+Casserole + Clock = Leftovers
+Casserole + Fridge = TV Dinner
+Casserole + Salt = Casserole [nothing]
+
+# Pigs in a Blanket
+Pigs in a Blanket + Water = Hot Dog Water
+Pigs in a Blanket + Grain = Corn Dog
+Pigs in a Blanket + Stove = Corn Dog
+Pigs in a Blanket + Plant = Mustard
+# pigs
+Pigs in a Blanket + Animal = Pig
+Pigs in a Blanket + Salt = Pretzel Dog
+# sausage wrapped in pancake
+Pigs in a Blanket + Sugar = McGriddle
+Pigs in a Blanket + Oven = Sausage Roll
+Pigs in a Blanket + Pot = Hot Dog
+Pigs in a Blanket + Blender = Slop
+Pigs in a Blanket + Clock = Spoiled
+Pigs in a Blanket + Fridge = Leftovers
+Pigs in a Blanket + Knife = Pigs in a Blanket [nothing]
+
+# Pot Roast
+Pot Roast + Water = Broth
+Pot Roast + Grain = Sandwich
+Pot Roast + Plant = Meat and Potatoes
+Pot Roast + Animal = Roast
+Pot Roast + Salt = Corned Beef
+Pot Roast + Sugar = Bulgogi
+Pot Roast + Stove = Gravy
+Pot Roast + Oven = Roast Beef
+Pot Roast + Pot = Stew
+Pot Roast + Blender = Baby Food
+Pot Roast + Clock = Leftovers
+Pot Roast + Fridge = Cold Cuts
+
+# Roast Beef
+# au jus
+Roast Beef + Water = Gravy
+Roast Beef + Grain = Sandwich
+Roast Beef + Plant = Meat and Potatoes
+Roast Beef + Animal = Surf and Turf
+Roast Beef + Salt = Corned Beef
+Roast Beef + Sugar = Bulgogi
+# well done. very well done
+Roast Beef + Oven = Burnt
+Roast Beef + Pot = Pot Roast
+Roast Beef + Blender = Ground Beef
+Roast Beef + Clock = Leftovers
+Roast Beef + Fridge = Cold Cuts
+
+# Snow Cone
+Snow Cone + Water = Ice Water
+Snow Cone + Salt = Ice Water
+Snow Cone + Oven = Ice Water
+Snow Cone + Grain = Horchata
+Snow Cone + Plant = Italian Ice
+# sweet milk poured over shaved ice
+Snow Cone + Animal = Ice Cream
+# the next stand over at the fair
+Snow Cone + Sugar = Cotton Candy
+Snow Cone + Stove = Syrup
+Snow Cone + Pot = Syrup
+Snow Cone + Blender = Slushie
+Snow Cone + Clock = Slushie
+Snow Cone + Fridge = Ice
+Snow Cone + Knife = Snow Cone [nothing]
+
+# Cider
+Cider + Water = Apple Juice
+# both brewed
+Cider + Grain = Beer
+Cider + Plant = Wine
+# pork chops braised in cider
+Cider + Animal = Pork Chop
+# cider donuts, the fall orchard kind
+Cider + Sugar = Donut
+Cider + Oven = Donut
+# boiled cider, a syrup
+Cider + Stove = Syrup
+Cider + Pot = Apple Butter
+Cider + Blender = Slushie
+Cider + Fridge = Popsicle
+Cider + Salt = Cider [nothing]
+Cider + Knife = Cider [nothing]
+
+# Graham Crackers
+# a toddler snack, soggy
+Graham Crackers + Water = Baby Food
+Graham Crackers + Pot = Baby Food
+Graham Crackers + Grain = Crackers
+# the crust
+Graham Crackers + Plant = Key Lime Pie
+Graham Crackers + Animal = Animal Crackers
+Graham Crackers + Salt = Saltines
+Graham Crackers + Sugar = S'mores
+Graham Crackers + Stove = S'mores
+Graham Crackers + Oven = Cheesecake
+Graham Crackers + Blender = Pie Crust
+Graham Crackers + Knife = Crumble
+# layered with whipped cream and left to set
+Graham Crackers + Fridge = Icebox Cake [dish]
+Graham Crackers + Clock = Graham Crackers [nothing]
+
+# Lunchables
+# the juice pouch that comes with it
+Lunchables + Water = Capri Sun [drink]
+Lunchables + Grain = Sandwich
+Lunchables + Plant = Baby Carrots
+# grown-up Lunchables
+Lunchables + Animal = Charcuterie Board
+Lunchables + Salt = Crackers
+Lunchables + Sugar = Dunkaroos
+# ham, cheese and bread, grilled
+Lunchables + Stove = Grilled Cheese
+# the pizza kit
+Lunchables + Oven = Pizza
+Lunchables + Pot = Fondue
+Lunchables + Knife = Cold Cuts
+Lunchables + Blender = Slop
+Lunchables + Fridge = Bento
+# they never seem to go off
+Lunchables + Clock = Lunchables [nothing]
+
+# Seaweed Soup
+Seaweed Soup + Water = Ocean
+Seaweed Soup + Grain = Rice Soup
+# soybeans: miso
+Seaweed Soup + Plant = Miso Soup
+Seaweed Soup + Animal = Seafood Soup
+# Koreans eat seaweed soup on their birthday
+Seaweed Soup + Sugar = Birthday Cake
+Seaweed Soup + Stove = Ramen
+Seaweed Soup + Oven = Seaweed Snacks
+Seaweed Soup + Pot = Hot Pot
+Seaweed Soup + Knife = Seaweed Salad
+Seaweed Soup + Blender = Baby Food
+Seaweed Soup + Clock = Leftovers
+# agar, a seaweed jelly, sets cold
+Seaweed Soup + Fridge = Jell-O
+Seaweed Soup + Salt = Seaweed Soup [nothing]
+
+# Swedish Fish
+# set it free
+Swedish Fish + Water = Fish
+Swedish Fish + Grain = Goldfish
+Swedish Fish + Plant = Seaweed
+Swedish Fish + Animal = Gummy Bears
+Swedish Fish + Salt = Saltwater Taffy
+Swedish Fish + Sugar = Sour Patch Kids
+Swedish Fish + Stove = Syrup
+Swedish Fish + Oven = Fruit Leather
+# gummies melt back into gelatin
+Swedish Fish + Pot = Jell-O
+# candy sushi
+Swedish Fish + Knife = Sushi
+Swedish Fish + Clock = Jawbreaker
+# frozen fish
+Swedish Fish + Fridge = Fish Sticks
+Swedish Fish + Blender = Swedish Fish [nothing]
+
+# Tomato Soup
+# cold tomato soup
+Tomato Soup + Water = Gazpacho
+# the classic pair
+Tomato Soup + Grain = Grilled Cheese
+Tomato Soup + Plant = Minestrone
+Tomato Soup + Animal = Chili
+Tomato Soup + Salt = Tomato Juice
+Tomato Soup + Blender = Tomato Juice
+Tomato Soup + Sugar = Ketchup
+Tomato Soup + Stove = Tomato Sauce
+Tomato Soup + Oven = Tomato Sauce
+Tomato Soup + Clock = Leftovers
+Tomato Soup + Knife = Tomato Soup [nothing]
+
+# Caramel Corn
+Caramel Corn + Water = Caramel Sauce
+Caramel Corn + Pot = Caramel Sauce
+Caramel Corn + Grain = Granola
+# with peanuts
+Caramel Corn + Plant = Cracker Jack
+Caramel Corn + Animal = Popcorn Chicken
+# sweet and salty
+Caramel Corn + Salt = Kettle Corn
+Caramel Corn + Sugar = Candy Corn
+Caramel Corn + Stove = Burnt
+Caramel Corn + Oven = Burnt
+# it clumps together
+Caramel Corn + Fridge = Popcorn Ball
+Caramel Corn + Clock = Popcorn Ball
+Caramel Corn + Knife = Caramel Corn [nothing]
+Caramel Corn + Blender = Caramel Corn [nothing]
+
+## Step 2, batch 6 (2026-10-14): Ice Water through Relish
+
+# Ice Water
+Ice Water + Water = Ocean
+# rice soaked in cold water
+Ice Water + Grain = Horchata
+Ice Water + Plant = Lemonade
+# a cold-water fish
+Ice Water + Animal = Salmon
+Ice Water + Salt = Brine
+Ice Water + Sugar = Syrup
+Ice Water + Stove = Boiling Water
+Ice Water + Pot = Boiling Water
+Ice Water + Oven = Steam
+Ice Water + Clock = Water
+Ice Water + Fridge = Ice
+Ice Water + Knife = Ice Water [nothing]
+
+# Meat and Potatoes
+Meat and Potatoes + Water = Stew
+# beef and potato in pastry, the Cornish miner's lunch
+Meat and Potatoes + Grain = Pasty [dish]
+Meat and Potatoes + Plant = Pot Roast
+Meat and Potatoes + Animal = Feast
+Meat and Potatoes + Salt = Corned Beef Hash
+Meat and Potatoes + Stove = Hash Browns
+Meat and Potatoes + Knife = Stew
+# mince and mash
+Meat and Potatoes + Blender = Shepherd's Pie
+Meat and Potatoes + Clock = Leftovers
+Meat and Potatoes + Fridge = TV Dinner
+Meat and Potatoes + Sugar = Meat and Potatoes [nothing]
+
+# Charcuterie Board
+# what it's served with
+Charcuterie Board + Water = Wine
+Charcuterie Board + Grain = Crackers
+Charcuterie Board + Plant = Olive
+Charcuterie Board + Animal = Prosciutto
+# cornichons
+Charcuterie Board + Salt = Pickles
+# fig jam
+Charcuterie Board + Sugar = Jam
+Charcuterie Board + Stove = Grilled Cheese
+Charcuterie Board + Oven = Pizza
+Charcuterie Board + Pot = Fondue
+Charcuterie Board + Knife = Cold Cuts
+Charcuterie Board + Blender = Pâté [ingredient]
+Charcuterie Board + Clock = Leftovers
+Charcuterie Board + Fridge = Lunchables
+
+# Fish Sticks
+Fish Sticks + Water = Seafood Soup
+# a Filet-O-Fish
+Fish Sticks + Grain = Fish Sandwich
+Fish Sticks + Plant = Fish Tacos
+Fish Sticks + Animal = Surf and Turf
+# salt and vinegar
+Fish Sticks + Salt = Fish and Chips
+Fish Sticks + Sugar = Swedish Fish
+Fish Sticks + Stove = Tempura
+Fish Sticks + Oven = Burnt
+Fish Sticks + Blender = Slop
+Fish Sticks + Clock = Spoiled
+Fish Sticks + Fridge = TV Dinner
+
+# Pie Crust
+Pie Crust + Water = Dough
+Pie Crust + Grain = Biscuit
+Pie Crust + Plant = Apple Pie
+Pie Crust + Animal = Meat Pie
+Pie Crust + Salt = Crackers
+Pie Crust + Sugar = Pop-Tart
+Pie Crust + Stove = Burnt
+Pie Crust + Oven = Pie
+Pie Crust + Pot = Dumplings
+# pie crust cookies, cut from the scraps
+Pie Crust + Knife = Cookie
+Pie Crust + Blender = Crumble
+# a no-bake pie that sets cold
+Pie Crust + Fridge = Key Lime Pie
+Pie Crust + Clock = Pie Crust [nothing]
+
+# Chicken and Rice
+Chicken and Rice + Water = Congee
+Chicken and Rice + Grain = Pilaf
+Chicken and Rice + Plant = Chicken Stir-Fry
+Chicken and Rice + Animal = Jambalaya
+Chicken and Rice + Salt = Chicken Fried Rice
+Chicken and Rice + Stove = Chicken Fried Rice
+Chicken and Rice + Sugar = Teriyaki
+Chicken and Rice + Oven = Casserole
+Chicken and Rice + Pot = Rice Soup
+Chicken and Rice + Blender = Baby Food
+Chicken and Rice + Clock = Leftovers
+Chicken and Rice + Fridge = TV Dinner
+Chicken and Rice + Knife = Chicken and Rice [nothing]
+
+# Corn on the Cob
+Corn on the Cob + Water = Polenta
+Corn on the Cob + Grain = Cornmeal
+# corn and lima beans
+Corn on the Cob + Plant = Succotash
+Corn on the Cob + Animal = Barbecue
+# Mexican street corn
+Corn on the Cob + Salt = Elote
+Corn on the Cob + Sugar = Kettle Corn
+Corn on the Cob + Oven = Popcorn
+Corn on the Cob + Pot = Creamed Corn
+Corn on the Cob + Fridge = Corn
+Corn on the Cob + Clock = Corn on the Cob [nothing]
+
+# Cream of Wheat
+Cream of Wheat + Water = Porridge
+Cream of Wheat + Pot = Porridge
+Cream of Wheat + Grain = Cereal
+# it's semolina, like couscous
+Cream of Wheat + Plant = Couscous
+Cream of Wheat + Animal = Breakfast
+# semolina pudding
+Cream of Wheat + Sugar = Pudding
+Cream of Wheat + Fridge = Pudding
+# semolina fried in butter and sugar
+Cream of Wheat + Stove = Halva
+# basbousa, a semolina cake
+Cream of Wheat + Oven = Cake
+# Roman semolina gnocchi, cut in rounds
+Cream of Wheat + Knife = Gnocchi
+Cream of Wheat + Blender = Baby Food
+Cream of Wheat + Clock = Overnight Oats
+Cream of Wheat + Salt = Cream of Wheat [nothing]
+
+# Feast
+Feast + Water = Wine
+Feast + Grain = Dinner Roll
+Feast + Plant = Salad
+Feast + Animal = Roast Turkey
+Feast + Sugar = Wedding Cake
+Feast + Stove = Barbecue
+Feast + Oven = Thanksgiving Dinner
+Feast + Pot = Hot Pot
+Feast + Knife = Platter
+Feast + Blender = Slop
+Feast + Clock = Leftovers
+Feast + Fridge = Leftovers
+Feast + Salt = Feast [nothing]
+
+# Ground Beef
+Ground Beef + Water = Chili
+Ground Beef + Grain = Meatloaf
+Ground Beef + Plant = Stuffed Peppers
+Ground Beef + Salt = Burger
+Ground Beef + Sugar = Sloppy Joe [dish]
+Ground Beef + Clock = Spoiled
+
+# Kale
+Kale + Water = Steamed Vegetables
+Kale + Grain = Tabbouleh
+Kale + Plant = Salad
+Kale + Knife = Salad
+# kale salad holds up overnight
+Kale + Fridge = Salad
+Kale + Animal = Collard Greens
+Kale + Salt = Kale Chips
+Kale + Sugar = Green Smoothie
+Kale + Stove = Stir-Fry
+Kale + Pot = Soup
+Kale + Clock = Spoiled
+
+# Kettle Corn
+Kettle Corn + Water = Popcorn
+Kettle Corn + Salt = Popcorn
+Kettle Corn + Grain = Chex Mix
+Kettle Corn + Plant = Cracker Jack
+Kettle Corn + Animal = Buttered Popcorn
+Kettle Corn + Sugar = Caramel Corn
+Kettle Corn + Oven = Caramel Corn
+Kettle Corn + Stove = Burnt
+Kettle Corn + Blender = Cornmeal
+Kettle Corn + Clock = Popcorn Ball
+Kettle Corn + Fridge = Popcorn Ball
+# it's already made in a kettle
+Kettle Corn + Pot = Kettle Corn [nothing]
+Kettle Corn + Knife = Kettle Corn [nothing]
+
+# Maple Syrup
+Maple Syrup + Water = Syrup
+# maple and brown sugar
+Maple Syrup + Grain = Oatmeal
+Maple Syrup + Plant = Tree
+# maple bacon
+Maple Syrup + Animal = Candied Bacon
+Maple Syrup + Salt = Glaze
+# boiled down to maple sugar: the leaf-shaped candies
+Maple Syrup + Sugar = Maple Candy [dish]
+Maple Syrup + Pot = Maple Candy
+Maple Syrup + Blender = Maple Candy
+Maple Syrup + Clock = Maple Candy
+Maple Syrup + Stove = Caramel
+Maple Syrup + Oven = Granola
+# poured hot on snow, it sets into taffy
+Maple Syrup + Fridge = Maple Taffy [dish]
+Maple Syrup + Knife = Maple Syrup [nothing]
+
+# Relish
+Relish + Water = Brine
+# on a hot dog bun
+Relish + Grain = Hot Dog
+Relish + Stove = Hot Dog
+Relish + Plant = Salsa
+# with mayo, for fish
+Relish + Animal = Tartar Sauce
+Relish + Blender = Tartar Sauce
+Relish + Salt = Pickles
+Relish + Sugar = Chutney
+Relish + Pot = Chutney
+# tuna salad has relish in it
+Relish + Oven = Tuna Melt
+Relish + Clock = Sauerkraut
+Relish + Knife = Relish [nothing]
+Relish + Fridge = Relish [nothing]
+
+## Step 2, batch 7 (2026-10-15): Surf and Turf through Beef
+
+# Surf and Turf
+Surf and Turf + Water = Seafood Soup
+# chicken, chorizo and seafood over rice
+Surf and Turf + Grain = Paella
+Surf and Turf + Plant = Gumbo
+Surf and Turf + Animal = Feast
+Surf and Turf + Sugar = Teriyaki
+# steak and shrimp on the teppan
+Surf and Turf + Stove = Hibachi
+Surf and Turf + Oven = Burnt
+Surf and Turf + Pot = Hot Pot
+Surf and Turf + Knife = Platter
+Surf and Turf + Blender = Slop
+Surf and Turf + Clock = Spoiled
+Surf and Turf + Fridge = Leftovers
+Surf and Turf + Salt = Surf and Turf [nothing]
+
+# Chicken Stir-Fry
+Chicken Stir-Fry + Water = Broth
+Chicken Stir-Fry + Pot = Chicken Soup
+Chicken Stir-Fry + Grain = Chicken Fried Rice
+# with peanuts
+Chicken Stir-Fry + Plant = Kung Pao Chicken
+Chicken Stir-Fry + Animal = Pad Thai
+Chicken Stir-Fry + Salt = Soy Sauce
+Chicken Stir-Fry + Sugar = Orange Chicken
+Chicken Stir-Fry + Stove = Burnt
+Chicken Stir-Fry + Oven = Casserole
+# the chopped filling, rolled up
+Chicken Stir-Fry + Knife = Egg Rolls
+Chicken Stir-Fry + Blender = Baby Food
+Chicken Stir-Fry + Clock = Leftovers
+Chicken Stir-Fry + Fridge = Takeout
+
+# Chutney
+Chutney + Water = Marinade
+# what it's served with
+Chutney + Grain = Naan
+Chutney + Plant = Samosa
+Chutney + Oven = Samosa
+Chutney + Animal = Tandoori Chicken
+Chutney + Salt = Pickles
+# Indian pickles age for months
+Chutney + Clock = Pickles
+Chutney + Sugar = Jam
+Chutney + Stove = Curry
+Chutney + Pot = Curry
+Chutney + Blender = Salsa
+# the cool yogurt one
+Chutney + Fridge = Raita
+Chutney + Knife = Chutney [nothing]
+
+# Olive
+Olive + Water = Brine
+Olive + Pot = Brine
+Olive + Grain = Focaccia
+Olive + Plant = Greek Salad
+Olive + Animal = Charcuterie Board
+# cured olives take months
+Olive + Salt = Pickles
+Olive + Clock = Pickles
+# olives are a fruit
+Olive + Sugar = Fruit
+Olive + Oven = Pizza
+# chopped with capers and anchovy
+Olive + Knife = Tapenade [ingredient]
+Olive + Stove = Olive [nothing]
+Olive + Fridge = Olive [nothing]
+
+# Ribs
+Ribs + Water = Broth
+Ribs + Grain = Cornbread
+Ribs + Plant = Coleslaw
+Ribs + Animal = Feast
+Ribs + Sugar = Glaze
+Ribs + Stove = Barbecue
+Ribs + Oven = Prime Rib
+# tonkotsu: pork bones boiled all day
+Ribs + Pot = Ramen
+# boneless "ribs", pressed into shape
+Ribs + Knife = McRib [dish]
+Ribs + Blender = McRib
+Ribs + Clock = Leftovers
+Ribs + Fridge = Leftovers
+Ribs + Salt = Ribs [nothing]
+
+# Rice Crackers
+Rice Crackers + Water = Mochi
+Rice Crackers + Grain = Crackers
+# wrapped in nori
+Rice Crackers + Plant = Seaweed Snacks
+# prawn crackers
+Rice Crackers + Animal = Shrimp Chips [dish]
+Rice Crackers + Sugar = Rice Krispies Treat
+Rice Crackers + Fridge = Rice Krispies Treat
+# puffed rice
+Rice Crackers + Stove = Rice Krispies
+Rice Crackers + Oven = Burnt
+Rice Crackers + Pot = Congee
+Rice Crackers + Knife = Breadcrumbs
+Rice Crackers + Blender = Rice Flour
+Rice Crackers + Salt = Rice Crackers [nothing]
+Rice Crackers + Clock = Rice Crackers [nothing]
+
+# Rice Pudding
+# rice and cinnamon
+Rice Pudding + Water = Horchata
+Rice Pudding + Blender = Horchata
+Rice Pudding + Grain = Cereal
+Rice Pudding + Plant = Mango Sticky Rice
+Rice Pudding + Animal = Kheer
+# savoury rice porridge
+Rice Pudding + Salt = Congee
+Rice Pudding + Sugar = Sweet Rice
+Rice Pudding + Stove = Burnt
+Rice Pudding + Oven = Creme Brulee
+Rice Pudding + Pot = Porridge
+# rice, fermented
+Rice Pudding + Clock = Sake
+Rice Pudding + Fridge = Pudding
+Rice Pudding + Knife = Rice Pudding [nothing]
+
+# Rice Soup
+Rice Soup + Water = Broth
+Rice Soup + Grain = Congee
+Rice Soup + Pot = Congee
+Rice Soup + Salt = Congee
+Rice Soup + Plant = Vegetable Soup
+Rice Soup + Animal = Chicken Soup
+Rice Soup + Sugar = Rice Pudding
+# rice stirred into broth a ladle at a time
+Rice Soup + Stove = Risotto
+Rice Soup + Oven = Casserole
+Rice Soup + Blender = Baby Food
+Rice Soup + Clock = Leftovers
+Rice Soup + Fridge = Leftovers
+Rice Soup + Knife = Rice Soup [nothing]
+
+# Seaweed Salad
+Seaweed Salad + Water = Seaweed Soup
+Seaweed Salad + Pot = Seaweed Soup
+Seaweed Salad + Grain = Sushi Roll
+Seaweed Salad + Plant = Salad
+Seaweed Salad + Animal = Poke Bowl
+Seaweed Salad + Salt = Seaweed Snacks
+Seaweed Salad + Oven = Seaweed Snacks
+# agar
+Seaweed Salad + Sugar = Jell-O
+Seaweed Salad + Stove = Stir-Fry
+Seaweed Salad + Blender = Green Smoothie
+Seaweed Salad + Clock = Spoiled
+Seaweed Salad + Knife = Seaweed Salad [nothing]
+Seaweed Salad + Fridge = Seaweed Salad [nothing]
+
+# Smoothie Bowl
+Smoothie Bowl + Water = Smoothie
+Smoothie Bowl + Blender = Smoothie
+Smoothie Bowl + Grain = Muesli
+Smoothie Bowl + Plant = Green Smoothie
+Smoothie Bowl + Animal = Parfait
+Smoothie Bowl + Sugar = Sorbet
+Smoothie Bowl + Stove = Compote
+Smoothie Bowl + Oven = Fruit Leather
+Smoothie Bowl + Pot = Jam
+Smoothie Bowl + Knife = Fruit Salad
+Smoothie Bowl + Clock = Spoiled
+Smoothie Bowl + Fridge = Popsicle
+Smoothie Bowl + Salt = Smoothie Bowl [nothing]
+
+# Sweet Potato
+Sweet Potato + Water = Steamed Vegetables
+Sweet Potato + Grain = Gnocchi
+# people mix them up all the time
+Sweet Potato + Plant = Yam [ingredient]
+Sweet Potato + Animal = Meat and Potatoes
+Sweet Potato + Salt = Sweet Potato Fries
+Sweet Potato + Knife = Sweet Potato Fries
+Sweet Potato + Sugar = Sweet Potato Casserole
+Sweet Potato + Oven = Roasted Vegetables
+Sweet Potato + Pot = Soup
+Sweet Potato + Blender = Baby Food
+# it sprouts
+Sweet Potato + Clock = Plant
+Sweet Potato + Fridge = Sweet Potato [nothing]
+
+# Beef
+Beef + Water = Pho
+Beef + Grain = Rice and Meat
+Beef + Plant = Beef and Broccoli
+Beef + Animal = Surf and Turf
+Beef + Salt = Corned Beef
+Beef + Sugar = Bulgogi
+Beef + Knife = Steak
+# dry-aged
+Beef + Fridge = Steak
+
+## Step 2, batch 8 (2026-10-15): Steak through Honeycomb
+
+# Steak
+Steak + Water = Broth
+Steak + Grain = Cheesesteak
+# with peppers and onions
+Steak + Plant = Fajitas
+Steak + Animal = Steak and Eggs
+Steak + Salt = Beef Jerky
+Steak + Sugar = Bulgogi
+Steak + Pot = Beef Stew
+Steak + Knife = Kebab
+Steak + Blender = Ground Beef
+
+# Roasted Vegetables
+Roasted Vegetables + Water = Vegetable Soup
+Roasted Vegetables + Blender = Soup
+Roasted Vegetables + Grain = Couscous
+Roasted Vegetables + Plant = Ratatouille
+Roasted Vegetables + Animal = Roast Chicken
+Roasted Vegetables + Sugar = Sweet Potato Casserole
+Roasted Vegetables + Stove = Stir-Fry
+Roasted Vegetables + Oven = Burnt
+Roasted Vegetables + Knife = Salad
+Roasted Vegetables + Clock = Leftovers
+Roasted Vegetables + Fridge = Leftovers
+Roasted Vegetables + Salt = Roasted Vegetables [nothing]
+
+# Soy Sauce
+# dashi-style broth
+Soy Sauce + Water = Broth
+Soy Sauce + Grain = Fried Rice
+# soybeans, curdled
+Soy Sauce + Plant = Tofu
+Soy Sauce + Animal = Yakitori
+Soy Sauce + Sugar = Teriyaki
+# fermented soybean paste
+Soy Sauce + Salt = Miso [ingredient]
+Soy Sauce + Clock = Miso
+Soy Sauce + Stove = Stir-Fry
+Soy Sauce + Oven = Jerky
+# shoyu ramen: soy sauce ramen
+Soy Sauce + Pot = Ramen
+Soy Sauce + Blender = Marinade
+# for dipping
+Soy Sauce + Knife = Sushi
+Soy Sauce + Fridge = Soy Sauce [nothing]
+
+# Steamed Vegetables
+Steamed Vegetables + Water = Vegetable Soup
+Steamed Vegetables + Pot = Soup
+Steamed Vegetables + Grain = Bibimbap
+Steamed Vegetables + Plant = Salad
+Steamed Vegetables + Knife = Salad
+Steamed Vegetables + Animal = Chicken Dinner
+Steamed Vegetables + Salt = Pickles
+Steamed Vegetables + Sugar = Baby Food
+Steamed Vegetables + Stove = Stir-Fry
+Steamed Vegetables + Oven = Roasted Vegetables
+Steamed Vegetables + Clock = Spoiled
+Steamed Vegetables + Fridge = Leftovers
+
+# Candy Corn
+Candy Corn + Water = Syrup
+Candy Corn + Pot = Syrup
+Candy Corn + Grain = Popcorn
+# the real thing
+Candy Corn + Plant = Corn
+Candy Corn + Animal = Peeps
+# candy corn and peanuts: the Halloween mix
+Candy Corn + Salt = Trail Mix
+Candy Corn + Sugar = Candy
+Candy Corn + Stove = Caramel
+Candy Corn + Oven = Cookie
+Candy Corn + Blender = Powdered Sugar
+# every year the same bag comes back out
+Candy Corn + Clock = Candy Corn [nothing]
+Candy Corn + Knife = Candy Corn [nothing]
+Candy Corn + Fridge = Candy Corn [nothing]
+
+# Cola
+# watered down
+Cola + Water = Diet Coke [drink]
+Cola + Grain = Beer
+Cola + Plant = Root Beer
+Cola + Sugar = Dr Pepper
+Cola + Animal = Red Bull
+Cola + Salt = Gatorade
+# a Coca-Cola glaze
+Cola + Stove = Glaze
+Cola + Oven = Cake
+Cola + Pot = Syrup
+# flat and sticky
+Cola + Clock = Syrup
+# an ICEE
+Cola + Blender = Slushie
+Cola + Knife = Cola [nothing]
+
+# Cookie
+Cookie + Water = Dough
+Cookie + Grain = Oatmeal Cookie
+Cookie + Plant = Oatmeal Raisin Cookie
+Cookie + Animal = Animal Crackers
+Cookie + Salt = Crackers
+Cookie + Stove = Burnt
+# banana pudding, with the wafers
+Cookie + Pot = Pudding
+Cookie + Knife = Crumble
+# stale and hard: biscotti
+Cookie + Clock = Biscotti
+Cookie + Fridge = Ice Cream Sandwich
+
+# Cornmeal
+Cornmeal + Grain = Tortilla
+Cornmeal + Oven = Cornbread
+# wrapped in a husk
+Cornmeal + Plant = Tamale
+Cornmeal + Animal = Corn Dog
+Cornmeal + Salt = Fritos
+# corn muffins
+Cornmeal + Sugar = Muffin
+Cornmeal + Pot = Polenta
+# it sets firm cold
+Cornmeal + Fridge = Polenta
+# corn mash, aged: bourbon
+Cornmeal + Clock = Whiskey
+Cornmeal + Knife = Cornmeal [nothing]
+Cornmeal + Blender = Cornmeal [nothing]
+
+# Cotton Candy
+# it melts away in water
+Cotton Candy + Water = Sugar
+Cotton Candy + Grain = Popcorn
+# cotton candy grapes are a real variety
+Cotton Candy + Plant = Grapes
+Cotton Candy + Animal = Funnel Cake
+# boardwalk candy
+Cotton Candy + Salt = Saltwater Taffy
+Cotton Candy + Sugar = Candy
+Cotton Candy + Stove = Caramel
+Cotton Candy + Oven = Burnt
+Cotton Candy + Pot = Syrup
+Cotton Candy + Blender = Powdered Sugar
+# the sugar crystallizes
+Cotton Candy + Clock = Rock Candy
+Cotton Candy + Fridge = Snow Cone
+Cotton Candy + Knife = Cotton Candy [nothing]
+
+# Fish Sandwich
+Fish Sandwich + Water = Fish
+Fish Sandwich + Pot = Seafood Soup
+Fish Sandwich + Grain = Filet-O-Fish
+Fish Sandwich + Plant = Fish Tacos
+Fish Sandwich + Animal = Surf and Turf
+Fish Sandwich + Salt = Fish and Chips
+Fish Sandwich + Sugar = Swedish Fish
+Fish Sandwich + Stove = Burnt
+Fish Sandwich + Oven = Tuna Melt
+Fish Sandwich + Knife = Fish Sticks
+Fish Sandwich + Blender = Slop
+Fish Sandwich + Clock = Spoiled
+Fish Sandwich + Fridge = Leftovers
+
+# Fried Chicken
+Fried Chicken + Water = Chicken Soup
+Fried Chicken + Grain = Chicken and Waffles
+# the side it comes with
+Fried Chicken + Plant = Coleslaw
+Fried Chicken + Animal = Bucket of Chicken
+Fried Chicken + Salt = Popcorn Chicken
+Fried Chicken + Sugar = Orange Chicken
+Fried Chicken + Oven = Chicken Parmesan
+# cold fried chicken the next day
+Fried Chicken + Clock = Leftovers
+Fried Chicken + Fridge = Leftovers
+
+# Gazpacho
+Gazpacho + Water = Tomato Juice
+Gazpacho + Salt = Tomato Juice
+Gazpacho + Grain = Bruschetta
+Gazpacho + Plant = Salad
+Gazpacho + Knife = Salsa
+# cold seafood in tomato and lime
+Gazpacho + Animal = Ceviche
+Gazpacho + Sugar = Ketchup
+Gazpacho + Stove = Tomato Sauce
+Gazpacho + Oven = Tomato Sauce
+Gazpacho + Pot = Soup
+Gazpacho + Clock = Spoiled
+Gazpacho + Fridge = Slushie
+Gazpacho + Blender = Gazpacho [nothing]
+
+# Honeycomb
+Honeycomb + Water = Syrup
+Honeycomb + Pot = Syrup
+# Honeycomb, the cereal
+Honeycomb + Grain = Cereal
+Honeycomb + Plant = Flower
+Honeycomb + Animal = Bee
+Honeycomb + Salt = Salted Caramel
+# a Crunchie bar
+Honeycomb + Sugar = Candy Bar
+# the honey melts out of the comb
+Honeycomb + Stove = Honey
+Honeycomb + Oven = Honey
+Honeycomb + Blender = Creamed Honey
+Honeycomb + Fridge = Creamed Honey
+Honeycomb + Clock = Honeycomb [nothing]
+
+## Step 2, batch 9 (2026-10-15): Peeps through Rice Ball
+
+# Peeps
+# a chick in the water
+Peeps + Water = Duck
+# marshmallow and cereal
+Peeps + Grain = Rice Krispies Treat
+# the rest of the Easter basket
+Peeps + Plant = Jelly Beans
+Peeps + Animal = Chick
+Peeps + Salt = Saltwater Taffy
+Peeps + Sugar = Marshmallow
+Peeps + Knife = Marshmallow
+# toasted over the flame
+Peeps + Stove = S'mores
+# marshmallows on top
+Peeps + Oven = Sweet Potato Casserole
+Peeps + Pot = Syrup
+Peeps + Blender = Powdered Sugar
+# some people like them stale
+Peeps + Clock = Peeps [nothing]
+Peeps + Fridge = Peeps [nothing]
+
+# Popcorn Chicken
+Popcorn Chicken + Water = Chicken Soup
+Popcorn Chicken + Pot = Chicken Soup
+Popcorn Chicken + Grain = Popcorn
+Popcorn Chicken + Plant = Chicken Salad
+Popcorn Chicken + Animal = Bucket of Chicken
+Popcorn Chicken + Salt = Chicken Nuggets
+Popcorn Chicken + Sugar = Sweet and Sour Chicken
+Popcorn Chicken + Stove = Burnt
+Popcorn Chicken + Oven = Chicken Tenders
+Popcorn Chicken + Blender = Slop
+Popcorn Chicken + Clock = Leftovers
+Popcorn Chicken + Fridge = TV Dinner
+Popcorn Chicken + Knife = Popcorn Chicken [nothing]
+
+# Roast Chicken
+Roast Chicken + Water = Broth
+Roast Chicken + Grain = Chicken and Rice
+Roast Chicken + Plant = Chicken Dinner
+Roast Chicken + Animal = Feast
+Roast Chicken + Sugar = Teriyaki
+# pan drippings
+Roast Chicken + Stove = Gravy
+Roast Chicken + Oven = Burnt
+Roast Chicken + Knife = Chicken Salad
+Roast Chicken + Blender = Baby Food
+# the leftover bones make tomorrow's soup
+Roast Chicken + Clock = Chicken Soup
+Roast Chicken + Fridge = Leftovers
+# salt-rubbed and turning on the spit
+Roast Chicken + Salt = Rotisserie Chicken
+
+# Seafood Soup
+Seafood Soup + Water = Broth
+Seafood Soup + Grain = Paella
+# with okra
+Seafood Soup + Plant = Gumbo
+# cream: chowder
+Seafood Soup + Animal = Clam Chowder
+Seafood Soup + Salt = Fish Sauce
+Seafood Soup + Stove = Stir-Fry
+Seafood Soup + Oven = Casserole
+Seafood Soup + Pot = Seafood Boil
+# blended smooth with cream
+Seafood Soup + Blender = Bisque [dish]
+Seafood Soup + Knife = Ceviche
+Seafood Soup + Clock = Spoiled
+Seafood Soup + Fridge = Leftovers
+Seafood Soup + Sugar = Seafood Soup [nothing]
+
+# Steak and Eggs
+Steak and Eggs + Water = Breakfast
+Steak and Eggs + Grain = Breakfast Burrito
+Steak and Eggs + Plant = Hash Browns
+Steak and Eggs + Animal = Bacon and Eggs
+Steak and Eggs + Salt = Corned Beef Hash
+Steak and Eggs + Sugar = Pancakes
+Steak and Eggs + Stove = Corned Beef Hash
+Steak and Eggs + Oven = Frittata
+# chashu and a soft egg
+Steak and Eggs + Pot = Ramen
+Steak and Eggs + Blender = Slop
+# a late breakfast
+Steak and Eggs + Clock = Brunch
+Steak and Eggs + Fridge = Leftovers
+Steak and Eggs + Knife = Steak and Eggs [nothing]
+
+# Couscous
+Couscous + Water = Porridge
+Couscous + Grain = Pilaf
+Couscous + Stove = Pilaf
+Couscous + Plant = Tabbouleh
+Couscous + Knife = Tabbouleh
+# slow-cooked lamb, the Moroccan way
+Couscous + Animal = Tagine [dish]
+Couscous + Pot = Tagine
+Couscous + Sugar = Rice Pudding
+Couscous + Oven = Stuffed Peppers
+# it's semolina
+Couscous + Blender = Cream of Wheat
+Couscous + Clock = Leftovers
+Couscous + Fridge = Salad
+Couscous + Salt = Couscous [nothing]
+
+# Dough
+# thinned out
+Dough + Water = Batter
+Dough + Blender = Batter
+Dough + Grain = Bread
+Dough + Plant = Focaccia
+Dough + Animal = Pasty
+# cold butter folded in, again and again
+Dough + Fridge = Croissant
+
+# Fish and Chips
+Fish and Chips + Grain = Fish Sandwich
+Fish and Chips + Plant = Coleslaw
+Fish and Chips + Animal = Popcorn Shrimp
+Fish and Chips + Salt = Salt and Vinegar Chips
+# on the chips
+Fish and Chips + Sugar = Ketchup
+Fish and Chips + Stove = Burnt
+Fish and Chips + Oven = Fish Sticks
+Fish and Chips + Pot = Seafood Soup
+Fish and Chips + Knife = Fish Tacos
+Fish and Chips + Blender = Slop
+Fish and Chips + Clock = Spoiled
+Fish and Chips + Fridge = Leftovers
+Fish and Chips + Water = Fish and Chips [nothing]
+
+# Jawbreaker
+Jawbreaker + Water = Syrup
+Jawbreaker + Pot = Syrup
+Jawbreaker + Grain = Sprinkles
+# chicle, the tree sap gum was made from
+Jawbreaker + Plant = Bubble Gum [dish]
+Jawbreaker + Animal = Gummy Bears
+# it looks just like it
+Jawbreaker + Salt = Rock Salt
+Jawbreaker + Sugar = Rock Candy
+Jawbreaker + Knife = Rock Candy
+Jawbreaker + Stove = Caramel
+Jawbreaker + Oven = Toffee
+Jawbreaker + Blender = Powdered Sugar
+# it takes forever to finish
+Jawbreaker + Clock = Jawbreaker [nothing]
+Jawbreaker + Fridge = Jawbreaker [nothing]
+
+# Peppermint
+Peppermint + Water = Mint Tea
+# Girl Scout cookies
+Peppermint + Grain = Thin Mints [dish]
+Peppermint + Plant = Mint
+Peppermint + Animal = Peppermint Patty [dish]
+Peppermint + Salt = Tic Tacs
+Peppermint + Sugar = Candy Cane
+# pulled while it's hot
+Peppermint + Stove = Candy Cane
+Peppermint + Oven = Cookie
+Peppermint + Pot = Syrup
+# a Shamrock Shake
+Peppermint + Blender = Milkshake
+Peppermint + Fridge = Mint Chocolate Chip
+Peppermint + Knife = Peppermint [nothing]
+Peppermint + Clock = Peppermint [nothing]
+
+# Popcorn Ball
+Popcorn Ball + Water = Popcorn
+Popcorn Ball + Blender = Popcorn
+Popcorn Ball + Grain = Rice Krispies Treat
+Popcorn Ball + Plant = Cracker Jack
+Popcorn Ball + Animal = Buttered Popcorn
+Popcorn Ball + Salt = Kettle Corn
+Popcorn Ball + Sugar = Caramel Corn
+Popcorn Ball + Oven = Caramel Corn
+Popcorn Ball + Knife = Caramel Corn
+Popcorn Ball + Stove = Burnt
+Popcorn Ball + Pot = Caramel Sauce
+# rock hard
+Popcorn Ball + Clock = Jawbreaker
+Popcorn Ball + Fridge = Popcorn Ball [nothing]
+
+# Rice Ball
+Rice Ball + Water = Congee
+Rice Ball + Pot = Rice Soup
+Rice Ball + Grain = Rice Crackers
+Rice Ball + Plant = Sushi Roll
+Rice Ball + Animal = Sushi
+Rice Ball + Knife = Sushi
+Rice Ball + Sugar = Mochi
+# fried rice balls with a cheesy middle
+Rice Ball + Oven = Arancini
+Rice Ball + Blender = Baby Food
+Rice Ball + Clock = Spoiled
+Rice Ball + Fridge = Bento
+Rice Ball + Salt = Rice Ball [nothing]
+
+## Step 2, batch 10 (2026-10-15): Sushi through Chick
+
+# Sushi
+# what comes with it
+Sushi + Water = Miso Soup
+Sushi + Grain = Rice Ball
+Sushi + Plant = California Roll
+# just the fish
+Sushi + Animal = Sashimi
+Sushi + Salt = Soy Sauce
+Sushi + Sugar = Mochi
+
+# Batter
+# thin batter
+Batter + Water = Crepe [dish]
+Batter + Fridge = Crepe
+Batter + Grain = Dough
+Batter + Plant = Tempura
+Batter + Animal = Fried Chicken
+Batter + Salt = Crackers
+Batter + Sugar = Cake
+# drop dumplings
+Batter + Pot = Dumplings
+Batter + Blender = Pancakes
+# left to ferment
+Batter + Clock = Sourdough
+Batter + Knife = Batter [nothing]
+
+# Chicken Dinner
+Chicken Dinner + Water = Chicken Soup
+Chicken Dinner + Grain = Chicken and Rice
+Chicken Dinner + Plant = Chicken Stir-Fry
+Chicken Dinner + Animal = Feast
+Chicken Dinner + Salt = Rotisserie Chicken
+Chicken Dinner + Sugar = Orange Chicken
+Chicken Dinner + Stove = Fried Chicken
+Chicken Dinner + Oven = Chicken Pot Pie
+Chicken Dinner + Pot = Chicken and Dumplings
+Chicken Dinner + Knife = Chicken Salad
+Chicken Dinner + Blender = Baby Food
+# tomorrow's lunch
+Chicken Dinner + Clock = Chicken Sandwich
+
+# Cracker Jack
+Cracker Jack + Water = Popcorn
+Cracker Jack + Grain = Granola
+Cracker Jack + Plant = Peanut Butter
+Cracker Jack + Blender = Peanut Butter
+Cracker Jack + Knife = Peanuts
+# take me out to the ball game
+Cracker Jack + Animal = Ballpark Hot Dog
+Cracker Jack + Salt = Kettle Corn
+Cracker Jack + Sugar = Caramel Corn
+Cracker Jack + Oven = Caramel Corn
+Cracker Jack + Stove = Burnt
+Cracker Jack + Pot = Caramel Sauce
+Cracker Jack + Clock = Popcorn Ball
+Cracker Jack + Fridge = Popcorn Ball
+
+# Saltines
+# a sick day
+Saltines + Water = Chicken Soup
+Saltines + Plant = Ginger Ale
+Saltines + Grain = Crackers
+# the binder in crab cakes
+Saltines + Animal = Crab Cakes
+# saltine toffee
+Saltines + Sugar = Toffee
+Saltines + Stove = Burnt
+Saltines + Oven = Croutons
+Saltines + Pot = Dumplings
+Saltines + Knife = Breadcrumbs
+Saltines + Clock = Breadcrumbs
+# layered and set cold
+Saltines + Fridge = Icebox Cake
+Saltines + Salt = Saltines [nothing]
+
+# Tic Tacs
+Tic Tacs + Water = Mint Tea
+Tic Tacs + Grain = Thin Mints
+Tic Tacs + Plant = Mint
+Tic Tacs + Animal = Peppermint Patty
+# little white pellets
+Tic Tacs + Salt = Rock Salt
+Tic Tacs + Sugar = Peppermint
+Tic Tacs + Stove = Syrup
+Tic Tacs + Pot = Syrup
+Tic Tacs + Oven = Caramel
+Tic Tacs + Blender = Powdered Sugar
+Tic Tacs + Knife = Powdered Sugar
+Tic Tacs + Fridge = Ice
+Tic Tacs + Clock = Tic Tacs [nothing]
+
+# Tomato Juice
+Tomato Juice + Water = Tomato Soup
+Tomato Juice + Grain = Bruschetta
+# eight vegetables
+Tomato Juice + Plant = V8 [drink]
+# tomato and lime, with seafood
+Tomato Juice + Animal = Ceviche
+Tomato Juice + Salt = Gazpacho
+Tomato Juice + Sugar = Ketchup
+Tomato Juice + Stove = Tomato Sauce
+Tomato Juice + Oven = Tomato Sauce
+Tomato Juice + Blender = Gazpacho
+Tomato Juice + Fridge = Gazpacho
+Tomato Juice + Clock = Spoiled
+Tomato Juice + Knife = Tomato Juice [nothing]
+
+# Whiskey
+# on the rocks
+Whiskey + Water = Ice
+Whiskey + Fridge = Ice
+Whiskey + Grain = Beer
+# agave
+Whiskey + Plant = Tequila
+Whiskey + Animal = Eggnog
+# a sugarcane spirit
+Whiskey + Sugar = Rum
+# a bourbon glaze
+Whiskey + Stove = Glaze
+Whiskey + Pot = BBQ Sauce
+# soaked in it for weeks
+Whiskey + Oven = Fruitcake
+Whiskey + Blender = Slushie
+Whiskey + Salt = Whiskey [nothing]
+Whiskey + Knife = Whiskey [nothing]
+# it only gets better
+Whiskey + Clock = Whiskey [nothing]
+
+# Apple Chips
+Apple Chips + Water = Apple Juice
+Apple Chips + Grain = Granola
+Apple Chips + Plant = Trail Mix
+Apple Chips + Animal = Pork Chop
+Apple Chips + Salt = Potato Chips
+Apple Chips + Sugar = Caramel Apple
+Apple Chips + Stove = Apple Fritter
+Apple Chips + Oven = Burnt
+Apple Chips + Pot = Apple Butter
+Apple Chips + Blender = Applesauce
+# dried fruit, the grape kind
+Apple Chips + Clock = Raisins
+Apple Chips + Knife = Apple Chips [nothing]
+Apple Chips + Fridge = Apple Chips [nothing]
+
+# Ballpark Hot Dog
+Ballpark Hot Dog + Water = Soda
+Ballpark Hot Dog + Grain = Pretzel
+Ballpark Hot Dog + Plant = Sauerkraut
+Ballpark Hot Dog + Animal = Bratwurst
+Ballpark Hot Dog + Salt = Pretzel Dog
+Ballpark Hot Dog + Sugar = Cracker Jack
+Ballpark Hot Dog + Stove = Burnt
+Ballpark Hot Dog + Oven = Pigs in a Blanket
+Ballpark Hot Dog + Pot = Hot Dog Water
+Ballpark Hot Dog + Knife = Sausage
+Ballpark Hot Dog + Blender = Slop
+Ballpark Hot Dog + Clock = Spoiled
+Ballpark Hot Dog + Fridge = Hot Dog
+
+# Candy Bar
+Candy Bar + Water = Hot Chocolate
+# wafers
+Candy Bar + Grain = Kit Kat
+# peanuts
+Candy Bar + Plant = Snickers
+Candy Bar + Animal = Milky Way
+Candy Bar + Salt = Salted Caramel
+Candy Bar + Sugar = Candy
+Candy Bar + Oven = Brownie
+Candy Bar + Pot = Fudge
+# chopped up for baking
+Candy Bar + Knife = Toffee Bits
+Candy Bar + Blender = Milkshake
+Candy Bar + Clock = Candy Bar [nothing]
+# the frozen candy bar ice cream bars
+Candy Bar + Fridge = Ice Cream
+
+# Chamomile
+Chamomile + Water = Herbal Tea
+Chamomile + Stove = Herbal Tea
+Chamomile + Grain = Barley Tea
+Chamomile + Plant = Flower
+Chamomile + Animal = Milk Tea
+Chamomile + Sugar = Sweet Tea
+# dried flowers
+Chamomile + Oven = Herbs
+Chamomile + Knife = Herbs
+Chamomile + Blender = Herbs
+Chamomile + Pot = Syrup
+Chamomile + Clock = Kombucha
+Chamomile + Fridge = Iced Tea
+Chamomile + Salt = Chamomile [nothing]
+
+# Chick
+Chick + Water = Duck
+# fed on grain it grows up
+Chick + Grain = Hen
+Chick + Plant = Hen
+Chick + Animal = Farm
+Chick + Sugar = Peeps
+Chick + Stove = Fried Chicken
+Chick + Oven = Roast Chicken
+Chick + Pot = Chicken Soup
+Chick + Knife = Chicken
+Chick + Blender = Chicken Nuggets
+Chick + Salt = Chick [nothing]
+# which came first? in the fridge, the egg
+Chick + Fridge = Egg
