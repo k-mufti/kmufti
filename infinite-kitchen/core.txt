@@ -13936,3 +13936,1048 @@ Dough + Sugar Cubes = Concha [dish]
 Dough + Powdered Sugar = Zeppole [dish]
 Dough + Rock Candy = Cookie
 Dough + Green Smoothie = Dough [nothing]
+
+## Step 2 layer 2, batch 19 (2026-10-16): Pigs in a Blanket, Caramel Apple, Saltwater Taffy
+
+# Pigs in a Blanket
+Pigs in a Blanket + Ocean = Shrimp Toast [dish]
+Pigs in a Blanket + Wheat = Sausage Roll
+# crescent dough baked in the shape of a tree
+Pigs in a Blanket + Tree = Pull-Apart Christmas Tree [dish]
+Pigs in a Blanket + Farm = Ham and Cheese Croissant [dish]
+Pigs in a Blanket + Rock Salt = Pretzel Dog
+Pigs in a Blanket + Rice = Spam Musubi
+# meat in a cabbage blanket
+Pigs in a Blanket + Vegetables = Cabbage Rolls [dish]
+Pigs in a Blanket + Fish = Bacon-Wrapped Scallops [dish]
+Pigs in a Blanket + Syrup = Pancake on a Stick
+# ham and cheese wrapped in chicken
+Pigs in a Blanket + Hen = Chicken Cordon Bleu [dish]
+Pigs in a Blanket + Cereal = Breakfast
+Pigs in a Blanket + Granola = Breakfast
+# beef in a pastry blanket
+Pigs in a Blanket + Cow = Beef Wellington
+# Britain's dates wrapped in bacon
+Pigs in a Blanket + Fruit = Devils on Horseback [dish]
+Pigs in a Blanket + Seaweed = Kimbap
+Pigs in a Blanket + Bee = Hot Honey
+Pigs in a Blanket + Egg = Scotch Egg
+Pigs in a Blanket + Flour = Toad in the Hole
+Pigs in a Blanket + Corn = Corn Dog
+Pigs in a Blanket + Crackers = Lunchables
+# the South's brown-sugar bacon
+Pigs in a Blanket + Caramel = Pig Candy [dish]
+Pigs in a Blanket + Salted Caramel = Pig Candy
+Pigs in a Blanket + Sugar Cubes = Pig Candy
+Pigs in a Blanket + Ice = Bagel Bites [dish]
+Pigs in a Blanket + Popcorn = Concession Stand
+# the Super Bowl spread
+Pigs in a Blanket + Beer = Game Day [dish]
+# Texas's sausage kolache
+Pigs in a Blanket + Hot Dog = Klobasnek [dish]
+# the Midwest's pickles rolled in ham and cream cheese
+Pigs in a Blanket + Brine = Pickle Roll-Ups [dish]
+Pigs in a Blanket + Jerky = Slim Jim
+Pigs in a Blanket + Steam = Bao
+Pigs in a Blanket + Boiling Water = Hot Dog Water
+Pigs in a Blanket + Sparkling Water = Cocktail Party [dish]
+Pigs in a Blanket + Oats = Goetta
+Pigs in a Blanket + Porridge = Scrapple
+Pigs in a Blanket + Vegetable Soup = Soup and Sandwich
+Pigs in a Blanket + Stir-Fry = Egg Rolls
+Pigs in a Blanket + Herbs = Stuffing
+# Turkey's filled pastry
+Pigs in a Blanket + Mint = Borek [dish]
+# bacon-wrapped barbecue meatballs
+Pigs in a Blanket + Barbecue = Moink Balls [dish]
+# pigs in blankets go with every British Christmas roast
+Pigs in a Blanket + Roast = Christmas Dinner [dish]
+Pigs in a Blanket + Broth = Wonton Soup
+# Arizona's bacon-wrapped hot dog
+Pigs in a Blanket + Meat = Sonoran Hot Dog [dish]
+Pigs in a Blanket + Powdered Sugar = Monte Cristo
+Pigs in a Blanket + Candy = Pigs in a Blanket [nothing]
+Pigs in a Blanket + Kale Chips = Pigs in a Blanket [nothing]
+Pigs in a Blanket + Green Smoothie = Pigs in a Blanket [nothing]
+Pigs in a Blanket + Flower = Pigs in a Blanket [nothing]
+Pigs in a Blanket + Rock Candy = Pigs in a Blanket [nothing]
+
+# Caramel Apple
+Caramel Apple + Ocean = Saltwater Taffy
+Caramel Apple + Wheat = Apple Pie
+Caramel Apple + Tree = Apple
+# the orchard's cider donuts
+Caramel Apple + Farm = Apple Cider Donuts [dish]
+Caramel Apple + Candy = Candy Apple
+Caramel Apple + Sugar Cubes = Candy Apple
+Caramel Apple + Rock Candy = Candy Apple
+Caramel Apple + Rock Salt = Salted Caramel
+Caramel Apple + Vegetables = Waldorf Salad [dish]
+Caramel Apple + Syrup = Apple Butter
+Caramel Apple + Hen = Peeps
+Caramel Apple + Cereal = Apple Jacks [dish]
+Caramel Apple + Cow = Pie a la Mode
+Caramel Apple + Fruit = Tanghulu
+# apples dipped in honey for Rosh Hashanah
+Caramel Apple + Bee = Apples and Honey [dish]
+Caramel Apple + Egg = Apple Fritter
+Caramel Apple + Flour = Apple Turnover [dish]
+Caramel Apple + Corn = Caramel Corn
+# apple slices under caramel and toppings
+Caramel Apple + Crackers = Apple Nachos [dish]
+# the Midwest's name for them
+Caramel Apple + Caramel = Taffy Apple [dish]
+Caramel Apple + Salted Caramel = Taffy Apple
+Caramel Apple + Ice = Sorbet
+Caramel Apple + Popcorn = Popcorn Ball
+Caramel Apple + Hot Dog = State Fair
+Caramel Apple + Brine = Apple Cider Vinegar
+Caramel Apple + Jerky = Fruit Leather
+Caramel Apple + Steam = Applesauce
+# hot spiced cider for Christmas
+Caramel Apple + Boiling Water = Wassail [drink]
+Caramel Apple + Herbs = Wassail
+Caramel Apple + Sparkling Water = Sparkling Cider [drink]
+Caramel Apple + Granola = Apple Crisp
+Caramel Apple + Porridge = Oatmeal
+Caramel Apple + Oats = Apple Crumble [dish]
+Caramel Apple + Beer = Cider
+Caramel Apple + Kale Chips = Apple Chips
+Caramel Apple + Vegetable Soup = Butternut Squash Soup
+Caramel Apple + Stir-Fry = Sweet and Sour Chicken
+# green apple
+Caramel Apple + Green Smoothie = Jolly Rancher [dish]
+# apple slices baked into roses
+Caramel Apple + Flower = Apple Rose Tart [dish]
+Caramel Apple + Barbecue = Pork Chops and Applesauce [dish]
+Caramel Apple + Roast = Baked Apples [dish]
+# the curry soup with apple in it
+Caramel Apple + Broth = Mulligatawny [dish]
+Caramel Apple + Meat = Glazed Ham
+# Denmark's round pancake puffs under powdered sugar
+Caramel Apple + Powdered Sugar = Aebleskiver [dish]
+Caramel Apple + Rice = Caramel Apple [nothing]
+Caramel Apple + Fish = Caramel Apple [nothing]
+Caramel Apple + Seaweed = Caramel Apple [nothing]
+Caramel Apple + Mint = Caramel Apple [nothing]
+
+# Saltwater Taffy
+Saltwater Taffy + Ocean = Boardwalk Fries
+Saltwater Taffy + Wheat = Licorice
+Saltwater Taffy + Tree = Sugar on Snow
+Saltwater Taffy + Farm = Milk Duds
+Saltwater Taffy + Candy = Laffy Taffy
+Saltwater Taffy + Rock Salt = Salmiakki
+Saltwater Taffy + Brine = Salmiakki
+Saltwater Taffy + Rice = White Rabbit
+Saltwater Taffy + Fish = Swedish Fish
+Saltwater Taffy + Syrup = Tootsie Roll
+Saltwater Taffy + Hen = Peeps
+Saltwater Taffy + Cereal = Rice Krispies Treat
+Saltwater Taffy + Cow = Dulce de Leche
+Saltwater Taffy + Seaweed = Sweet Seaweed Chips
+Saltwater Taffy + Bee = Bit-O-Honey [dish]
+# whipped egg whites make nougat
+Saltwater Taffy + Egg = Nougat [ingredient]
+Saltwater Taffy + Flour = Twizzlers
+Saltwater Taffy + Corn = Candy Corn
+Saltwater Taffy + Crackers = Christmas Crack
+Saltwater Taffy + Caramel = Sugar Daddy [dish]
+Saltwater Taffy + Salted Caramel = Sugar Daddy
+Saltwater Taffy + Ice = Popsicle
+Saltwater Taffy + Popcorn = Caramel Corn
+Saltwater Taffy + Hot Dog = Concession Stand
+Saltwater Taffy + Jerky = Fruit Leather
+Saltwater Taffy + Steam = Gumdrops [dish]
+Saltwater Taffy + Boiling Water = Syrup
+Saltwater Taffy + Sparkling Water = Pop Rocks
+Saltwater Taffy + Granola = Granola Bar
+Saltwater Taffy + Oats = Granola Bar
+Saltwater Taffy + Beer = Jell-O Shots
+Saltwater Taffy + Porridge = Slop
+Saltwater Taffy + Vegetable Soup = Slop
+Saltwater Taffy + Broth = Slop
+Saltwater Taffy + Stir-Fry = Sweet and Sour Chicken
+# the old-fashioned herbal hard candy
+Saltwater Taffy + Herbs = Horehound Candy [dish]
+Saltwater Taffy + Green Smoothie = Jolly Rancher
+Saltwater Taffy + Flower = Turkish Delight
+Saltwater Taffy + Mint = Junior Mints [dish]
+Saltwater Taffy + Barbecue = Burnt [trash]
+Saltwater Taffy + Roast = Peanut Brittle
+Saltwater Taffy + Meat = Candied Bacon
+Saltwater Taffy + Sugar Cubes = Starburst
+Saltwater Taffy + Powdered Sugar = Marshmallow
+# Britain's seaside candy stick, with the town's name inside
+Saltwater Taffy + Rock Candy = Blackpool Rock [dish]
+Saltwater Taffy + Vegetables = Saltwater Taffy [nothing]
+Saltwater Taffy + Kale Chips = Saltwater Taffy [nothing]
+
+## Step 2 layer 2, batch 20 (2026-10-16): Sorbet, BBQ Sauce, Feast
+
+# Sorbet
+Sorbet + Ocean = Blue Raspberry
+Sorbet + Wheat = Waffle Cone
+Sorbet + Flour = Waffle Cone
+# Italy's lemon liqueur, from the lemon tree
+Sorbet + Tree = Limoncello [drink]
+Sorbet + Farm = Sherbet
+Sorbet + Candy = Push Pop [dish]
+# frozen, with a salted rim
+Sorbet + Rock Salt = Margarita [drink]
+Sorbet + Rice = Mochi Ice Cream
+Sorbet + Vegetables = Gazpacho
+Sorbet + Vegetable Soup = Gazpacho
+Sorbet + Fish = Swedish Fish
+Sorbet + Syrup = Shave Ice
+Sorbet + Cereal = Fruity Pebbles
+Sorbet + Cow = Gelato
+Sorbet + Fruit = Paleta
+Sorbet + Bee = Frozen Yogurt
+Sorbet + Egg = Frozen Custard
+Sorbet + Corn = Halo-Halo
+Sorbet + Crackers = Ice Cream Sandwich
+Sorbet + Caramel = Sundae
+Sorbet + Salted Caramel = Sundae
+Sorbet + Ice = Granita
+Sorbet + Popcorn = Slushie
+Sorbet + Hot Dog = Hot Dog Slushie
+Sorbet + Brine = Picklesicle
+Sorbet + Jerky = Fruit Leather
+Sorbet + Steam = Smoothie
+Sorbet + Green Smoothie = Smoothie
+Sorbet + Boiling Water = Syrup
+# Venice's lemon sorbet whisked with prosecco
+Sorbet + Sparkling Water = Sgroppino [drink]
+Sorbet + Granola = Acai Bowl
+Sorbet + Oats = Overnight Oats
+Sorbet + Beer = Shandy [drink]
+Sorbet + Kale Chips = Green Smoothie
+Sorbet + Herbs = Mojito
+Sorbet + Flower = Faloodeh
+Sorbet + Mint = Mint Julep
+Sorbet + Barbecue = Grilled Peaches [dish]
+# meringue browned over ice cream
+Sorbet + Roast = Baked Alaska
+# the little sorbet between courses
+Sorbet + Meat = Palate Cleanser [dish]
+Sorbet + Broth = Palate Cleanser
+Sorbet + Sugar Cubes = Italian Ice
+Sorbet + Powdered Sugar = Snow Ice Cream
+Sorbet + Rock Candy = Ring Pop [dish]
+Sorbet + Hen = Sorbet [nothing]
+Sorbet + Seaweed = Sorbet [nothing]
+Sorbet + Porridge = Sorbet [nothing]
+Sorbet + Stir-Fry = Sorbet [nothing]
+
+# BBQ Sauce
+# New Orleans barbecue shrimp
+BBQ Sauce + Ocean = BBQ Shrimp [dish]
+BBQ Sauce + Wheat = Pulled Pork Sandwich
+# hickory smoke
+BBQ Sauce + Tree = Burnt Ends
+BBQ Sauce + Farm = Ribs
+BBQ Sauce + Candy = Pig Candy
+BBQ Sauce + Rock Salt = Dry Rub [ingredient]
+BBQ Sauce + Powdered Sugar = Dry Rub
+BBQ Sauce + Rice = Korean BBQ
+BBQ Sauce + Vegetables = Baked Beans
+BBQ Sauce + Fish = Cedar Plank Salmon
+# the sweet, thick sauce
+BBQ Sauce + Syrup = Kansas City BBQ [dish]
+BBQ Sauce + Caramel = Glaze
+BBQ Sauce + Salted Caramel = Glaze
+BBQ Sauce + Sugar Cubes = Glaze
+BBQ Sauce + Hen = BBQ Chicken
+BBQ Sauce + Cereal = Chex Mix
+BBQ Sauce + Cow = Brisket
+BBQ Sauce + Fruit = Hawaiian Pizza
+BBQ Sauce + Bee = Honey BBQ Wings [dish]
+BBQ Sauce + Egg = Deviled Eggs
+BBQ Sauce + Flour = BBQ Chicken Pizza
+BBQ Sauce + Corn = Cornbread
+BBQ Sauce + Crackers = BBQ Chips
+BBQ Sauce + Popcorn = BBQ Chips
+BBQ Sauce + Hot Dog = Hot Links
+# the vinegar sauce
+BBQ Sauce + Brine = Carolina BBQ [dish]
+BBQ Sauce + Jerky = Beef Jerky
+# Cantonese barbecue pork, and the buns it goes in
+BBQ Sauce + Stir-Fry = Char Siu [dish]
+BBQ Sauce + Steam = Char Siu Bao [dish]
+# the thin sauce mopped on while it smokes
+BBQ Sauce + Boiling Water = Mop Sauce [ingredient]
+# Dr Pepper barbecue sauce is a Texas thing
+BBQ Sauce + Sparkling Water = Dr Pepper
+BBQ Sauce + Porridge = Shrimp and Grits
+BBQ Sauce + Oats = Meatloaf
+BBQ Sauce + Beer = Beer Can Chicken [dish]
+BBQ Sauce + Kale Chips = Collard Greens
+# the South's barbecue stew
+BBQ Sauce + Vegetable Soup = Brunswick Stew [dish]
+BBQ Sauce + Broth = Brunswick Stew
+# dry-rubbed ribs
+BBQ Sauce + Herbs = Memphis BBQ [dish]
+BBQ Sauce + Green Smoothie = Slop
+BBQ Sauce + Mint = Lamb Chops
+BBQ Sauce + Barbecue = Texas BBQ [dish]
+BBQ Sauce + Roast = Pulled Pork
+BBQ Sauce + Meat = Sloppy Joe
+BBQ Sauce + Seaweed = BBQ Sauce [nothing]
+BBQ Sauce + Ice = BBQ Sauce [nothing]
+BBQ Sauce + Granola = BBQ Sauce [nothing]
+BBQ Sauce + Flower = BBQ Sauce [nothing]
+BBQ Sauce + Rock Candy = BBQ Sauce [nothing]
+
+# Feast
+# Italian-American Christmas Eve
+Feast + Ocean = Feast of the Seven Fishes [dish]
+Feast + Wheat = Thanksgiving Dinner
+Feast + Tree = Christmas Dinner
+Feast + Farm = Farm-to-Table [dish]
+Feast + Kale Chips = Farm-to-Table
+Feast + Candy = Halloween Candy [dish]
+# salt water for the tears, at the Passover table
+Feast + Rock Salt = Passover Seder [dish]
+# the Dutch-Indonesian "rice table"
+Feast + Rice = Rijsttafel [dish]
+# India's platter of little bowls
+Feast + Vegetables = Thali
+Feast + Fish = Smorgasbord
+Feast + Syrup = Brunch Board
+Feast + Granola = Brunch Board
+Feast + Hen = Roast Turkey
+Feast + Cereal = Breakfast
+Feast + Porridge = Breakfast
+# Argentina's all-day barbecue
+Feast + Cow = Asado [dish]
+# dates to break the Ramadan fast
+Feast + Fruit = Iftar [dish]
+# Japan's many-course dinner
+Feast + Seaweed = Kaiseki [dish]
+Feast + Bee = Apples and Honey
+Feast + Egg = Easter Brunch [dish]
+Feast + Flour = Dim Sum
+# the horn of plenty
+Feast + Corn = Cornucopia [dish]
+Feast + Crackers = Charcuterie Board
+Feast + Caramel = Dessert Board
+Feast + Salted Caramel = Dessert Board
+Feast + Ice = Seafood Tower
+Feast + Popcorn = Concession Stand
+Feast + Hot Dog = Cookout [dish]
+# Russia's spread of pickles and little bites
+Feast + Brine = Zakuski [dish]
+Feast + Jerky = Mixed Grill
+Feast + Steam = Clambake
+Feast + Boiling Water = Hot Pot
+Feast + Sparkling Water = New Year's Eve [dish]
+# haggis night in Scotland
+Feast + Oats = Burns Supper [dish]
+Feast + Beer = Oktoberfest [dish]
+Feast + Vegetable Soup = Potluck [dish]
+Feast + Stir-Fry = Lunar New Year [dish]
+Feast + Herbs = Mezze Platter
+Feast + Flower = Wedding Cake
+Feast + Mint = Mint Tea
+# Hawaii's pig roast
+Feast + Barbecue = Luau [dish]
+Feast + Roast = Sunday Roast
+Feast + Broth = Pho
+# Brazil's all-you-can-eat grill
+Feast + Meat = Churrasco
+Feast + Sugar Cubes = Afternoon Tea [dish]
+Feast + Powdered Sugar = Petit Fours
+Feast + Rock Candy = Candy Buffet
+Feast + Green Smoothie = Feast [nothing]
+
+## Step 2 layer 2, batch 21 (2026-10-16): Mint Tea, Rice Ball, Bread
+
+# Mint Tea
+# Morocco's flaky breakfast flatbread, with mint tea
+Mint Tea + Wheat = Msemen [dish]
+# bergamot, from a citrus tree
+Mint Tea + Tree = Earl Grey
+Mint Tea + Farm = Chai
+Mint Tea + Candy = Starlight Mints [dish]
+# Tibet's salted butter tea
+Mint Tea + Rock Salt = Butter Tea [drink]
+Mint Tea + Rice = Genmaicha
+# "popcorn tea" is genmaicha's nickname
+Mint Tea + Popcorn = Genmaicha
+# Myanmar's tea leaf salad
+Mint Tea + Vegetables = Lahpet [dish]
+Mint Tea + Syrup = Sweet Tea
+Mint Tea + Powdered Sugar = Sweet Tea
+Mint Tea + Cereal = Barley Tea
+Mint Tea + Cow = Hong Kong Milk Tea [drink]
+Mint Tea + Fruit = Lemon Tea
+# kombu
+Mint Tea + Seaweed = Kombucha
+Mint Tea + Bee = Hot Toddy [drink]
+Mint Tea + Egg = Eggnog
+Mint Tea + Flour = Scone
+# Korea's roasted corn tea
+Mint Tea + Corn = Corn Tea [drink]
+Mint Tea + Crackers = Digestive Biscuit
+Mint Tea + Caramel = Bubble Tea [drink]
+Mint Tea + Salted Caramel = Bubble Tea
+Mint Tea + Ice = Iced Tea
+Mint Tea + Boiling Water = Tea
+Mint Tea + Sparkling Water = Mojito
+Mint Tea + Granola = Breakfast
+Mint Tea + Porridge = Breakfast
+Mint Tea + Oats = Oat Milk
+Mint Tea + Beer = Shandy
+Mint Tea + Hot Dog = Hot Dog Water
+Mint Tea + Kale Chips = Matcha
+Mint Tea + Green Smoothie = Green Tea
+Mint Tea + Herbs = Herbal Tea
+Mint Tea + Flower = Jasmine Tea [drink]
+# the pine-smoked tea
+Mint Tea + Barbecue = Lapsang Souchong [drink]
+# Japan's roasted green tea
+Mint Tea + Roast = Hojicha [drink]
+# Malaysia's "meat bone tea" soup
+Mint Tea + Meat = Bak Kut Teh [dish]
+Mint Tea + Broth = Bak Kut Teh
+# sugar cubes and tulip glasses
+Mint Tea + Sugar Cubes = Turkish Tea [drink]
+Mint Tea + Rock Candy = Chrysanthemum Tea [drink]
+# Sichuan's duck smoked over tea leaves
+Mint Tea + Stir-Fry = Tea-Smoked Duck [dish]
+Mint Tea + Ocean = Mint Tea [nothing]
+Mint Tea + Fish = Mint Tea [nothing]
+Mint Tea + Hen = Mint Tea [nothing]
+Mint Tea + Brine = Mint Tea [nothing]
+Mint Tea + Jerky = Mint Tea [nothing]
+Mint Tea + Steam = Mint Tea [nothing]
+Mint Tea + Vegetable Soup = Mint Tea [nothing]
+Mint Tea + Mint = Mint Tea [nothing]
+
+# Rice Ball
+Rice Ball + Ocean = Sushi
+Rice Ball + Wheat = Rice Burger
+# sticky rice wrapped in leaves
+Rice Ball + Tree = Zongzi
+Rice Ball + Farm = Arancini
+Rice Ball + Candy = Dango
+Rice Ball + Sugar Cubes = Dango
+Rice Ball + Rock Salt = Shio Musubi [dish]
+Rice Ball + Rice = Mochi
+Rice Ball + Rock Candy = Mochi
+Rice Ball + Vegetables = Kimbap
+# a hand-rolled cone of seaweed and rice
+Rice Ball + Fish = Temaki [dish]
+# Japan's sweet rice balls in red bean paste
+Rice Ball + Syrup = Ohagi [dish]
+Rice Ball + Bee = Ohagi
+Rice Ball + Hen = Hainanese Chicken Rice [dish]
+Rice Ball + Cereal = Rice Krispies Treat
+# Japan's beef bowl
+Rice Ball + Cow = Gyudon [dish]
+Rice Ball + Fruit = Umeboshi
+Rice Ball + Seaweed = Sushi Roll
+# an omelette over ketchup rice
+Rice Ball + Egg = Omurice [dish]
+Rice Ball + Flour = Rice Cakes
+Rice Ball + Crackers = Rice Crackers
+# grilled dango in sweet soy glaze
+Rice Ball + Caramel = Mitarashi Dango [dish]
+Rice Ball + Salted Caramel = Mitarashi Dango
+Rice Ball + Ice = Mochi Ice Cream
+Rice Ball + Popcorn = Puffed Rice
+Rice Ball + Hot Dog = Spam Musubi
+Rice Ball + Brine = Tsukemono
+Rice Ball + Jerky = Bonito Flakes
+# dim sum's sticky rice in a lotus leaf
+Rice Ball + Steam = Lo Mai Gai [dish]
+Rice Ball + Boiling Water = Ochazuke
+Rice Ball + Porridge = Congee
+Rice Ball + Oats = Congee
+Rice Ball + Beer = Yaki Onigiri
+Rice Ball + Barbecue = Yaki Onigiri
+Rice Ball + Kale Chips = Furikake
+Rice Ball + Vegetable Soup = Miso Soup
+Rice Ball + Stir-Fry = Fried Rice
+# Malaysia's coconut rice with sambal
+Rice Ball + Herbs = Nasi Lemak [dish]
+Rice Ball + Green Smoothie = Matcha
+Rice Ball + Flower = Sakura Mochi
+Rice Ball + Roast = Genmaicha
+# Japan's rice soup
+Rice Ball + Broth = Zosui [dish]
+Rice Ball + Meat = Loco Moco
+Rice Ball + Powdered Sugar = Daifuku [dish]
+Rice Ball + Corn = Rice Ball [nothing]
+Rice Ball + Sparkling Water = Rice Ball [nothing]
+Rice Ball + Granola = Rice Ball [nothing]
+Rice Ball + Mint = Rice Ball [nothing]
+
+# Bread
+Bread + Ocean = Lobster Roll
+Bread + Tree = Banana Bread
+Bread + Farm = Grilled Cheese
+# Australia's buttered bread with sprinkles
+Bread + Candy = Fairy Bread [dish]
+# the Netherlands' chocolate sprinkles on bread
+Bread + Rock Candy = Hagelslag [dish]
+Bread + Rock Salt = Pretzel
+Bread + Rice = Banh Mi
+Bread + Syrup = French Toast
+Bread + Hen = Chicken Sandwich
+Bread + Cereal = Cinnamon Toast Crunch
+Bread + Cow = Cheesesteak
+Bread + Fruit = PB&J
+# Wales's seaweed "bread"
+Bread + Seaweed = Laverbread [dish]
+# Japan's giant honey toast
+Bread + Bee = Honey Toast [dish]
+Bread + Flour = Sourdough
+Bread + Caramel = Bread Pudding
+Bread + Salted Caramel = Bread Pudding
+Bread + Porridge = Bread Pudding
+# Sicily's gelato in a brioche bun
+Bread + Ice = Brioche con Gelato [dish]
+Bread + Popcorn = Popovers
+Bread + Hot Dog = Pigs in a Blanket
+# Russia's bread drink
+Bread + Brine = Kvass
+Bread + Sparkling Water = Kvass
+Bread + Jerky = Sandwich
+Bread + Steam = Steamed Buns
+Bread + Boiling Water = Bagel
+Bread + Granola = Multigrain Bread
+Bread + Oats = Multigrain Bread
+Bread + Kale Chips = Croutons
+Bread + Vegetable Soup = Ribollita
+# Sri Lanka's chopped flatbread stir-fry
+Bread + Stir-Fry = Kottu Roti [dish]
+Bread + Herbs = Garlic Bread
+Bread + Green Smoothie = Avocado Toast
+# Sweden's saffron buns for St. Lucia's Day
+Bread + Flower = Saffron Buns [dish]
+Bread + Mint = Gyro
+Bread + Barbecue = Texas Toast [dish]
+Bread + Roast = Toast
+Bread + Broth = French Dip [dish]
+Bread + Sugar Cubes = Cinnamon Toast
+# Italy's star-shaped Christmas bread, under powdered sugar
+Bread + Powdered Sugar = Pandoro [dish]
+
+## Step 2 layer 2, batch 22 (2026-10-16): Corned Beef, Ham, Popcorn Ball
+
+# Corned Beef
+# canned corned beef, the sailor's and soldier's ration
+Corned Beef + Ocean = Bully Beef [dish]
+Corned Beef + Wheat = Reuben
+Corned Beef + Farm = St. Patrick's Day [dish]
+Corned Beef + Candy = Pig Candy
+Corned Beef + Caramel = Glaze
+Corned Beef + Syrup = Glaze
+Corned Beef + Bee = Glaze
+Corned Beef + Sugar Cubes = Glaze
+Corned Beef + Salted Caramel = Glaze
+Corned Beef + Powdered Sugar = Glaze
+Corned Beef + Rock Candy = Gravy Candy Canes
+# London's name for it
+Corned Beef + Rock Salt = Salt Beef [dish]
+# the Philippines' corned beef, garlic rice and egg
+Corned Beef + Rice = Cornsilog [dish]
+Corned Beef + Vegetables = New England Boiled Dinner [dish]
+Corned Beef + Boiling Water = New England Boiled Dinner
+Corned Beef + Fish = Surf and Turf
+Corned Beef + Hen = Corned Beef Hash
+Corned Beef + Egg = Corned Beef Hash
+Corned Beef + Stir-Fry = Corned Beef Hash
+Corned Beef + Cereal = Breakfast
+Corned Beef + Granola = Breakfast
+Corned Beef + Cow = Brisket
+Corned Beef + Fruit = Glazed Ham
+Corned Beef + Seaweed = Spam Musubi
+Corned Beef + Flour = Meat Pie
+Corned Beef + Crackers = Lunchables
+Corned Beef + Ice = TV Dinner
+# the Jewish deli
+Corned Beef + Hot Dog = Knish [dish]
+Corned Beef + Brine = Pickles
+Corned Beef + Jerky = Biltong
+Corned Beef + Steam = Pastrami
+Corned Beef + Herbs = Pastrami
+# Dr. Brown's celery soda, the deli drink
+Corned Beef + Sparkling Water = Cel-Ray [drink]
+Corned Beef + Oats = Haggis
+Corned Beef + Porridge = Slop
+Corned Beef + Green Smoothie = Slop
+Corned Beef + Beer = Guinness [drink]
+# Ireland's kale and potato mash
+Corned Beef + Kale Chips = Colcannon [dish]
+Corned Beef + Vegetable Soup = Irish Stew
+Corned Beef + Broth = Irish Stew
+Corned Beef + Mint = Lamb Chops
+# Montreal smoked meat
+Corned Beef + Barbecue = Smoked Meat [dish]
+Corned Beef + Roast = Pot Roast
+# a Reuben made with turkey
+Corned Beef + Meat = Rachel [dish]
+Corned Beef + Tree = Corned Beef [nothing]
+# it's already corned
+Corned Beef + Corn = Corned Beef [nothing]
+Corned Beef + Popcorn = Corned Beef [nothing]
+Corned Beef + Flower = Corned Beef [nothing]
+
+# Ham
+Ham + Ocean = Surf and Turf
+# Paris's ham and butter baguette
+Ham + Wheat = Jambon-Beurre [dish]
+# smoked over Black Forest fir
+Ham + Tree = Black Forest Ham [ingredient]
+Ham + Farm = Croque Monsieur
+Ham + Cow = Croque Madame [dish]
+Ham + Candy = Glazed Ham
+Ham + Syrup = Glazed Ham
+Ham + Caramel = Glazed Ham
+Ham + Salted Caramel = Pig Candy
+Ham + Sugar Cubes = Pig Candy
+Ham + Rock Candy = Gravy Candy Canes
+# the South's salt-cured ham
+Ham + Rock Salt = Country Ham [ingredient]
+Ham + Rice = Jambalaya
+Ham + Vegetables = Split Pea Soup
+Ham + Hen = Chicken Cordon Bleu
+Ham + Cereal = Breakfast
+Ham + Granola = Breakfast
+Ham + Fruit = Prosciutto and Melon
+Ham + Seaweed = Kimbap
+Ham + Bee = HoneyBaked Ham [dish]
+Ham + Flour = Stromboli
+Ham + Corn = Cornbread
+Ham + Ice = Cold Cuts
+Ham + Hot Dog = Bologna
+Ham + Brine = Prosciutto
+# Spain's acorn-fed cured ham
+Ham + Jerky = Jamon Iberico [ingredient]
+Ham + Steam = Bao
+Ham + Boiling Water = Ham Hock [ingredient]
+# ham simmered in cola
+Ham + Sparkling Water = Coca-Cola Ham [dish]
+Ham + Porridge = Scrapple
+Ham + Oats = Goetta
+Ham + Beer = Ploughman's Lunch
+Ham + Kale Chips = Collard Greens
+Ham + Vegetable Soup = Ham and Bean Soup [dish]
+Ham + Broth = Ham and Bean Soup
+Ham + Stir-Fry = Fried Rice
+# Dr. Seuss
+Ham + Green Smoothie = Green Eggs and Ham [dish]
+Ham + Mint = Lamb Chops
+Ham + Barbecue = Pulled Pork
+Ham + Roast = Christmas Dinner
+Ham + Meat = Cuban Sandwich
+Ham + Powdered Sugar = Monte Cristo
+Ham + Fish = Ham [nothing]
+Ham + Popcorn = Ham [nothing]
+Ham + Herbs = Ham [nothing]
+Ham + Flower = Ham [nothing]
+
+# Popcorn Ball
+Popcorn Ball + Ocean = Saltwater Taffy
+Popcorn Ball + Wheat = Crunch 'n Munch [dish]
+# strung on the Christmas tree
+Popcorn Ball + Tree = Popcorn Garland [dish]
+Popcorn Ball + Flower = Popcorn Garland
+Popcorn Ball + Farm = Movie Theater Popcorn
+# a Halloween treat
+Popcorn Ball + Candy = Halloween Candy
+Popcorn Ball + Rock Salt = Kettle Corn
+Popcorn Ball + Rice = Rice Krispies Treat
+# it's all popcorn
+Popcorn Ball + Fish = Popcorn Shrimp
+Popcorn Ball + Hen = Popcorn Chicken
+Popcorn Ball + Stir-Fry = Popcorn Chicken
+Popcorn Ball + Syrup = Caramel Corn
+Popcorn Ball + Cereal = Cereal Bar
+Popcorn Ball + Cow = Popcorn Ice Cream
+Popcorn Ball + Fruit = Caramel Apple
+Popcorn Ball + Seaweed = Hurricane Popcorn
+Popcorn Ball + Bee = Popcorn Cake
+Popcorn Ball + Flour = Popcorn Cake
+Popcorn Ball + Egg = Easter Egg
+Popcorn Ball + Corn = Candy Corn
+Popcorn Ball + Crackers = Christmas Crack
+Popcorn Ball + Caramel = Toffee
+Popcorn Ball + Ice = Sundae
+Popcorn Ball + Popcorn = Chicago Mix
+Popcorn Ball + Hot Dog = Concession Stand
+Popcorn Ball + Brine = Dill Pickle Popcorn
+Popcorn Ball + Jerky = Trail Mix
+Popcorn Ball + Kale Chips = Trail Mix
+Popcorn Ball + Salted Caramel = Moose Munch
+Popcorn Ball + Steam = Popcorn
+Popcorn Ball + Boiling Water = Caramel Sauce
+Popcorn Ball + Sparkling Water = Cream Soda
+Popcorn Ball + Granola = Granola Bar
+Popcorn Ball + Oats = Granola
+Popcorn Ball + Porridge = Soggy Popcorn
+Popcorn Ball + Vegetable Soup = Soggy Popcorn
+Popcorn Ball + Green Smoothie = Soggy Popcorn
+Popcorn Ball + Broth = Soggy Popcorn
+Popcorn Ball + Beer = Ballpark
+Popcorn Ball + Mint = Peppermint Bark
+Popcorn Ball + Barbecue = Burnt [trash]
+Popcorn Ball + Roast = Candied Nuts
+Popcorn Ball + Meat = Candied Bacon
+Popcorn Ball + Sugar Cubes = Cotton Candy
+Popcorn Ball + Powdered Sugar = Puppy Chow
+Popcorn Ball + Rock Candy = Lollipop
+Popcorn Ball + Vegetables = Popcorn Ball [nothing]
+Popcorn Ball + Herbs = Popcorn Ball [nothing]
+
+## Step 2 layer 2, batch 23 (2026-10-16): Pot Roast, Steamed Vegetables, Sushi
+
+# Pot Roast
+Pot Roast + Ocean = Surf and Turf
+Pot Roast + Fish = Surf and Turf
+Pot Roast + Wheat = French Dip
+Pot Roast + Tree = Smoked Meat
+Pot Roast + Farm = Yankee Pot Roast [dish]
+Pot Roast + Candy = Glaze
+Pot Roast + Syrup = Glaze
+Pot Roast + Bee = Glaze
+Pot Roast + Caramel = Glaze
+Pot Roast + Salted Caramel = Glaze
+Pot Roast + Sugar Cubes = Glaze
+Pot Roast + Rock Salt = Prime Rib
+Pot Roast + Rice = Gyudon
+Pot Roast + Vegetables = Beef Stew
+Pot Roast + Steam = Beef Stew
+Pot Roast + Hen = Chicken Dinner
+Pot Roast + Cereal = Breakfast
+Pot Roast + Granola = Breakfast
+Pot Roast + Cow = Roast Beef
+# Rosh Hashanah's brisket with carrots and prunes
+Pot Roast + Fruit = Tzimmes [dish]
+# Korea's braised short ribs
+Pot Roast + Seaweed = Galbi-jjim [dish]
+Pot Roast + Egg = Corned Beef Hash
+Pot Roast + Flour = Steak and Kidney Pie [dish]
+Pot Roast + Corn = Barbacoa [dish]
+Pot Roast + Crackers = Stuffing
+Pot Roast + Ice = TV Dinner
+Pot Roast + Hot Dog = Meat and Potatoes
+# Germany's vinegar-marinated pot roast
+Pot Roast + Brine = Sauerbraten [dish]
+Pot Roast + Jerky = Beef Jerky
+# New Orleans beef and grits
+Pot Roast + Porridge = Grillades [dish]
+# France's boiled beef and vegetables
+Pot Roast + Boiling Water = Pot-au-Feu [dish]
+Pot Roast + Oats = Meatloaf
+# Belgium's beef stewed in beer
+Pot Roast + Beer = Carbonnade [dish]
+Pot Roast + Kale Chips = Colcannon
+Pot Roast + Vegetable Soup = Beef Barley Soup [dish]
+Pot Roast + Stir-Fry = Mongolian Beef
+# beef braised in red wine with herbs
+Pot Roast + Herbs = Beef Bourguignon [dish]
+Pot Roast + Green Smoothie = Slop
+Pot Roast + Mint = Roast Lamb [dish]
+Pot Roast + Barbecue = Brisket
+Pot Roast + Roast = Sunday Roast
+Pot Roast + Broth = Gravy
+# Cuba's shredded beef, "old clothes"
+Pot Roast + Meat = Ropa Vieja [dish]
+Pot Roast + Popcorn = Pot Roast [nothing]
+Pot Roast + Sparkling Water = Pot Roast [nothing]
+Pot Roast + Flower = Pot Roast [nothing]
+Pot Roast + Powdered Sugar = Pot Roast [nothing]
+Pot Roast + Rock Candy = Pot Roast [nothing]
+
+# Steamed Vegetables
+Steamed Vegetables + Ocean = Steamed Fish
+Steamed Vegetables + Fish = Steamed Fish
+# couscous is steamed
+Steamed Vegetables + Wheat = Couscous
+# the bamboo steamer
+Steamed Vegetables + Tree = Bamboo Shoots [ingredient]
+Steamed Vegetables + Farm = Broccoli Cheddar Soup [dish]
+Steamed Vegetables + Candy = Candied Yams
+Steamed Vegetables + Rock Salt = Edamame
+Steamed Vegetables + Beer = Edamame
+Steamed Vegetables + Rice = Buddha Bowl
+Steamed Vegetables + Granola = Buddha Bowl
+Steamed Vegetables + Vegetables = Salad
+Steamed Vegetables + Syrup = Glazed Carrots
+Steamed Vegetables + Bee = Glazed Carrots
+Steamed Vegetables + Caramel = Glazed Carrots
+Steamed Vegetables + Sugar Cubes = Glazed Carrots
+Steamed Vegetables + Hen = Chicken Stir-Fry
+# oats hold a veggie burger together
+Steamed Vegetables + Cereal = Veggie Burger
+Steamed Vegetables + Oats = Veggie Burger
+Steamed Vegetables + Cow = Beef and Broccoli
+Steamed Vegetables + Fruit = Compote
+Steamed Vegetables + Seaweed = Seaweed Salad
+Steamed Vegetables + Egg = Chawanmushi
+Steamed Vegetables + Flour = Dumplings
+Steamed Vegetables + Corn = Corn on the Cob
+Steamed Vegetables + Crackers = Veggie Tray
+Steamed Vegetables + Ice = Veggie Tray
+Steamed Vegetables + Hot Dog = Sheet Pan Dinner
+Steamed Vegetables + Brine = Kimchi
+Steamed Vegetables + Steam = Dim Sum
+Steamed Vegetables + Boiling Water = Vegetable Soup
+Steamed Vegetables + Porridge = Congee
+Steamed Vegetables + Kale Chips = Saag Paneer
+Steamed Vegetables + Vegetable Soup = Minestrone
+# American Chinese takeout's "odds and ends"
+Steamed Vegetables + Stir-Fry = Chop Suey [dish]
+Steamed Vegetables + Herbs = Pasta Primavera [dish]
+Steamed Vegetables + Green Smoothie = Smoothie
+# an artichoke is a flower bud
+Steamed Vegetables + Flower = Artichoke
+Steamed Vegetables + Mint = Mushy Peas
+Steamed Vegetables + Barbecue = Escalivada
+Steamed Vegetables + Roast = Roasted Vegetables
+Steamed Vegetables + Broth = Hot Pot
+Steamed Vegetables + Meat = Shabu-Shabu
+Steamed Vegetables + Popcorn = Steamed Vegetables [nothing]
+Steamed Vegetables + Jerky = Steamed Vegetables [nothing]
+Steamed Vegetables + Salted Caramel = Steamed Vegetables [nothing]
+Steamed Vegetables + Sparkling Water = Steamed Vegetables [nothing]
+Steamed Vegetables + Powdered Sugar = Steamed Vegetables [nothing]
+Steamed Vegetables + Rock Candy = Steamed Vegetables [nothing]
+
+# Sushi
+Sushi + Ocean = Sashimi
+Sushi + Ice = Sashimi
+Sushi + Wheat = Sushi Burrito [dish]
+# sushi served on a wooden boat
+Sushi + Tree = Sushi Boat [dish]
+# cream cheese and salmon
+Sushi + Farm = Philadelphia Roll [dish]
+Sushi + Candy = Candy Sushi
+Sushi + Cereal = Candy Sushi
+Sushi + Caramel = Candy Sushi
+Sushi + Salted Caramel = Candy Sushi
+Sushi + Rock Candy = Candy Sushi
+Sushi + Rock Salt = Edamame
+# scattered sushi over a bowl of rice
+Sushi + Rice = Chirashi [dish]
+Sushi + Vegetables = California Roll
+Sushi + Fish = Nigiri [dish]
+# grilled eel in sweet sauce
+Sushi + Syrup = Unagi [dish]
+# chicken and egg over rice, "parent and child"
+Sushi + Hen = Oyakodon [dish]
+Sushi + Cow = Wagyu [ingredient]
+Sushi + Fruit = Dragon Roll [dish]
+Sushi + Seaweed = Sushi Roll
+Sushi + Egg = Tamago [dish]
+Sushi + Flour = Tempura
+Sushi + Corn = Gunkan Maki [dish]
+Sushi + Crackers = Rice Crackers
+Sushi + Popcorn = Crunchy Roll [dish]
+Sushi + Hot Dog = Spam Musubi
+# pickled ginger
+Sushi + Brine = Gari [ingredient]
+Sushi + Jerky = Bonito Flakes
+Sushi + Steam = Rice Ball
+Sushi + Boiling Water = Miso Soup
+Sushi + Vegetable Soup = Miso Soup
+Sushi + Porridge = Congee
+# a shot of sake dropped into beer
+Sushi + Beer = Sake Bomb [drink]
+Sushi + Kale Chips = Seaweed Snacks
+Sushi + Stir-Fry = Hibachi
+Sushi + Herbs = Wasabi [ingredient]
+Sushi + Green Smoothie = Matcha
+# pretty little ball-shaped sushi
+Sushi + Flower = Temari Sushi [dish]
+# Japan's mint-family herb
+Sushi + Mint = Shiso [ingredient]
+# torched sushi
+Sushi + Barbecue = Aburi [dish]
+Sushi + Roast = Yaki Onigiri
+Sushi + Broth = Ochazuke
+Sushi + Meat = Kimbap
+# sweet tofu pouches of rice
+Sushi + Sugar Cubes = Inari [dish]
+Sushi + Bee = Inari
+Sushi + Powdered Sugar = Mochi
+Sushi + Sparkling Water = Sushi [nothing]
+Sushi + Granola = Sushi [nothing]
+Sushi + Oats = Sushi [nothing]
+
+## Step 2 layer 2, batch 24 (2026-10-16): Beef Jerky, Batter, Fried Chicken
+
+# Beef Jerky
+# the Asian snack aisle's shredded squid
+Beef Jerky + Ocean = Dried Squid [dish]
+Beef Jerky + Seaweed = Dried Squid
+Beef Jerky + Wheat = Sandwich
+Beef Jerky + Tree = Smoked Meat
+Beef Jerky + Barbecue = Smoked Meat
+Beef Jerky + Farm = Slim Jim
+Beef Jerky + Jerky = Slim Jim
+Beef Jerky + Candy = Pig Candy
+Beef Jerky + Rock Candy = Pig Candy
+Beef Jerky + Rock Salt = Biltong
+Beef Jerky + Roast = Biltong
+# Singapore's sweet barbecued dried meat
+Beef Jerky + Syrup = Bakkwa [dish]
+Beef Jerky + Bee = Bakkwa
+Beef Jerky + Sugar Cubes = Bakkwa
+Beef Jerky + Rice = Bakkwa
+Beef Jerky + Fish = Bonito Flakes
+Beef Jerky + Cereal = Trail Mix
+Beef Jerky + Corn = Trail Mix
+Beef Jerky + Kale Chips = Trail Mix
+# Turkey and Armenia's spice-crusted cured beef
+Beef Jerky + Cow = Pastirma [ingredient]
+Beef Jerky + Herbs = Pastirma
+# dried meat pounded with berries
+Beef Jerky + Fruit = Pemmican
+Beef Jerky + Granola = Pemmican
+Beef Jerky + Oats = Pemmican
+# Mexico's shredded dried beef with eggs
+Beef Jerky + Egg = Machaca [dish]
+Beef Jerky + Flour = Empanada
+Beef Jerky + Crackers = Charcuterie Board
+Beef Jerky + Caramel = Candied Bacon
+Beef Jerky + Salted Caramel = Candied Bacon
+Beef Jerky + Popcorn = Concession Stand
+# the gas station haul
+Beef Jerky + Hot Dog = Road Trip Snacks [dish]
+Beef Jerky + Sparkling Water = Road Trip Snacks
+Beef Jerky + Brine = Pickled Sausage
+# chicken jerky, for the dog
+Beef Jerky + Hen = Dog Treats [dish]
+Beef Jerky + Vegetables = Veggie Jerky [dish]
+Beef Jerky + Steam = Beef Stew
+Beef Jerky + Vegetable Soup = Beef Stew
+Beef Jerky + Boiling Water = Broth
+Beef Jerky + Porridge = Congee
+Beef Jerky + Beer = Beer Nuts [dish]
+# central Vietnam's spicy beef noodle soup
+Beef Jerky + Broth = Bun Bo Hue [dish]
+Beef Jerky + Stir-Fry = Beef Chow Fun [dish]
+Beef Jerky + Green Smoothie = Slop
+# Mexico's sun-dried beef
+Beef Jerky + Meat = Carne Seca [ingredient]
+Beef Jerky + Powdered Sugar = Dry Rub
+Beef Jerky + Ice = Beef Jerky [nothing]
+Beef Jerky + Flower = Beef Jerky [nothing]
+Beef Jerky + Mint = Beef Jerky [nothing]
+
+# Batter
+Batter + Ocean = Calamari
+Batter + Wheat = Crepe
+Batter + Tree = Waffle
+Batter + Farm = Waffle
+Batter + Syrup = Pancakes
+Batter + Oats = Pancakes
+Batter + Candy = Funfetti Cake [dish]
+Batter + Rock Candy = Funfetti Cake
+# South India's fermented rice crepe
+Batter + Rice = Dosa
+Batter + Porridge = Injera
+Batter + Vegetables = Pakora
+Batter + Kale Chips = Pakora
+Batter + Fish = Fish and Chips
+Batter + Sparkling Water = Fish and Chips
+Batter + Hen = Fried Chicken
+Batter + Cereal = Korean Corn Dog
+Batter + Cow = Chicken Fried Steak [dish]
+# France's cherries baked in batter
+Batter + Fruit = Clafoutis [dish]
+Batter + Seaweed = Tempura
+# ice-cold batter makes crisp tempura
+Batter + Ice = Tempura
+# Korea's honey-filled pancakes
+Batter + Bee = Hotteok [dish]
+Batter + Egg = Yorkshire Pudding
+Batter + Flour = Cake
+Batter + Corn = Hush Puppies
+Batter + Crackers = Chicken Tenders
+# Japan's pancake sandwich
+Batter + Caramel = Dorayaki [dish]
+Batter + Salted Caramel = Sticky Toffee Pudding
+Batter + Popcorn = Popcorn Chicken
+Batter + Hot Dog = Corn Dog
+Batter + Brine = Fried Pickles
+# India's steamed rice cakes
+Batter + Steam = Idli
+# Germany's batter dropped into boiling water
+Batter + Boiling Water = Spaetzle [dish]
+Batter + Granola = Muffin
+Batter + Beer = Onion Rings
+Batter + Vegetable Soup = Dumplings
+Batter + Broth = Dumplings
+Batter + Stir-Fry = Sweet and Sour Chicken
+Batter + Herbs = Onion Bhaji [dish]
+# Vietnam's green pandan waffles
+Batter + Green Smoothie = Pandan Waffle [dish]
+Batter + Flower = Squash Blossoms
+Batter + Barbecue = Burnt [trash]
+Batter + Roast = Toad in the Hole
+Batter + Meat = Katsu
+Batter + Sugar Cubes = Funnel Cake
+Batter + Powdered Sugar = Beignets
+Batter + Rock Salt = Batter [nothing]
+Batter + Jerky = Batter [nothing]
+Batter + Mint = Batter [nothing]
+
+# Fried Chicken
+Fried Chicken + Ocean = Popcorn Shrimp
+Fried Chicken + Wheat = Chicken Sandwich
+Fried Chicken + Brine = Chicken Sandwich
+Fried Chicken + Tree = Chicken and Waffles
+Fried Chicken + Syrup = Chicken and Waffles
+Fried Chicken + Candy = Chicken and Waffles
+Fried Chicken + Powdered Sugar = Chicken and Waffles
+Fried Chicken + Farm = Bucket of Chicken
+Fried Chicken + Rock Salt = Karaage
+Fried Chicken + Seaweed = Karaage
+Fried Chicken + Vegetables = Chicken Caesar Salad
+Fried Chicken + Fish = Fish and Chips
+Fried Chicken + Hen = Nashville Hot Chicken
+# Malaysia's butter cereal chicken
+Fried Chicken + Cereal = Cereal Chicken [dish]
+Fried Chicken + Oats = Chicken Tenders
+Fried Chicken + Crackers = Chicken Tenders
+Fried Chicken + Cow = Chicken Fried Steak
+Fried Chicken + Fruit = Orange Chicken
+Fried Chicken + Bee = Hot Honey
+Fried Chicken + Egg = Oyakodon
+Fried Chicken + Flour = Chicken Biscuit
+# soul food: fried chicken, cornbread, greens
+Fried Chicken + Corn = Soul Food [dish]
+Fried Chicken + Kale Chips = Collard Greens
+Fried Chicken + Caramel = Korean Fried Chicken
+Fried Chicken + Salted Caramel = Korean Fried Chicken
+Fried Chicken + Sugar Cubes = Korean Fried Chicken
+# cold fried chicken is picnic food
+Fried Chicken + Ice = Picnic [dish]
+Fried Chicken + Popcorn = Popcorn Chicken
+Fried Chicken + Hot Dog = Kids Meal
+Fried Chicken + Steam = Gua Bao [dish]
+Fried Chicken + Boiling Water = Chicken Soup
+Fried Chicken + Sparkling Water = Combo Meal
+Fried Chicken + Porridge = Congee
+# Korea's fried chicken and beer
+Fried Chicken + Beer = Chimaek [dish]
+Fried Chicken + Vegetable Soup = Chicken Noodle Soup
+Fried Chicken + Stir-Fry = General Tso's Chicken
+# a breaded chicken breast filled with herb butter
+Fried Chicken + Herbs = Chicken Kiev [dish]
+Fried Chicken + Green Smoothie = Slop
+Fried Chicken + Barbecue = BBQ Chicken
+Fried Chicken + Roast = Roast Chicken
+Fried Chicken + Broth = Chicken and Dumplings
+Fried Chicken + Meat = Turducken
+Fried Chicken + Jerky = Fried Chicken [nothing]
+Fried Chicken + Granola = Fried Chicken [nothing]
+Fried Chicken + Flower = Fried Chicken [nothing]
+Fried Chicken + Mint = Fried Chicken [nothing]
+Fried Chicken + Rock Candy = Fried Chicken [nothing]
