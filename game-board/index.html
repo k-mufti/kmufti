@@ -75,6 +75,13 @@
       font-family: "Fraunces", serif; font-weight: 800; font-size: 25px; letter-spacing: -0.5px;
     }
     .box.imp .tag { position: absolute; top: 52px; left: 0; right: 0; text-align: center; font-size: 11px; color: #ff6d8f; }
+    .box.drf { background: #0f1216; color: #f4f1ea; }
+    .box.drf svg { position: absolute; left: 14px; right: 14px; bottom: 14px; width: calc(100% - 28px); }
+    .box.drf .name {
+      position: absolute; top: 18px; left: 0; right: 0; text-align: center;
+      font-family: "Fraunces", serif; font-weight: 800; font-size: 25px; letter-spacing: -0.5px;
+    }
+    .box.drf .tag { position: absolute; top: 52px; left: 0; right: 0; text-align: center; font-size: 11px; color: #2fe08a; }
     .box.soon {
       border: 2px dashed rgba(201, 184, 166, 0.35);
       box-shadow: none;
@@ -84,7 +91,7 @@
     }
     @media (max-width: 520px) {
       .box { width: 140px; height: 168px; }
-      .box.wave .name, .box.imp .name { font-size: 21px; }
+      .box.wave .name, .box.imp .name, .box.drf .name { font-size: 21px; }
       .box.soon:nth-of-type(n+3) { display: none; }
     }
   </style>
@@ -125,7 +132,18 @@
           <text x="60" y="58" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="34" fill="#fff">?</text>
         </svg>
       </a>
-      <div class="box soon">coming soon</div>
+      <a class="box drf" href="drafft/">
+        <span class="name">Drafft</span>
+        <span class="tag">bid on the best of it</span>
+        <svg viewBox="0 0 120 96" aria-hidden="true">
+          <rect x="6" y="40" width="34" height="44" rx="6" fill="#20262e"/>
+          <rect x="43" y="22" width="34" height="62" rx="6" fill="#ff5a1f"/>
+          <rect x="80" y="48" width="34" height="36" rx="6" fill="#20262e"/>
+          <text x="60" y="64" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="30" fill="#fff">$</text>
+          <text x="23" y="68" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="15" fill="#2fe08a">$</text>
+          <text x="97" y="72" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="13" fill="#2fe08a">$</text>
+        </svg>
+      </a>
       <div class="box soon">coming soon</div>
     </div>
     <div class="plank"></div>

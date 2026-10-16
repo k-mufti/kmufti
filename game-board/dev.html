@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Test Bench</title>
+  <style>
+    /* The test bench (localhost only): one game, every seat side by side.
+       Seat 1 starts a room; when it reports the code (../dev-seat.js) the
+       other seats are sent in. */
+    :root { --bg: #0d0f12; --panel: #181c22; --ink: #f2efe8; --soft: #8f98a3; --gold: #ffcf3f; --line: rgba(242, 239, 232, 0.1); }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body { background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, sans-serif; display: flex; flex-direction: column; }
+    header { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    header a { color: var(--soft); text-decoration: none; }
+    header h1 { font-size: 15px; margin: 0 8px 0 0; }
+    header .sp { flex: 1; }
+    select, button { font: inherit; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; cursor: pointer; }
+    button:hover, select:hover { border-color: var(--soft); }
+    .code { font-family: ui-monospace, monospace; letter-spacing: 2px; color: var(--gold); }
+    .note { color: var(--soft); }
+    main { flex: 1; display: flex; gap: 10px; padding: 10px; overflow-x: auto; min-height: 0; }
+    .seat { flex: 1 1 360px; min-width: 360px; display: flex; flex-direction: column; min-height: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--panel); }
+    .seat p { margin: 0; padding: 4px 6px 4px 10px; font-size: 12px; color: var(--soft); display: flex; align-items: center; gap: 8px; }
+    .seat p b { color: var(--ink); }
+    .seat p span { flex: 1; }
+    .seat p button { padding: 2px 8px; font-size: 13px; line-height: 1.2; border-radius: 6px; }
+    .seat iframe { flex: 1; width: 100%; border: 0; background: #000; }
+    /* minimised: a slim strip with the seat's name down it; the game keeps running */
+    .seat.min { flex: 0 0 40px; min-width: 40px; cursor: pointer; }
+    .seat.min p { flex-direction: column; padding: 6px 4px; height: 100%; }
+    .seat.min p b { writing-mode: vertical-rl; }
+    .seat.min p span, .seat.min .fs { display: none; }
+    .seat.min iframe { visibility: hidden; flex: 0 0 0; }
+    /* fullscreen: this seat takes the whole bench, the others wait out of sight */
+    main.has-max .seat:not(.max) { display: none; }
+    main.has-max .seat.max { flex: 1 1 auto; }
+    .off { padding: 40px; text-align: center; color: var(--soft); }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="./">&larr; Game Board</a>
+    <h1>🧪 Test bench</h1>
+    <select id="game" aria-label="Game"></select>
+    <select id="n" aria-label="Players"></select>
+    <button id="restart">New room</button>
+    <span class="sp"></span>
+    <span class="note">Room <span class="code" id="code">…</span></span>
+  </header>
+  <main id="seats"></main>
+
+  <script>
+    const host = location.hostname;
+    const local = host === "localhost" || host === "127.0.0.1";
+    const GAMES = [
+      ["wavelenght", "Wavelenght", 2],
+      ["frequency", "Frequency (new theme)", 2],
+      ["inposter", "Inposter", 3],
+      ["drafft", "Drafft", 2],
+    ];
+    const q = new URLSearchParams(location.search);
+    const $ = (id) => document.getElementById(id);
+    const gameSel = $("game"), nSel = $("n");
+    for (const [id, name] of GAMES) gameSel.add(new Option(name, id));
+    for (let i = 2; i <= 6; i++) nSel.add(new Option(`${i} players`, i));
+
+    let game = GAMES.some((g) => g[0] === q.get("game")) ? q.get("game") : "drafft";
+    let n = parseInt(q.get("n"), 10) || GAMES.find((g) => g[0] === game)[2];
+    let code = "";
+
+    function build() {
+      gameSel.value = game;
+      nSel.value = n;
+      code = "";
+      $("code").textContent = "…";
+      history.replaceState(null, "", `?game=${game}&n=${n}`);
+      const main = $("seats");
+      if (!local) { main.innerHTML = `<p class="off">The test bench only works on localhost.</p>`; return; }
+      main.innerHTML = "";
+      // the two Wavelenght looks redirect to whichever this device picked
+      if (game === "frequency" || game === "wavelenght") {
+        try { localStorage.setItem("game-board-theme", game === "frequency" ? "new" : "old"); } catch (e) {}
+      }
+      for (let s = 1; s <= n; s++) {
+        const box = document.createElement("div");
+        box.className = "seat";
+        box.id = "seat" + s;
+        box.innerHTML = `<p><b>${s === 1 ? "Seat 1 · you" : "Seat " + s}</b><span id="st${s}">${s === 1 ? "starting a room…" : "waiting for the code…"}</span>` +
+          `<button class="mn" data-seat="${s}" title="Minimise">–</button><button class="fs" data-seat="${s}" title="Fullscreen (Esc to come back)">⤢</button></p>`;
+        const f = document.createElement("iframe");
+        f.id = "f" + s;
+        if (s === 1) f.src = `${game}/?seat=1&create=1`;
+        box.appendChild(f);
+        main.appendChild(box);
+      }
+    }
+
+    // Seat 1 has a room: send everyone else into it.
+    window.addEventListener("message", (e) => {
+      if (e.origin !== location.origin || !e.data || !e.data.code) return;
+      if (e.data.devSeat !== 1 || e.data.code === code) return;
+      code = e.data.code;
+      $("code").textContent = code;
+      $("st1").textContent = "in the room";
+      for (let s = 2; s <= n; s++) {
+        $("f" + s).src = `${game}/?seat=${s}&join=${code}`;
+        $("st" + s).textContent = "joined";
+      }
+    });
+
+    // Minimise / fullscreen a seat. The frames are only hidden, never
+    // reloaded, so a game carries on underneath.
+    function setMax(seat) {
+      const main = $("seats");
+      for (const el of main.children) el.classList.toggle("max", el.id === "seat" + seat);
+      main.classList.toggle("has-max", !!seat);
+      for (const b of main.querySelectorAll(".fs")) { const on = b.dataset.seat === String(seat); b.textContent = on ? "⤡" : "⤢"; b.title = on ? "Back to all seats" : "Fullscreen (Esc to come back)"; }
+    }
+    $("seats").addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      const box = e.target.closest(".seat");
+      if (!box) return;
+      if (b && b.classList.contains("fs")) return setMax(box.classList.contains("max") ? null : b.dataset.seat);
+      if (b && b.classList.contains("mn")) {
+        if (box.classList.contains("max")) setMax(null);
+        box.classList.toggle("min");
+        b.textContent = box.classList.contains("min") ? "+" : "–";
+        b.title = box.classList.contains("min") ? "Bring back" : "Minimise";
+        return;
+      }
+      // tapping anywhere on a minimised strip brings it back
+      if (box.classList.contains("min")) box.querySelector(".mn").click();
+    });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMax(null); });
+
+    gameSel.onchange = () => { game = gameSel.value; n = GAMES.find((g) => g[0] === game)[2]; build(); };
+    nSel.onchange = () => { n = +nSel.value; build(); };
+    $("restart").onclick = build;
+    build();
+  </script>
+</body>
+</html>
