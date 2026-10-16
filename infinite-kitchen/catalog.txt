@@ -131,6 +131,44 @@ Curry, Butter Chicken, Chicken Tikka Masala, Tandoori Chicken, Biryani, Dal, Saa
 Hummus, Falafel, Falafel Wrap, Shawarma, Kebab, Shish Tawook, Kofta, Mansaf, Maqluba, Kabsa, Mandi, Musakhan, Tabbouleh, Fattoush, Baba Ganoush, Mutabal, Labneh, Halloumi, Pita, Manakish, Za'atar, Stuffed Grape Leaves, Kibbeh, Shakshuka, Ful Medames, Knafeh, Baklava, Halva, Ma'amoul, Turkish Coffee, Mint Tea, Dates
 
 #############################################################################
+# MORE OF THE WORLD'S KITCHENS - classics from cuisines without a cookbook
+# (2026-10-16: Kareem asked not to leave out Arab, Asian, African, European...)
+#############################################################################
+
+## African
+Jollof Rice, Injera, Doro Wat, Fufu, Egusi Soup, Suya, Fried Plantains, Bobotie, Bunny Chow, Tagine, Couscous, Peri-Peri Chicken, Puff-Puff, Bissap
+
+## Southeast Asian
+Pad Thai, Pho, Banh Mi, Green Curry, Tom Yum, Satay, Peanut Sauce, Spring Rolls, Chicken Adobo, Lumpia, Pancit, Halo-Halo, Nasi Goreng, Rendang, Laksa, Mango Sticky Rice, Sambal
+
+## Latin American and Caribbean
+Arepa, Pupusa, Empanada, Ceviche, Feijoada, Churrasco, Pão de Queijo, Chimichurri, Brigadeiro, Alfajores, Dulce de Leche, Jerk Chicken, Rice and Beans, Cuban Sandwich, Mofongo, Tostones, Yuca Fries
+
+## French
+Croissant, Baguette, Crepe, Quiche, Ratatouille, Coq au Vin, French Onion Soup, Croque Monsieur, Creme Brulee, Macaron, Eclair, Souffle, Pain au Chocolat, Duck Confit
+
+## Spanish and Portuguese
+Paella, Tapas, Gazpacho, Patatas Bravas, Spanish Tortilla, Croquetas, Egg Tart, Churro, Chorizo
+
+## Greek and Turkish
+Gyro, Souvlaki, Moussaka, Spanakopita, Greek Salad, Tzatziki, Feta, Doner Kebab, Simit, Lahmacun, Turkish Delight, Baklava
+
+## Central and Eastern European
+Pierogi, Borscht, Goulash, Schnitzel, Bratwurst, Sauerkraut, Pretzel, Apple Strudel, Black Forest Cake, Kielbasa, Blini, Kvass
+
+## British and Irish
+Fish and Chips, Full English, Shepherd's Pie, Bangers and Mash, Sausage Roll, Scone, Toad in the Hole, Haggis, Sticky Toffee Pudding, Irish Stew, Soda Bread, Beans on Toast, Yorkshire Pudding, Crumpet, Mince Pie
+
+## Japanese and Korean
+Udon, Tempura, Takoyaki, Okonomiyaki, Katsu, Miso Soup, Mochi, Matcha, Gochujang, Tteokbokki, Kimbap, Japchae, Korean BBQ
+
+## Hawaiian and Pacific
+Poke Bowl, Spam Musubi, Loco Moco, Shaved Ice, Kalua Pork, Malasadas
+
+## Around-the-world pantry
+Lentils, Black Beans, Chickpeas, Quinoa, Teff, Cassava, Taro, Ube, Okra, Plantains, Jackfruit, Guava, Lychee, Papaya, Tofu, Tempeh, Harissa, Coconut Milk, Fish Sauce, Tamarind
+
+#############################################################################
 # OCCASIONS
 #############################################################################
 
@@ -145,6 +183,21 @@ Gingerbread, Gingerbread House, Candy Cane, Eggnog, Hot Cocoa, Sugar Cookie, Fru
 
 ## Ramadan and Eid
 Dates, Lentil Soup, Samosa, Qatayef, Ma'amoul, Knafeh, Mansaf, Kabsa, Jallab, Qamar al-Din
+
+## Lunar New Year and Mid-Autumn
+Dumplings, Spring Rolls, Mooncake, Nian Gao, Hot Pot, Peking Duck
+
+## Hanukkah and Passover
+Latkes, Sufganiyot, Matzo, Matzo Ball Soup, Challah, Brisket, Babka
+
+## Easter and Mardi Gras
+Hot Cross Buns, King Cake, Easter Egg, Peeps, Cadbury Creme Egg, Glazed Ham, Beignets, Jambalaya, Gumbo
+
+## Diwali
+Jalebi, Gulab Jamun, Ladoo, Barfi, Samosa, Kheer
+
+## Dia de Muertos
+Pan de Muerto, Tamale, Mole, Hot Chocolate, Sugar Skull
 
 ## Birthday and party
 Birthday Cake, Cupcake, Ice Cream Cake, Pizza, Chips and Dip, Punch, Cake Pop, Sprinkles
