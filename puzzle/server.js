@@ -295,6 +295,22 @@ function saveVisits() {
   } catch (e) { console.error("visits save failed:", e.message); }
 }
 setInterval(saveVisits, 5000).unref();
+
+// "Playing now" for the hub: how many people touched any game in the last
+// five minutes. The ops backend already reads the access log, so this just
+// asks it over localhost. If it's down the hub gets no number, not a wrong one.
+const ADMIN_PLAYING = process.env.ADMIN_PLAYING_URL || "http://127.0.0.1:8026/api/playing";
+function playingNow() {
+  return new Promise((resolve) => {
+    const req = http.get(ADMIN_PLAYING, { timeout: 1500 }, (r) => {
+      let body = "";
+      r.on("data", (c) => { if (body.length < 256) body += c; });
+      r.on("end", () => { try { resolve(JSON.parse(body).playing ?? null); } catch { resolve(null); } });
+    });
+    req.on("timeout", () => req.destroy());
+    req.on("error", () => resolve(null));
+  });
+}
 process.on("SIGTERM", () => { saveVisits(); process.exit(0); });
 process.on("SIGINT", () => { saveVisits(); process.exit(0); });
 
@@ -1005,12 +1021,14 @@ const server = http.createServer((req, res) => {
   // the front page anyway.
   if (apiPath === "/api/visits" && (req.method === "GET" || req.method === "POST")) {
     if (req.method === "POST") { visits++; visitsDirty = true; }
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Cache-Control": "no-cache",
+    return void playingNow().then((playing) => {
+      res.writeHead(200, {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "no-cache",
+      });
+      res.end(JSON.stringify({ visits, playing }));
     });
-    return res.end(JSON.stringify({ visits }));
   }
 
   if (apiPath === "/api/archive" && req.method === "GET") {

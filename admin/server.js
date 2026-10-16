@@ -95,6 +95,18 @@ function readSitePaths() {
   try { SITE_PATHS = new Set(fs.readdirSync(REPO).filter((f) => !f.startsWith("."))); } catch { /* keep the last list */ }
 }
 readSitePaths();
+// The folders that are games, for the hub's "playing now" count: every
+// project folder except the ones that are plumbing or tools. Read from disk
+// like SITE_PATHS, so a new game counts without touching this file.
+const NOT_GAMES = new Set(["admin", "images", "deploy", "_lab", "human", "wishlist"]);
+let GAMES = new Set();
+function readGames() {
+  try {
+    GAMES = new Set(fs.readdirSync(REPO, { withFileTypes: true })
+      .filter((f) => f.isDirectory() && !f.name.startsWith(".") && !NOT_GAMES.has(f.name)).map((f) => f.name));
+  } catch { /* keep the last list */ }
+}
+readGames();
 const isSitePage = (p) => {
   const seg = p.split("/").filter(Boolean)[0];
   return !seg || SITE_PATHS.has(seg);
@@ -273,6 +285,13 @@ function pruneUptime() {
    ====================================================================== */
 const traffic = readJson(path.join(STATE_DIR, "traffic.json"), { days: {}, cursor: { offset: 0, seeded: false } });
 const recent = [];                 // last 200 page views, memory only
+const playing = new Map();         // visitor hash -> last time they touched a game
+const PLAYING_MS = 5 * 60000;
+function playingNow() {
+  const since = Date.now() - PLAYING_MS;
+  for (const [who, at] of playing) if (at < since) playing.delete(who);
+  return playing.size;
+}
 let pending = "";                  // a half-written final line waits here for the rest
 let seenHosted = false;            // has any line arrived with a hostname on it
 
@@ -486,6 +505,9 @@ function ingestLine(line) {
   bump(d.status, statusStr);
   if (status >= 400) bump(d.errors, status + " " + p.slice(0, 80));
   if (bot) { d.bots++; return; }                    // people-numbers exclude crawlers
+
+  // Anyone touching a game - its page, its API, its WebSocket - is playing.
+  if (status < 400 && GAMES.has(p.split("/").filter(Boolean)[0])) playing.set(visitorId(ip), at);
   d.hours[zoned(at).hour]++;
 
   if (/\/api\//.test(p)) { d.api++; return; }
@@ -658,7 +680,7 @@ async function slowFacts() {
   // to ubuntu; without it git refuses the repo as "dubious ownership" and the
   // dashboard just shows no commit. Set on the command, not in a global config.
   const gitArgs = ["-c", "safe.directory=" + REPO, "-C", REPO];
-  readSitePaths();                                   // a deploy may have added a project
+  readSitePaths(); readGames();                      // a deploy may have added a project
   const log = await run("git", [...gitArgs, "log", "-1", "--format=%h%x00%s%x00%ct%x00%an"]);
   let git = null;
   if (log) {
@@ -798,6 +820,13 @@ const server = http.createServer(async (req, res) => {
 
   if (apiPath === "/api/snapshot" && req.method === "GET") {
     return sendJson(res, 200, await snapshot());
+  }
+
+  // How many different people touched any game in the last five minutes.
+  // No password on this one: nginx doesn't route it, and the Jigsaw backend
+  // asks for it over localhost to put the number on the hub.
+  if (apiPath === "/api/playing" && req.method === "GET") {
+    return sendJson(res, 200, { playing: playingNow() });
   }
 
   // The last lines a unit wrote, for when a card has gone red and you want to
