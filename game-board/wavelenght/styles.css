@@ -1,0 +1,607 @@
+/* Wavelenght - the colours of the real box: cream table, navy dial, red knob,
+   teal handles, and a yellow / orange / pale blue target. */
+:root {
+  --cream: #efe8da;
+  --paper: #f8f3e9;
+  --navy: #1d3d5c;
+  --navy-deep: #13293f;
+  --ink: #1b2a3a;
+  --ink-soft: #5b6573;
+  --red: #d8342b;
+  --red-deep: #9e1f19;
+  --teal: #7fd8c3;
+  --band-2: #f3b52f;
+  --band-3: #ee7a33;
+  --band-4: #a8d4e6;
+  --team0: #2f8f8a;
+  --team1: #d8573b;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  min-height: 100vh;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "Rubik", system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+button, input { font: inherit; }
+[hidden] { display: none !important; }
+
+/* ---------- top bar ---------- */
+.bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+.back { color: var(--ink-soft); text-decoration: none; font-size: 14px; }
+.back:hover { color: var(--ink); }
+.logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  text-align: center;
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--navy);
+}
+.code {
+  font-weight: 700;
+  letter-spacing: 3px;
+  background: var(--navy);
+  color: var(--paper);
+  padding: 4px 9px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.bar .back, .bar .code { min-width: 90px; }
+.bar .code { min-width: 0; }
+
+/* ---------- buttons and fields ---------- */
+.btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 22px;
+  background: var(--navy);
+  color: var(--paper);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.08s ease, background 0.15s ease;
+}
+.btn:hover { background: var(--navy-deep); }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.45; cursor: default; }
+.btn.big { padding: 14px 30px; font-size: 17px; }
+.btn.small { padding: 7px 14px; font-size: 13px; }
+.btn.ghost { background: transparent; color: var(--navy); box-shadow: inset 0 0 0 2px var(--navy); }
+.btn.ghost:hover { background: rgba(29, 61, 92, 0.08); }
+.link { background: none; border: 0; color: var(--ink-soft); text-decoration: underline; cursor: pointer; margin-top: 10px; }
+
+input {
+  border: 2px solid rgba(29, 61, 92, 0.25);
+  background: var(--paper);
+  border-radius: 12px;
+  padding: 11px 14px;
+  color: var(--ink);
+  outline: none;
+}
+input:focus { border-color: var(--navy); }
+
+.status { min-height: 1.3em; color: var(--ink-soft); font-size: 14px; margin: 10px 0 0; }
+
+/* ---------- home and lobby ---------- */
+.screen { padding: 0 16px 40px; }
+.home-card, .lobby-card {
+  max-width: 420px;
+  margin: 4vh auto 0;
+  background: var(--paper);
+  border-radius: 22px;
+  padding: 28px 24px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.06), 0 18px 40px -24px rgba(19, 41, 63, 0.4);
+  text-align: center;
+}
+.title {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-weight: 800;
+  font-size: 46px;
+  margin: 0 0 6px;
+  color: var(--navy);
+  letter-spacing: -1px;
+}
+.pitch { color: var(--ink-soft); margin: 0 0 22px; line-height: 1.45; }
+.field { display: flex; flex-direction: column; gap: 6px; text-align: left; margin-bottom: 16px; font-size: 13px; color: var(--ink-soft); }
+.field input { font-size: 16px; }
+.or { position: relative; margin: 22px 0 14px; color: var(--ink-soft); font-size: 13px; }
+.or::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px solid rgba(29, 61, 92, 0.15); }
+.or span { position: relative; background: var(--paper); padding: 0 10px; }
+.join { display: flex; gap: 8px; }
+.join input { flex: 1; min-width: 0; text-align: center; letter-spacing: 6px; font-weight: 700; font-size: 20px; text-transform: uppercase; }
+
+.room-line { margin: 0; color: var(--ink-soft); font-size: 13px; }
+.room-code { margin: 2px 0 4px; font-size: 52px; font-weight: 700; letter-spacing: 10px; color: var(--navy); }
+.room-hint { margin: 0 0 20px; color: var(--ink-soft); font-size: 14px; }
+.mode { display: flex; gap: 6px; background: rgba(29, 61, 92, 0.08); padding: 4px; border-radius: 999px; }
+.mode-btn {
+  flex: 1;
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 10px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-weight: 600;
+  cursor: pointer;
+}
+.mode-btn.on { background: var(--navy); color: var(--paper); }
+.mode-btn:disabled { cursor: default; }
+.mode-hint { font-size: 13px; color: var(--ink-soft); margin: 8px 0 18px; }
+
+.teams { display: flex; gap: 10px; margin-bottom: 20px; text-align: left; }
+.team { flex: 1; min-width: 0; background: rgba(29, 61, 92, 0.05); border-radius: 14px; padding: 12px; }
+.team h3 { margin: 0 0 6px; font-size: 14px; }
+.team.t0 h3 { color: var(--team0); }
+.team.t1 h3 { color: var(--team1); }
+.team ul { list-style: none; margin: 0 0 8px; padding: 0; }
+.team li { padding: 3px 0; font-weight: 500; overflow-wrap: anywhere; }
+.team li small { color: var(--ink-soft); font-weight: 400; font-size: 11px; }
+.team li.away { opacity: 0.45; }
+.team li.psy::before { content: "\25C9  "; color: var(--red); }
+.team li.empty { color: var(--ink-soft); font-style: italic; font-weight: 400; }
+
+/* ---------- the game ---------- */
+#game { max-width: 760px; margin: 0 auto; padding-bottom: 80px; text-align: center; display: flex; flex-direction: column; }
+#game .score { order: 1; }
+#game .console { display: contents; }
+#game .banner { order: 2; }
+#game .table { order: 3; }
+#game .spectrum { order: 4; width: 100%; }
+#game .clue { order: 5; }
+#game .actions { order: 6; }
+
+.score { display: flex; flex-direction: column; gap: 6px; margin: 4px auto 10px; max-width: 520px; }
+.track { display: flex; align-items: center; gap: 10px; padding: 6px 12px; border-radius: 12px; font-size: 14px; transition: background 0.2s ease; }
+.track.active { background: rgba(29, 61, 92, 0.08); }
+.track .tn { width: 92px; text-align: left; font-weight: 600; }
+.track.t0 .tn { color: var(--team0); }
+.track.t1 .tn { color: var(--team1); }
+.track .dots { flex: 1; display: flex; gap: 4px; }
+.track .dots i { flex: 1; height: 10px; max-width: 28px; border-radius: 5px; background: rgba(29, 61, 92, 0.12); }
+.track.t0 .dots i.on { background: var(--team0); }
+.track.t1 .dots i.on { background: var(--team1); }
+.track b { width: 24px; text-align: right; }
+.coop { font-size: 15px; color: var(--ink-soft); }
+.coop b { color: var(--ink); font-size: 18px; }
+.coop span { margin: 0 8px; }
+
+.banner { min-height: 2.6em; margin: 4px auto 6px; max-width: 520px; line-height: 1.35; font-size: 16px; }
+.banner .final { display: inline-block; margin-top: 6px; font-family: "Fraunces", serif; font-size: 22px; font-weight: 800; color: var(--navy); }
+.pts { display: inline-block; font-size: 22px; padding: 0 8px; border-radius: 8px; margin-right: 4px; animation: pop 0.5s cubic-bezier(.3, 1.6, .5, 1); }
+.pts.p4 { background: var(--band-4); }
+.pts.p3 { background: var(--band-3); color: #fff; }
+.pts.p2 { background: var(--band-2); }
+.pts.p0 { background: rgba(29, 61, 92, 0.12); }
+@keyframes pop { from { transform: scale(0.3); } to { transform: scale(1); } }
+
+.table { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.device { flex: 1; max-width: 560px; min-width: 0; }
+
+/* the dial */
+.dial { display: block; width: 100%; height: auto; overflow: hidden; touch-action: none; user-select: none; }
+.dial .rim circle { fill: #fbfaf6; }
+.dial .navy { fill: var(--navy); }
+.dial .cream { fill: #f4efe4; }
+.dial .base { fill: var(--navy-deep); }
+.dial .band-2 { fill: var(--band-2); }
+.dial .band-3 { fill: var(--band-3); }
+.dial .band-4 { fill: var(--band-4); }
+.dial .band-num { fill: #fff; font-family: "Rubik", sans-serif; font-weight: 700; font-size: 15px; text-anchor: middle; dominant-baseline: central; }
+.dial .wheel, .dial .screen, .dial .needle { transform-box: view-box; transform-origin: 0 0; }
+.dial .wheel.spinning { transition: transform 2.4s cubic-bezier(.15, .7, .2, 1); }
+.dial .screen { transition: transform 1s cubic-bezier(.5, 0, .25, 1); }
+.dial .needle.smooth { transition: transform 0.12s linear; }
+.dial .needle-arm { fill: var(--red); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.35)); }
+.dial .handle { fill: var(--teal); stroke: rgba(0, 0, 0, 0.12); stroke-width: 1; }
+.dial.peekable .handle { cursor: pointer; animation: nudge 1.4s ease-in-out infinite; }
+@keyframes nudge { 50% { fill: #b4f0e1; } }
+.dial .knob-shadow { fill: rgba(0, 0, 0, 0.3); }
+.dial .knob-rim { fill: var(--red-deep); }
+.dial .knob-top { fill: var(--red); }
+.dial .knob-dimple { fill: #c42c24; }
+.dial.turnable { cursor: grab; }
+.dial.turnable:active { cursor: grabbing; }
+
+.side-btn {
+  border: 0;
+  background: var(--navy);
+  color: var(--paper);
+  border-radius: 16px;
+  padding: 14px 12px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  animation: pop 0.4s cubic-bezier(.3, 1.6, .5, 1);
+}
+.side-btn span { font-size: 26px; line-height: 1; }
+.side-btn:hover { background: var(--navy-deep); }
+
+/* the spectrum card */
+.spectrum, .card-btn {
+  display: flex;
+  max-width: 520px;
+  margin: 14px auto 0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.08);
+}
+.spectrum .end, .card-end {
+  flex: 1;
+  padding: 14px 12px;
+  font-weight: 700;
+  font-size: 17px;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.spectrum .end.r, .card-end.r { justify-content: flex-end; text-align: right; }
+.spectrum i, .card-end i { font-style: normal; opacity: 0.85; }
+
+.clue {
+  margin: 14px auto 0;
+  max-width: 520px;
+  font-family: "Fraunces", serif;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--navy);
+}
+.clue small { display: block; font-family: "Rubik", sans-serif; font-size: 12px; font-weight: 500; color: var(--ink-soft); }
+
+.actions { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 16px auto 0; max-width: 520px; }
+.pick { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.card-btn { width: 100%; border: 0; padding: 0; margin: 0; cursor: pointer; transition: transform 0.1s ease; display: grid; grid-template-columns: 1fr 1fr; }
+.card-btn:hover { transform: translateY(-2px); }
+.clue-form { display: flex; gap: 8px; width: 100%; }
+.clue-form input { flex: 1; min-width: 0; font-size: 16px; }
+
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  z-index: 10;
+  max-width: calc(100vw - 32px);
+}
+
+@media (max-width: 520px) {
+  .table { gap: 4px; }
+  .side-btn { padding: 10px 6px; font-size: 13px; }
+  .clue { font-size: 26px; }
+  .spectrum .end, .card-end { font-size: 15px; padding: 12px 10px; }
+  .track .tn { width: 78px; font-size: 13px; }
+}
+
+/* ---------- leaving a game ---------- */
+.exit {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 15;
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: var(--navy);
+  color: var(--paper);
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.45);
+  transition: background 0.15s ease, transform 0.08s ease;
+}
+.exit b { font-weight: 600; }
+.exit:hover { background: var(--navy-deep); }
+.exit:active { transform: scale(0.97); }
+.exit.armed { background: var(--red); }
+@media (min-width: 900px) {
+  .exit { left: 20px; bottom: 20px; padding: 7px 14px; font-size: 13px; }
+}
+
+/* ---------- sound switch ---------- */
+/* try the new look (Frequency) */
+.theme-btn {
+  margin-left: auto;
+  border: 1px solid rgba(29, 61, 92, 0.3);
+  background: var(--paper);
+  color: var(--navy);
+  font: 700 13px "Rubik", sans-serif;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.theme-btn:hover { background: #fff; }
+.theme-btn::before { content: "✨ "; }
+body.tv .theme-btn { display: none; }
+@media (max-width: 520px) { .theme-btn span { display: none; } .theme-btn { padding: 6px 9px; } }
+
+.mute {
+  border: 0;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  opacity: 0.75;
+}
+.mute:hover { opacity: 1; }
+
+/* ---------- home: the ways in, and your stats ---------- */
+.starts { display: flex; flex-direction: column; gap: 10px; }
+.btn.quick { background: var(--red); display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.btn.quick:hover { background: var(--red-deep); }
+.btn.quick small { font-size: 12px; font-weight: 400; opacity: 0.85; }
+.join .btn.ghost { padding: 11px 14px; white-space: nowrap; }
+.home-stats:empty { display: none; }
+.home-stats { margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(29, 61, 92, 0.12); }
+.life-h { margin: 0 0 8px; font-size: 12px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 1px; }
+.life { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; }
+.life span { display: flex; flex-direction: column; align-items: center; font-size: 12px; color: var(--ink-soft); }
+.life b { font-size: 20px; color: var(--navy); }
+
+/* ---------- lobby: TVs ---------- */
+.tv-row { margin-top: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--ink-soft); }
+.tv-row .link { margin: 0; font-size: 14px; color: var(--navy); font-weight: 600; text-decoration: none; }
+.tv-row .link:hover { text-decoration: underline; }
+.tv-on { margin: 8px 0 0; font-size: 13px; color: var(--team0); font-weight: 600; min-height: 0; }
+.tv-on:empty { display: none; }
+.tv-join { display: none; }
+
+/* ---------- the reveal ---------- */
+.dial .screen.slow { transition: transform 1.8s cubic-bezier(.65, 0, .3, 1); }
+.dial .wheel path { transition: filter 0.3s ease; }
+.dial .wheel path.hit { animation: hit 0.9s ease-in-out 3; }
+@keyframes hit { 50% { filter: brightness(1.25) saturate(1.3); } }
+.dial .pop { pointer-events: none; }
+.dial .pop-in { transform-box: fill-box; transform-origin: center; transform: scale(0); opacity: 0; }
+.dial .pop.show .pop-in { animation: popIn 0.55s cubic-bezier(.3, 1.7, .5, 1) forwards; }
+@keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.dial .pop-bg { fill: var(--navy); stroke: #fff; stroke-width: 3; }
+.dial .pop.p4 .pop-bg { fill: #3b8fb5; }
+.dial .pop.p3 .pop-bg { fill: var(--band-3); }
+.dial .pop.p2 .pop-bg { fill: #d99a12; }
+.dial .pop.p0 .pop-bg { fill: #6b7683; }
+.dial .pop-num { fill: #fff; font-family: "Rubik", sans-serif; font-weight: 700; font-size: 24px; text-anchor: middle; dominant-baseline: central; }
+.drum { display: inline-block; font-family: "Fraunces", serif; font-style: italic; font-size: 20px; color: var(--navy); animation: drum 0.5s ease-in-out infinite alternate; }
+@keyframes drum { from { transform: scale(1); } to { transform: scale(1.06); } }
+.track.bumped b { animation: pop 0.5s cubic-bezier(.3, 1.6, .5, 1); color: var(--red); }
+.track.bumped .dots i.on:last-of-type { animation: pop 0.5s cubic-bezier(.3, 1.6, .5, 1); }
+
+/* ---------- game over ---------- */
+.over {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  overflow-y: auto;
+  background: rgba(19, 41, 63, 0.72);
+  backdrop-filter: blur(3px);
+  padding: 4vh 16px 40px;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } }
+.over-card {
+  position: relative;
+  max-width: 560px;
+  margin: 0 auto;
+  background: var(--paper);
+  border-radius: 24px;
+  padding: 30px 22px 24px;
+  text-align: center;
+  overflow: hidden;
+  animation: rise 0.5s cubic-bezier(.2, 1.3, .4, 1);
+}
+@keyframes rise { from { transform: translateY(40px) scale(0.95); opacity: 0; } }
+.confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.confetti i { position: absolute; top: -12px; width: 8px; height: 13px; border-radius: 2px; animation: fall 3s cubic-bezier(.3, .6, .6, 1) forwards; }
+@keyframes fall { to { transform: translateY(105vh) rotate(720deg); opacity: 0.2; } }
+.over-kicker { margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--ink-soft); }
+.over-head { margin: 4px 0 2px; font-family: "Fraunces", serif; font-style: italic; font-weight: 800; font-size: clamp(36px, 9vw, 52px); color: var(--navy); letter-spacing: -1px; }
+.over-sub { margin: 0 0 20px; color: var(--ink-soft); font-size: 16px; }
+.awards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 22px; text-align: left; }
+.award { background: rgba(29, 61, 92, 0.06); border-radius: 14px; padding: 10px 12px; display: grid; grid-template-columns: auto 1fr; column-gap: 8px; align-items: center; min-width: 0; }
+.award .ai { grid-row: span 2; font-size: 22px; }
+.award .at { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); }
+.award .av { font-weight: 600; font-size: 14px; overflow-wrap: anywhere; }
+.over-h3 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); text-align: left; }
+.rounds { list-style: none; margin: 0 0 18px; padding: 0; text-align: left; }
+.rounds li { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid rgba(29, 61, 92, 0.1); }
+.rounds .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.rounds .dot.t0 { background: var(--team0); }
+.rounds .dot.t1 { background: var(--team1); }
+.rounds .rc { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.rounds .rc b { font-size: 13px; font-weight: 600; }
+.rounds .rc span { font-size: 13px; color: var(--ink-soft); overflow-wrap: anywhere; }
+.rounds .mini { position: relative; flex: none; width: 70px; height: 12px; border-radius: 6px; background: rgba(29, 61, 92, 0.1); }
+.rounds .mini .t { position: absolute; top: 0; bottom: 0; width: 19%; transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--band-2) 0 20%, var(--band-3) 20% 40%, var(--band-4) 40% 60%, var(--band-3) 60% 80%, var(--band-2) 80%); border-radius: 3px; }
+.rounds .mini .n { position: absolute; top: -3px; bottom: -3px; width: 3px; margin-left: -1.5px; background: var(--red); border-radius: 2px; }
+.rounds .pts { font-size: 15px; margin: 0; flex: none; min-width: 34px; text-align: center; animation: none; }
+.lifetime:empty { display: none; }
+.lifetime { margin-bottom: 18px; padding-top: 14px; border-top: 1px solid rgba(29, 61, 92, 0.12); }
+.over-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+/* ---------- TV: the dial big, the rest beside it, no buttons ---------- */
+body.tv .back, body.tv .mute { visibility: hidden; }
+body.tv .tv-join { display: block; text-align: center; margin: 0 0 8px; font-size: clamp(14px, 1.6vw, 22px); color: var(--ink-soft); }
+body.tv .tv-join b { color: var(--navy); }
+body.tv .tv-join .tv-code { letter-spacing: 4px; background: var(--navy); color: var(--paper); padding: 2px 10px; border-radius: 8px; }
+body.tv #home .field, body.tv #home .starts, body.tv #home .or, body.tv #home .join, body.tv #home .home-stats { display: none; }
+@media (min-width: 900px) {
+  body.tv .actions { display: none; }
+  body.tv .room-code { font-size: 120px; }
+}
+
+/* ---------- desktop: built big. The dial fills the left, everything you
+   read and press sits beside it ---------- */
+@media (min-width: 900px) {
+  .bar { padding: 22px 40px; }
+  .back { font-size: 17px; }
+  .logo { font-size: 30px; }
+  .code { font-size: 18px; padding: 6px 12px; }
+  .mute { font-size: 24px; }
+
+  .home-card, .lobby-card { max-width: 620px; padding: 44px 48px; border-radius: 28px; margin-top: 6vh; }
+  .title { font-size: 72px; }
+  .pitch { font-size: 19px; margin-bottom: 30px; }
+  .field { font-size: 15px; }
+  .field input, .join input { font-size: 20px; padding: 15px 18px; }
+  .join input { font-size: 26px; }
+  .btn { padding: 14px 26px; font-size: 17px; }
+  .btn.big { padding: 18px 36px; font-size: 21px; }
+  .btn.small { padding: 9px 18px; font-size: 15px; }
+  .btn.quick small { font-size: 14px; }
+  .or { font-size: 15px; }
+  .status { font-size: 16px; }
+  .life b { font-size: 26px; }
+  .life span { font-size: 14px; }
+  .room-line { font-size: 16px; }
+  .room-code { font-size: 96px; letter-spacing: 16px; }
+  .room-hint, .mode-hint { font-size: 16px; }
+  .mode-btn { padding: 12px; font-size: 17px; }
+  .team { padding: 16px 18px; }
+  .team h3 { font-size: 17px; }
+  .team li { font-size: 18px; padding: 4px 0; }
+  .tv-row { font-size: 14px; }
+  .tv-row .link { font-size: 17px; }
+
+  /* The dial in the middle, the card's two ends either side of it, the
+     score and what's happening above, the clue and the buttons below */
+  #game {
+    max-width: 1700px;
+    padding: 0 32px 32px;
+    display: grid;
+    grid-template-columns: minmax(130px, 1fr) minmax(0, min(1040px, calc((100vh - 400px) * 1.6))) minmax(130px, 1fr);
+    grid-template-areas:
+      "score score score"
+      "endL table endR"
+      ". console .";
+    column-gap: 28px;
+    align-content: center;
+    min-height: calc(100vh - 100px);
+  }
+  .table { grid-area: table; gap: 16px; }
+  .device { max-width: none; }
+  /* the score: a small tag up top */
+  .score { grid-area: score; max-width: 300px; width: 100%; margin: 0 auto 12px; gap: 1px; }
+  .track { font-size: 11px; padding: 1px 4px; gap: 6px; }
+  .track .tn { width: 70px; }
+  .track .dots i { height: 5px; max-width: none; }
+  .track b { width: 18px; font-size: 12px; }
+  .coop { font-size: 11px; }
+  .coop b { font-size: 13px; }
+  .coop span { margin: 0 4px; }
+
+  /* the base the dial stands in, carrying everything you read and press */
+  #game .console {
+    grid-area: console;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: -1px;
+    min-height: 150px;
+    padding: 18px 32px 26px;
+    background: var(--navy-deep);
+    color: var(--paper);
+    border-radius: 6px 6px 30px 30px;
+    box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.55);
+  }
+  .console .banner { margin: 0; max-width: none; font-size: 18px; min-height: 0; color: rgba(248, 243, 233, 0.85); }
+  .console .banner:empty { display: none; }
+  .console .banner .final { font-size: 26px; color: #fff; }
+  .console .pts { font-size: 22px; color: var(--ink); }
+  .console .pts.p3 { color: #fff; }
+  .console .pts.p0 { background: rgba(248, 243, 233, 0.2); color: #fff; }
+  .console .drum { font-size: 26px; color: #fff; }
+  .console .clue { margin: 4px 0 0; max-width: none; font-size: 50px; line-height: 1.1; color: #fff; }
+  .console .clue small { font-size: 13px; margin-bottom: 2px; color: var(--teal); }
+  .console .actions { margin: 12px 0 0; max-width: none; width: 100%; }
+  .console .btn { background: var(--red); }
+  .console .btn:hover { background: var(--red-deep); }
+  .console .btn.ghost { background: transparent; color: var(--paper); box-shadow: inset 0 0 0 2px rgba(248, 243, 233, 0.55); }
+  .console .btn.ghost:hover { background: rgba(248, 243, 233, 0.1); }
+  /* the card's two colours split the whole page, its two ends written
+     big on either side of the dial */
+  body.split::before, body.split::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    z-index: -1;
+  }
+  body.split::before { left: 0; background: var(--left); }
+  body.split::after { right: 0; background: var(--right); }
+  body.split-in::before { animation: sweepL 0.75s cubic-bezier(.2, .8, .2, 1) both; }
+  body.split-in::after { animation: sweepR 0.75s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes sweepL { from { transform: translateX(-100%); } }
+  @keyframes sweepR { from { transform: translateX(100%); } }
+  body.split .back, body.split .logo { color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+  body.split .score {
+    justify-self: center;
+    width: auto;
+    min-width: 0;
+    background: var(--paper);
+    border-radius: 999px;
+    padding: 2px 11px;
+    box-shadow: 0 3px 12px -6px rgba(0, 0, 0, 0.35);
+  }
+  .spectrum { display: contents; }
+  .spectrum .end {
+    align-self: center;
+    margin-top: 12%;
+    min-width: 0;
+    background: none !important;
+    padding: 0;
+    font-size: clamp(26px, 2.8vw, 46px);
+    line-height: 1.1;
+    flex-direction: column;
+    gap: 8px;
+    overflow-wrap: break-word;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+  .spectrum .end.l { grid-area: endL; align-items: flex-start; text-align: left; }
+  .spectrum .end.r { grid-area: endR; align-items: flex-end; text-align: right; flex-direction: column-reverse; }
+  .spectrum .end i { font-size: 1.1em; }
+  .card-end { font-size: 22px; padding: 22px 18px; }
+  .pick { flex-direction: row; gap: 16px; }
+  .card-btn { max-width: none; border-radius: 18px; }
+  .clue-form { max-width: 640px; }
+  .clue-form input { font-size: 20px; padding: 15px 18px; }
+  .side-btn { padding: 22px 18px; font-size: 20px; border-radius: 20px; }
+  .side-btn span { font-size: 36px; }
+
+  .over-card { max-width: 760px; padding: 44px 40px 32px; }
+  .over-sub { font-size: 19px; }
+  .award .av { font-size: 16px; }
+  .rounds .rc b, .rounds .rc span { font-size: 15px; }
+  .rounds .mini { width: 110px; }
+}
+
+@media (max-width: 420px) {
+  .awards { grid-template-columns: 1fr; }
+  .rounds .mini { width: 48px; }
+}

@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <script>
+    // two looks, one game: go to the one this device picked (../theme.js)
+    try { if ((localStorage.getItem("game-board-theme") === "new") !== true) location.replace("../wavelenght/" + location.search + location.hash); } catch (e) {}
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Frequency</title>
   <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml" />
@@ -14,7 +18,7 @@
   <header class="bar">
     <a class="back" href="../">&larr; Game Board</a>
     <span class="logo">Frequency</span>
-    <button class="theme-btn" id="themeBtn"><span>New theme</span></button>
+    <button class="theme-btn" id="themeBtn"><span>Original theme</span></button>
     <span class="code" id="codeChip" hidden></span>
     <button class="mute" id="muteBtn" aria-label="Sound on">🔊</button>
   </header>
@@ -107,6 +111,6 @@
   <div class="toast" id="toast" hidden></div>
 
   <script src="../../you.js?v=2"></script>
-  <script type="module" src="app.js?v=32"></script>
+  <script type="module" src="app.js?v=33"></script>
 </body>
 </html>

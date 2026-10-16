@@ -10,6 +10,7 @@
 // big, with no buttons, and never sees the target before everyone does.
 import { SPREAD, tier } from "./rules.js?v=3";
 import * as snd from "./sound.js?v=3";
+import { goTheme } from "../theme.js?v=1";
 
 const $ = (id) => document.getElementById(id);
 const NS = "http://www.w3.org/2000/svg";
@@ -125,19 +126,12 @@ function heat(off) {
 const bars = [];
 let barsG, wheel;      // the two looks: the spectrum (new) and the five-band wedge (classic)
 
-// Which look this player has picked, remembered on this device. Only the
-// drawing changes; the scoring is the same either way.
-let theme = "classic";
-try { if (localStorage.getItem("frequency-theme") === "spectrum") theme = "spectrum"; } catch { /* private mode */ }
-function setTheme(t) {
-  theme = t;
-  try { localStorage.setItem("frequency-theme", t); } catch { /* fine */ }
-  paintTheme();
-}
+// The new look draws the spectrum; the classic wedge stays built (it's
+// what the drawing loop falls back to) but hidden.
+const theme = "spectrum";
 function paintTheme() {
   barsG.style.display = theme === "spectrum" ? "" : "none";
   wheel.style.display = theme === "classic" ? "" : "none";
-  $("themeBtn").querySelector("span").textContent = theme === "classic" ? "New theme" : "Classic theme";
 }
 
 function buildDial() {
@@ -870,7 +864,7 @@ document.addEventListener("click", (e) => {
       armExit(false); hideOver();
       return send({ t: "leave" });
     case "quickBtn": saveName(); setStatus("Finding a game…"); return send({ t: "quick" });
-    case "themeBtn": return setTheme(theme === "classic" ? "spectrum" : "classic");
+    case "themeBtn": return goTheme("old");
     case "muteBtn": snd.setMuted(!snd.isMuted()); return paintMute();
     case "tvBtn": {
       const code = $("codeInput").value.trim().toUpperCase();
