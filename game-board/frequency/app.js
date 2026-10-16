@@ -1,16 +1,15 @@
-// Wavelenght - the page. The server (../server.js) runs the room and keeps
+// Frequency (once Wavelenght) - the page. The server (../server.js) runs the room and keeps
 // the target secret; this draws the dial and turns what you do into
 // messages.
 //
-// The dial is the real one, flat: a navy face with a scalloped white rim, a
-// hidden wheel with the 2-3-4-3-2 target on it, a screen that swings over
-// it (pulled round by its two teal handles), and a red needle turned by the
-// red knob in the middle.
+// The dial is a radio: the broadcaster scans for a station only they can
+// hear, sends a transmission (the clue), and the listeners tune the needle
+// to where they think it is. Same rules as the board game it grew from.
 //
 // The same page is the TV: open it with ?tv=CODE and it watches that room,
 // big, with no buttons, and never sees the target before everyone does.
-import { BAND, POINTS } from "./rules.js";
-import * as snd from "./sound.js?v=1";
+import { SPREAD, tier } from "./rules.js?v=3";
+import * as snd from "./sound.js?v=3";
 
 const $ = (id) => document.getElementById(id);
 const NS = "http://www.w3.org/2000/svg";
@@ -23,8 +22,8 @@ const mk = (n, a = {}, parent) => {
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const TEAM_NAMES = ["Left Brain", "Right Brain"];
-const PARK = 270;      // a wheel turned to here sits under the body, out of sight
+const TEAM_NAMES = ["Team AM", "Team FM"];
+const PARK = 999;      // a signal "here" is off the air: no station yet
 
 const params = new URLSearchParams(location.search);
 const tvCode = (params.get("tv") || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
@@ -81,97 +80,208 @@ function send(m) {
 }
 
 /* ========================================================================
-   The dial
+   The radio
    ======================================================================== */
-const R = 180;                     // the face
-const dial = $("dial");
-let wheel, screen, needleG, popG, popText;
-const bandEls = [];
+// The dial, built into a radio: a half-circle face with a spectrum of bars
+// round its rim - a still noise floor, with a peak rising where the station
+// is (the hidden target) - a sheet of static over it all that only the
+// broadcaster sees through, and a glowing needle swinging from the tuning
+// knob in the middle. It's the same 0-180 reading the server scores.
+const R = 420;                                    // the face
 const pt = (deg, r) => {
   const a = (deg * Math.PI) / 180;
   return [-r * Math.cos(a), -r * Math.sin(a)];
 };
+const HALF = (r) => `M${-r} 0A${r} ${r} 0 0 1 ${r} 0Z`;
+const dial = $("dial");
+let cover, needleG, popG, popText, knobG, wave, staticImg;
+
+// a few tiles of TV static, swapped quickly so the noise crawls
+const STATIC = [];
+function makeStatic() {
+  for (let k = 0; k < 4; k++) {
+    const c = document.createElement("canvas");
+    c.width = 200; c.height = 120;
+    const g = c.getContext("2d"), img = g.createImageData(200, 120);
+    for (let i = 0; i < img.data.length; i += 4) {
+      const v = Math.random() * 255, tint = Math.random();
+      img.data[i] = v * (tint < 0.08 ? 1 : 0.55) + 20;            // a little pink
+      img.data[i + 1] = v * 0.5 + 10;
+      img.data[i + 2] = v * (tint > 0.9 ? 1 : 0.75) + 40;         // and a little blue
+      img.data[i + 3] = 255;
+    }
+    g.putImageData(img, 0, 0);
+    STATIC.push(c.toDataURL());
+  }
+}
+
+// the peak's colour, `off` from its middle (0) to its edge (1): the heat
+// word's colours, white-hot through gold, orange and pink out to blue
+const HEAT = [[255, 250, 237], [255, 204, 115], [255, 128, 51], [250, 71, 189], [201, 58, 216], [41, 117, 250]];
+function heat(off) {
+  const t = Math.min(1, Math.max(0, off)) * (HEAT.length - 1), i = Math.min(HEAT.length - 2, Math.floor(t)), f = t - i;
+  return `rgb(${HEAT[i].map((v, k) => Math.round(v + (HEAT[i + 1][k] - v) * f))})`;
+}
+const bars = [];
+let barsG, wheel;      // the two looks: the spectrum (new) and the five-band wedge (classic)
+
+// Which look this player has picked, remembered on this device. Only the
+// drawing changes; the scoring is the same either way.
+let theme = "classic";
+try { if (localStorage.getItem("frequency-theme") === "spectrum") theme = "spectrum"; } catch { /* private mode */ }
+function setTheme(t) {
+  theme = t;
+  try { localStorage.setItem("frequency-theme", t); } catch { /* fine */ }
+  paintTheme();
+}
+function paintTheme() {
+  barsG.style.display = theme === "spectrum" ? "" : "none";
+  wheel.style.display = theme === "classic" ? "" : "none";
+  $("themeBtn").querySelector("span").textContent = theme === "classic" ? "New theme" : "Classic theme";
+}
 
 function buildDial() {
+  dial.setAttribute("viewBox", "-480 -462 960 524");
   const defs = mk("defs", {}, dial);
-  // the navy's speckle, like the flocked finish on the real thing
+  // the cabinet's grain, like the deep blue of the heat word
   const f = mk("filter", { id: "speck", x: "0", y: "0", width: "100%", height: "100%" }, defs);
   mk("feTurbulence", { type: "fractalNoise", baseFrequency: "0.9", numOctaves: "2", seed: "4", result: "n" }, f);
   mk("feColorMatrix", { in: "n", type: "matrix", result: "dots",
     values: "0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -2.6 1.55" }, f);
   mk("feComposite", { in: "dots", in2: "SourceGraphic", operator: "in", result: "d" }, f);
-  mk("feComponentTransfer", { in: "d", result: "faint" }, f).appendChild(mk("feFuncA", { type: "linear", slope: "0.16" }));
+  mk("feComponentTransfer", { in: "d", result: "faint" }, f).appendChild(mk("feFuncA", { type: "linear", slope: "0.08" }));
   const m = mk("feMerge", {}, f);
   mk("feMergeNode", { in: "SourceGraphic" }, m);
   mk("feMergeNode", { in: "faint" }, m);
   const clip = mk("clipPath", { id: "face" }, defs);
-  mk("circle", { r: R }, clip);
+  mk("path", { d: HALF(R) }, clip);
+  const pat = mk("pattern", { id: "static", patternUnits: "userSpaceOnUse", width: 200, height: 120 }, defs);
+  staticImg = mk("image", { width: 200, height: 120, preserveAspectRatio: "none" }, pat);
 
-  // the scalloped white rim
-  const rim = mk("g", { class: "rim" }, dial);
-  mk("circle", { r: 199 }, rim);
-  for (let d = 0; d < 360; d += 7.5) {
-    const [x, y] = pt(d, 200);
-    mk("circle", { cx: x.toFixed(1), cy: y.toFixed(1), r: 8.4 }, rim);
+  // the cabinet, its pink trim, and the name on it
+  mk("rect", { x: -474, y: -456, width: 948, height: 620, rx: 40, class: "cabinet", filter: "url(#speck)" }, dial);
+  mk("rect", { x: -474, y: -456, width: 948, height: 620, rx: 40, class: "trim" }, dial);
+
+  // the speaker, either side of the knob
+  const grille = mk("g", { class: "grille" }, dial);
+  for (const sx of [-1, 1]) for (let r = 0; r < 2; r++) for (let c = 0; c < 20; c++) {
+    mk("circle", { cx: sx * (86 + c * 17), cy: 18 + r * 17, r: 4.4 }, grille);
   }
-  mk("circle", { r: 192, class: "navy", filter: "url(#speck)" }, dial);
-  mk("circle", { r: R, class: "cream" }, dial);
 
-  // the wheel with the target on it, drawn round the top and turned into place
-  const wg = mk("g", { "clip-path": "url(#face)" }, dial);
-  wheel = mk("g", { class: "wheel" }, wg);
-  const colors = ["band-2", "band-3", "band-4", "band-3", "band-2"];
-  POINTS.forEach((p, i) => {
-    const a1 = 90 - 2.5 * BAND + i * BAND, a2 = a1 + BAND;
-    const [x1, y1] = pt(a1, R + 4), [x2, y2] = pt(a2, R + 4);
-    bandEls.push(mk("path", { d: `M0 0L${x1} ${y1}A${R + 4} ${R + 4} 0 0 1 ${x2} ${y2}Z`, class: colors[i] }, wheel));
-    const [tx, ty] = pt(a1 + BAND / 2, R - 22);
-    const t = mk("text", { x: tx, y: ty, class: "band-num", transform: `rotate(${a1 + BAND / 2 - 90} ${tx} ${ty})` }, wheel);
-    t.textContent = p;
+  // the face: dark glass, the band printed round the edge
+  mk("path", { d: HALF(R + 16), class: "bezel" }, dial);
+  const face = mk("g", { "clip-path": "url(#face)" }, dial);
+  mk("path", { d: HALF(R), class: "glass" }, face);
+  for (let k = 0; k <= 40; k++) {
+    const a = (k / 40) * 180, major = k % 4 === 0;
+    const [x1, y1] = pt(a, R - 4), [x2, y2] = pt(a, R - (major ? 22 : 13));
+    mk("line", { x1, y1, x2, y2, class: major ? "tick major" : "tick" }, face);
+  }
+
+  // the spectrum: a bar every 3 degrees right round the face, pointing in
+  // from the rim. Most sit low and still - the noise floor - and the ones
+  // over the station rise into a peak, tallest at the 5, coloured hot to
+  // cold from its middle out. Drawn fresh each frame (drawSpectrum).
+  barsG = mk("g", {}, face);
+  for (let a = 1.5; a < 180; a += 3) {
+    bars.push({ a, el: mk("line", { class: "sbar" }, barsG), floor: 17 + 7 * Math.random(), ph: Math.random() * 9 });
+  }
+
+  // the classic look: five wedges, 1-3-5-3-1, drawn round the top and turned
+  // into place
+  wheel = mk("g", { class: "wheel" }, face);
+  const RB = R - 58, W = SPREAD / 5;
+  ["band-2", "band-3", "band-4", "band-3", "band-2"].forEach((cls, i) => {
+    const a1 = 90 - SPREAD / 2 + i * W, a2 = a1 + W;
+    const [x1, y1] = pt(a1, RB), [x2, y2] = pt(a2, RB);
+    mk("path", { d: `M0 0L${x1.toFixed(1)} ${y1.toFixed(1)}A${RB} ${RB} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}Z`, class: cls }, wheel);
+    const [tx, ty] = pt(a1 + W / 2, RB - 30);
+    const t = mk("text", { x: tx.toFixed(1), y: ty.toFixed(1), class: i === 2 ? "band-num dark" : "band-num", transform: `rotate(${a1 + W / 2 - 90} ${tx.toFixed(1)} ${ty.toFixed(1)})` }, wheel);
+    t.textContent = [1, 3, 5, 3, 1][i];
   });
 
-  // the body below, and the screen that swings over the top
-  mk("path", { d: `M${-R - 1} 0A${R + 1} ${R + 1} 0 0 0 ${R + 1} 0Z`, class: "navy", filter: "url(#speck)" }, dial);
-  screen = mk("g", { class: "screen" }, dial);
-  mk("path", { d: `M${-R - 1} 0A${R + 1} ${R + 1} 0 0 1 ${R + 1} 0Z`, class: "navy", filter: "url(#speck)" }, screen);
-  for (const s of [-1, 1]) mk("rect", { x: s < 0 ? -226 : 176, y: -6, width: 50, height: 12, rx: 6, class: "handle" }, screen);
+  // the signal's shape, drawn round the face at the reveal: clean if you were close
+  wave = mk("path", { class: "wave", d: "" }, face);
 
-  // the box it stands in
-  mk("rect", { x: -150, y: 60, width: 300, height: 40, rx: 8, class: "base" }, dial);
+  // the static over the face, and the broadcaster's peek through it
+  cover = mk("g", { class: "cover" }, face);
+  mk("path", { d: HALF(R), fill: "url(#static)" }, cover);
+  mk("path", { d: HALF(R), class: "cover-tint" }, cover);
 
-  // the needle and the knob that turns it
+  // the needle, swinging from the tuning knob
   needleG = mk("g", { class: "needle" }, dial);
-  mk("path", { d: "M-4.5 0L-2.4 -168L0 -174L2.4 -168L4.5 0Z", class: "needle-arm" }, needleG);
-  mk("circle", { r: 30, class: "knob-shadow", cy: 3 }, dial);
-  const knob = mk("g", { class: "knob" }, dial);
-  mk("circle", { r: 29, class: "knob-rim" }, knob);
-  mk("circle", { r: 22, class: "knob-top" }, knob);
-  mk("circle", { r: 15, class: "knob-dimple" }, knob);
+  mk("rect", { x: -3, y: -(R - 6), width: 6, height: R - 6, rx: 3, class: "needle-line" }, needleG);
+  mk("circle", { cy: -(R - 10), r: 7, class: "needle-tip" }, needleG);
+  knobG = mk("g", { class: "knob" }, dial);
+  const kg = mk("g", { class: "knob-turn" }, knobG);
+  mk("circle", { r: 46, class: "knob-rim" }, kg);
+  for (let k = 0; k < 30; k++) mk("rect", { x: -2.2, y: -46, width: 4.4, height: 8, rx: 2, class: "knob-ridge", transform: `rotate(${k * 12})` }, kg);
+  mk("circle", { r: 35, class: "knob-top" }, kg);
+  mk("circle", { cx: 0, cy: -24, r: 6, class: "knob-dot" }, kg);
 
-  // the points, popping out of the face where the needle landed
+  // the points, popping up where the needle landed
   popG = mk("g", { class: "pop" }, dial);
   const inner = mk("g", { class: "pop-in" }, popG);
-  mk("circle", { r: 27, class: "pop-bg" }, inner);
+  mk("circle", { r: 44, class: "pop-bg" }, inner);
   popText = mk("text", { class: "pop-num" }, inner);
+
+  // a click on the face is the broadcaster's peek, too
+  mk("path", { d: HALF(R), class: "glass-hit" }, dial);
 }
 
-let wheelTurn = 0;     // where the wheel is drawn, in degrees (keeps growing)
+setInterval(() => {
+  // the static crawls while it's up
+  if (!staticImg || !STATIC.length || screenOpen) return;
+  staticImg.setAttribute("href", STATIC[(Math.random() * STATIC.length) | 0]);
+}, 70);
+
+let wheelAt = null;    // where the station sits (a dial reading), or null: off the air
+let shownAt = null;    // where the peak is drawn right now - it moves while scanning
+let scanFrom = 0, scanStart = 0, scanPath = null;
 function setWheel(target, spin) {
-  // the band group is drawn centred at the top (90), so turn by target - 90;
-  // a spin adds whole turns first, so it visibly whirls
-  let to = target - 90;
-  if (spin) {
-    const base = wheelTurn - (((wheelTurn % 360) + 360) % 360);
-    to += base + 360 * 3;
-  } else {
-    to += wheelTurn - (((wheelTurn % 360) + 360) % 360);
+  scanPath = null;
+  if (target > 180) {                     // parked: no station yet
+    wheelAt = shownAt = null;
+    return;
   }
-  wheel.classList.toggle("spinning", !!spin);
-  wheelTurn = to;
-  wheel.style.transform = `rotate(${to}deg)`;
+  if (spin) {
+    // scanning: it sweeps round the dial and back, slowing, then locks on
+    scanPath = [wheelAt === null ? -40 : wheelAt, 210, -30, 175, 5, target];
+    scanStart = performance.now();
+  }
+  wheelAt = target;
+  if (!spin) shownAt = target;
+}
+const SCAN_MS = 2400;
+const peakPts = (off) => (Math.abs(off) > SPREAD / 2 ? 0 : 5 - 4 * Math.abs(off) / (SPREAD / 2));
+let peakStill = false; // the reveal freezes the peak so the needle reads clearly
+function drawSpectrum(now) {
+  if (scanPath) {
+    const x = Math.min(1, (now - scanStart) / SCAN_MS), e = 1 - Math.pow(1 - x, 2.2);
+    const seg = Math.min(scanPath.length - 2, Math.floor(e * (scanPath.length - 1))), f = e * (scanPath.length - 1) - seg;
+    shownAt = scanPath[seg] + (scanPath[seg + 1] - scanPath[seg]) * f;
+    if (x >= 1) { scanPath = null; shownAt = wheelAt; }
+  }
+  if (theme === "classic") {
+    wheel.style.opacity = shownAt === null ? 0 : 1;
+    if (shownAt !== null) wheel.setAttribute("transform", `rotate(${(shownAt - 90).toFixed(2)})`);
+    requestAnimationFrame(drawSpectrum);
+    return;
+  }
+  const top = R * 0.63;
+  for (const b of bars) {
+    const off = shownAt === null ? 999 : b.a - shownAt, p = peakPts(off);
+    const len = p ? (p / 5) * top + (peakStill ? 0 : 12 * Math.sin(now / 700 + b.ph)) : b.floor;
+    const [x1, y1] = pt(b.a, R - 30), [x2, y2] = pt(b.a, R - 30 - len);
+    b.el.setAttribute("x1", x1.toFixed(1)); b.el.setAttribute("y1", y1.toFixed(1));
+    b.el.setAttribute("x2", x2.toFixed(1)); b.el.setAttribute("y2", y2.toFixed(1));
+    if (p) b.el.setAttribute("style", `stroke:${heat(Math.abs(off) / (SPREAD / 2))}`);
+    else b.el.removeAttribute("style");
+  }
+  requestAnimationFrame(drawSpectrum);
 }
 function spinBlind() {
-  // the target's secret here: it whirls to somewhere random under the screen
+  // the real station's a secret here: it scans to somewhere random, under the static
   setWheel(Math.random() * 180, true);
 }
 
@@ -179,13 +289,13 @@ let screenOpen = false;
 function setScreen(open, slow) {
   if (open === screenOpen) return;
   screenOpen = open;
-  screen.classList.toggle("slow", !!slow);
-  screen.style.transform = `rotate(${open ? 180 : 0}deg)`;
-  snd.swoosh(slow ? 1.8 : 0.9);
+  cover.classList.toggle("slow", !!slow);
+  cover.classList.toggle("clear", open);
+  snd.hiss(slow ? 1.6 : 0.5);
 }
 
-// The psychic sees the wheel the whole round, from picking the card to the
-// reveal - unless they've hidden it, for a phone that's up on a big screen.
+// The broadcaster sees the signal all round, from picking the station to
+// the reveal - unless they've hidden it, for a phone up on a big screen.
 // Hiding is remembered on this device.
 let hideTarget = false;
 try { hideTarget = localStorage.getItem("wavelenght-hide") === "1"; } catch { /* private mode */ }
@@ -197,20 +307,22 @@ function setHide(h) {
 }
 const psychicSees = () => !!S && isPsychic() && ["pick", "clue", "guess", "side"].includes(S.phase);
 function syncScreen() {
-  if (!S || S.phase === "reveal") return;          // the reveal opens it itself
+  if (!S || S.phase === "reveal") return;          // the reveal clears it itself
   setScreen(psychicSees() && !hideTarget);
 }
 
 let needleAt = 90;
 function setNeedle(a, smooth) {
-  // a click of the ratchet every 3 degrees it passes
+  // a click of the tuning knob every 3 degrees it passes
   if (Math.floor(a / 3) !== Math.floor(needleAt / 3)) snd.tick(smooth);
   needleAt = a;
   needleG.classList.toggle("smooth", !!smooth);
-  needleG.style.transform = `rotate(${a - 90}deg)`;
+  knobG.classList.toggle("smooth", !!smooth);
+  needleG.style.transform = `rotate(${(a - 90).toFixed(1)}deg)`;
+  knobG.querySelector(".knob-turn").style.transform = `rotate(${(a - 90).toFixed(1)}deg)`;
 }
 
-/* ---------- turning the needle ---------- */
+/* ---------- tuning in ---------- */
 function angleFromEvent(e) {
   const p = dial.createSVGPoint();
   p.x = e.clientX; p.y = e.clientY;
@@ -227,7 +339,6 @@ function sendNeedle() {
   else sendTimer = setTimeout(sendNeedle, 45 - (now - lastSent));
 }
 dial.addEventListener("pointerdown", (e) => {
-  if (e.target.classList.contains("handle")) return;     // that's the screen
   if (!canTurn()) return;
   dragging = true;
   dial.setPointerCapture(e.pointerId);
@@ -243,9 +354,9 @@ const endDrag = () => { if (dragging) { dragging = false; sendNeedle(); } };
 dial.addEventListener("pointerup", endDrag);
 dial.addEventListener("pointercancel", endDrag);
 
-// The handles swing the screen too: the psychic's own hide and show.
+// The broadcaster taps the glass to hide or show the signal.
 dial.addEventListener("click", (e) => {
-  if (!e.target.classList.contains("handle")) return;
+  if (!e.target.classList.contains("glass-hit")) return;
   if (psychicSees()) setHide(!hideTarget);
 });
 
@@ -277,10 +388,10 @@ function onMessage(m) {
   if (m.t === "needle") { if (!dragging) setNeedle(m.a, true); return; }
   if (m.t === "spun") {
     if (!isPsychic()) spinBlind();
-    snd.spin(2.4);
+    snd.scan(2.4);
     return;
   }
-  if (m.t === "locked") { snd.lock(); snd.buzz(40); return; }
+  if (m.t === "locked") { snd.lock(); snd.beep(false); snd.buzz(40); return; }
   if (m.t === "state") {
     const prev = S;
     S = m;
@@ -298,7 +409,7 @@ function onMessage(m) {
         if (prev && prev.phase !== "reveal" && prev.round === S.round) startReveal(prev);
         else { setWheel(S.target, false); setScreen(true); }
       } else if (S.phase === "guess" && lastPhase === "clue" && !isPsychic()) {
-        snd.clue();
+        snd.beep(true);
         if (isGuesser()) snd.buzz(30);
       }
       if (S.phase === "lobby") stopCountdownTick();
@@ -339,8 +450,8 @@ async function startReveal(prev) {
   }
   if (S.round !== st.round) return;
   showPop(st.needle, st.target, r.points);
-  snd.points(r.points);
-  snd.buzz(r.points === 4 ? [80, 50, 80, 50, 180] : r.points ? [70] : [220]);
+  snd.points(tier(r.points));
+  snd.buzz(tier(r.points) === 4 ? [80, 50, 80, 50, 180] : r.points ? [70] : [220]);
   revealing = false;
   render();
   if (st.mode === "teams" && st.side) {
@@ -354,18 +465,40 @@ async function startReveal(prev) {
 }
 
 function showPop(needle, target, points) {
-  const [x, y] = pt(needle, 112);
-  popG.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
-  popG.setAttribute("class", `pop show p${points}`);
+  peakStill = true;
+  const [px, py] = pt(needle, R * 0.6);
+  popG.setAttribute("transform", `translate(${px.toFixed(1)} ${py.toFixed(1)})`);
+  popG.setAttribute("class", `pop show p${tier(points)}`);
   popText.textContent = points ? `+${points}` : "0";
-  // light up the band the needle's in
-  const i = points === 4 ? 2 : points === 3 ? (needle < target ? 1 : 3) : points === 2 ? (needle < target ? 0 : 4) : -1;
-  bandEls.forEach((b, k) => b.classList.toggle("hit", k === i));
+  // the signal's shape, round the face: a clean wave if you were close, noise if not
+  const noise = Math.min(1, Math.abs(needle - target) / 45);
+  const amp = 24 * (1 - noise * 0.6);
+  let d = "";
+  for (let a = 0; a <= 180; a += 1.5) {
+    const [x, y] = pt(a, R * 0.8 + amp * Math.sin(a * 0.6) + (Math.random() - 0.5) * 64 * noise);
+    d += `${d ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`;
+  }
+  wave.setAttribute("d", d);
+  wave.classList.add("show");
 }
 function clearPop() {
+  peakStill = false;
   popG.setAttribute("class", "pop");
-  bandEls.forEach((b) => b.classList.remove("hit"));
+  wave.classList.remove("show");
 }
+
+// A long word on the side of the page shrinks until it fits its column.
+function fitEnds() {
+  for (const el of [$("endL"), $("endR")]) {
+    el.style.fontSize = "";
+    if (!el.clientWidth) continue;               // the phone layout: it's a card, it wraps
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    let size = parseFloat(getComputedStyle(el).fontSize);
+    while (range.getBoundingClientRect().width > el.clientWidth + 1 && size > 14) el.style.fontSize = `${--size}px`;
+  }
+}
+addEventListener("resize", () => { if (document.body.classList.contains("split")) fitEnds(); });
 
 /* ========================================================================
    Drawing the page
@@ -388,7 +521,8 @@ function toast(msg) {
 function setStatus(s) { $("homeStatus").textContent = s; $("lobbyStatus").textContent = s; }
 
 // Each card gets two colours, the same two every time it comes up.
-const CARD_COLORS = [["#4fb8b0", "#e2533f"], ["#f2b631", "#6a4fa3"], ["#ee7d35", "#3f74c4"], ["#e86fa3", "#4fa564"], ["#8fc7e3", "#d9573b"], ["#f4d35e", "#2f8f8a"]];
+// Hot on the left, cold on the right, like the two ends of the heat word.
+const CARD_COLORS = [["#e0379f", "#2463d8"], ["#f0702a", "#0f2b9a"], ["#c93ad8", "#1d8fe0"], ["#ff4f7b", "#3046c8"], ["#e85d1f", "#6a3cf0"], ["#d6338f", "#1499c9"]];
 function cardColors(card) {
   let h = 0;
   for (const c of card.join("|")) h = (h * 31 + c.charCodeAt(0)) >>> 0;
@@ -417,7 +551,7 @@ function teamList(t, inGame) {
     const tags = [];
     if (p.id === S.you) tags.push("you");
     if (p.id === S.host && !S.quick) tags.push("host");
-    if (inGame && p.id === S.psychic) tags.push("psychic");
+    if (inGame && p.id === S.psychic) tags.push("broadcaster");
     return `<li class="${p.online ? "" : "away"}${inGame && p.id === S.psychic ? " psy" : ""}">${esc(p.name)}` +
       (tags.length ? ` <small>${tags.join(" · ")}</small>` : "") + (p.online ? "" : " <small>away</small>") + `</li>`;
   }).join("") || `<li class="empty">nobody yet</li>`;
@@ -501,6 +635,7 @@ function renderTable() {
     // on a big screen the whole page splits into the card's two colours
     document.body.style.setProperty("--left", a);
     document.body.style.setProperty("--right", b);
+    fitEnds();
   }
   document.body.classList.toggle("split", !!S.card);
   // a new card: its two colours sweep in from the edges and meet in the middle
@@ -511,7 +646,7 @@ function renderTable() {
     if (key) {
       void document.body.offsetWidth;            // restart the sweep
       document.body.classList.add("split-in");
-      if (matchMedia("(min-width: 900px)").matches) snd.swoosh(0.8);
+      if (matchMedia("(min-width: 900px)").matches) snd.hiss(0.7);
     }
   }
   $("clue").hidden = !S.clue;
@@ -528,32 +663,32 @@ function renderTable() {
   switch (S.phase) {
     case "pick":
       if (isPsychic()) {
-        banner = "You're the psychic. Pick a card.";
+        banner = "You're the broadcaster. Pick a card.";
         bits.push(`<div class="pick">${S.choices.map((c, i) => `<button class="card-btn" data-pick="${i}" style="background:linear-gradient(90deg, ${cardColors(c)[0]} 50%, ${cardColors(c)[1]} 50%)">${cardHTML(c)}</button>`).join("")}</div>`);
-      } else banner = `${psy} is the psychic and is picking a card.`;
+      } else banner = `${psy} is the broadcaster and is picking a card.`;
       break;
     case "clue":
       if (isPsychic()) {
         if (!S.spun) {
           banner = hideTarget
-            ? "Spin the wheel. The screen's shut, so the room can't see where it lands."
-            : "Spin the wheel and watch where it lands. Only you can see it.";
+            ? "Spin the dial. The static stays up, so the room can't see where it lands."
+            : "Spin the dial and watch where the target lands.";
           bits.push(`<button class="btn big" id="spinBtn">Spin</button>`);
         } else {
           banner = hideTarget
             ? "The target's hidden. Show it when nobody else is looking."
-            : "Only you can see it. Give a clue that points your team to the target.";
-          bits.push(`<form class="clue-form" id="clueForm"><input id="clueInput" maxlength="60" placeholder="Your clue" autocomplete="off" spellcheck="false" /><button class="btn" type="submit">Give clue</button></form>`);
+            : "Give a clue that gets your team to the target.";
+          bits.push(`<form class="clue-form" id="clueForm"><input id="clueInput" maxlength="60" placeholder="Your clue" autocomplete="off" spellcheck="false" /><button class="btn" type="submit">Send</button></form>`);
         }
         hideBtn();
-      } else banner = S.spun ? `${psy} is thinking of a clue…` : `${psy} is spinning the wheel…`;
+      } else banner = S.spun ? `${psy} is thinking of a clue…` : `${psy} is spinning the dial…`;
       break;
     case "guess":
-      if (isPsychic()) { banner = "Your team is turning the dial. No hints, no faces!"; hideBtn(); }
+      if (isPsychic()) { banner = "Your team is guessing. No hints, no faces!"; hideBtn(); }
       else if (isGuesser()) {
-        banner = "Talk it over, turn the red knob to where you think the target is, then lock it in.";
+        banner = "Talk it over, drag the needle to where you think the target is, then lock it in.";
         bits.push(`<button class="btn big" id="lockBtn">Lock it in</button>`);
-      } else banner = `${team} is turning the dial.${TV || S.mode === "coop" ? "" : " You'll call left or right next."}`;
+      } else banner = `${team} is guessing.${TV || S.mode === "coop" ? "" : " You'll call left or right next."}`;
       break;
     case "side":
       if (isCaller()) banner = "Is the target to the left or the right of their needle? Call it right for a point.";
@@ -561,15 +696,15 @@ function renderTable() {
       if (isPsychic()) hideBtn();
       break;
     case "reveal": {
-      if (revealing) { banner = `<span class="drum">The moment of truth…</span>`; break; }
+      if (revealing) { banner = `<span class="drum">Clearing the static…</span>`; break; }
       const r = S.result;
-      const pts = r.points ? `<b class="pts p${r.points}">+${r.points}</b>` : `<b class="pts p0">0</b>`;
+      const pts = r.points ? `<b class="pts p${tier(r.points)}">+${r.points}</b>` : `<b class="pts p0">0</b>`;
       if (S.mode === "coop") {
-        banner = r.points ? `${pts} ${r.points === 4 ? "Bullseye!" : "Nice."}${r.bonusCard ? " A bullseye earns an extra card." : ""}` : `${pts} Missed it.`;
+        banner = r.points ? `${pts} ${tier(r.points) === 4 ? "Perfect signal!" : tier(r.points) === 3 ? "Good signal." : "Weak signal."}${r.bonusCard ? " A perfect signal earns an extra card." : ""}` : `${pts} Dead air.`;
       } else {
         const other = TEAM_NAMES[1 - S.activeTeam];
         const side = S.side ? (r.sidePoint ? `${other} called ${S.side}: +1.` : `${other} called ${S.side}: no point.`) : "";
-        banner = `${pts} for ${TEAM_NAMES[S.activeTeam]}${r.points === 4 ? " - bullseye!" : "."} ${side}`;
+        banner = `${pts} for ${TEAM_NAMES[S.activeTeam]}${tier(r.points) === 4 ? " - perfect signal!" : r.points ? "." : ": dead air."} ${side}`;
         if (r.again) banner += ` Still behind, so ${TEAM_NAMES[S.activeTeam]} goes again.`;
       }
       if (S.winner !== null) bits.push(`<button class="btn big" id="resultsBtn">See the results</button>`);
@@ -613,8 +748,8 @@ function showOver(st, loud) {
 
   // the awards
   const awards = [];
-  const bulls = h.filter((r) => r.points === 4).length;
-  awards.push(["🎯", "Bullseyes", `${bulls} of ${h.length} round${h.length === 1 ? "" : "s"}`]);
+  const bulls = h.filter((r) => tier(r.points) === 4).length;
+  awards.push(["📶", "Perfect signals", `${bulls} of ${h.length} round${h.length === 1 ? "" : "s"}`]);
   const byPsy = new Map();
   for (const r of h) {
     const e = byPsy.get(r.psychic) || { name: name(r.psychic) || r.psychicName, pts: 0, n: 0 };
@@ -622,13 +757,13 @@ function showOver(st, loud) {
     byPsy.set(r.psychic, e);
   }
   const best = [...byPsy.values()].sort((a, b) => b.pts / b.n - a.pts / a.n || b.n - a.n)[0];
-  if (best) awards.push(["🔮", "Best psychic", `${esc(best.name)} · ${(best.pts / best.n).toFixed(1)} a round`]);
+  if (best) awards.push(["📻", "Clearest broadcaster", `${esc(best.name)} · ${(best.pts / best.n).toFixed(1)} a round`]);
   if (h.length) {
     const off = (r) => Math.abs(r.needle - r.target);
     const close = h.reduce((a, b) => (off(b) < off(a) ? b : a));
     const wild = h.reduce((a, b) => (off(b) > off(a) ? b : a));
-    awards.push(["🧲", "Closest call", `“${esc(close.clue)}” · ${off(close).toFixed(1)}° off`]);
-    if (wild !== close) awards.push(["🛸", "Wildest miss", `“${esc(wild.clue)}” · ${off(wild).toFixed(0)}° off`]);
+    awards.push(["🎯", "Closest tune-in", `“${esc(close.clue)}” · ${off(close).toFixed(1)}° off`]);
+    if (wild !== close) awards.push(["🛸", "Most dead air", `“${esc(wild.clue)}” · ${off(wild).toFixed(0)}° off`]);
   }
   if (st.mode === "teams") {
     for (const t of [0, 1]) {
@@ -643,13 +778,13 @@ function showOver(st, loud) {
     const who = st.mode === "teams" ? `<span class="dot t${r.team}"></span>` : "";
     return `<li>${who}<span class="rc"><b>${esc(r.card[0])} ↔ ${esc(r.card[1])}</b><span>“${esc(r.clue)}” · ${esc(name(r.psychic) || r.psychicName)}</span></span>` +
       `<span class="mini"><i class="t" style="left:${((r.target / 180) * 100).toFixed(1)}%"></i><i class="n" style="left:${((r.needle / 180) * 100).toFixed(1)}%"></i></span>` +
-      `<b class="pts p${r.points}">${r.points ? `+${r.points}` : "0"}</b></li>`;
+      `<b class="pts p${tier(r.points)}">${r.points ? `+${r.points}` : "0"}</b></li>`;
   }).join("");
 
   $("over").innerHTML =
     `<div class="over-card">` +
       (loud ? `<div class="confetti" aria-hidden="true">${confetti()}</div>` : "") +
-      `<p class="over-kicker">${st.mode === "coop" ? "Final score" : "Game over"}</p>` +
+      `<p class="over-kicker">Signal report · ${st.mode === "coop" ? "final score" : "game over"}</p>` +
       `<h2 class="over-head">${esc(head)}</h2>` +
       `<p class="over-sub">${esc(sub)}</p>` +
       `<div class="awards">${awards.map(([i, t, v]) => `<div class="award"><span class="ai">${i}</span><span class="at">${esc(t)}</span><span class="av">${v}</span></div>`).join("")}</div>` +
@@ -663,7 +798,7 @@ function showOver(st, loud) {
 }
 function hideOver() { $("over").hidden = true; }
 function confetti() {
-  const colors = ["#f3b52f", "#ee7a33", "#a8d4e6", "#d8342b", "#7fd8c3", "#1d3d5c"];
+  const colors = ["#ff73e0", "#fa47bd", "#ff8033", "#ffcc73", "#fffaed", "#9ed6ff", "#2975fa"];
   let s = "";
   for (let i = 0; i < 46; i++) {
     s += `<i style="left:${(Math.random() * 100).toFixed(1)}%;background:${colors[i % colors.length]};animation-delay:${(Math.random() * 0.9).toFixed(2)}s;animation-duration:${(2.2 + Math.random() * 1.6).toFixed(2)}s"></i>`;
@@ -688,8 +823,8 @@ function recordStats(st) {
   if (st.mode === "coop") { s.coopGames++; s.coopBest = Math.max(s.coopBest, st.coop.score); }
   else if (mine) { if (mine.team === st.winner) s.wins++; else s.losses++; }
   for (const r of st.history) {
-    if (r.psychic === st.you) { s.psyRounds++; s.psyPoints += r.points; continue; }
-    if (st.mode === "coop" || (mine && r.team === mine.team)) { s.rounds++; if (r.points === 4) s.bullseyes++; }
+    if (r.psychic === st.you) { s.psyRounds++; s.psyPoints = Math.round((s.psyPoints + r.points) * 10) / 10; continue; }
+    if (st.mode === "coop" || (mine && r.team === mine.team)) { s.rounds++; if (tier(r.points) === 4) s.bullseyes++; }
   }
   try { localStorage.setItem(STATS_KEY, JSON.stringify(s)); } catch { /* fine */ }
   renderHomeStats();
@@ -702,8 +837,8 @@ function lifetimeHTML() {
     cell(s.games, s.games === 1 ? "game" : "games") +
     (s.wins + s.losses ? cell(`${s.wins}–${s.losses}`, "won–lost") : "") +
     (s.coopGames ? cell(s.coopBest, "best co-op") : "") +
-    cell(s.bullseyes, s.bullseyes === 1 ? "bullseye" : "bullseyes") +
-    (s.psyRounds ? cell((s.psyPoints / s.psyRounds).toFixed(1), "pts as psychic") : "") +
+    cell(s.bullseyes, s.bullseyes === 1 ? "perfect signal" : "perfect signals") +
+    (s.psyRounds ? cell((s.psyPoints / s.psyRounds).toFixed(1), "pts broadcasting") : "") +
     `</div>`;
 }
 function renderHomeStats() { $("homeStats").innerHTML = lifetimeHTML(); }
@@ -735,6 +870,7 @@ document.addEventListener("click", (e) => {
       armExit(false); hideOver();
       return send({ t: "leave" });
     case "quickBtn": saveName(); setStatus("Finding a game…"); return send({ t: "quick" });
+    case "themeBtn": return setTheme(theme === "classic" ? "spectrum" : "classic");
     case "muteBtn": snd.setMuted(!snd.isMuted()); return paintMute();
     case "tvBtn": {
       const code = $("codeInput").value.trim().toUpperCase();
@@ -787,9 +923,13 @@ $("nameInput").value = myName();
 const linkCode = params.get("room");
 if (linkCode) $("codeInput").value = linkCode.toUpperCase().slice(0, 4);
 
+makeStatic();
 buildDial();
+
 setWheel(PARK, false);
 setNeedle(90);
+paintTheme();
+requestAnimationFrame(drawSpectrum);
 paintMute();
 renderHomeStats();
 show("home");

@@ -6,7 +6,7 @@
 // the table comes first and the players stack under it.
 import { CATEGORIES } from "./words.js?v=1";
 import { MIN_PLAYERS } from "./rules.js?v=1";
-import * as snd from "../wavelenght/sound.js?v=1";
+import * as snd from "../frequency/sound.js?v=1";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));

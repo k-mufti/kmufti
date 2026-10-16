@@ -1,5 +1,5 @@
 // Zero-dependency Node backend for Game Board, the shelf of board-game
-// spin-offs. It runs Wavelenght (here) and Inposter (./inposter-server.js,
+// spin-offs. It runs Frequency (here) and Inposter (./inposter-server.js,
 // which gets every message from a player who said hello from its page).
 //
 // The server keeps the secret. The target's position is chosen here when
@@ -329,21 +329,21 @@ function reveal(room) {
   const truth = R.sideOf(room.needle, room.target);
   const result = { points, truth, sidePoint: 0, again: false };
   if (room.mode === "coop") {
-    room.coop.score += points;
+    room.coop.score = R.round1(room.coop.score + points);
     room.coop.cardsLeft -= 1;
-    if (points === 4) { room.coop.cardsLeft += 1; result.bonusCard = true; }
+    if (points >= R.PERFECT) { room.coop.cardsLeft += 1; result.bonusCard = true; }
     if (room.coop.cardsLeft <= 0) {
       room.winner = "coop";
       result.rating = R.coopRating(room.coop.score);
     }
   } else {
     const me = room.activeTeam, them = 1 - me;
-    room.scores[me] += points;
+    room.scores[me] = R.round1(room.scores[me] + points);
     if (room.side && room.side === truth) { room.scores[them] += 1; result.sidePoint = 1; }
     const [a, b] = room.scores;
     if ((a >= R.WIN || b >= R.WIN) && a !== b) room.winner = a > b ? 0 : 1;
     // Catch-up: a bullseye by the team that's still behind earns another go.
-    result.again = !room.winner && points === 4 && room.scores[me] < room.scores[them];
+    result.again = !room.winner && points >= R.PERFECT && room.scores[me] < room.scores[them];
   }
   room.result = result;
   room.history.push({
@@ -688,8 +688,8 @@ server.on("upgrade", (req, socket) => {
 });
 
 (async () => {
-  R = await import("./wavelenght/rules.js");
-  ({ CARDS } = await import("./wavelenght/cards.js"));
+  R = await import("./frequency/rules.js");
+  ({ CARDS } = await import("./frequency/cards.js"));
   const W = await import("./inposter/words.js");
   const IR = await import("./inposter/rules.js");
   IMP = require("./inposter-server.js")({ send, cleanText, cleanName, newCode, W, R: IR });

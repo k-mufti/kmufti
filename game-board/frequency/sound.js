@@ -1,4 +1,4 @@
-// Wavelenght's sounds and buzzes, all made on the spot with Web Audio - no
+// Frequency's sounds (Inposter borrows them too) and buzzes, all made on the spot with Web Audio - no
 // files to load. Phones that can buzz (Android; iPhones can't) buzz too.
 //
 // Browsers keep audio locked until the first tap, so nothing plays before
@@ -166,4 +166,41 @@ export function fanfare() {
     tone(f, now + t, t > 1 ? 0.9 : 0.2, { type: "square", vol: 0.05 });
     tone(f / 2, now + t, t > 1 ? 0.9 : 0.2, { type: "triangle", vol: 0.1 });
   }
+}
+
+/* ---------- Frequency's radio ---------- */
+// scanning the band: static, and a whistle sliding up and down the dial
+export function scan(secs = 2.4) {
+  if (!live()) return;
+  const t0 = ctx.currentTime;
+  noise(t0, secs, { vol: 0.07, freq: 2400, q: 0.4, to: 900 });
+  const o = ctx.createOscillator(), g = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain();
+  o.type = "sine";
+  o.frequency.setValueAtTime(700, t0);
+  for (let k = 1; k <= 6; k++) o.frequency.linearRampToValueAtTime(k % 2 ? 1900 : 500, t0 + (secs * k) / 7);
+  o.frequency.exponentialRampToValueAtTime(880, t0 + secs);
+  lfo.frequency.value = 9; lg.gain.value = 40;
+  lfo.connect(lg).connect(o.frequency);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(0.03, t0 + 0.1);
+  g.gain.setValueAtTime(0.03, t0 + secs - 0.3);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + secs);
+  o.connect(g).connect(master);
+  o.start(t0); lfo.start(t0);
+  o.stop(t0 + secs + 0.05); lfo.stop(t0 + secs + 0.05);
+  tone(1320, t0 + secs - 0.05, 0.12, { type: "square", vol: 0.04 });   // locked on
+}
+
+// a burst of static, as the screen of noise clears or comes back
+export function hiss(secs = 0.9) {
+  if (!live()) return;
+  noise(ctx.currentTime, secs, { vol: 0.12, freq: 3000, q: 0.3, type: "highpass" });
+}
+
+// two beeps: a transmission going out, or the dial locked in
+export function beep(high) {
+  if (!live()) return;
+  const now = ctx.currentTime;
+  tone(high ? 1175 : 880, now, 0.09, { type: "square", vol: 0.05 });
+  tone(high ? 1568 : 1175, now + 0.11, 0.12, { type: "square", vol: 0.05 });
 }

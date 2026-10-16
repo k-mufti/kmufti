@@ -35,7 +35,7 @@ Mostly static files. A few small zero-dependency Node backends do the live bits:
 | `yahtzee/server.js` | 8024 | The Yahtzee table — 1v1 matchmaking and every dice roll, so no client can invent a number. Nothing persisted; a match lives in memory. |
 | `chameleon/server.js` | 8025 | Practice photos for Meccha Chameleon, fetched from Pexels and cached on our own origin so the game can read pixels off them. The daily puzzle needs none of it. |
 | `infinite-kitchen/server.js` | 8027 | Infinite Kitchen's to-do list: every pair a player tried that has no recipe yet, so the next batch can be written. |
-| `game-board/server.js` | 8028 | Game Board's rooms. Runs Wavelenght: teams, turns and scores, and the hidden target, which only the psychic is sent until the reveal. Nothing persisted. |
+| `game-board/server.js` | 8028 | Game Board's rooms. Runs Frequency and Inposter. Frequency: teams, turns and scores, and the hidden target, which only the psychic is sent until the reveal. Nothing persisted. |
 | `admin/server.js` | 8026 | The private ops dashboard at `/admin/` — uptime, visitor numbers read out of the nginx log, host health. Bound to localhost, password on the nginx side, not linked from anywhere. |
 
 `draw/server.js` is the backend for `/white-canvas/` — the canvas used to live
