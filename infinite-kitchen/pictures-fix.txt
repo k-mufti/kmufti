@@ -171,3 +171,4 @@ Shrimp Chips = Prawn cracker
 Peppermint Patty = York Peppermint Pattie
 Thin Mints = Girl Scout cookies
 V8 = V8 (beverage)
+Pork Rinds = -
