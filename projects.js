@@ -43,9 +43,9 @@ const PROJECTS = [
   {
     slug: "game-board",
     title: "Game Board",
-    description: "Board games, off the shelf and onto your phones: Frequency, where one of you knows where the target is and the rest turn the dial, and Inposter, where everyone knows the word but one.",
+    description: "Board games, off the shelf and onto your phones: Wavelenght, where one of you knows where the target is and the rest turn the dial, and Inposter, where everyone knows the word but one.",
     tags: ["game", "realtime", "party"],
-    accent: "#fa47bd",
+    accent: "#ee7a33",
     accentBg: "linear-gradient(135deg, #3a2d24 0%, #1e1712 100%)",
     href: "game-board/",
     status: "live",

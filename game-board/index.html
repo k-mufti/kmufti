@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Game Board</title>
-  <link rel="icon" href="frequency/favicon.svg?v=2" type="image/svg+xml" />
+  <link rel="icon" href="wavelenght/favicon.svg?v=1" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;1,9..144,700&family=Paytone+One&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;1,9..144,700&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     /* Game Board: a shelf of board-game spin-offs. Each box opens its game;
        the empty spots are for the ones still to come. */
@@ -61,14 +61,13 @@
       box-shadow: 6px 0 0 rgba(0, 0, 0, 0.25), 0 14px 22px -10px rgba(0, 0, 0, 0.7);
     }
     a.box:hover { transform: translateY(-8px) rotate(-1deg); }
-    .box.wave { background: #120b1c; color: #fffaed; }
+    .box.wave { background: #efe8da; color: #1d3d5c; }
     .box.wave svg { position: absolute; left: 10px; right: 10px; bottom: 16px; width: calc(100% - 20px); }
     .box.wave .name {
       position: absolute; top: 18px; left: 0; right: 0; text-align: center;
-      font-family: "Paytone One", sans-serif; font-size: 24px;
-      text-shadow: 0 0 2px #fff, 0 0 6px #ffcc73, 0 0 12px #ff8033, 0 0 20px #fa47bd;
+      font-family: "Fraunces", serif; font-style: italic; font-weight: 700; font-size: 25px;
     }
-    .box.wave .tag { position: absolute; top: 52px; left: 0; right: 0; text-align: center; font-size: 11px; color: #ff73e0; }
+    .box.wave .tag { position: absolute; top: 52px; left: 0; right: 0; text-align: center; font-size: 11px; color: #5b6573; }
     .box.imp { background: #1f1535; color: #f6f0ff; }
     .box.imp svg { position: absolute; left: 14px; right: 14px; bottom: 14px; width: calc(100% - 28px); }
     .box.imp .name {
@@ -97,23 +96,23 @@
 
   <div class="shelf">
     <div class="row">
-      <a class="box wave" href="frequency/">
-        <span class="name">Frequency</span>
+      <a class="box wave" href="wavelenght/">
+        <span class="name">Wavelenght</span>
         <span class="tag">read your friends' minds</span>
         <svg viewBox="-100 -100 200 108" aria-hidden="true">
-          <circle r="96" fill="#ff73e0"/>
-          <circle r="90" fill="#0a299e"/>
-          <circle r="84" fill="#070b3a"/>
-          <path d="M0 0L-27 -80A84 84 0 0 1 -12 -83Z" fill="#fa47bd"/>
-          <path d="M0 0L-12 -83A84 84 0 0 1 3 -84Z" fill="#ff8033"/>
-          <path d="M0 0L3 -84A84 84 0 0 1 18 -82Z" fill="#ffcc73"/>
-          <path d="M0 0L18 -82A84 84 0 0 1 32 -78Z" fill="#ff8033"/>
-          <path d="M0 0L32 -78A84 84 0 0 1 45 -71Z" fill="#fa47bd"/>
-          <rect x="-100" y="0" width="200" height="8" fill="#0a299e"/>
-          <rect x="-100" y="-3" width="18" height="6" rx="3" fill="#9ed6ff"/>
-          <rect x="82" y="-3" width="18" height="6" rx="3" fill="#9ed6ff"/>
-          <path d="M-2.5 0L0 -80L2.5 0Z" fill="#fffaed" transform="rotate(12)"/>
-          <circle r="14" fill="#fa47bd"/>
+          <circle r="96" fill="#fbfaf6"/>
+          <circle r="90" fill="#1d3d5c"/>
+          <circle r="84" fill="#f4efe4"/>
+          <path d="M0 0L-27 -80A84 84 0 0 1 -12 -83Z" fill="#f3b52f"/>
+          <path d="M0 0L-12 -83A84 84 0 0 1 3 -84Z" fill="#ee7a33"/>
+          <path d="M0 0L3 -84A84 84 0 0 1 18 -82Z" fill="#a8d4e6"/>
+          <path d="M0 0L18 -82A84 84 0 0 1 32 -78Z" fill="#ee7a33"/>
+          <path d="M0 0L32 -78A84 84 0 0 1 45 -71Z" fill="#f3b52f"/>
+          <rect x="-100" y="0" width="200" height="8" fill="#1d3d5c"/>
+          <rect x="-100" y="-3" width="18" height="6" rx="3" fill="#7fd8c3"/>
+          <rect x="82" y="-3" width="18" height="6" rx="3" fill="#7fd8c3"/>
+          <path d="M-2.5 0L0 -80L2.5 0Z" fill="#d8342b" transform="rotate(12)"/>
+          <circle r="14" fill="#d8342b"/>
         </svg>
       </a>
       <a class="box imp" href="inposter/">

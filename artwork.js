@@ -493,8 +493,8 @@ const ARTWORK = {
   /* Bust — a photo of the real thing: the bust page's own render, cropped
      to the tile (bust/cover.jpg). */
   bust: `<img src="bust/cover.jpg?v=2" alt="" loading="lazy" />`,
-  /* Game Board — the shelf: Frequency's box (in the heat word's colours)
-     and Inposter's standing on a plank, a gap beside them for what's next. */
+  /* Game Board — the shelf: Wavelenght's box and Inposter's standing on a
+     plank, a gap beside them for what's next. */
   "game-board": `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -511,24 +511,24 @@ const ARTWORK = {
       <rect width="320" height="200" fill="url(#gb-wall)"/>
       <!-- the gap for the next game -->
       <rect x="268" y="74" width="40" height="88" rx="4" fill="none" stroke="#c9b8a6" stroke-opacity="0.25" stroke-width="1.5" stroke-dasharray="4 4"/>
-      <!-- Frequency: the dial, glowing on a night-coloured lid -->
-      <rect x="140" y="50" width="8" height="112" fill="#0b0712"/>
-      <rect x="22" y="46" width="120" height="116" rx="5" fill="#120b1c"/>
-      <text x="82" y="72" text-anchor="middle" font-family="'Paytone One', Arial Black, sans-serif" font-size="17" fill="#fffaed" stroke="#fa47bd" stroke-width="0.6" paint-order="stroke">Frequency</text>
+      <!-- Wavelenght: the box, its side in shadow, its dial on the lid -->
+      <rect x="140" y="50" width="8" height="112" fill="#bfb6a6"/>
+      <rect x="22" y="46" width="120" height="116" rx="5" fill="#efe8da"/>
+      <text x="82" y="73" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-weight="700" font-size="17" fill="#1d3d5c">Wavelenght</text>
       <g transform="translate(82 150)" clip-path="url(#gb-lid)">
-        <circle r="52" fill="#ff73e0"/>
-        <circle r="48" fill="#0a299e"/>
-        <circle r="44" fill="#070b3a"/>
-        <path d="M0 0L-23 -37.5A44 44 0 0 1 -15.3 -41.2Z" fill="#fa47bd"/>
-        <path d="M0 0L-15.3 -41.2A44 44 0 0 1 -7.6 -43.3Z" fill="#ff8033"/>
-        <path d="M0 0L-7.6 -43.3A44 44 0 0 1 0 -44Z" fill="#ffcc73"/>
-        <path d="M0 0L0 -44A44 44 0 0 1 7.6 -43.3Z" fill="#ff8033"/>
-        <path d="M0 0L7.6 -43.3A44 44 0 0 1 15.3 -41.2Z" fill="#fa47bd"/>
-        <rect x="-54" y="0" width="108" height="14" fill="#0a299e"/>
-        <rect x="-58" y="-2.5" width="12" height="5" rx="2.5" fill="#9ed6ff"/>
-        <rect x="46" y="-2.5" width="12" height="5" rx="2.5" fill="#9ed6ff"/>
-        <path d="M-2 0L0 -40L2 0Z" fill="#fffaed" transform="rotate(-14)"/>
-        <circle r="8" fill="#fa47bd"/>
+        <circle r="52" fill="#fbfaf6"/>
+        <circle r="48" fill="#1d3d5c"/>
+        <circle r="44" fill="#f4efe4"/>
+        <path d="M0 0L-23 -37.5A44 44 0 0 1 -15.3 -41.2Z" fill="#f3b52f"/>
+        <path d="M0 0L-15.3 -41.2A44 44 0 0 1 -7.6 -43.3Z" fill="#ee7a33"/>
+        <path d="M0 0L-7.6 -43.3A44 44 0 0 1 0 -44Z" fill="#a8d4e6"/>
+        <path d="M0 0L0 -44A44 44 0 0 1 7.6 -43.3Z" fill="#ee7a33"/>
+        <path d="M0 0L7.6 -43.3A44 44 0 0 1 15.3 -41.2Z" fill="#f3b52f"/>
+        <rect x="-54" y="0" width="108" height="14" fill="#1d3d5c"/>
+        <rect x="-58" y="-2.5" width="12" height="5" rx="2.5" fill="#7fd8c3"/>
+        <rect x="46" y="-2.5" width="12" height="5" rx="2.5" fill="#7fd8c3"/>
+        <path d="M-2 0L0 -40L2 0Z" fill="#d8342b" transform="rotate(-14)"/>
+        <circle r="8" fill="#d8342b"/>
       </g>
       <!-- Inposter: three cards, the odd one pink -->
       <rect x="258" y="58" width="8" height="104" fill="#0e0918"/>
