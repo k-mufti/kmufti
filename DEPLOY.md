@@ -262,6 +262,20 @@ launcher tiles before it became its own project, and the folder name stuck.
 
 12. **DNS**: point `kmufti.com` (and `www`) at your VPS IP (A / AAAA records).
 
+## Analytics (PostHog)
+
+Every page gets `/analytics.js` without the HTML mentioning it: nginx adds the
+`<script>` tag on the way out (`sub_filter` in `location /`), so new pages are
+covered automatically, local copies of the site send nothing, and `/admin/`
+never has it. PostHog's own script and its event uploads go through
+`/ingest/` on our domain (proxied to PostHog's US servers), which keeps ad
+blockers from dropping them.
+
+No cookies (sessionStorage only), typed input is masked in session replays,
+and `<canvas>` drawing isn't recorded. Dashboard: us.posthog.com.
+
+Custom events from any page's script: `window.track?.("name", { ...props })`.
+
 ## Turnstile (the "are you human" check)
 
 Pages that write to a backend load `/human.js` and send those writes through
