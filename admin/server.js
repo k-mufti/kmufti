@@ -95,7 +95,7 @@ function readSitePaths() {
   try { SITE_PATHS = new Set(fs.readdirSync(REPO).filter((f) => !f.startsWith("."))); } catch { /* keep the last list */ }
 }
 readSitePaths();
-// The folders that are games, for the hub's "playing now" count: every
+// The folders that are games, for the dashboard's "playing now" count: every
 // project folder except the ones that are plumbing or tools. Read from disk
 // like SITE_PATHS, so a new game counts without touching this file.
 const NOT_GAMES = new Set(["admin", "images", "deploy", "_lab", "human", "wishlist"]);
@@ -650,7 +650,7 @@ function trafficView(days = 30) {
              hits: today.hits, api: today.api, bytes: today.bytes, hours: today.hours },
     top: { pages: topOf(totals.pages), refs: topOf(totals.refs, 6),
            agents: topOf(totals.agents, 5), os: topOf(totals.os, 5), errors: topOf(totals.errors, 6) },
-    live: { visitors: liveSet.size, recent: recent.slice(-25).reverse() },
+    live: { visitors: liveSet.size, playing: playingNow(), recent: recent.slice(-25).reverse() },
     users: usersOf(td),
     allTime: { visitors: allTimeN, since: allTime.since,
                fresh30: series.reduce((a, x) => a + x.fresh, 0) },
@@ -820,13 +820,6 @@ const server = http.createServer(async (req, res) => {
 
   if (apiPath === "/api/snapshot" && req.method === "GET") {
     return sendJson(res, 200, await snapshot());
-  }
-
-  // How many different people touched any game in the last five minutes.
-  // No password on this one: nginx doesn't route it, and the Jigsaw backend
-  // asks for it over localhost to put the number on the hub.
-  if (apiPath === "/api/playing" && req.method === "GET") {
-    return sendJson(res, 200, { playing: playingNow() });
   }
 
   // The last lines a unit wrote, for when a card has gone red and you want to

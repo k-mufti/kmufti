@@ -130,9 +130,7 @@
 })();
 
 /* =========================================================================
-   The front-door count — how many different people touched any game in
-   the last five minutes (the ops backend reads that off the access log).
-   The POST still adds this open to the all-time tally.
+   The front-door count — how many times kmufti.com has been opened.
 
    Counted by the Jigsaw backend, which is the one nginx already forwards
    /puzzle/api/ to. POSTing is what adds this open; the reply carries the
@@ -145,8 +143,8 @@
   fetch("/puzzle/api/visits", { method: "POST" })
     .then((r) => (r.ok ? r.json() : null))
     .then((d) => {
-      if (!d || typeof d.playing !== "number") return;
-      el.textContent = `${d.playing.toLocaleString()} playing`;
+      if (!d || typeof d.visits !== "number") return;
+      el.textContent = `${d.visits.toLocaleString()} users`;
       el.hidden = false;
     })
     .catch(() => { /* no counter today */ });

@@ -99,6 +99,8 @@ function render(s) {
   const hubOpens = s.services.find((x) => x.id === "puzzle")?.data?.visits;
   $("numbers").innerHTML = [
     { v: `<em>${n(t.live.visitors)}</em>`, l: "here in the last 5 min" },
+    { v: `<em>${n(t.live.playing)}</em>`, l: "playing a game, last 5 min",
+      title: "different people who opened or played any game (not the hub alone) in the last five minutes" },
     { v: `<em>${n(t.today.fresh)}</em>`, l: "new today",
       title: "people who had never been to the site before today — the number that tells you whether anyone new is finding it" },
     { v: n(t.today.uniq), l: "visitors today",
