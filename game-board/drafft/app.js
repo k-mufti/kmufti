@@ -196,7 +196,7 @@ function renderStage() {
     st.className = "stage landed";
     st.innerHTML = `<p class="kicker">The category is</p>` +
       `<h2 class="item cat-pick">${esc(S.cat.emoji)} ${esc(S.cat.name)}</h2>` +
-      `<p class="ask">Keep it, or spin again? You both have to want a respin, and you only get one.</p>` +
+      `<p class="ask">Keep it, or spin again? It only respins if you both want to.</p>` +
       `<div class="acts">` +
       `<button class="btn big" id="keepBtn">Keep it</button>` +
       `<button class="btn big alt${mine === "respin" ? " on" : ""}" id="respinBtn" ${mine === "respin" ? "disabled" : ""}>${mine === "respin" ? "Voted to respin" : "🔁 Respin"}</button>` +

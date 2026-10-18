@@ -2,8 +2,8 @@
 // hands over every message from a player on the Drafft page.
 //
 // A 1v1 auction draft. Two players, $20 and five picks each. A reel spins
-// and lands on a category (spin); if you both vote to respin it spins once
-// more (landed - one respin a game). A random item from it comes up and one
+// and lands on a category (spin); if you both vote to respin it spins
+// again, as often as you both want (landed). A random item from it comes up and one
 // player names an opening price (open); the other raises or lets them have
 // it, back and forth (bid), until someone lets it go and the high bidder
 // pays (sold). Openers take turns. When both rosters are full it's over
@@ -45,7 +45,6 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
       players: [],        // { id, name, color, peer, money, roster: [{ item, price }] }
       phase: "lobby",     // lobby | spin | open | bid | sold | done
       cat: null,          // { id, name, emoji }
-      respun: false,      // the one respin's been used
       votes: {},          // after the reel lands: id -> "respin" | "keep"
       voteEnds: 0,
       pool: [],           // items not yet up
@@ -77,7 +76,6 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
       phase: room.phase,
       cat: room.cat,
       cats: C.CATEGORIES.map((c) => ({ name: c.name, emoji: c.emoji })),   // for the reel
-      respun: room.respun,
       votes: room.votes,
       voteLeft: room.phase === "landed" ? Math.max(0, room.voteEnds - Date.now()) : 0,
       lot: room.lot,
@@ -104,7 +102,6 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
   function startDraft(room) {
     stopCountdown(room);
     setCategory(room, pick(C.CATEGORIES));
-    room.respun = false;
     room.votes = {};
     for (const p of room.players) { p.money = R.BUDGET; p.roster = []; }
     room.log = [];
@@ -116,9 +113,8 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
     later(room, R.SPIN_MS, () => landed(room));
   }
 
-  // The reel's stopped. Unless the respin's been used, you both get a say.
+  // The reel's stopped: keep it, or both vote to spin again.
   function landed(room) {
-    if (room.respun) return nextItem(room);
     room.phase = "landed";
     room.votes = {};
     room.voteEnds = Date.now() + R.VOTE_MS;
@@ -127,16 +123,15 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
   }
 
   function vote(room, p, v) {
-    if (room.phase !== "landed" || room.respun) return;
+    if (room.phase !== "landed") return;
     room.votes[p.id] = v;
     if (v === "keep") return nextItem(room);
     if (room.players.every((x) => room.votes[x.id] === "respin")) {
-      // both want a different one: spin again, and that one sticks
+      // both want a different one: spin again, and vote again
       setCategory(room, pick(C.CATEGORIES.filter((c) => c.id !== room.cat.id)));
-      room.respun = true;
       room.phase = "spin";
       pushState(room);
-      return later(room, R.SPIN_MS, () => nextItem(room));
+      return later(room, R.SPIN_MS, () => landed(room));
     }
     pushState(room);
   }
