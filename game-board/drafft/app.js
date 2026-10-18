@@ -4,7 +4,7 @@
 // The game screen is you on the left, them on the right, and the stage in
 // the middle: the category reel, then each item as it comes up, with the
 // bid controls under it when it's your turn.
-import * as R from "./rules.js?v=3";
+import * as R from "./rules.js?v=4";
 import * as snd from "../frequency/sound.js?v=3";
 
 const $ = (id) => document.getElementById(id);
@@ -262,7 +262,7 @@ function updateStepper() {
   $("bidBtn").textContent = S.phase === "open" ? `Open at ${money(amt)}` : `Raise to ${money(amt)}`;
   $("bidBtn").disabled = hi < lo;
   for (const b of document.querySelectorAll(".step")) b.disabled = Number(b.dataset.step) < 0 ? amt <= lo : amt >= hi;
-  $("maxNote").textContent = hi < lo ? `You can't go higher - you need $1 for each empty spot.` : `You can go up to ${money(hi)}.`;
+  $("maxNote").textContent = hi < lo ? `You don't have enough to go higher.` : hi === p.money ? `You can go up to ${money(hi)} - all in.` : `You can go up to ${money(hi)}.`;
 }
 
 // The reel: every category streams past and it lands on the one the server

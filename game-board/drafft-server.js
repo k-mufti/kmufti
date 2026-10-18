@@ -34,6 +34,8 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
   const other = (room, id) => room.players.find((p) => p.id !== id);
   const open = (p) => R.PICKS - p.roster.length;
   const maxOf = (p) => R.maxBid(p.money, open(p));
+  // still in the draft: a spot to fill and at least $1 to bid with
+  const active = (p) => maxOf(p) >= 1;
 
   function makeRoom(host, quick) {
     const room = {
@@ -141,12 +143,12 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
     stop(room);                  // a "keep" vote can beat the vote timer here
     room.sold = null;
     const [a, b] = room.players;
-    if (!a || !b || (open(a) <= 0 && open(b) <= 0) || !room.pool.length) return finish(room);
+    if (!a || !b || (!active(a) && !active(b)) || !room.pool.length) return finish(room);
     let opener;
     if (!room.opener) opener = pick(room.players);
     else opener = other(room, room.opener);
-    // a full roster can't open: the other one does
-    if (open(opener) <= 0) opener = other(room, opener.id);
+    // a full roster (or an empty wallet) can't open: the other one does
+    if (!active(opener)) opener = other(room, opener.id);
     room.opener = opener.id;
     const item = room.pool.splice(crypto.randomInt(0, room.pool.length), 1)[0];
     room.lot = { item, high: 0, leader: null, turn: opener.id, bids: [] };
@@ -160,7 +162,7 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
     if (!Number.isInteger(amount) || amount < 1) return "Bid at least $1.";
     if (amount <= lot.high) return `Bid more than $${lot.high}.`;
     const max = maxOf(p);
-    if (amount > max) return `The most you can bid is $${max} - you need $1 for every other empty spot.`;
+    if (amount > max) return `The most you can bid is $${max}.`;
     lot.high = amount;
     lot.leader = p.id;
     lot.bids.push({ id: p.id, amount });

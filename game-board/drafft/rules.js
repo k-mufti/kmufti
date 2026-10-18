@@ -14,9 +14,9 @@ export const SPIN_MS = 4800;       // the category reel (it lands with 1.5s to s
 export const SOLD_MS = 2200;       // the "sold" moment before the next item
 export const VOTE_MS = 8000;       // after the reel lands: keep it, or both vote to respin (as often as you like)
 
-// You must always be able to fill your roster at $1 a spot, so the most you
-// can bid is your money minus $1 for every OTHER spot still empty.
+// You can go all in: bid every dollar you have on one item. Run out of money
+// and you keep whatever you've got - the empty spots stay empty.
 export function maxBid(money, open) {
   if (open <= 0) return 0;
-  return Math.max(0, money - (open - 1));
+  return Math.max(0, money);
 }
