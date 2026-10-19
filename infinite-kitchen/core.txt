@@ -2669,7 +2669,7 @@ Feast + Feast = Buffet [dish]
 Feast + Platter = Buffet
 
 Middle Eastern: Mezze, Fesenjan
-East Asian: Dim Sum, Hot Pot, Seafood Pancake, Moo Shu, Mandarin Pancakes, Sweet and Sour Fish, Hayashi Rice
+East Asian: Dim Sum, Hot Pot, Seafood Pancake, Moo Shu, Mandarin Pancakes, Sweet and Sour Fish, Hayashi Rice, Gukbap, Samgyetang, Seolleongtang, Sujebi, Naengguk, Budae Jjigae, Kimchi Jjigae, Doenjang Jjigae, Yakgwa, Dalgona, Bingsu, Haejangguk, Bugeoguk
 Indian: Thali, Chicken Tikka, Bhel Puri, Sambar, Upma, Hakka Noodles, Seekh Kebab, Keema, Papadum, Jaljeera
 
 # Round 11: chip flavours
@@ -15480,3 +15480,174 @@ Gummy Bears + Steam = Slop
 Gummy Bears + Porridge = Slop
 Gummy Bears + Vegetable Soup = Slop
 Gummy Bears + Roast = Slop
+
+## Step 2 layer 2, batch 28 (2026-10-19): Peeps, Seaweed Soup, Fish Soup
+
+# Peeps
+Peeps + Ocean = Saltwater Taffy
+Peeps + Rock Salt = Saltwater Taffy
+Peeps + Wheat = S'mores
+Peeps + Crackers = S'mores
+Peeps + Roast = S'mores
+Peeps + Tree = Easter Basket [dish]
+Peeps + Farm = Easter Basket
+Peeps + Candy = Easter Basket
+Peeps + Bee = Easter Basket
+Peeps + Flower = Easter Basket
+Peeps + Rock Candy = Easter Basket
+Peeps + Rice = Rice Krispies Treat
+Peeps + Vegetables = Sweet Potato Casserole
+Peeps + Fish = Swedish Fish
+Peeps + Syrup = Marshmallow Fluff
+Peeps + Steam = Marshmallow Fluff
+Peeps + Hen = Chick
+Peeps + Cereal = Lucky Charms
+Peeps + Cow = Hot Cocoa
+Peeps + Boiling Water = Hot Cocoa
+# fruit, coconut and marshmallows: the old potluck salad
+Peeps + Fruit = Ambrosia Salad [dish]
+Peeps + Egg = Cadbury Creme Egg
+# two cake rounds around a marshmallow filling
+Peeps + Flour = Whoopie Pie [dish]
+Peeps + Corn = Candy Corn
+Peeps + Caramel = Rocky Road
+Peeps + Salted Caramel = Rocky Road
+Peeps + Ice = Rocky Road
+Peeps + Popcorn = Popcorn Ball
+# hot dogs and marshmallows on sticks
+Peeps + Hot Dog = Campfire [dish]
+Peeps + Jerky = Campfire
+Peeps + Barbecue = Campfire
+Peeps + Brine = Pickle Candy
+Peeps + Sparkling Water = Cream Soda
+Peeps + Granola = Granola Bar
+Peeps + Oats = Granola Bar
+Peeps + Porridge = Oatmeal
+Peeps + Kale Chips = Party Mix
+Peeps + Stir-Fry = Sweet and Sour Chicken
+Peeps + Mint = Candy Cane
+Peeps + Meat = Pig Candy
+Peeps + Sugar Cubes = Marshmallow
+Peeps + Powdered Sugar = Marshmallow
+Peeps + Vegetable Soup = Slop
+Peeps + Broth = Slop
+Peeps + Seaweed = Peeps [nothing]
+Peeps + Beer = Peeps [nothing]
+Peeps + Herbs = Peeps [nothing]
+Peeps + Green Smoothie = Peeps [nothing]
+
+# Seaweed Soup - Korea's miyeok-guk, the soup eaten on birthdays
+Seaweed Soup + Ocean = Seafood Soup
+Seaweed Soup + Wheat = Udon
+Seaweed Soup + Tree = Miso Soup
+Seaweed Soup + Vegetables = Miso Soup
+Seaweed Soup + Farm = Beef Stew
+Seaweed Soup + Candy = Birthday Cake
+Seaweed Soup + Sugar Cubes = Birthday Cake
+Seaweed Soup + Powdered Sugar = Birthday Cake
+Seaweed Soup + Rock Candy = Birthday Cake
+Seaweed Soup + Rock Salt = Sea Salt
+# Korean soup with rice in it
+Seaweed Soup + Rice = Gukbap [dish]
+Seaweed Soup + Fish = Fish Soup
+Seaweed Soup + Syrup = Hotteok
+# Korea's chicken and ginseng soup
+Seaweed Soup + Hen = Samgyetang [dish]
+Seaweed Soup + Herbs = Samgyetang
+Seaweed Soup + Cereal = Slop
+# ox-bone soup
+Seaweed Soup + Cow = Seolleongtang [dish]
+Seaweed Soup + Meat = Seolleongtang
+# Korean shaved ice with fruit
+Seaweed Soup + Fruit = Bingsu [dish]
+Seaweed Soup + Seaweed = Seaweed Salad
+# Korea's honey cookies
+Seaweed Soup + Bee = Yakgwa [dish]
+Seaweed Soup + Egg = Egg Drop Soup
+# hand-torn dough soup
+Seaweed Soup + Flour = Sujebi [dish]
+Seaweed Soup + Corn = Corn Chowder
+Seaweed Soup + Crackers = Seaweed Snacks
+Seaweed Soup + Kale Chips = Seaweed Snacks
+# the honeycomb candy from Squid Game
+Seaweed Soup + Caramel = Dalgona [dish]
+Seaweed Soup + Salted Caramel = Dalgona
+# Korea's chilled summer soup
+Seaweed Soup + Ice = Naengguk [dish]
+Seaweed Soup + Popcorn = Hurricane Popcorn
+# "army stew": hot dogs, Spam and noodles
+Seaweed Soup + Hot Dog = Budae Jjigae [dish]
+Seaweed Soup + Brine = Kimchi Jjigae [dish]
+# dried pollack soup
+Seaweed Soup + Jerky = Bugeoguk [dish]
+Seaweed Soup + Steam = Hot Pot
+Seaweed Soup + Broth = Hot Pot
+Seaweed Soup + Boiling Water = Broth
+Seaweed Soup + Porridge = Congee
+Seaweed Soup + Oats = Congee
+# hangover soup
+Seaweed Soup + Beer = Haejangguk [dish]
+Seaweed Soup + Vegetable Soup = Doenjang Jjigae [dish]
+Seaweed Soup + Stir-Fry = Korean BBQ
+Seaweed Soup + Barbecue = Korean BBQ
+Seaweed Soup + Roast = Nori
+Seaweed Soup + Mint = Seaweed Soup [nothing]
+Seaweed Soup + Flower = Seaweed Soup [nothing]
+Seaweed Soup + Sparkling Water = Seaweed Soup [nothing]
+Seaweed Soup + Granola = Seaweed Soup [nothing]
+
+# Fish Soup
+Fish Soup + Ocean = Seafood Soup
+Fish Soup + Broth = Seafood Soup
+Fish Soup + Wheat = Udon
+Fish Soup + Tree = Fish Curry
+Fish Soup + Farm = Clam Chowder
+# New England's fish chowder
+Fish Soup + Cow = Fish Chowder [dish]
+Fish Soup + Crackers = Oyster Crackers
+Fish Soup + Candy = Swedish Fish
+Fish Soup + Rock Salt = Fish Sauce
+Fish Soup + Rice = Congee
+Fish Soup + Porridge = Congee
+Fish Soup + Vegetables = Bouillabaisse
+Fish Soup + Fish = Bouillabaisse
+Fish Soup + Vegetable Soup = Bouillabaisse
+# saffron is a flower
+Fish Soup + Flower = Bouillabaisse
+Fish Soup + Syrup = Sweet and Sour Fish
+Fish Soup + Sugar Cubes = Sweet and Sour Fish
+Fish Soup + Rock Candy = Sweet and Sour Fish
+Fish Soup + Hen = Gumbo
+Fish Soup + Fruit = Tom Yum
+Fish Soup + Seaweed = Miso Soup
+Fish Soup + Bee = Honey Glazed Salmon
+# Greece's egg-lemon soup
+Fish Soup + Egg = Avgolemono [dish]
+Fish Soup + Flour = Fish Balls
+Fish Soup + Corn = Corn Chowder
+Fish Soup + Caramel = Thit Kho
+Fish Soup + Salted Caramel = Thit Kho
+# Peru's leche de tigre is drunk cold
+Fish Soup + Ice = Ceviche
+# Ecuador serves ceviche with popcorn
+Fish Soup + Popcorn = Ceviche
+Fish Soup + Hot Dog = Budae Jjigae
+Fish Soup + Brine = Pickled Herring
+Fish Soup + Jerky = Bugeoguk
+Fish Soup + Steam = Steamed Fish
+# the Japanese fish stock behind miso and udon
+Fish Soup + Boiling Water = Dashi
+Fish Soup + Beer = Beer-Battered Fish
+Fish Soup + Kale Chips = Caldo Verde
+Fish Soup + Stir-Fry = Hot Pot
+Fish Soup + Herbs = Cioppino
+Fish Soup + Mint = Pho
+Fish Soup + Barbecue = Seafood Boil
+Fish Soup + Roast = Baked Fish
+Fish Soup + Meat = Surf and Turf
+Fish Soup + Cereal = Slop
+Fish Soup + Green Smoothie = Slop
+Fish Soup + Powdered Sugar = Fish Soup [nothing]
+Fish Soup + Sparkling Water = Fish Soup [nothing]
+Fish Soup + Granola = Fish Soup [nothing]
+Fish Soup + Oats = Fish Soup [nothing]
