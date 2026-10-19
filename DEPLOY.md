@@ -10,7 +10,7 @@ persists in the visitor's browser (`localStorage`).
 | Part | Type | Notes |
 |------|------|-------|
 | Hub (`/`) | static | the launcher board |
-| Jeoprady (`/jeoprady/`) | static | loads `boards.json`, `categories.json`, `modern_categories.json` |
+| Jeopardy (`/jeopardy/`) | static | loads `boards.json`, `categories.json`, `modern_categories.json` |
 | Meccha Chameleon (`/chameleon/`) | static + **Node** (`chameleon/server.js`) | daily puzzle from `daily.json` (static, in the repo); practice photos from Pexels on port 8025, cached in `/var/lib/kmufti-chameleon/photos` |
 | Lost in Translation (`/translate/`) | static | pre-built `puzzles.json` |
 | Wishlist (`/wishlist/`) | static + **Node** (`wishlist/server.js`) | `/wishlist/api/unfurl` + `/wishlist/api/img` on port 8021 |
@@ -453,5 +453,5 @@ Static changes are live immediately. When you edit a CSS/JS file, bump its
   sudo rm /var/lib/kmufti-draw/canvas.bin
   sudo systemctl start kmufti-draw
   ```
-- `jeoprady/JEOPARDY_CSV.csv` is **git-ignored** — it's only used by
+- `jeopardy/JEOPARDY_CSV.csv` is **git-ignored** — it's only used by
   `build_boards.py` to regenerate the JSON, which the live site doesn't need.

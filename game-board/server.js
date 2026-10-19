@@ -1,5 +1,6 @@
 // Zero-dependency Node backend for Game Board, the shelf of board-game
-// spin-offs. It runs Frequency (here), Drafft (./drafft-server.js) and Inposter (./inposter-server.js,
+// spin-offs. It runs Frequency (here), Draft (./draft-server.js), 21 Questions
+// (./questions-server.js) and Imposter (./imposter-server.js,
 // which gets every message from a player who said hello from its page).
 //
 // The server keeps the secret. The target's position is chosen here when
@@ -58,8 +59,9 @@ const QUICK_START_MS = 5000;           // a quick game's countdown once 2 are in
 const QUICK_MAX = 8;                   // a quick game stops taking strangers here
 
 let R = null, CARDS = null;            // loaded below (ES modules)
-let IMP = null;                        // Inposter, once its words are loaded
-let DRF = null;                        // Drafft, once its categories are loaded
+let IMP = null;                        // Imposter, once its words are loaded
+let QS = null;                         // 21 Questions
+let DRF = null;                        // Draft, once its categories are loaded
 
 /* ========================================================================
    WebSocket, hand-rolled. Same codec as yahtzee/server.js - text frames,
@@ -168,7 +170,7 @@ function newCode() {
   for (;;) {
     let c = "";
     for (let i = 0; i < 4; i++) c += CODE_ALPHABET[crypto.randomInt(0, CODE_ALPHABET.length)];
-    if (!rooms.has(c) && !(IMP && IMP.rooms.has(c)) && !(DRF && DRF.rooms.has(c))) return c;
+    if (!rooms.has(c) && !(IMP && IMP.rooms.has(c)) && !(DRF && DRF.rooms.has(c)) && !(QS && QS.rooms.has(c))) return c;
   }
 }
 
@@ -495,8 +497,9 @@ function unwatch(peer) {
 }
 
 function dropped(peer) {
-  if (peer.game === "inposter") return IMP && IMP.dropped(peer);
-  if (peer.game === "drafft") return DRF && DRF.dropped(peer);
+  if (peer.game === "imposter") return IMP && IMP.dropped(peer);
+  if (peer.game === "draft") return DRF && DRF.dropped(peer);
+  if (peer.game === "questions") return QS && QS.dropped(peer);
   unwatch(peer);
   const room = peer.room ? rooms.get(peer.room) : null;
   if (!room) return;
@@ -521,13 +524,21 @@ function onMessage(peer, raw) {
     peer.id = cleanText(m.id, 40) || crypto.randomUUID();
     peer.name = cleanName(m.name);
     peer.color = /^#[0-9a-f]{6}$/i.test(m.color || "") ? m.color : null;
-    if (m.game === "inposter") {
-      peer.game = "inposter";
+    // a tab still open on a page from before the games lost their misspellings
+    if (m.game === "inposter") m.game = "imposter";
+    if (m.game === "drafft") m.game = "draft";
+    if (m.game === "imposter") {
+      peer.game = "imposter";
       send(peer, { t: "welcome", id: peer.id });
       return IMP ? IMP.hello(peer) : send(peer, { t: "idle" });
     }
-    if (m.game === "drafft") {
-      peer.game = "drafft";
+    if (m.game === "questions") {
+      peer.game = "questions";
+      send(peer, { t: "welcome", id: peer.id });
+      return QS ? QS.hello(peer) : send(peer, { t: "idle" });
+    }
+    if (m.game === "draft") {
+      peer.game = "draft";
       send(peer, { t: "welcome", id: peer.id });
       return DRF ? DRF.hello(peer) : send(peer, { t: "idle" });
     }
@@ -545,8 +556,9 @@ function onMessage(peer, raw) {
     return send(peer, { t: "idle" });
   }
   if (!peer.id) return;
-  if (peer.game === "inposter") return IMP && IMP.handle(peer, m);
-  if (peer.game === "drafft") return DRF && DRF.handle(peer, m);
+  if (peer.game === "imposter") return IMP && IMP.handle(peer, m);
+  if (peer.game === "draft") return DRF && DRF.handle(peer, m);
+  if (peer.game === "questions") return QS && QS.handle(peer, m);
 
   if (m.t === "create") {
     leaveRoom(peer);
@@ -654,7 +666,7 @@ const server = http.createServer((req, res) => {
   const route = url.pathname.replace(/^\/game-board/, "");
   if (route === "/api/health") {
     res.writeHead(200, { "content-type": "application/json" });
-    res.end(JSON.stringify({ ok: true, peers: peers.size, rooms: rooms.size, quick: [...rooms.values()].filter((r) => r.quick).length, inposter: IMP ? IMP.rooms.size : 0, drafft: DRF ? DRF.rooms.size : 0 }));
+    res.end(JSON.stringify({ ok: true, peers: peers.size, rooms: rooms.size, quick: [...rooms.values()].filter((r) => r.quick).length, imposter: IMP ? IMP.rooms.size : 0, draft: DRF ? DRF.rooms.size : 0, questions: QS ? QS.rooms.size : 0 }));
     return;
   }
   res.writeHead(404).end();
@@ -676,6 +688,9 @@ server.on("upgrade", (req, socket) => {
   socket.setNoDelay(true);
 
   const peer = { socket, id: null, name: "someone", room: null, watching: null };
+  // Straight to this process on localhost (no nginx in front, which would
+  // say kmufti.com): dev mode, where a host may add bots to test with.
+  peer.dev = /^(localhost|127\.0\.0\.1)(:\d+)?$/.test(req.headers.host || "") && !req.headers["x-forwarded-for"];
   peers.add(peer);
 
   const bye = () => {
@@ -698,11 +713,13 @@ server.on("upgrade", (req, socket) => {
 (async () => {
   R = await import("./frequency/rules.js");
   ({ CARDS } = await import("./frequency/cards.js"));
-  const W = await import("./inposter/words.js");
-  const IR = await import("./inposter/rules.js");
-  IMP = require("./inposter-server.js")({ send, cleanText, cleanName, newCode, W, R: IR });
-  const DC = await import("./drafft/categories.js");
-  const DR = await import("./drafft/rules.js");
-  DRF = require("./drafft-server.js")({ send, cleanText, cleanName, newCode, C: DC, R: DR });
+  const W = await import("./imposter/words.js");
+  const IR = await import("./imposter/rules.js");
+  IMP = require("./imposter-server.js")({ send, cleanText, cleanName, newCode, W, R: IR });
+  const DC = await import("./draft/categories.js");
+  const DR = await import("./draft/rules.js");
+  DRF = require("./draft-server.js")({ send, cleanText, cleanName, newCode, C: DC, R: DR });
+  const QR = await import("./21-questions/rules.js");
+  QS = require("./questions-server.js")({ send, cleanText, cleanName, newCode, R: QR });
   server.listen(PORT, () => console.log(`game-board server on :${PORT}`));
 })();

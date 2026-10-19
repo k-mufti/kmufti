@@ -1,4 +1,4 @@
-/* Wavelenght - the colours of the real box: cream table, navy dial, red knob,
+/* Wavelength - the colours of the real box: cream table, navy dial, red knob,
    teal handles, and a yellow / orange / pale blue target. */
 :root {
   --cream: #efe8da;
@@ -334,7 +334,7 @@ input:focus { border-color: var(--navy); }
   cursor: pointer;
 }
 .theme-btn:hover { background: #fff; }
-.theme-btn::before { content: "✨ "; }
+
 body.tv .theme-btn { display: none; }
 @media (max-width: 520px) { .theme-btn span { display: none; } .theme-btn { padding: 6px 9px; } }
 
@@ -421,8 +421,7 @@ body.tv .theme-btn { display: none; }
 .over-head { margin: 4px 0 2px; font-family: "Fraunces", serif; font-style: italic; font-weight: 800; font-size: clamp(36px, 9vw, 52px); color: var(--navy); letter-spacing: -1px; }
 .over-sub { margin: 0 0 20px; color: var(--ink-soft); font-size: 16px; }
 .awards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 22px; text-align: left; }
-.award { background: rgba(29, 61, 92, 0.06); border-radius: 14px; padding: 10px 12px; display: grid; grid-template-columns: auto 1fr; column-gap: 8px; align-items: center; min-width: 0; }
-.award .ai { grid-row: span 2; font-size: 22px; }
+.award { background: rgba(29, 61, 92, 0.06); border-radius: 14px; padding: 10px 12px; display: grid; row-gap: 2px; min-width: 0; }
 .award .at { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); }
 .award .av { font-weight: 600; font-size: 14px; overflow-wrap: anywhere; }
 .over-h3 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); text-align: left; }

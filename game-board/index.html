@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Game Board</title>
-  <link rel="icon" href="wavelenght/favicon.svg?v=1" type="image/svg+xml" />
+  <link rel="icon" href="wavelength/favicon.svg?v=1" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;1,9..144,700&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -82,6 +82,10 @@
       font-family: "Fraunces", serif; font-weight: 800; font-size: 25px; letter-spacing: -0.5px;
     }
     .box.drf .tag { position: absolute; top: 52px; left: 0; right: 0; text-align: center; font-size: 11px; color: #2fe08a; }
+    .box.tq { background: #e9e1cf; color: #1f2a44; }
+    .box.tq svg { position: absolute; left: 14px; right: 14px; bottom: 12px; width: calc(100% - 28px); }
+    .box.tq .name { position: absolute; top: 18px; left: 0; right: 0; text-align: center; font-family: "Fraunces", serif; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; }
+    .box.tq .tag { position: absolute; top: 50px; left: 0; right: 0; text-align: center; font-size: 11px; color: #e4572e; }
     .box.soon {
       border: 2px dashed rgba(201, 184, 166, 0.35);
       box-shadow: none;
@@ -92,6 +96,7 @@
     @media (max-width: 520px) {
       .box { width: 140px; height: 168px; }
       .box.wave .name, .box.imp .name, .box.drf .name { font-size: 21px; }
+      .box.tq .name { font-size: 19px; }
       .box.soon:nth-of-type(n+3) { display: none; }
     }
   </style>
@@ -103,8 +108,8 @@
 
   <div class="shelf">
     <div class="row">
-      <a class="box wave" href="wavelenght/">
-        <span class="name">Wavelenght</span>
+      <a class="box wave" href="wavelength/">
+        <span class="name">Wavelength</span>
         <span class="tag">read your friends' minds</span>
         <svg viewBox="-100 -100 200 108" aria-hidden="true">
           <circle r="96" fill="#fbfaf6"/>
@@ -122,8 +127,8 @@
           <circle r="14" fill="#d8342b"/>
         </svg>
       </a>
-      <a class="box imp" href="inposter/">
-        <span class="name">Inposter</span>
+      <a class="box imp" href="imposter/">
+        <span class="name">Imposter</span>
         <span class="tag">one of you is faking it</span>
         <svg viewBox="0 0 120 96" aria-hidden="true">
           <rect x="10" y="22" width="44" height="62" rx="7" fill="#f6f0ff" transform="rotate(-12 32 53)"/>
@@ -132,8 +137,8 @@
           <text x="60" y="58" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="34" fill="#fff">?</text>
         </svg>
       </a>
-      <a class="box drf" href="drafft/">
-        <span class="name">Drafft</span>
+      <a class="box drf" href="draft/">
+        <span class="name">Draft</span>
         <span class="tag">bid on the best of it</span>
         <svg viewBox="0 0 120 96" aria-hidden="true">
           <rect x="6" y="40" width="34" height="44" rx="6" fill="#20262e"/>
@@ -144,7 +149,17 @@
           <text x="97" y="72" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="13" fill="#2fe08a">$</text>
         </svg>
       </a>
-      <div class="box soon">coming soon</div>
+      <a class="box tq" href="21-questions/">
+        <span class="name">21 Questions</span>
+        <span class="tag">guess it in 21</span>
+        <svg viewBox="0 0 120 96" aria-hidden="true">
+          <rect x="14" y="8" width="92" height="84" rx="6" fill="#fbf6e9"/>
+          <path d="M14 30h92M14 46h92M14 62h92M14 78h92" stroke="#b9d3ec" stroke-width="1.5"/>
+          <path d="M32 8v84" stroke="#e4572e" stroke-width="1.5"/>
+          <text x="69" y="62" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="34" fill="#1f2a44">21</text>
+          <text x="92" y="88" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="11" fill="#2a9d5c" transform="rotate(-8 92 88)">YES</text>
+        </svg>
+      </a>
     </div>
     <div class="plank"></div>
   </div>

@@ -1,4 +1,4 @@
-// Frequency's sounds (Inposter borrows them too) and buzzes, all made on the spot with Web Audio - no
+// Frequency's sounds (Imposter borrows them too) and buzzes, all made on the spot with Web Audio - no
 // files to load. Phones that can buzz (Android; iPhones can't) buzz too.
 //
 // Browsers keep audio locked until the first tap, so nothing plays before

@@ -1,13 +1,13 @@
-// Inposter's secret words, by category. Each entry is a pair of close
+// Imposter's secret words, by category. Each entry is a pair of close
 // cousins: a classic round deals one of the two to everyone but the
-// inposter; an undercover round deals one to the crew and the other to the
+// imposter; an undercover round deals one to the crew and the other to the
 // undercover player, who doesn't know their word is the odd one out.
 // Shared by the server (which deals) and the page (which lists the
 // categories).
 
 export const CATEGORIES = [
   {
-    id: "food", name: "Food", emoji: "🍕",
+    id: "food", name: "Food",
     pairs: [
       ["Pizza", "Flatbread"], ["Burger", "Sandwich"], ["Sushi", "Poke bowl"], ["Taco", "Burrito"],
       ["Pancakes", "Waffles"], ["Spaghetti", "Ramen"], ["Fries", "Onion rings"], ["Donut", "Bagel"],
@@ -19,7 +19,7 @@ export const CATEGORIES = [
     ],
   },
   {
-    id: "drinks", name: "Drinks", emoji: "🧋",
+    id: "drinks", name: "Drinks",
     pairs: [
       ["Coffee", "Tea"], ["Bubble tea", "Smoothie"], ["Lemonade", "Iced tea"], ["Hot chocolate", "Chai latte"],
       ["Orange juice", "Apple juice"], ["Milkshake", "Frappuccino"], ["Energy drink", "Soda"], ["Sparkling water", "Tonic water"],
@@ -27,7 +27,7 @@ export const CATEGORIES = [
     ],
   },
   {
-    id: "animals", name: "Animals", emoji: "🦒",
+    id: "animals", name: "Animals",
     pairs: [
       ["Dog", "Wolf"], ["Cat", "Lion"], ["Penguin", "Puffin"], ["Shark", "Dolphin"], ["Giraffe", "Zebra"],
       ["Elephant", "Rhino"], ["Owl", "Bat"], ["Frog", "Toad"], ["Snake", "Lizard"], ["Bee", "Wasp"],
@@ -37,7 +37,7 @@ export const CATEGORIES = [
     ],
   },
   {
-    id: "places", name: "Places", emoji: "🏝️",
+    id: "places", name: "Places",
     pairs: [
       ["Beach", "Pool"], ["Airport", "Train station"], ["Hospital", "Pharmacy"], ["Library", "Bookstore"],
       ["Gym", "Yoga studio"], ["Cinema", "Theater"], ["Zoo", "Aquarium"], ["Supermarket", "Mall"],
@@ -48,7 +48,7 @@ export const CATEGORIES = [
     ],
   },
   {
-    id: "jobs", name: "Jobs", emoji: "🧑‍🍳",
+    id: "jobs", name: "Jobs",
     pairs: [
       ["Doctor", "Nurse"], ["Chef", "Baker"], ["Teacher", "Principal"], ["Pilot", "Flight attendant"],
       ["Firefighter", "Lifeguard"], ["Police officer", "Security guard"], ["Dentist", "Barber"], ["Lawyer", "Judge"],
@@ -58,7 +58,7 @@ export const CATEGORIES = [
     ],
   },
   {
-    id: "home", name: "Around the house", emoji: "🛋️",
+    id: "home", name: "Around the house",
     pairs: [
       ["Couch", "Bed"], ["Toothbrush", "Hairbrush"], ["Fridge", "Freezer"], ["Microwave", "Oven"],
       ["Pillow", "Blanket"], ["Mirror", "Window"], ["Lamp", "Candle"], ["Shower", "Bathtub"],
@@ -68,7 +68,7 @@ export const CATEGORIES = [
     ],
   },
   {
-    id: "sports", name: "Sports & games", emoji: "🏀",
+    id: "sports", name: "Sports & games",
     pairs: [
       ["Soccer", "Rugby"], ["Basketball", "Volleyball"], ["Tennis", "Badminton"], ["Baseball", "Cricket"],
       ["Golf", "Mini golf"], ["Boxing", "Wrestling"], ["Skiing", "Snowboarding"], ["Surfing", "Skateboarding"],
@@ -78,7 +78,7 @@ export const CATEGORIES = [
     ],
   },
   {
-    id: "school", name: "School", emoji: "🎒",
+    id: "school", name: "School",
     pairs: [
       ["Homework", "Exam"], ["Pencil", "Pen"], ["Backpack", "Locker"], ["Recess", "Lunch break"],
       ["Math", "Science"], ["Field trip", "Assembly"], ["Graduation", "Prom"], ["Detention", "Principal's office"],
@@ -87,7 +87,7 @@ export const CATEGORIES = [
     ],
   },
   {
-    id: "travel", name: "Travel & vehicles", emoji: "✈️",
+    id: "travel", name: "Travel & vehicles",
     pairs: [
       ["Plane", "Helicopter"], ["Car", "Taxi"], ["Bike", "Scooter"], ["Train", "Subway"], ["Boat", "Cruise ship"],
       ["Passport", "Boarding pass"], ["Suitcase", "Backpack"], ["Road trip", "Vacation"], ["Hot air balloon", "Parachute"],
@@ -96,7 +96,7 @@ export const CATEGORIES = [
     ],
   },
   {
-    id: "online", name: "Online", emoji: "📱",
+    id: "online", name: "Online",
     pairs: [
       ["Selfie", "Group photo"], ["Meme", "GIF"], ["Group chat", "Voice note"], ["Podcast", "Livestream"],
       ["Hashtag", "Emoji"], ["Wi-Fi", "Bluetooth"], ["Password", "Username"], ["Unboxing video", "Review video"],
@@ -105,7 +105,7 @@ export const CATEGORIES = [
     ],
   },
   {
-    id: "party", name: "Parties & holidays", emoji: "🎉",
+    id: "party", name: "Parties & holidays",
     pairs: [
       ["Birthday", "Anniversary"], ["Halloween", "Costume party"], ["Christmas", "New Year's Eve"], ["Fireworks", "Confetti"],
       ["Karaoke", "Talent show"], ["Piñata", "Party hat"], ["Sleepover", "Pajama party"], ["Barbecue", "Picnic"],
@@ -114,7 +114,7 @@ export const CATEGORIES = [
     ],
   },
   {
-    id: "fantasy", name: "Fantasy & sci-fi", emoji: "🐉",
+    id: "fantasy", name: "Fantasy & sci-fi",
     pairs: [
       ["Dragon", "Dinosaur"], ["Wizard", "Witch"], ["Vampire", "Werewolf"], ["Ghost", "Zombie"], ["Unicorn", "Pegasus"],
       ["Mermaid", "Pirate"], ["Alien", "Robot"], ["Time machine", "Teleporter"], ["Superhero", "Villain"], ["Castle", "Tower"],
@@ -123,7 +123,7 @@ export const CATEGORIES = [
     ],
   },
   {
-    id: "nature", name: "Nature & weather", emoji: "🌋",
+    id: "nature", name: "Nature & weather",
     pairs: [
       ["Rain", "Snow"], ["Thunderstorm", "Tornado"], ["Rainbow", "Sunset"], ["Mountain", "Hill"], ["Ocean", "Lake"],
       ["Forest", "Jungle"], ["Waterfall", "River"], ["Moon", "Sun"], ["Earthquake", "Tsunami"], ["Cave", "Tunnel"],
@@ -131,7 +131,7 @@ export const CATEGORIES = [
     ],
   },
   {
-    id: "clothes", name: "Clothes & style", emoji: "👟",
+    id: "clothes", name: "Clothes & style",
     pairs: [
       ["Sneakers", "Boots"], ["Hoodie", "Sweater"], ["Jeans", "Sweatpants"], ["Sunglasses", "Glasses"], ["Hat", "Beanie"],
       ["Dress", "Skirt"], ["Pajamas", "Onesie"], ["Tie", "Bow tie"], ["Backpack", "Purse"], ["Flip-flops", "Sandals"],

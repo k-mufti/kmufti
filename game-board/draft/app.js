@@ -1,10 +1,10 @@
-// Drafft - the page. The server (../drafft-server.js) runs the draft; this
+// Draft - the page. The server (../draft-server.js) runs the draft; this
 // draws it and turns taps into bids.
 //
 // The game screen is you on the left, them on the right, and the stage in
 // the middle: the category reel, then each item as it comes up, with the
 // bid controls under it when it's your turn.
-import * as R from "./rules.js?v=4";
+import * as R from "./rules.js?v=5";
 import * as snd from "../frequency/sound.js?v=3";
 
 const $ = (id) => document.getElementById(id);
@@ -35,7 +35,7 @@ function connect() {
   ws = new WebSocket(socketURL());
   ws.addEventListener("open", () => {
     ready = true; retry = 0;
-    send({ t: "hello", game: "drafft", id: identity(), name: myName(), color: myColor() });
+    send({ t: "hello", game: "draft", id: identity(), name: myName(), color: myColor() });
     for (const m of outbox.splice(0)) send(m);
   });
   ws.addEventListener("message", (e) => {
@@ -72,7 +72,7 @@ function onMessage(m) {
   if (m.t === "welcome") return;
   if (m.t === "idle") { S = null; show("home"); setStatus(""); return; }
   if (m.t === "error") { snd.side(false); return toast(m.msg); }
-  if (m.t !== "state" || m.game !== "drafft") return;
+  if (m.t !== "state" || m.game !== "draft") return;
   const prev = S;
   S = m;
   if (S.phase !== lastPhase) enterPhase(S.phase, prev);
@@ -140,7 +140,7 @@ function renderLobby() {
   const two = S.players.length === R.PLAYERS;
   $("roomHint").textContent = two ? "" : S.quick
     ? "Waiting for someone to tap Quick game. Or send a friend the code."
-    : "Send the code to whoever you're playing. They open Drafft and type it in.";
+    : "Send the code to whoever you're playing. They open Draft and type it in.";
   const seat = (p) => p
     ? `<div class="seat${p.online ? "" : " away"}">${avatar(p, "big")}<b>${esc(p.id === S.you ? "You" : p.name)}</b><small>${p.online ? "" : "away"}</small></div>`
     : `<div class="seat empty"><span class="av big ghost">?</span><b>Waiting…</b></div>`;
@@ -183,7 +183,7 @@ function renderStage() {
   if (key === stageKey) return updateStepper();
   stageKey = key;
   const st = $("stage");
-  const cat = S.cat ? `<p class="cat">${esc(S.cat.emoji)} ${esc(S.cat.name)}</p>` : "";
+  const cat = S.cat ? `<p class="cat">${esc(S.cat.name)}</p>` : "";
 
   if (S.phase === "spin") {
     st.className = "stage spin";
@@ -195,13 +195,13 @@ function renderStage() {
     const mine = S.votes[S.you], theirs = them() && S.votes[them().id];
     st.className = "stage landed";
     st.innerHTML = `<p class="kicker">The category is</p>` +
-      `<h2 class="item cat-pick">${esc(S.cat.emoji)} ${esc(S.cat.name)}</h2>` +
-      `<p class="ask">Keep it, or spin again? It only respins if you both want to.</p>` +
+      `<h2 class="item cat-pick">${esc(S.cat.name)}</h2>` +
+      `<p class="ask">Keep it, or spin again? You both have to agree.</p>` +
       `<div class="acts">` +
-      `<button class="btn big" id="keepBtn">Keep it</button>` +
-      `<button class="btn big alt${mine === "respin" ? " on" : ""}" id="respinBtn" ${mine === "respin" ? "disabled" : ""}>${mine === "respin" ? "Voted to respin" : "🔁 Respin"}</button>` +
+      `<button class="btn big${mine === "keep" ? "" : " alt"}" id="keepBtn">${mine === "keep" ? "✓ Keep it" : "Keep it"}</button>` +
+      `<button class="btn big${mine === "respin" ? "" : " alt"}" id="respinBtn">${mine === "respin" ? "✓ Respin" : "Respin"}</button>` +
       `</div>` +
-      `<p class="vote-note">${theirs === "respin" ? `${esc(them().name)} wants to respin 👀` : mine === "respin" ? `Waiting on ${esc(them()?.name || "them")}…` : ""}</p>` +
+      `<p class="vote-note">${theirs ? `${esc(them().name)} wants to ${theirs === "respin" ? "respin" : "keep it"}` : mine ? `Waiting on ${esc(them()?.name || "them")}…` : ""}</p>` +
       `<div class="clock"><i id="voteFill"></i></div>`;
     voteAt = performance.now();
     fitItem();
@@ -272,9 +272,9 @@ function spinReel() {
   spinStarted = true;
   const strip = $("strip");
   // ~40 random categories stream past, then the real one
-  const names = S.cats.map((c) => `${c.emoji} ${c.name}`).filter((n) => n !== `${S.cat.emoji} ${S.cat.name}`);
+  const names = S.cats.map((c) => c.name).filter((n) => n !== S.cat.name);
   const rows = names.sort(() => Math.random() - 0.5).slice(0, 40);
-  rows.push(`${S.cat.emoji} ${S.cat.name}`);
+  rows.push(S.cat.name);
   strip.innerHTML = rows.map((n) => `<div class="cell">${esc(n)}</div>`).join("");
   const cell = strip.firstElementChild.getBoundingClientRect().height;
   const dist = (rows.length - 1) * cell;
@@ -304,7 +304,7 @@ function renderDone() {
   }
   $("done").innerHTML =
     `<div class="done">` +
-    `<p class="cat">${esc(S.cat?.emoji || "")} ${esc(S.cat?.name || "")}</p>` +
+    `<p class="cat">${esc(S.cat?.name || "")}</p>` +
     `<h1 class="title">Draft's done</h1>` +
     `<p class="tag">Who drafted better? Argue it out.</p>` +
     `<div class="final">${ps.map((p) => sideCard(p)).join(`<span class="vs">vs</span>`)}</div>` +
@@ -325,7 +325,7 @@ document.addEventListener("click", (e) => {
   switch (b.id) {
     case "bidBtn": snd.lock(); snd.buzz(30); return send({ t: "bid", amount: amt });
     case "passBtn": return send({ t: "pass" });
-    case "keepBtn": return send({ t: "keep" });
+    case "keepBtn": snd.tick(); return send({ t: "keep" });
     case "respinBtn": snd.tick(); return send({ t: "respin" });
     case "againBtn": case "startBtn": return send({ t: "start" });
     case "leaveBtn": case "leaveDoneBtn": return send({ t: "leave" });
@@ -366,9 +366,12 @@ function armExit(on) {
   $("exitBtn").querySelector("b").textContent = on ? "Sure? Tap again" : "Leave game";
   if (on) exitTimer = setTimeout(() => armExit(false), 3000);
 }
+// the sound button's two drawings (no emoji)
+const SOUND_ON = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>`;
+const SOUND_OFF = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="m16 9 6 6M22 9l-6 6"/></svg>`;
 function paintMute() {
   const m = snd.isMuted();
-  $("muteBtn").textContent = m ? "🔇" : "🔊";
+  $("muteBtn").innerHTML = m ? SOUND_OFF : SOUND_ON;
   $("muteBtn").setAttribute("aria-label", m ? "Sound off" : "Sound on");
 }
 function saveName() {

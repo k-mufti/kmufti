@@ -116,7 +116,7 @@ const isSitePage = (p) => {
 // hub rather than like a log file.
 const PROJECT_NAMES = {
   "": "kmufti", "index.html": "kmufti",
-  yahtzee: "Yahtzee", puzzle: "Jigsaw", jeoprady: "Jeoprady!", wishlist: "Wishlist",
+  yahtzee: "Yahtzee", puzzle: "Jigsaw", jeopardy: "Jeopardy!", jeoprady: "Jeopardy!",   // its old address, still in the logs wishlist: "Wishlist",
   chameleon: "Meccha Chameleon", "white-canvas": "White Canvas", translate: "Lost in Translation",
   draw: "White Canvas", admin: "Admin", images: "Assets",
 };
@@ -468,7 +468,7 @@ function projectOf(p) {
 
 // Where somebody went, across all three sites: a page of kmufti.com by its
 // project name, anything on the other domains by the domain itself. One list,
-// so "did they read Jeoprady or did they land on kareemmuftee" is one glance.
+// so "did they read Jeopardy or did they land on kareemmuftee" is one glance.
 const wentTo = (site, p) => (site && site !== HOME ? site : projectOf(p));
 
 function ingestLine(line) {

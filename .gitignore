@@ -12,7 +12,7 @@ node_modules/
 # Larprady: raw source data — build-time only. The live game runs on the
 # generated boards.json / categories.json (which ARE committed). Keep a copy
 # of this CSV somewhere safe if you ever want to re-run build_boards.py.
-jeoprady/JEOPARDY_CSV.csv
+jeopardy/JEOPARDY_CSV.csv
 
 # Drawing canvas runtime state (server-side, not source)
 draw/canvas.bin

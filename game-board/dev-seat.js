@@ -28,7 +28,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       const a = document.createElement("a");
       a.href = `../dev.html?game=${encodeURIComponent(game)}`;
-      a.textContent = "🧪 Test solo";
+      a.textContent = "Test solo";
       a.title = "Localhost only: play every seat yourself";
       a.style.cssText = "position:fixed;right:14px;bottom:14px;z-index:99;padding:8px 14px;border-radius:999px;" +
         "background:#ffcf3f;color:#2b2000;font:600 13px system-ui,sans-serif;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.35)";

@@ -1,4 +1,4 @@
-// Jeoprady! — Board Builder
+// Jeopardy! — Board Builder
 // Write all 30 clues yourself. No question-bank fill: a board built here is
 // entirely the author's own writing. Boards live in localStorage, and can be
 // exported/imported as JSON or shared via a URL hash.
@@ -8,7 +8,7 @@
 
 "use strict";
 
-const BUILDER_KEY = "jeoprady.boards.v1";
+const BUILDER_KEY = "jeopardy.boards.v1";
 const NUM_CATS = 6;
 const NUM_ROWS = 5;
 const SHARE_SOFT_LIMIT = 8000; // browsers/chat apps get unhappy past roughly this
@@ -375,7 +375,7 @@ function exportBoard() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${safe}.jeoprady.json`;
+  a.download = `${safe}.jeopardy.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();

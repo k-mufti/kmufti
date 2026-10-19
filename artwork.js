@@ -63,8 +63,8 @@ const ARTWORK = {
       </g>
     </svg>`,
 
-  /* Jeoprady — a Jeopardy-style game board: gold values on deep blue. */
-  jeoprady: `
+  /* Jeopardy — a Jeopardy-style game board: gold values on deep blue. */
+  jeopardy: `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="lp-cell" x1="0" y1="0" x2="0" y2="1">
@@ -493,7 +493,7 @@ const ARTWORK = {
   /* Bust — a photo of the real thing: the bust page's own render, cropped
      to the tile (bust/cover.jpg). */
   bust: `<img src="bust/cover.jpg?v=2" alt="" loading="lazy" />`,
-  /* Game Board — the shelf: Wavelenght's box and Inposter's standing on a
+  /* Game Board — the shelf: Wavelength's box and Imposter's standing on a
      plank, a gap beside them for what's next. */
   "game-board": `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
@@ -511,10 +511,10 @@ const ARTWORK = {
       <rect width="320" height="200" fill="url(#gb-wall)"/>
       <!-- the gap for the next game -->
       <rect x="268" y="74" width="40" height="88" rx="4" fill="none" stroke="#c9b8a6" stroke-opacity="0.25" stroke-width="1.5" stroke-dasharray="4 4"/>
-      <!-- Wavelenght: the box, its side in shadow, its dial on the lid -->
+      <!-- Wavelength: the box, its side in shadow, its dial on the lid -->
       <rect x="140" y="50" width="8" height="112" fill="#bfb6a6"/>
       <rect x="22" y="46" width="120" height="116" rx="5" fill="#efe8da"/>
-      <text x="82" y="73" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-weight="700" font-size="17" fill="#1d3d5c">Wavelenght</text>
+      <text x="82" y="73" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-weight="700" font-size="17" fill="#1d3d5c">Wavelength</text>
       <g transform="translate(82 150)" clip-path="url(#gb-lid)">
         <circle r="52" fill="#fbfaf6"/>
         <circle r="48" fill="#1d3d5c"/>
@@ -530,10 +530,10 @@ const ARTWORK = {
         <path d="M-2 0L0 -40L2 0Z" fill="#d8342b" transform="rotate(-14)"/>
         <circle r="8" fill="#d8342b"/>
       </g>
-      <!-- Inposter: three cards, the odd one pink -->
+      <!-- Imposter: three cards, the odd one pink -->
       <rect x="258" y="58" width="8" height="104" fill="#0e0918"/>
       <rect x="152" y="54" width="108" height="108" rx="5" fill="#1f1535"/>
-      <text x="206" y="78" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="16" fill="#f6f0ff">Inposter</text>
+      <text x="206" y="78" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="16" fill="#f6f0ff">Imposter</text>
       <rect x="168" y="100" width="30" height="42" rx="4" fill="#f6f0ff" transform="rotate(-12 183 121)"/>
       <rect x="214" y="100" width="30" height="42" rx="4" fill="#f6f0ff" transform="rotate(12 229 121)"/>
       <rect x="191" y="94" width="30" height="44" rx="4" fill="#ff3d6e"/>

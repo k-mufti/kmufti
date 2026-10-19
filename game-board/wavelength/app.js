@@ -1,4 +1,4 @@
-// Wavelenght - the page. The server (../server.js) runs the room and keeps
+// Wavelength - the page. The server (../server.js) runs the room and keeps
 // the target secret; this draws the dial and turns what you do into
 // messages.
 //
@@ -456,7 +456,7 @@ function renderLobby() {
   $("leaveBtn").hidden = TV;
   $("tvRow").hidden = TV;
   $("tvLink").href = `?tv=${S.code}`;
-  $("tvOn").textContent = S.watchers ? `📺 ${S.watchers === 1 ? "A TV is" : `${S.watchers} TVs are`} showing this room.` : "";
+  $("tvOn").textContent = S.watchers ? `${S.watchers === 1 ? "A TV is" : `${S.watchers} TVs are`} showing this room.` : "";
 
   stopCountdownTick();
   if (S.quick && S.startsIn) {
@@ -616,7 +616,7 @@ function showOver(st, loud) {
   // the awards
   const awards = [];
   const bulls = h.filter((r) => tier(r.points) === 4).length;
-  awards.push(["🎯", "Bullseyes", `${bulls} of ${h.length} round${h.length === 1 ? "" : "s"}`]);
+  awards.push(["Bullseyes", `${bulls} of ${h.length} round${h.length === 1 ? "" : "s"}`]);
   const byPsy = new Map();
   for (const r of h) {
     const e = byPsy.get(r.psychic) || { name: name(r.psychic) || r.psychicName, pts: 0, n: 0 };
@@ -624,18 +624,18 @@ function showOver(st, loud) {
     byPsy.set(r.psychic, e);
   }
   const best = [...byPsy.values()].sort((a, b) => b.pts / b.n - a.pts / a.n || b.n - a.n)[0];
-  if (best) awards.push(["🔮", "Best psychic", `${esc(best.name)} · ${(best.pts / best.n).toFixed(1)} a round`]);
+  if (best) awards.push(["Best psychic", `${esc(best.name)} · ${(best.pts / best.n).toFixed(1)} a round`]);
   if (h.length) {
     const off = (r) => Math.abs(r.needle - r.target);
     const close = h.reduce((a, b) => (off(b) < off(a) ? b : a));
     const wild = h.reduce((a, b) => (off(b) > off(a) ? b : a));
-    awards.push(["🧲", "Closest call", `“${esc(close.clue)}” · ${off(close).toFixed(1)}° off`]);
-    if (wild !== close) awards.push(["🛸", "Wildest miss", `“${esc(wild.clue)}” · ${off(wild).toFixed(0)}° off`]);
+    awards.push(["Closest call", `“${esc(close.clue)}” · ${off(close).toFixed(1)}° off`]);
+    if (wild !== close) awards.push(["Wildest miss", `“${esc(wild.clue)}” · ${off(wild).toFixed(0)}° off`]);
   }
   if (st.mode === "teams") {
     for (const t of [0, 1]) {
       const calls = h.filter((r) => r.team === 1 - t && r.side);
-      if (calls.length) awards.push(["↔️", `${TEAM_NAMES[t]}'s calls`, `${calls.filter((r) => r.sidePoint).length} of ${calls.length} right`]);
+      if (calls.length) awards.push([`${TEAM_NAMES[t]}'s calls`, `${calls.filter((r) => r.sidePoint).length} of ${calls.length} right`]);
     }
   }
 
@@ -643,7 +643,7 @@ function showOver(st, loud) {
   // (the band) and where the needle landed (the red line)
   const rows = h.map((r) => {
     const who = st.mode === "teams" ? `<span class="dot t${r.team}"></span>` : "";
-    return `<li>${who}<span class="rc"><b>${esc(r.card[0])} ↔ ${esc(r.card[1])}</b><span>“${esc(r.clue)}” · ${esc(name(r.psychic) || r.psychicName)}</span></span>` +
+    return `<li>${who}<span class="rc"><b>${esc(r.card[0])} – ${esc(r.card[1])}</b><span>“${esc(r.clue)}” · ${esc(name(r.psychic) || r.psychicName)}</span></span>` +
       `<span class="mini"><i class="t" style="left:${((r.target / 180) * 100).toFixed(1)}%"></i><i class="n" style="left:${((r.needle / 180) * 100).toFixed(1)}%"></i></span>` +
       `<b class="pts p${tier(r.points)}">${r.points ? `+${r.points}` : "0"}</b></li>`;
   }).join("");
@@ -654,7 +654,7 @@ function showOver(st, loud) {
       `<p class="over-kicker">${st.mode === "coop" ? "Final score" : "Game over"}</p>` +
       `<h2 class="over-head">${esc(head)}</h2>` +
       `<p class="over-sub">${esc(sub)}</p>` +
-      `<div class="awards">${awards.map(([i, t, v]) => `<div class="award"><span class="ai">${i}</span><span class="at">${esc(t)}</span><span class="av">${v}</span></div>`).join("")}</div>` +
+      `<div class="awards">${awards.map(([t, v]) => `<div class="award"><span class="at">${esc(t)}</span><span class="av">${v}</span></div>`).join("")}</div>` +
       `<h3 class="over-h3">Every round</h3>` +
       `<ol class="rounds">${rows}</ol>` +
       (TV ? "" : `<div class="lifetime">${lifetimeHTML()}</div>`) +
@@ -772,9 +772,12 @@ function armExit(on) {
   if (on) exitTimer = setTimeout(() => armExit(false), 3000);
 }
 
+// the sound button's two drawings (no emoji)
+const SOUND_ON = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>`;
+const SOUND_OFF = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="m16 9 6 6M22 9l-6 6"/></svg>`;
 function paintMute() {
   const m = snd.isMuted();
-  $("muteBtn").textContent = m ? "🔇" : "🔊";
+  $("muteBtn").innerHTML = m ? SOUND_OFF : SOUND_ON;
   $("muteBtn").setAttribute("aria-label", m ? "Sound off" : "Sound on");
 }
 

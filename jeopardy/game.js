@@ -1,4 +1,4 @@
-// Jeoprady! - Multi-team Jeopardy game
+// Jeopardy! - Multi-team Jeopardy game
 // Uses boards.json + categories.json
 
 "use strict";
@@ -13,7 +13,7 @@ const SETS = [
   // Newest first — the recommended, best pack.
   { id: 'newest', label: 'Newest Pack',      tagId: 'newest', grouped: true },
   // The classic archive: every real-show category (i.e. not part of a custom pack).
-  { id: 'og',     label: 'Jeoprady OG Pack',   match: (c) => !(c.tags && c.tags.includes('modern')), grouped: true },
+  { id: 'og',     label: 'Jeopardy OG Pack',   match: (c) => !(c.tags && c.tags.includes('modern')), grouped: true },
   { id: 'modern', label: 'Easy Questions Pack', tagId: 'modern', grouped: true },
 ];
 

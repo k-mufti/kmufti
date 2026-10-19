@@ -2,85 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Drafft</title>
-  <link rel="icon" href="favicon.svg?v=1" type="image/svg+xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <title>Draft</title>
+  <meta name="robots" content="noindex" />
+  <!-- game-board/drafft/ moved to ../draft/ when the games lost their misspellings. -->
+  <script>location.replace("../draft/" + location.search + location.hash);</script>
+  <meta http-equiv="refresh" content="0; url=../draft/" />
 </head>
-<body>
-  <header class="bar">
-    <a class="back" href="../">&larr; Game Board</a>
-    <span class="logo">Drafft</span>
-    <span class="bar-r">
-      <span class="code" id="codeChip" hidden></span>
-      <button class="mute" id="muteBtn" aria-label="Sound on">🔊</button>
-    </span>
-  </header>
-
-  <!-- Not in a room yet -->
-  <section class="screen" id="home">
-    <div class="home">
-      <div class="home-pitch">
-        <h1 class="title">Drafft</h1>
-        <p class="tag">You vs. them. $20 each.<br /><b>Draft the best five.</b></p>
-        <ol class="how">
-          <li><span>1</span><div><b>The reel picks a category.</b> Candy, cartoons, cities…</div></li>
-          <li><span>2</span><div><b>Something from it comes up.</b> One of you opens the bidding.</div></li>
-          <li><span>3</span><div><b>Raise, or let them have it.</b> Back and forth until someone lets go.</div></li>
-          <li><span>4</span><div><b>Five picks each,</b> then argue about who drafted best.</div></li>
-        </ol>
-      </div>
-      <div class="home-card">
-        <label class="field">
-          <span>Your name</span>
-          <input id="nameInput" maxlength="18" autocomplete="nickname" spellcheck="false" />
-        </label>
-        <button class="btn big" id="createBtn">Start a room</button>
-        <button class="btn big alt" id="quickBtn">Quick game<small>play whoever's around</small></button>
-        <div class="or"><span>or join one</span></div>
-        <form class="join" id="joinForm">
-          <input id="codeInput" maxlength="4" placeholder="CODE" autocomplete="off" spellcheck="false" autocapitalize="characters" />
-          <button class="btn" type="submit">Join</button>
-        </form>
-        <p class="status" id="homeStatus"></p>
-      </div>
-    </div>
-  </section>
-
-  <!-- In a room, before the draft -->
-  <section class="screen" id="lobby" hidden>
-    <div class="lobby">
-      <p class="room-line" id="roomLine">Room code</p>
-      <p class="room-code" id="lobbyCode"></p>
-      <p class="room-hint" id="roomHint"></p>
-      <div class="versus" id="lobbyPlayers"></div>
-      <button class="btn big" id="startBtn">Start</button>
-      <p class="status" id="lobbyStatus"></p>
-      <button class="link" id="leaveBtn">Leave room</button>
-    </div>
-  </section>
-
-  <!-- The draft: you, the stage, them -->
-  <section class="screen" id="game" hidden>
-    <div class="table">
-      <div class="side" id="sideMe"></div>
-      <div class="stage" id="stage"></div>
-      <div class="side" id="sideThem"></div>
-    </div>
-  </section>
-
-  <!-- The end: everyone's roster -->
-  <section class="screen" id="done" hidden></section>
-
-  <button class="exit" id="exitBtn" hidden>&larr; <b>Leave game</b></button>
-
-  <div class="toast" id="toast" hidden></div>
-
-  <script src="../../you.js?v=2"></script>
-  <script src="../dev-seat.js?v=2"></script>
-  <script type="module" src="app.js?v=5"></script>
-</body>
+<body><a href="../draft/">Draft has moved</a></body>
 </html>

@@ -1,4 +1,4 @@
-// Inposter's rules, shared by the server (which deals and scores) and the
+// Imposter's rules, shared by the server (which deals and scores) and the
 // page (which explains them). An ES module, so both load the same file.
 
 export const MIN_PLAYERS = 3;
@@ -6,28 +6,38 @@ export const MAX_PLAYERS = 12;
 
 // Points, per round.
 export const POINTS = {
-  crewCatch: 1,        // every crewmate, when the inposter is caught
+  crewCatch: 1,        // every crewmate, when the imposter is caught
   crewSharp: 1,        // and one more for each crewmate who voted for them
-  inposterEscape: 3,   // the inposter, when the crew votes out someone else
-  inposterSteal: 3,    // the inposter, when caught but they guess the word
-  nobodyRight: 2,      // a round with no inposter: each who voted "nobody"
+  imposterEscape: 3,   // the imposter, when the crew votes out someone else
+  imposterSteal: 3,    // the imposter, when caught but they guess the word
 };
 
-// The settings a host can change, with their choices and defaults.
-export const SETTINGS = {
-  mode: { choices: ["classic", "undercover"], def: "classic" },
-  clues: { choices: ["typed", "spoken"], def: "typed" },
-  rounds: { choices: [1, 2, 3], def: 2 },
-  talk: { choices: [45, 90, 150], def: 90 },        // seconds to discuss
-  hint: { choices: ["category", "none"], def: "category" },
-  chaos: { choices: [false, true], def: false },     // sometimes nobody's the inposter
-  cats: { def: [] },                                 // [] means every category
-};
+// One way to play, no settings: the imposter gets no word but knows the
+// category, clues are typed, three clue rounds (or fewer, if enough of you
+// vote early), then 90 seconds to talk it out.
+export const ROUNDS = 3;
+export const TALK_SECS = 90;
+export const SPIN_MS = 4800;       // the category reel, landing with 1.5s to spare
+export const RESPIN_MS = 10000;    // after it lands: keep it or spin again, by majority
+
+// Keeping or respinning the category takes a majority: more than half of
+// the players (both of two). If the clock runs out first, whichever side
+// has more votes wins, and a tie keeps it.
+export const majority = (n) => Math.floor(n / 2) + 1;
+export function spinOutcome(votes, n, timeUp) {
+  const respin = votes.filter((v) => v === "respin").length;
+  const keep = votes.filter((v) => v === "keep").length;
+  if (respin >= majority(n)) return "respin";
+  if (keep >= majority(n)) return "keep";
+  if (timeUp) return respin > keep ? "respin" : "keep";
+  return null;
+}
 
 export const TURN_SECS = 40;       // to give a typed clue
 export const VOTE_SECS = 40;
 export const GUESS_SECS = 40;
-export const CHAOS_ODDS = 0.18;    // with chaos on, the chance of no inposter
+export const VOTE_EARLY = 0.75;    // this share of the round tapping "vote now" skips straight to the vote
+export const voteNeed = (n) => Math.max(1, Math.ceil(n * VOTE_EARLY));
 
 // Words compared loosely: case, spaces, punctuation and a plural "s" don't
 // count, and one slip of the finger is forgiven in a longer word.

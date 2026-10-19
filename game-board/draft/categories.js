@@ -1,13 +1,13 @@
 import { MORE } from "./more-categories.js?v=1";
 
-// Drafft's built-in categories: what's up for auction. Shared by the server
+// Draft's built-in categories: what's up for auction. Shared by the server
 // (which deals the pool) and the page (the host's category picker).
 // A draft needs players x roster items, so each list is long - 8 players at
 // 6 picks is 48. A short list just caps how big a draft it can hold.
 
 const FIRST = [
   {
-    id: "candy", name: "Candy", emoji: "🍬",
+    id: "candy", name: "Candy",
     items: [
       "Reese's Cups", "Snickers", "Kit Kat", "M&M's", "Twix", "Skittles", "Sour Patch Kids", "Starburst",
       "Hershey's Bar", "Milky Way", "3 Musketeers", "Butterfinger", "Baby Ruth", "Almond Joy", "Mounds", "Twizzlers",
@@ -19,7 +19,7 @@ const FIRST = [
     ],
   },
   {
-    id: "fastfood", name: "Fast food chains", emoji: "🍔",
+    id: "fastfood", name: "Fast food chains",
     items: [
       "McDonald's", "Burger King", "Wendy's", "Chick-fil-A", "Taco Bell", "KFC", "Popeyes", "Subway",
       "Chipotle", "Five Guys", "In-N-Out", "Shake Shack", "Whataburger", "Culver's", "Raising Cane's", "Wingstop",
@@ -30,7 +30,7 @@ const FIRST = [
     ],
   },
   {
-    id: "pixar", name: "Pixar & Disney movies", emoji: "🎬",
+    id: "pixar", name: "Pixar & Disney movies",
     items: [
       "Toy Story", "Toy Story 2", "Toy Story 3", "Toy Story 4", "A Bug's Life", "Monsters, Inc.", "Monsters University", "Finding Nemo",
       "Finding Dory", "The Incredibles", "Incredibles 2", "Cars", "Cars 2", "Ratatouille", "WALL-E", "Up",
@@ -41,7 +41,7 @@ const FIRST = [
     ],
   },
   {
-    id: "cereal", name: "Breakfast cereal", emoji: "🥣",
+    id: "cereal", name: "Breakfast cereal",
     items: [
       "Cinnamon Toast Crunch", "Lucky Charms", "Froot Loops", "Frosted Flakes", "Cap'n Crunch", "Crunch Berries", "Cocoa Puffs", "Reese's Puffs",
       "Honey Nut Cheerios", "Cheerios", "Apple Jacks", "Trix", "Fruity Pebbles", "Cocoa Pebbles", "Corn Pops", "Golden Grahams",
@@ -52,7 +52,7 @@ const FIRST = [
     ],
   },
   {
-    id: "snacks", name: "Chips & snacks", emoji: "🍿",
+    id: "snacks", name: "Chips & snacks",
     items: [
       "Doritos Nacho Cheese", "Cool Ranch Doritos", "Flamin' Hot Cheetos", "Cheetos Puffs", "Takis Fuego", "Lay's Classic", "Sour Cream & Onion Lay's", "Salt & Vinegar Chips",
       "Ruffles", "Pringles", "Funyuns", "Fritos", "Tostitos", "SunChips", "Kettle Chips", "Goldfish",
@@ -63,7 +63,7 @@ const FIRST = [
     ],
   },
   {
-    id: "drinks", name: "Drinks", emoji: "🥤",
+    id: "drinks", name: "Drinks",
     items: [
       "Coca-Cola", "Diet Coke", "Coke Zero", "Pepsi", "Dr Pepper", "Sprite", "7UP", "Mountain Dew",
       "Baja Blast", "Fanta Orange", "Root Beer", "Cream Soda", "Ginger Ale", "Big Red", "Crush Grape", "Sunkist",
@@ -74,7 +74,7 @@ const FIRST = [
     ],
   },
   {
-    id: "desserts", name: "Desserts", emoji: "🍰",
+    id: "desserts", name: "Desserts",
     items: [
       "Chocolate chip cookie", "Brownie", "Cheesecake", "Tiramisu", "Apple pie", "Pumpkin pie", "Key lime pie", "Pecan pie",
       "Chocolate cake", "Red velvet cake", "Carrot cake", "Tres leches", "Funfetti cake", "Ice cream sundae", "Banana split", "Milkshake",
@@ -85,7 +85,7 @@ const FIRST = [
     ],
   },
   {
-    id: "foods", name: "Comfort food", emoji: "🍕",
+    id: "foods", name: "Comfort food",
     items: [
       "Pizza", "Cheeseburger", "Mac and cheese", "Fried chicken", "Chicken tenders", "Wings", "Tacos", "Burritos",
       "Nachos", "Quesadilla", "Spaghetti and meatballs", "Lasagna", "Chicken alfredo", "Ramen", "Pho", "Sushi",
@@ -96,7 +96,7 @@ const FIRST = [
     ],
   },
   {
-    id: "games", name: "Video games", emoji: "🎮",
+    id: "games", name: "Video games",
     items: [
       "Minecraft", "Fortnite", "Roblox", "GTA V", "Red Dead Redemption 2", "The Last of Us", "God of War", "Elden Ring",
       "Zelda: Breath of the Wild", "Zelda: Tears of the Kingdom", "Super Mario Odyssey", "Mario Kart 8", "Super Smash Bros.", "Pokémon Red & Blue", "Animal Crossing", "Stardew Valley",
@@ -107,7 +107,7 @@ const FIRST = [
     ],
   },
   {
-    id: "heroes", name: "Superheroes & villains", emoji: "🦸",
+    id: "heroes", name: "Superheroes & villains",
     items: [
       "Spider-Man", "Batman", "Superman", "Wonder Woman", "Iron Man", "Captain America", "Thor", "Hulk",
       "Black Panther", "Black Widow", "Doctor Strange", "Scarlet Witch", "Wolverine", "Deadpool", "Storm", "Captain Marvel",
@@ -118,7 +118,7 @@ const FIRST = [
     ],
   },
   {
-    id: "cartoons", name: "Cartoons", emoji: "📺",
+    id: "cartoons", name: "Cartoons",
     items: [
       "SpongeBob SquarePants", "The Simpsons", "Family Guy", "Avatar: The Last Airbender", "Adventure Time", "Regular Show", "Gravity Falls", "Phineas and Ferb",
       "Rugrats", "Hey Arnold!", "Dexter's Laboratory", "The Powerpuff Girls", "Courage the Cowardly Dog", "Ed, Edd n Eddy", "Johnny Bravo", "Scooby-Doo",
@@ -129,7 +129,7 @@ const FIRST = [
     ],
   },
   {
-    id: "sitcoms", name: "TV shows", emoji: "🛋️",
+    id: "sitcoms", name: "TV shows",
     items: [
       "The Office", "Friends", "Parks and Rec", "Brooklyn Nine-Nine", "Seinfeld", "How I Met Your Mother", "The Big Bang Theory", "Modern Family",
       "New Girl", "Community", "Arrested Development", "It's Always Sunny", "Curb Your Enthusiasm", "Abbott Elementary", "Ted Lasso", "Schitt's Creek",
@@ -140,7 +140,7 @@ const FIRST = [
     ],
   },
   {
-    id: "animals", name: "Animals", emoji: "🦁",
+    id: "animals", name: "Animals",
     items: [
       "Lion", "Tiger", "Elephant", "Giraffe", "Gorilla", "Cheetah", "Wolf", "Grizzly bear",
       "Polar bear", "Panda", "Red panda", "Koala", "Kangaroo", "Hippo", "Rhino", "Zebra",
@@ -151,7 +151,7 @@ const FIRST = [
     ],
   },
   {
-    id: "cities", name: "Cities to visit", emoji: "🌍",
+    id: "cities", name: "Cities to visit",
     items: [
       "New York", "Los Angeles", "Chicago", "Miami", "Las Vegas", "New Orleans", "San Francisco", "Austin",
       "London", "Paris", "Rome", "Barcelona", "Amsterdam", "Berlin", "Lisbon", "Prague",
@@ -162,7 +162,7 @@ const FIRST = [
     ],
   },
   {
-    id: "athletes", name: "Athletes", emoji: "🏆",
+    id: "athletes", name: "Athletes",
     items: [
       "Michael Jordan", "LeBron James", "Kobe Bryant", "Stephen Curry", "Shaquille O'Neal", "Kevin Durant", "Giannis", "Nikola Jokić",
       "Victor Wembanyama", "Caitlin Clark", "Lionel Messi", "Cristiano Ronaldo", "Neymar", "Kylian Mbappé", "Erling Haaland", "Mohamed Salah",
@@ -173,7 +173,7 @@ const FIRST = [
     ],
   },
   {
-    id: "brands", name: "Brands", emoji: "🛍️",
+    id: "brands", name: "Brands",
     items: [
       "Apple", "Google", "Amazon", "Netflix", "Spotify", "Tesla", "Nike", "Adidas",
       "Jordan", "New Balance", "Converse", "Vans", "Supreme", "Gucci", "Louis Vuitton", "Prada",

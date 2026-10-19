@@ -1,28 +1,31 @@
-// Inposter, the server half. Loaded by server.js, which owns the socket and
-// hands over every message from a player on the Inposter page.
+// Imposter, the server half. Loaded by server.js, which owns the socket and
+// hands over every message from a player on the Imposter page.
 //
-// The server keeps the secrets: who the inposter is and what the word is.
-// Each player is told only their own word (or that they're the inposter);
+// The server keeps the secrets: who the imposter is and what the word is.
+// Each player is told only their own word (or that they're the imposter);
 // everything comes out at the end of the round.
 //
-// A round: everyone peeks at their card (reveal), then takes turns giving a
-// one-word clue (clues), argues it out (talk), votes (vote), and watches the
-// votes come in (verdict). A caught inposter gets one guess at the word
+// A round: a reel picks the category (spin) and a majority keeps it or
+// spins again (landed); then everyone peeks at their card (reveal) - the word,
+// or "you're the imposter" plus the category - and takes turns typing a
+// one-word clue, three times round (clues), argues it out (talk), votes (vote), and watches the
+// votes come in (verdict). A caught imposter gets one guess at the word
 // (guess) to steal the round. Then the points (result), and again - until
 // the host ends it (final).
 //
 // Protocol, client -> server, on top of server.js's hello/leave:
 //   {t:"create"} {t:"join", code} {t:"quick"} {t:"leave"} {t:"name", name}
-//   {t:"settings", key, value}  host, in the lobby
-//   {t:"start"}                 host: deal the first round
+//   {t:"start"}                 host: spin for the first round
+//   {t:"respin"} {t:"keep"}     after the reel lands: my vote
 //   {t:"seen"}                  I've looked at my card
 //   {t:"begin"}                 host: start the clues without waiting
 //   {t:"clue", text}            my clue, on my turn (typed games)
-//   {t:"done"}                  I've said my clue out loud (spoken games)
 //   {t:"sus", id}               point at someone while talking (id null: stop)
-//   {t:"readyvote"}             I'm ready to vote
-//   {t:"vote", id}              my vote: a player id, or "nobody"
-//   {t:"guess", text}           the caught inposter's one guess
+//   {t:"readyvote", off}        I want to vote now (off: changed my mind) -
+//                               during clues or talk; at 75% of the round, it's voting time
+//   {t:"addbot"} {t:"clearbots"} host, in the lobby, on localhost only: test players
+//   {t:"vote", id}              my vote: a player id
+//   {t:"guess", text}           the caught imposter's one guess
 //   {t:"next"}                  host: deal the next round
 //   {t:"end"}                   host: finish, to the final standings
 //   {t:"again"}                 host: from the final standings, back to the lobby
@@ -36,7 +39,7 @@ const VERDICT_BASE_MS = 3200;     // the verdict plays out on the page; the
 const VERDICT_PER_VOTE_MS = 650;  // server waits for it before moving on
 const EMPTY_ROOM_MS = 10 * 60 * 1000;
 
-module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }) {
+module.exports = function imposter({ send, cleanText, cleanName, newCode, W, R }) {
   const rooms = new Map();
 
   const shuffle = (a) => {
@@ -51,26 +54,25 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
   const roundPlayers = (room) => room.players.filter((p) => inRound(room, p));
 
   function makeRoom(host, quick) {
-    const settings = {};
-    for (const k in R.SETTINGS) settings[k] = R.SETTINGS[k].def;
-    if (quick) settings.clues = "typed";
     const room = {
       code: newCode(),
-      game: "inposter",
+      game: "imposter",
       host: host.id,
       quick: !!quick,
       startAt: 0, startTimer: null,
-      settings,
       players: [],        // { id, name, color, peer, score, stats }
       phase: "lobby",
       round: 0,
-      deal: null,         // { players, word, odd, cat, inposter }
+      cat: null,          // the category the reel landed on (one of W.CATEGORIES)
+      spinVotes: {},      // after it lands: id -> "respin" | "keep"
+      spinEnds: 0,
+      deal: null,         // { players, word, catName, imposter }
       seen: new Set(),
       order: [], turn: 0, clueRound: 0,
       clues: {},          // id -> [clue, ...]; null for a turn that ran out
       sus: {},            // id -> id they're pointing at
       readyVote: new Set(),
-      votes: {},          // id -> id | "nobody"
+      votes: {},          // id -> id
       verdict: null,      // { out, tally, votes }
       guess: null,        // { text, right }
       result: null,       // { winner, why, gains }
@@ -83,7 +85,7 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
     return room;
   }
 
-  const newStats = () => ({ inposter: 0, escaped: 0, stole: 0, caught: 0, sharp: 0, votedOut: 0, susVotes: 0 });
+  const newStats = () => ({ imposter: 0, escaped: 0, stole: 0, caught: 0, sharp: 0, votedOut: 0, susVotes: 0 });
   function addPlayer(room, peer) {
     const p = { id: peer.id, name: peer.name, color: peer.color, peer: null, score: 0, stats: newStats() };
     room.players.push(p);
@@ -96,32 +98,33 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
     const over = room.phase === "result" || room.phase === "final";
     let you = null;
     if (viewer && d && inRound(room, viewer)) {
-      const isIn = viewer.id === d.inposter;
-      const undercover = room.settings.mode === "undercover";
-      you = {
-        // classic: the inposter gets no word; undercover: the odd one out
-        // gets the cousin word and isn't told
-        word: isIn ? (undercover ? d.odd : null) : d.word,
-        inposter: isIn && !undercover,
-        cat: isIn && !undercover && room.settings.hint === "none" ? null : d.catName,
-      };
+      // the imposter gets no word, only the category everyone saw land
+      const isIn = viewer.id === d.imposter;
+      you = { word: isIn ? null : d.word, imposter: isIn, cat: d.catName };
     }
     const voted = Object.keys(room.votes);
     return {
       t: "state",
-      game: "inposter",
+      game: "imposter",
       code: room.code,
       you: viewer ? viewer.id : null,
       me: you,
       host: room.host,
       quick: room.quick,
       startsIn: room.startAt ? Math.max(0, room.startAt - Date.now()) : 0,
-      settings: room.settings,
+      rounds: R.ROUNDS,
+      talk: R.TALK_SECS,
+      cat: room.cat ? { name: room.cat.name } : null,
+      cats: W.CATEGORIES.map((c) => ({ name: c.name })),   // for the reel
+      spinVotes: room.spinVotes,
+      spinLeft: room.phase === "landed" ? Math.max(0, room.spinEnds - Date.now()) : 0,
       players: room.players.map((p) => ({
         id: p.id, name: p.name, color: p.color, online: online(p), score: p.score,
         inRound: inRound(room, p), seen: room.seen.has(p.id), readyVote: room.readyVote.has(p.id),
-        voted: voted.includes(p.id),
+        voted: voted.includes(p.id), bot: !!p.bot,
       })),
+      voteNeed: R.voteNeed(roundPlayers(room).filter(online).length),
+      dev: !!(viewer && viewer.peer && viewer.peer.dev),
       phase: room.phase,
       round: room.round,
       order: room.order,
@@ -131,9 +134,9 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
       sus: room.sus,
       msLeft: room.deadline ? Math.max(0, room.deadline - Date.now()) : 0,
       verdict: room.verdict,
-      guessing: room.phase === "guess" ? d.inposter : null,
+      guessing: room.phase === "guess" ? d.imposter : null,
       // the secrets, once the round's over
-      reveal: over && d ? { word: d.word, odd: d.odd, cat: d.catName, inposter: d.inposter, guess: room.guess } : null,
+      reveal: over && d ? { word: d.word, cat: d.catName, imposter: d.imposter, guess: room.guess } : null,
       result: room.result,
       history: room.phase === "final" ? room.history : room.history.slice(-1),
       stats: room.phase === "final" ? room.players.map((p) => ({ id: p.id, ...p.stats })) : null,
@@ -141,6 +144,7 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
   }
   function pushState(room) {
     for (const p of room.players) if (p.peer) send(p.peer, viewFor(room, p));
+    botsLook(room);
   }
   function broadcast(room, obj) {
     for (const p of room.players) if (p.peer) send(p.peer, obj);
@@ -160,29 +164,58 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
     return here >= R.MIN_PLAYERS ? null : `You need at least ${R.MIN_PLAYERS} players.`;
   }
 
+  // A word from the category the reel landed on, one not used this game if
+  // there's one left. (Each entry in words.js is a pair of close cousins;
+  // either half makes a good secret word.)
   function deal(room) {
-    const cats = W.CATEGORIES.filter((c) => !room.settings.cats.length || room.settings.cats.includes(c.id));
+    const c = room.cat;
     const pool = [];
-    for (const c of cats) c.pairs.forEach((pair, i) => pool.push({ c, pair, key: `${c.id}:${i}` }));
+    c.pairs.forEach((pair, i) => pair.forEach((word, k) => pool.push({ word, key: `${c.id}:${i}:${k}` })));
     let fresh = pool.filter((x) => !room.usedPairs.has(x.key));
     if (!fresh.length) { for (const x of pool) room.usedPairs.delete(x.key); fresh = pool; }
-    const { c, pair, key } = pick(fresh);
+    const { word, key } = pick(fresh);
     room.usedPairs.add(key);
-    const flip = crypto.randomInt(0, 2);
     const players = room.players.filter(online).map((p) => p.id);
-    const noOne = room.settings.chaos && Math.random() < R.CHAOS_ODDS;
-    room.deal = {
-      players,
-      word: pair[flip],
-      odd: pair[1 - flip],
-      catName: c.name,
-      catEmoji: c.emoji,
-      inposter: noOne ? null : pick(players),
-    };
+    room.deal = { players, word, catName: c.name, imposter: pick(players) };
   }
 
+  // A new round starts with the reel: everyone watches the category land.
   function startRound(room) {
     stopCountdown(room);
+    room.deal = null;
+    spin(room, null);
+  }
+  function spin(room, not) {
+    room.cat = pick(W.CATEGORIES.filter((c) => c.id !== not));
+    room.spinVotes = {};
+    room.phase = "spin";
+    setTimer(room, R.SPIN_MS, () => landed(room));
+    pushState(room);
+  }
+  function landed(room) {
+    room.phase = "landed";
+    room.spinVotes = {};
+    room.spinEnds = Date.now() + R.RESPIN_MS;
+    setTimer(room, R.RESPIN_MS, () => decideSpin(room, true));
+    pushState(room);
+  }
+  // Keep or respin, by majority of the players here. A vote can be changed
+  // until it's decided.
+  function spinVote(room, p, v) {
+    if (room.phase !== "landed") return;
+    room.spinVotes[p.id] = v;
+    if (!decideSpin(room, false)) pushState(room);
+  }
+  function decideSpin(room, timeUp) {
+    const here = room.players.filter(online);
+    const out = R.spinOutcome(here.map((x) => room.spinVotes[x.id]), here.length, timeUp);
+    if (out === "respin") { spin(room, room.cat.id); return true; }
+    if (out === "keep") { dealRound(room); return true; }
+    return false;
+  }
+
+  function dealRound(room) {
+    if (canStart(room)) { stopTimer(room); room.phase = "lobby"; room.deal = null; quickCheck(room); return pushState(room); }
     room.round++;
     deal(room);
     room.seen = new Set();
@@ -210,8 +243,8 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
   function beginClues(room) {
     const d = room.deal;
     let order = shuffle(d.players);
-    // the inposter never has to go first, with nothing to go on
-    if (order[0] === d.inposter && order.length > 1) [order[0], order[1]] = [order[1], order[0]];
+    // the imposter never has to go first, with nothing to go on
+    if (order[0] === d.imposter && order.length > 1) [order[0], order[1]] = [order[1], order[0]];
     room.order = order;
     room.clueRound = 1;
     room.turn = 0;
@@ -229,13 +262,12 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
       room.turn++;
     }
     if (room.turn >= room.order.length) {
-      if (room.clueRound >= room.settings.rounds) return beginTalk(room);
+      if (room.clueRound >= R.ROUNDS) return beginTalk(room);
       room.clueRound++;
       room.turn = 0;
       return startTurn(room);
     }
-    const secs = room.settings.clues === "spoken" ? R.TURN_SECS + 20 : R.TURN_SECS;
-    setTimer(room, secs * 1000, () => giveClue(room, room.order[room.turn], null));
+    setTimer(room, R.TURN_SECS * 1000, () => giveClue(room, room.order[room.turn], null));
     pushState(room);
   }
 
@@ -249,14 +281,16 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
   function beginTalk(room) {
     room.phase = "talk";
     room.sus = {};
-    room.readyVote = new Set();
-    setTimer(room, room.settings.talk * 1000, () => beginVote(room));
+    setTimer(room, R.TALK_SECS * 1000, () => beginVote(room));
     pushState(room);
   }
+  // Enough of the round wants to vote: 75% of the players still here.
   function maybeVoteNow(room) {
-    if (room.phase !== "talk") return;
-    const waiting = roundPlayers(room).filter((p) => online(p) && !room.readyVote.has(p.id));
-    if (!waiting.length) beginVote(room);
+    if (room.phase !== "talk" && room.phase !== "clues") return false;
+    const here = roundPlayers(room).filter(online);
+    const ready = here.filter((p) => room.readyVote.has(p.id)).length;
+    if (here.length && ready >= R.voteNeed(here.length)) { beginVote(room); return true; }
+    return false;
   }
 
   function beginVote(room) {
@@ -292,9 +326,9 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
   function afterVerdict(room) {
     const d = room.deal;
     const out = room.verdict.out;
-    const outP = out && out !== "nobody" ? playerOf(room, out) : null;
+    const outP = out ? playerOf(room, out) : null;
     if (outP) outP.stats.votedOut++;
-    if (d.inposter && out === d.inposter) {
+    if (d.imposter && out === d.imposter) {
       room.phase = "guess";
       setTimer(room, R.GUESS_SECS * 1000, () => finish(room, null));
       return pushState(room);
@@ -311,49 +345,43 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
     const gains = {};
     const add = (id, n) => { if (n) gains[id] = (gains[id] || 0) + n; };
     let winner, why;
-    const inP = d.inposter ? playerOf(room, d.inposter) : null;
-    if (inP) inP.stats.inposter++;
+    const inP = d.imposter ? playerOf(room, d.imposter) : null;
+    if (inP) inP.stats.imposter++;
 
     if (room.fled) {
       winner = "crew"; why = "fled";
-      for (const id of d.players) if (id !== d.inposter) add(id, R.POINTS.crewCatch);
-    } else if (!d.inposter) {
-      // a chaos round: nobody was the inposter
-      if (out === "nobody") {
-        winner = "crew"; why = "nobody";
-        for (const [id, v] of Object.entries(votes)) if (v === "nobody") add(id, R.POINTS.nobodyRight);
-      } else { winner = "nobody"; why = out ? "framed" : "tie-nobody"; }
-    } else if (out === d.inposter) {
+      for (const id of d.players) if (id !== d.imposter) add(id, R.POINTS.crewCatch);
+    } else if (out === d.imposter) {
       room.guess = guessText === null ? { text: null, right: false } : { text: guessText, right: R.sameWord(guessText, d.word) };
       if (room.guess.right) {
-        winner = "inposter"; why = "stole";
-        add(d.inposter, R.POINTS.inposterSteal);
+        winner = "imposter"; why = "stole";
+        add(d.imposter, R.POINTS.imposterSteal);
         if (inP) inP.stats.stole++;
       } else {
         winner = "crew"; why = "caught";
         if (inP) inP.stats.caught++;
         for (const id of d.players) {
-          if (id === d.inposter) continue;
+          if (id === d.imposter) continue;
           add(id, R.POINTS.crewCatch);
-          if (votes[id] === d.inposter) add(id, R.POINTS.crewSharp);
+          if (votes[id] === d.imposter) add(id, R.POINTS.crewSharp);
         }
       }
     } else {
-      winner = "inposter"; why = out ? "wrong" : "tie";
-      add(d.inposter, R.POINTS.inposterEscape);
+      winner = "imposter"; why = out ? "wrong" : "tie";
+      add(d.imposter, R.POINTS.imposterEscape);
       if (inP) inP.stats.escaped++;
     }
     for (const [id, v] of Object.entries(votes)) {
       const p = playerOf(room, id);
-      if (p && d.inposter && v === d.inposter) p.stats.sharp++;
+      if (p && d.imposter && v === d.imposter) p.stats.sharp++;
     }
     for (const [id, n] of Object.entries(gains)) { const p = playerOf(room, id); if (p) p.score += n; }
     room.result = { winner, why, gains };
     room.fled = false;
     room.history.push({
-      round: room.round, word: d.word, odd: d.odd, cat: d.catName, mode: room.settings.mode,
-      inposter: d.inposter, inposterName: inP ? inP.name : null,
-      out, outName: out && out !== "nobody" ? playerOf(room, out)?.name || "someone" : null,
+      round: room.round, word: d.word, cat: d.catName,
+      imposter: d.imposter, imposterName: inP ? inP.name : null,
+      out, outName: out ? playerOf(room, out)?.name || "someone" : null,
       winner, why, guess: room.guess,
     });
     room.phase = "result";
@@ -376,6 +404,16 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
   function stopCountdown(room) { clearTimeout(room.startTimer); room.startTimer = null; room.startAt = 0; }
 
   /* ---------- joining and leaving ---------- */
+  // Arriving mid-round (or coming back after dropping out of it): you're in,
+  // as crew - you get the word, and a turn at the end of the clue order. Only
+  // once the votes are being counted is it too late for this round.
+  function dealIn(room, p) {
+    const d = room.deal;
+    if (!d || d.players.includes(p.id) || !["reveal", "clues", "talk", "vote"].includes(room.phase)) return;
+    d.players.push(p.id);
+    if (room.order.length) room.order.push(p.id);
+  }
+
   function attach(peer, room, p) {
     p.peer = peer;
     p.name = peer.name;
@@ -386,7 +424,7 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
 
   function join(peer, code) {
     const room = rooms.get(String(code || "").toUpperCase().trim());
-    if (!room) return send(peer, { t: "error", msg: "No Inposter room with that code." });
+    if (!room) return send(peer, { t: "error", msg: "No Imposter room with that code." });
     leave(peer);
     let p = playerOf(room, peer.id);
     if (!p) {
@@ -394,6 +432,7 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
       p = addPlayer(room, peer);
     }
     attach(peer, room, p);
+    dealIn(room, p);
     quickCheck(room);
     pushState(room);
   }
@@ -440,11 +479,11 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
   // Someone went: for good (left) or for now (lost connection).
   function departed(room, id, forGood) {
     if (room.host === id) {
-      const next = room.players.find(online) || room.players[0];
+      const next = room.players.find((p) => online(p) && !p.bot) || room.players.find(online) || room.players[0];
       if (next) room.host = next.id;
     }
-    if (!room.players.length) { stopTimer(room); stopCountdown(room); rooms.delete(room.code); return; }
-    if (!room.players.some(online)) room.emptySince = Date.now();
+    if (!room.players.some((p) => !p.bot)) { stopTimer(room); stopCountdown(room); rooms.delete(room.code); return; }
+    if (!room.players.some((p) => online(p) && !p.bot)) room.emptySince = Date.now();
     const d = room.deal;
     const live = ["reveal", "clues", "talk", "vote", "verdict", "guess"].includes(room.phase);
     if (live && d && d.players.includes(id)) {
@@ -454,7 +493,7 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
         delete room.sus[id];
         delete room.votes[id];
         room.readyVote.delete(id);
-        if (d.inposter === id) { room.fled = true; quickCheck(room); return finish(room, null); }
+        if (d.imposter === id) { room.fled = true; quickCheck(room); return finish(room, null); }
       }
       if (d.players.filter((x) => playerOf(room, x) && online(playerOf(room, x))).length < 2) {
         stopTimer(room);
@@ -465,7 +504,7 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
       else if (room.phase === "clues" && forGood) return startTurn(room);
       else if (room.phase === "talk") maybeVoteNow(room);
       else if (room.phase === "vote") maybeTally(room);
-      else if (room.phase === "guess" && d.inposter === id && forGood) finish(room, null);
+      else if (room.phase === "guess" && d.imposter === id && forGood) finish(room, null);
     }
     quickCheck(room);
     pushState(room);
@@ -478,6 +517,74 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
     }
   }, 60000);
 
+  /* ---------- bots (localhost only: see server.js peer.dev) ----------
+     A bot is a player whose "connection" goes nowhere. It plays by sending
+     itself the same messages a person's page would, a beat after anything
+     changes, so every rule it follows is the real one. */
+  const BOT_NAMES = ["Botty", "Robo Rita", "Beep", "Clanky", "Sir Bolt", "Unit 7", "Gizmo", "Chip", "Widget", "Sprocket", "Dial-up", "Bleep"];
+  const BOT_COLORS = ["#4f8cff", "#2fe08a", "#ffb02e", "#c86bff", "#29c7d8", "#ff7a59"];
+  const BOT_CLUES = ["classic", "everyday", "popular", "big", "small", "fun", "famous", "old", "colorful", "fast", "loud", "soft", "tasty", "fancy", "simple", "rare", "hmm", "vibes", "cozy", "wild"];
+  function addBot(room) {
+    const taken = new Set(room.players.map((p) => p.name));
+    const name = BOT_NAMES.find((n) => !taken.has(n)) || `Bot ${room.players.length + 1}`;
+    const id = "bot-" + crypto.randomUUID().slice(0, 8);
+    const color = BOT_COLORS[room.players.filter((p) => p.bot).length % BOT_COLORS.length];
+    const p = { id, name, color, peer: null, score: 0, stats: newStats(), bot: true, botKey: "", botTimer: null };
+    p.peer = { id, name, color, room: room.code, socket: null, bot: true };   // send() skips it: no socket
+    room.players.push(p);
+  }
+  // After every change: anything for a bot to do? Schedule it once per moment.
+  function botsLook(room) {
+    for (const b of room.players) {
+      if (!b.bot) continue;
+      const key = [room.phase, room.round, room.clueRound, room.turn, room.order[room.turn], !!room.guess,
+        room.cat && room.cat.id, Object.values(room.spinVotes).join()].join(":");
+      if (key === b.botKey) continue;
+      b.botKey = key;
+      clearTimeout(b.botTimer);
+      const wait = room.phase === "talk" ? 6000 + Math.random() * 6000 : 900 + Math.random() * 1800;
+      b.botTimer = setTimeout(() => { if (rooms.get(room.code) === room && room.players.includes(b)) botAct(room, b); }, wait);
+    }
+  }
+  function botAct(room, b) {
+    const say = (m) => handle(b.peer, m);
+    // the category: bots go along with any person who wants a respin
+    if (room.phase === "landed") {
+      if (room.spinVotes[b.id]) return;
+      const people = Object.entries(room.spinVotes).filter(([id]) => !playerOf(room, id)?.bot).map(([, v]) => v);
+      if (people.includes("respin")) return say({ t: "respin" });
+      if (people.includes("keep") || Math.random() < 0.5) return say({ t: "keep" });
+      return;
+    }
+    const d = room.deal;
+    if (!d || !d.players.includes(b.id)) return;
+    switch (room.phase) {
+      case "reveal":
+        if (!room.seen.has(b.id)) say({ t: "seen" });
+        return;
+      case "clues": {
+        if (room.order[room.turn] !== b.id) return;
+        const mine = b.id === d.imposter ? null : d.word;
+        const ok = BOT_CLUES.filter((c) => !mine || !R.givesItAway(c, mine));
+        return say({ t: "clue", text: pick(ok.length ? ok : ["hmm"]) });
+      }
+      case "talk":
+        if (!room.readyVote.has(b.id)) say({ t: "readyvote" });
+        return;
+      case "vote": {
+        if (b.id in room.votes) return;
+        const others = d.players.filter((x) => x !== b.id);
+        return say({ t: "vote", id: pick(others) });
+      }
+      case "guess": {
+        if (d.imposter !== b.id) return;
+        const cat = W.CATEGORIES.find((c) => c.name === d.catName);
+        const words = cat ? cat.pairs.flat() : ["no idea"];
+        return say({ t: "guess", text: pick(words) });
+      }
+    }
+  }
+
   /* ---------- messages ---------- */
   function hello(peer) {
     for (const room of rooms.values()) {
@@ -485,6 +592,7 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
       if (p) {
         if (p.peer && p.peer !== peer) send(p.peer, { t: "idle" });
         attach(peer, room, p);
+        dealIn(room, p);
         quickCheck(room);
         return pushState(room);
       }
@@ -497,6 +605,12 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
     if (m.t === "join") return join(peer, m.code);
     if (m.t === "quick") return quick(peer);
     if (m.t === "leave") { leave(peer); return send(peer, { t: "idle" }); }
+    // a name typed on the home screen arrives before there's a room to be in
+    if (m.t === "name" && !peer.room) {
+      peer.name = cleanName(m.name);
+      if (m.color && /^#[0-9a-f]{6}$/i.test(m.color)) peer.color = m.color;
+      return;
+    }
 
     const room = peer.room ? rooms.get(peer.room) : null;
     const me = room && playerOf(room, peer.id);
@@ -509,20 +623,6 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
         peer.name = me.name = cleanName(m.name);
         if (m.color && /^#[0-9a-f]{6}$/i.test(m.color)) peer.color = me.color = m.color;
         return pushState(room);
-      case "settings": {
-        if (!isHost || room.phase !== "lobby") return;
-        const spec = R.SETTINGS[m.key];
-        if (!spec) return;
-        if (m.key === "cats") {
-          const ids = Array.isArray(m.value) ? m.value.filter((id) => W.byId(id)) : [];
-          room.settings.cats = [...new Set(ids)];
-        } else {
-          if (room.quick && m.key === "clues") return;
-          if (!spec.choices.includes(m.value)) return;
-          room.settings[m.key] = m.value;
-        }
-        return pushState(room);
-      }
       case "start": {
         if (!isHost || room.phase !== "lobby") return;
         const why = canStart(room);
@@ -538,19 +638,18 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
         if (!isHost || room.phase !== "reveal") return;
         return beginClues(room);
       case "clue": {
-        if (room.phase !== "clues" || room.order[room.turn] !== me.id || room.settings.clues !== "typed") return;
+        if (room.phase !== "clues" || room.order[room.turn] !== me.id) return;
         const text = cleanText(m.text, 32);
         if (!text) return;
         if (text.split(" ").length > 3) return send(peer, { t: "error", msg: "Keep it short: three words at most." });
-        const mine = me.id === d.inposter ? (room.settings.mode === "undercover" ? d.odd : null) : d.word;
+        const mine = me.id === d.imposter ? null : d.word;
         if (mine && R.givesItAway(text, mine)) return send(peer, { t: "error", msg: "No saying the word!" });
         broadcast(room, { t: "clued", by: me.id });
         return giveClue(room, me.id, text);
       }
-      case "done":
-        if (room.phase !== "clues" || room.order[room.turn] !== me.id || room.settings.clues !== "spoken") return;
-        broadcast(room, { t: "clued", by: me.id });
-        return giveClue(room, me.id, "");
+      case "respin":
+      case "keep":
+        return spinVote(room, me, m.t);
       case "sus": {
         if (room.phase !== "talk" || !inRound(room, me)) return;
         const target = m.id ? playerOf(room, m.id) : null;
@@ -559,22 +658,31 @@ module.exports = function inposter({ send, cleanText, cleanName, newCode, W, R }
         return pushState(room);
       }
       case "readyvote":
-        if (room.phase !== "talk" || !inRound(room, me)) return;
-        room.readyVote.add(me.id);
-        pushState(room);
-        return maybeVoteNow(room);
+        if ((room.phase !== "talk" && room.phase !== "clues") || !inRound(room, me)) return;
+        if (m.off) room.readyVote.delete(me.id); else room.readyVote.add(me.id);
+        if (!maybeVoteNow(room)) pushState(room);
+        return;
+      case "addbot": {
+        if (!isHost || room.phase !== "lobby" || !peer.dev) return;
+        if (room.players.length >= R.MAX_PLAYERS) return send(peer, { t: "error", msg: "The room is full." });
+        addBot(room);
+        return pushState(room);
+      }
+      case "clearbots":
+        if (!isHost || room.phase !== "lobby" || !peer.dev) return;
+        for (const b of room.players.filter((x) => x.bot)) clearTimeout(b.botTimer);
+        room.players = room.players.filter((x) => !x.bot);
+        return pushState(room);
       case "vote": {
         if (room.phase !== "vote" || !inRound(room, me) || me.id in room.votes) return;
-        const ok = (m.id === "nobody" && room.settings.chaos) ||
-          (m.id !== me.id && d.players.includes(m.id));
-        if (!ok) return;
+        if (m.id === me.id || !d.players.includes(m.id)) return;
         room.votes[me.id] = m.id;
         broadcast(room, { t: "voted", by: me.id });
         pushState(room);
         return maybeTally(room);
       }
       case "guess": {
-        if (room.phase !== "guess" || me.id !== d.inposter) return;
+        if (room.phase !== "guess" || me.id !== d.imposter) return;
         const text = cleanText(m.text, 40);
         if (!text) return;
         return finish(room, text);

@@ -1,9 +1,9 @@
-// Drafft, the server half. Loaded by server.js, which owns the socket and
-// hands over every message from a player on the Drafft page.
+// Draft, the server half. Loaded by server.js, which owns the socket and
+// hands over every message from a player on the Draft page.
 //
 // A 1v1 auction draft. Two players, $20 and five picks each. A reel spins
-// and lands on a category (spin); if you both vote to respin it spins
-// again, as often as you both want (landed). A random item from it comes up and one
+// and lands on a category (spin); then you both vote to keep it or spin
+// again, as often as you like (landed). A random item from it comes up and one
 // player names an opening price (open); the other raises or lets them have
 // it, back and forth (bid), until someone lets it go and the high bidder
 // pays (sold). Openers take turns. When both rosters are full it's over
@@ -25,7 +25,7 @@ const crypto = require("crypto");
 const QUICK_START_MS = 4000;
 const EMPTY_ROOM_MS = 10 * 60 * 1000;
 
-module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) {
+module.exports = function draft({ send, cleanText, cleanName, newCode, C, R }) {
   const rooms = new Map();
 
   const pick = (a) => a[crypto.randomInt(0, a.length)];
@@ -40,13 +40,13 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
   function makeRoom(host, quick) {
     const room = {
       code: newCode(),
-      game: "drafft",
+      game: "draft",
       host: host.id,
       quick: !!quick,
       startAt: 0, startTimer: null,
       players: [],        // { id, name, color, peer, money, roster: [{ item, price }] }
       phase: "lobby",     // lobby | spin | open | bid | sold | done
-      cat: null,          // { id, name, emoji }
+      cat: null,          // { id, name }
       votes: {},          // after the reel lands: id -> "respin" | "keep"
       voteEnds: 0,
       pool: [],           // items not yet up
@@ -65,7 +65,7 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
   function viewFor(room, viewer) {
     return {
       t: "state",
-      game: "drafft",
+      game: "draft",
       code: room.code,
       you: viewer ? viewer.id : null,
       host: room.host,
@@ -77,7 +77,7 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
       })),
       phase: room.phase,
       cat: room.cat,
-      cats: C.CATEGORIES.map((c) => ({ name: c.name, emoji: c.emoji })),   // for the reel
+      cats: C.CATEGORIES.map((c) => ({ name: c.name })),   // for the reel
       votes: room.votes,
       voteLeft: room.phase === "landed" ? Math.max(0, room.voteEnds - Date.now()) : 0,
       lot: room.lot,
@@ -97,7 +97,7 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
 
   /* ---------- the draft ---------- */
   function setCategory(room, c) {
-    room.cat = { id: c.id, name: c.name, emoji: c.emoji };
+    room.cat = { id: c.id, name: c.name };
     room.pool = c.items.slice();
   }
 
@@ -121,21 +121,26 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
     room.votes = {};
     room.voteEnds = Date.now() + R.VOTE_MS;
     pushState(room);
-    later(room, R.VOTE_MS, () => nextItem(room));
+    later(room, R.VOTE_MS, () => decide(room, true));
   }
 
+  // A vote (it can be changed until it's decided): both of you have to agree.
   function vote(room, p, v) {
     if (room.phase !== "landed") return;
     room.votes[p.id] = v;
-    if (v === "keep") return nextItem(room);
-    if (room.players.every((x) => room.votes[x.id] === "respin")) {
-      // both want a different one: spin again, and vote again
+    if (!decide(room, false)) pushState(room);
+  }
+  function decide(room, timeUp) {
+    const out = R.spinOutcome(room.players.map((x) => room.votes[x.id]), room.players.length, timeUp);
+    if (out === "keep") { nextItem(room); return true; }
+    if (out === "respin") {
       setCategory(room, pick(C.CATEGORIES.filter((c) => c.id !== room.cat.id)));
       room.phase = "spin";
       pushState(room);
-      return later(room, R.SPIN_MS, () => landed(room));
+      later(room, R.SPIN_MS, () => landed(room));
+      return true;
     }
-    pushState(room);
+    return false;
   }
 
   // A random item, opened by whoever didn't open the last one.
@@ -236,7 +241,7 @@ module.exports = function drafft({ send, cleanText, cleanName, newCode, C, R }) 
 
   function join(peer, code) {
     const room = rooms.get(String(code || "").toUpperCase().trim());
-    if (!room) return send(peer, { t: "error", msg: "No Drafft room with that code." });
+    if (!room) return send(peer, { t: "error", msg: "No Draft room with that code." });
     leave(peer);
     let p = playerOf(room, peer.id);
     if (!p) {

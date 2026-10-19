@@ -13,7 +13,7 @@ each tile is a self-contained app living in its own folder.
 |------|------------|
 | **`/`** | The launcher: tiles on a mounting board, with a DVD-screensaver bouncing behind them. |
 | **`/puzzle/`** | **Jigsaw** — one shared jigsaw puzzle. Everyone works the same table at once, you watch each other drag pieces, and a finished puzzle is shelved and replaced automatically. |
-| **`/jeoprady/`** | **Jeoprady!** — a multi-team Jeopardy game with 600 real episodes plus a custom board builder and a library of original modern/nostalgia categories. |
+| **`/jeopardy/`** | **Jeopardy!** — a multi-team Jeopardy game with 600 real episodes plus a custom board builder and a library of original modern/nostalgia categories. |
 | **`/wishlist/`** | **Wishlist** — paste a product link (or use the **+ wish** bookmarklet) and it unfurls into a draggable cutout on a scrapbook board, with a shopping cart and a shareable list. |
 | **`/chameleon/`** | **Meccha Chameleon** — a blank figure is hiding in today's photo, blended into it. Find it fast; your time and click count are the only score. One a day. |
 | **`/white-canvas/`** | **White Canvas** — a shared r/place-style pixel wall. Everyone draws on the same 180×300 grid, live, and every pixel stays. |
@@ -35,7 +35,7 @@ Mostly static files. A few small zero-dependency Node backends do the live bits:
 | `yahtzee/server.js` | 8024 | The Yahtzee table — 1v1 matchmaking and every dice roll, so no client can invent a number. Nothing persisted; a match lives in memory. |
 | `chameleon/server.js` | 8025 | Practice photos for Meccha Chameleon, fetched from Pexels and cached on our own origin so the game can read pixels off them. The daily puzzle needs none of it. |
 | `infinite-kitchen/server.js` | 8027 | Infinite Kitchen's to-do list: every pair a player tried that has no recipe yet, so the next batch can be written. |
-| `game-board/server.js` | 8028 | Game Board's rooms. Runs Frequency and Inposter. Frequency: teams, turns and scores, and the hidden target, which only the psychic is sent until the reveal. Nothing persisted. |
+| `game-board/server.js` | 8028 | Game Board's rooms. Runs Frequency and Imposter. Frequency: teams, turns and scores, and the hidden target, which only the psychic is sent until the reveal. Nothing persisted. |
 | `admin/server.js` | 8026 | The private ops dashboard at `/admin/` — uptime, visitor numbers read out of the nginx log, host health. Bound to localhost, password on the nginx side, not linked from anywhere. |
 
 `draw/server.js` is the backend for `/white-canvas/` — the canvas used to live
@@ -100,7 +100,7 @@ renders itself. Give it artwork in `artwork.js` keyed by the same slug.
 `puzzle/puzzles.json`. The piece grid and image dimensions are worked out from
 the file, and a running table picks it up at the next changeover — no restart.
 
-**Jeopardy boards.** `jeoprady/build_boards.py` regenerates `boards.json` and
+**Jeopardy boards.** `jeopardy/build_boards.py` regenerates `boards.json` and
 `categories.json` from `JEOPARDY_CSV.csv`. That CSV is git-ignored; the
 generated JSON is committed and is all the live game needs.
 

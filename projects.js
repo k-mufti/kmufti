@@ -43,7 +43,7 @@ const PROJECTS = [
   {
     slug: "game-board",
     title: "Game Board",
-    description: "Board games, off the shelf and onto your phones: Wavelenght, where one of you knows where the target is and the rest turn the dial, and Inposter, where everyone knows the word but one.",
+    description: "Board games, off the shelf and onto your phones: Wavelength, where one of you knows where the target is and the rest turn the dial, and Imposter, where everyone knows the word but one.",
     tags: ["game", "realtime", "party"],
     accent: "#ee7a33",
     accentBg: "linear-gradient(135deg, #3a2d24 0%, #1e1712 100%)",
@@ -91,13 +91,13 @@ const PROJECTS = [
     status: "live",
   },
   {
-    slug: "jeoprady",
-    title: "Jeoprady!",
+    slug: "jeopardy",
+    title: "Jeopardy!",
     description: "A multi-team Jeopardy game with 600 real episodes, a custom board builder, and a growing library of original modern/nostalgia categories.",
     tags: ["game", "trivia", "js"],
     accent: "#ffcc00",
     accentBg: "linear-gradient(135deg, #060ce9 0%, #020556 100%)",
-    href: "jeoprady/",
+    href: "jeopardy/",
     status: "live",
   },
   {

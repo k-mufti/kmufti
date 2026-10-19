@@ -209,7 +209,7 @@ packages, no build step.
 | Project | Backend | Port | Breaks without it? |
 |---|---|---|---|
 | Hub `/` | — | — | — |
-| Jeoprady `/jeoprady/` | — | — | — |
+| Jeopardy `/jeopardy/` | — | — | — |
 | Lost in Translation `/translate/` | — | — | — |
 | Meccha Chameleon `/chameleon/` | `chameleon/server.js` | 8025 | No — daily still works, practice falls back to repo photos |
 | Infinite Kitchen `/infinite-kitchen/` | `infinite-kitchen/server.js` | 8027 | No — the game is static |

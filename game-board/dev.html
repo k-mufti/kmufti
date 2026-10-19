@@ -42,7 +42,7 @@
 <body>
   <header>
     <a href="./">&larr; Game Board</a>
-    <h1>🧪 Test bench</h1>
+    <h1>Test bench</h1>
     <select id="game" aria-label="Game"></select>
     <select id="n" aria-label="Players"></select>
     <button id="restart">New room</button>
@@ -55,10 +55,11 @@
     const host = location.hostname;
     const local = host === "localhost" || host === "127.0.0.1";
     const GAMES = [
-      ["wavelenght", "Wavelenght", 2],
+      ["wavelength", "Wavelength", 2],
       ["frequency", "Frequency (new theme)", 2],
-      ["inposter", "Inposter", 3],
-      ["drafft", "Drafft", 2],
+      ["imposter", "Imposter", 3],
+      ["draft", "Draft", 2],
+      ["21-questions", "21 Questions", 2],
     ];
     const q = new URLSearchParams(location.search);
     const $ = (id) => document.getElementById(id);
@@ -66,7 +67,7 @@
     for (const [id, name] of GAMES) gameSel.add(new Option(name, id));
     for (let i = 2; i <= 6; i++) nSel.add(new Option(`${i} players`, i));
 
-    let game = GAMES.some((g) => g[0] === q.get("game")) ? q.get("game") : "drafft";
+    let game = GAMES.some((g) => g[0] === q.get("game")) ? q.get("game") : "draft";
     let n = parseInt(q.get("n"), 10) || GAMES.find((g) => g[0] === game)[2];
     let code = "";
 
@@ -79,8 +80,8 @@
       const main = $("seats");
       if (!local) { main.innerHTML = `<p class="off">The test bench only works on localhost.</p>`; return; }
       main.innerHTML = "";
-      // the two Wavelenght looks redirect to whichever this device picked
-      if (game === "frequency" || game === "wavelenght") {
+      // the two Wavelength looks redirect to whichever this device picked
+      if (game === "frequency" || game === "wavelength") {
         try { localStorage.setItem("game-board-theme", game === "frequency" ? "new" : "old"); } catch (e) {}
       }
       for (let s = 1; s <= n; s++) {

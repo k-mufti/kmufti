@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Imposter</title>
+  <link rel="icon" href="favicon.svg?v=1" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Space+Mono:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=9" />
+</head>
+<body>
+  <header class="bar">
+    <a class="back" href="../">&larr; Game Board</a>
+    <span class="logo">Imposter<i class="logo-dot"></i></span>
+    <span class="bar-r">
+      <span class="code" id="codeChip" hidden></span>
+      <button class="mute" id="muteBtn" aria-label="Sound on"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+    </span>
+  </header>
+
+  <!-- Not in a room yet -->
+  <section class="screen" id="home">
+    <div class="home">
+      <div class="home-pitch">
+        <h1 class="title">Imposter</h1>
+        <p class="tag">Everyone gets the secret word.<br /><b>Except one of you.</b></p>
+        <ol class="how">
+          <li><span>1</span><div><b>A reel picks the category.</b> Everyone sees it. Don't like it? Most of you can vote to spin again.</div></li>
+          <li><span>2</span><div><b>Peek at your card.</b> It shows the word, or tells you you're the imposter.</div></li>
+          <li><span>3</span><div><b>Type one-word clues,</b> three times round. Prove you know it, without giving it away.</div></li>
+          <li><span>4</span><div><b>Argue, point fingers, vote.</b> Catch the one who's faking it.</div></li>
+          <li><span>5</span><div><b>Caught?</b> The imposter gets one guess at the word to steal the win.</div></li>
+        </ol>
+      </div>
+      <div class="home-card">
+        <label class="field">
+          <span>Your name</span>
+          <input id="nameInput" maxlength="18" autocomplete="nickname" spellcheck="false" />
+        </label>
+        <button class="btn big" id="createBtn">Start a room</button>
+        <button class="btn big hot" id="quickBtn">Quick game<small>play with whoever's around</small></button>
+        <div class="or"><span>or join one</span></div>
+        <form class="join" id="joinForm">
+          <input id="codeInput" maxlength="4" placeholder="CODE" autocomplete="off" spellcheck="false" autocapitalize="characters" />
+          <button class="btn" type="submit">Join</button>
+        </form>
+        <p class="status" id="homeStatus"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- In a room, before a round -->
+  <section class="screen" id="lobby" hidden>
+    <div class="lobby">
+      <div class="lobby-main">
+        <p class="room-line" id="roomLine">Room code</p>
+        <p class="room-code" id="lobbyCode"></p>
+        <p class="room-hint" id="roomHint"></p>
+        <div class="crew" id="lobbyPlayers"></div>
+        <div class="bots" id="botRow" hidden><button class="btn ghost" id="addBotBtn">Add a bot</button><button class="link" id="clearBotsBtn">Remove bots</button><small>Dev mode (localhost only)</small></div>
+        <button class="btn big" id="startBtn">Start</button>
+        <p class="status" id="lobbyStatus"></p>
+        <button class="link" id="leaveBtn">Leave room</button>
+      </div>
+      <div class="lobby-side">
+        <h2>How it plays</h2>
+        <ol class="howto">
+          <li><b>The reel picks a category</b> each round. A majority of you keeps it or spins again.</li>
+          <li><b>Everyone gets the secret word</b>, except the imposter, who only knows the category.</li>
+          <li><b>Three rounds of typed clues.</b> One word each, three at most, never the word itself.</li>
+          <li><b>Seen enough?</b> Tap “Vote now”. When 75% of you have, the voting starts early.</li>
+          <li><b>90 seconds to talk it out</b>, then everyone votes. Most votes is out.</li>
+          <li><b>Caught?</b> The imposter gets one guess at the word to steal the round.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- A round: the players round the table, what's happening in the middle -->
+  <section class="screen" id="game" hidden>
+    <div class="ring" id="ring">
+      <div class="seats" id="seats"></div>
+      <div class="table" id="table"></div>
+    </div>
+  </section>
+
+  <!-- The end: standings, awards, every round -->
+  <section class="screen" id="final" hidden></section>
+
+  <!-- your card, there to peek at all round -->
+  <button class="mycard" id="myCard" hidden><span class="mc-k">Your card</span><span class="mc-v" id="myCardV">hold to peek</span></button>
+
+  <!-- vote now: off to the side, so it never looks like the thing to press -->
+  <button class="votenow" id="readyBtn" hidden></button>
+
+  <button class="exit" id="exitBtn" hidden>&larr; <b>Leave game</b></button>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../../you.js?v=2"></script>
+  <script src="../dev-seat.js?v=2"></script>
+  <script type="module" src="app.js?v=8"></script>
+</body>
+</html>
