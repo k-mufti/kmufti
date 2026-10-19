@@ -1671,7 +1671,7 @@ Italian: Chicken Alfredo, Arancini, Affogato
 Mexican: Chips and Queso, Esquites, Carne Asada Fries
 East Asian: Potstickers, Wonton Soup, Kimchi Fried Rice
 Indian: Cheese Naan, Masala Dosa
-American: Nashville Hot Chicken, Cincinnati Chili, Toasted Ravioli
+American: Nashville Hot Chicken, Cincinnati Chili, Toasted Ravioli, Texas Barbecue, Beef on Weck
 
 ## Notebook batch (2026-10-13): pairs players tried with no recipe
 # Kareem's notebook, minus pairs already written and ones naming the old
@@ -15651,3 +15651,170 @@ Fish Soup + Powdered Sugar = Fish Soup [nothing]
 Fish Soup + Sparkling Water = Fish Soup [nothing]
 Fish Soup + Granola = Fish Soup [nothing]
 Fish Soup + Oats = Fish Soup [nothing]
+
+## Step 2 layer 2, batch 29 (2026-10-19): Iced Tea, Graham Crackers, Brisket
+
+Seaweed Soup + Green Smoothie = Seaweed Salad
+
+# Iced Tea
+Iced Tea + Ocean = Picnic
+Iced Tea + Hen = Picnic
+Iced Tea + Crackers = Picnic
+Iced Tea + Granola = Picnic
+Iced Tea + Wheat = Barley Tea
+Iced Tea + Cereal = Barley Tea
+Iced Tea + Tree = Peach Tea
+# tea brewed in a jar on the porch, in the sun
+Iced Tea + Farm = Sun Tea [drink]
+Iced Tea + Syrup = Sweet Tea
+Iced Tea + Sugar Cubes = Sweet Tea
+Iced Tea + Powdered Sugar = Sweet Tea
+Iced Tea + Candy = Arizona Iced Tea [drink]
+Iced Tea + Rock Salt = Gatorade
+Iced Tea + Rice = Genmaicha
+# cucumber water
+Iced Tea + Vegetables = Spa Water [drink]
+Iced Tea + Cow = Milk Tea
+Iced Tea + Oats = Milk Tea
+Iced Tea + Fruit = Lemon Tea
+Iced Tea + Bee = Lemon Tea
+Iced Tea + Seaweed = Kombucha
+Iced Tea + Sparkling Water = Kombucha
+# eggs simmered in tea and soy, from China
+Iced Tea + Egg = Tea Eggs [dish]
+Iced Tea + Corn = Corn Tea
+Iced Tea + Caramel = Thai Tea [drink]
+Iced Tea + Salted Caramel = Boba
+Iced Tea + Ice = Slushie
+Iced Tea + Popcorn = Movie Night
+Iced Tea + Hot Dog = Cookout
+Iced Tea + Barbecue = Cookout
+Iced Tea + Meat = Cookout
+Iced Tea + Jerky = Road Trip Snacks
+Iced Tea + Steam = Herbal Tea
+Iced Tea + Herbs = Herbal Tea
+# Japan pours tea over rice
+Iced Tea + Porridge = Ochazuke
+Iced Tea + Broth = Ochazuke
+Iced Tea + Kale Chips = Matcha
+Iced Tea + Green Smoothie = Matcha Latte
+Iced Tea + Stir-Fry = Takeout
+Iced Tea + Mint = Mint Tea
+Iced Tea + Roast = Hojicha
+# chrysanthemum tea is sweetened with rock sugar
+Iced Tea + Rock Candy = Chrysanthemum Tea
+Iced Tea + Fish = Slop
+Iced Tea + Vegetable Soup = Slop
+Iced Tea + Flour = Iced Tea [nothing]
+Iced Tea + Brine = Iced Tea [nothing]
+Iced Tea + Boiling Water = Iced Tea [nothing]
+Iced Tea + Beer = Iced Tea [nothing]
+
+# Graham Crackers
+# key lime pie sits in a graham crust
+Graham Crackers + Ocean = Key Lime Pie
+Graham Crackers + Tree = Key Lime Pie
+# Britain's cousin of the graham cracker
+Graham Crackers + Wheat = Digestive Biscuits [dish]
+Graham Crackers + Farm = Animal Crackers
+Graham Crackers + Candy = S'mores
+Graham Crackers + Steam = S'mores
+Graham Crackers + Barbecue = S'mores
+Graham Crackers + Roast = S'mores
+Graham Crackers + Rock Salt = Saltines
+Graham Crackers + Rice = Rice Crackers
+Graham Crackers + Vegetables = Pumpkin Pie
+Graham Crackers + Fish = Goldfish
+Graham Crackers + Syrup = Teddy Grahams
+Graham Crackers + Bee = Teddy Grahams
+Graham Crackers + Hen = Peeps
+Graham Crackers + Cereal = Golden Grahams [dish]
+Graham Crackers + Cow = Milk and Cookies
+Graham Crackers + Fruit = Apple Crisp
+Graham Crackers + Egg = Cheesecake
+Graham Crackers + Flour = Pie Crust
+Graham Crackers + Corn = Cracker Jack
+Graham Crackers + Caramel = Christmas Crack
+Graham Crackers + Salted Caramel = Christmas Crack
+Graham Crackers + Ice = Ice Cream Sandwich
+Graham Crackers + Popcorn = Party Mix
+Graham Crackers + Kale Chips = Party Mix
+Graham Crackers + Stir-Fry = Party Mix
+Graham Crackers + Rock Candy = Party Mix
+Graham Crackers + Hot Dog = Campfire
+Graham Crackers + Jerky = Campfire
+Graham Crackers + Granola = Granola Bar
+Graham Crackers + Porridge = Oatmeal
+Graham Crackers + Oats = Oatmeal Cookie
+Graham Crackers + Beer = Bar Snacks
+Graham Crackers + Green Smoothie = Smoothie Bowl
+Graham Crackers + Mint = Thin Mints
+Graham Crackers + Meat = Lunchables
+Graham Crackers + Sugar Cubes = Sugar Cookie
+# Canada's no-bake graham bar with a custard-icing middle
+Graham Crackers + Powdered Sugar = Nanaimo Bars [dish]
+Graham Crackers + Boiling Water = Slop
+Graham Crackers + Vegetable Soup = Slop
+Graham Crackers + Broth = Oyster Crackers
+Graham Crackers + Seaweed = Graham Crackers [nothing]
+Graham Crackers + Brine = Graham Crackers [nothing]
+Graham Crackers + Sparkling Water = Graham Crackers [nothing]
+Graham Crackers + Herbs = Graham Crackers [nothing]
+Graham Crackers + Flower = Graham Crackers [nothing]
+
+# Brisket
+Brisket + Ocean = Surf and Turf
+Brisket + Fish = Surf and Turf
+# Buffalo's roast beef on a salted caraway roll
+Brisket + Wheat = Beef on Weck [dish]
+Brisket + Tree = Barbecue
+Brisket + Farm = Cookout
+# the caramelized tips, called "meat candy"
+Brisket + Candy = Burnt Ends
+Brisket + Syrup = Burnt Ends
+Brisket + Caramel = Burnt Ends
+Brisket + Salted Caramel = Burnt Ends
+Brisket + Bee = BBQ Sauce
+Brisket + Sugar Cubes = BBQ Sauce
+Brisket + Powdered Sugar = BBQ Sauce
+Brisket + Rock Candy = BBQ Sauce
+# corned beef and pastrami are both made from brisket
+Brisket + Rock Salt = Corned Beef
+Brisket + Brine = Corned Beef
+Brisket + Steam = Pastrami
+Brisket + Herbs = Pastrami
+Brisket + Rice = Rice and Meat
+Brisket + Vegetables = Pot Roast
+Brisket + Hen = BBQ Chicken
+Brisket + Cereal = Corned Beef Hash
+Brisket + Cow = Roast Beef
+# the Jewish holiday brisket with dried fruit
+Brisket + Fruit = Tzimmes
+Brisket + Seaweed = Korean BBQ
+Brisket + Egg = Steak and Eggs
+Brisket + Flour = Meat Pie
+Brisket + Corn = Cornbread
+Brisket + Crackers = Lunchables
+Brisket + Ice = Leftovers
+Brisket + Popcorn = Fair Food
+# brisket, ribs and sausage: Texas barbecue
+Brisket + Hot Dog = Texas Barbecue [dish]
+Brisket + Barbecue = Texas Barbecue
+Brisket + Meat = Texas Barbecue
+Brisket + Jerky = Beef Jerky
+Brisket + Boiling Water = Broth
+# Texas barbecue and a Dr Pepper
+Brisket + Sparkling Water = Dr Pepper
+Brisket + Porridge = Congee
+Brisket + Oats = Haggis
+Brisket + Beer = Carbonnade
+Brisket + Kale Chips = Collard Greens
+Brisket + Green Smoothie = Collard Greens
+Brisket + Vegetable Soup = Vegetable Beef Soup
+Brisket + Stir-Fry = Beef and Broccoli
+Brisket + Mint = Irish Stew
+Brisket + Roast = Sunday Roast
+# brisket is a classic pho cut
+Brisket + Broth = Pho
+Brisket + Granola = Brisket [nothing]
+Brisket + Flower = Brisket [nothing]
