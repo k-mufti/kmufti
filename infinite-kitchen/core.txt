@@ -15148,3 +15148,164 @@ Goldfish + Ice = Goldfish [nothing]
 Goldfish + Brine = Goldfish [nothing]
 Goldfish + Steam = Goldfish [nothing]
 Goldfish + Flower = Goldfish [nothing]
+
+## Step 2 layer 2, batch 26 (2026-10-19): Kettle Corn, Parfait, Relish
+
+# Kettle Corn
+Kettle Corn + Ocean = Sea Salt Popcorn [dish]
+Kettle Corn + Wheat = Puffed Wheat [dish]
+Kettle Corn + Tree = Popcorn Garland
+Kettle Corn + Syrup = Maple Popcorn [dish]
+# the county fair: kettle corn, corn dogs, funnel cake
+Kettle Corn + Farm = Fair Food [dish]
+Kettle Corn + Hot Dog = Fair Food
+Kettle Corn + Meat = Fair Food
+Kettle Corn + Candy = Popcorn Brittle [dish]
+Kettle Corn + Rock Candy = Popcorn Ball
+Kettle Corn + Rice = Puffed Rice
+# the Midwest's popcorn salad is real
+Kettle Corn + Vegetables = Popcorn Salad [dish]
+Kettle Corn + Fish = Popcorn Shrimp
+Kettle Corn + Hen = Popcorn Chicken
+Kettle Corn + Stir-Fry = Popcorn Chicken
+Kettle Corn + Cereal = Party Mix
+Kettle Corn + Granola = Party Mix
+Kettle Corn + Cow = Buttered Popcorn
+Kettle Corn + Fruit = Candy Apple
+Kettle Corn + Seaweed = Hurricane Popcorn
+Kettle Corn + Bee = Honey Butter Popcorn [dish]
+Kettle Corn + Corn = Popcorn
+Kettle Corn + Crackers = Chex Mix
+Kettle Corn + Caramel = Caramel Corn
+Kettle Corn + Salted Caramel = Caramel Corn
+Kettle Corn + Ice = Popcorn Ice Cream
+Kettle Corn + Popcorn = Movie Theater Popcorn
+Kettle Corn + Brine = Dill Pickle Popcorn
+Kettle Corn + Jerky = Road Trip Snacks
+Kettle Corn + Steam = Soggy Popcorn
+Kettle Corn + Boiling Water = Soggy Popcorn
+Kettle Corn + Porridge = Soggy Popcorn
+Kettle Corn + Sparkling Water = Movie Night [dish]
+Kettle Corn + Oats = Granola Bar
+Kettle Corn + Beer = Beer Nuts
+Kettle Corn + Kale Chips = Veggie Straws
+Kettle Corn + Vegetable Soup = Corn Chowder
+Kettle Corn + Herbs = Seasoned Popcorn [dish]
+Kettle Corn + Green Smoothie = Slop
+Kettle Corn + Flour = Slop
+Kettle Corn + Broth = Slop
+Kettle Corn + Mint = Tic Tacs
+Kettle Corn + Barbecue = BBQ Popcorn [dish]
+Kettle Corn + Roast = Roasted Nuts
+Kettle Corn + Sugar Cubes = Cotton Candy
+Kettle Corn + Powdered Sugar = Puppy Chow
+Kettle Corn + Rock Salt = Kettle Corn [nothing]
+Kettle Corn + Egg = Kettle Corn [nothing]
+Kettle Corn + Flower = Kettle Corn [nothing]
+
+# Parfait
+Parfait + Wheat = Muesli
+Parfait + Tree = Acai Bowl
+Parfait + Farm = Breakfast
+Parfait + Candy = Dirt Cup
+# Turkey's salty yogurt drink
+Parfait + Rock Salt = Ayran [drink]
+Parfait + Brine = Ayran
+Parfait + Rice = Rice Pudding
+Parfait + Vegetables = Tzatziki
+Parfait + Fish = Slop
+Parfait + Syrup = Sundae
+Parfait + Caramel = Sundae
+Parfait + Salted Caramel = Sundae
+Parfait + Hen = Tandoori Chicken
+Parfait + Cereal = Granola
+Parfait + Cow = Greek Yogurt
+Parfait + Fruit = Fruit Cup [dish]
+Parfait + Bee = Honey Yogurt [dish]
+Parfait + Egg = Custard
+# France's gateau au yaourt
+Parfait + Flour = Yogurt Cake [dish]
+Parfait + Powdered Sugar = Yogurt Cake
+Parfait + Corn = Corn Flakes
+Parfait + Crackers = No-Bake Cheesecake [dish]
+Parfait + Ice = Yogurt Bark [dish]
+Parfait + Popcorn = Party Mix
+Parfait + Hot Dog = Slop
+Parfait + Boiling Water = Slop
+# Iran's fizzy yogurt drink
+Parfait + Sparkling Water = Doogh [drink]
+Parfait + Granola = Smoothie Bowl
+Parfait + Kale Chips = Smoothie Bowl
+Parfait + Green Smoothie = Smoothie Bowl
+Parfait + Porridge = Overnight Oats
+Parfait + Oats = Overnight Oats
+Parfait + Beer = Slop
+# Bulgaria's cold yogurt and cucumber soup
+Parfait + Vegetable Soup = Tarator [dish]
+Parfait + Broth = Slop
+Parfait + Stir-Fry = Slop
+Parfait + Herbs = Raita
+Parfait + Mint = Raita
+Parfait + Flower = Rose Lassi [drink]
+Parfait + Barbecue = Gyro
+Parfait + Meat = Gyro
+Parfait + Roast = Shawarma
+Parfait + Sugar Cubes = Frozen Yogurt
+Parfait + Rock Candy = Frozen Yogurt
+Parfait + Ocean = Parfait [nothing]
+Parfait + Seaweed = Parfait [nothing]
+Parfait + Jerky = Parfait [nothing]
+Parfait + Steam = Parfait [nothing]
+
+# Relish
+Relish + Ocean = Tartar Sauce
+Relish + Fish = Tartar Sauce
+Relish + Wheat = Sandwich
+Relish + Tree = Tapenade
+# a Southern relish of chopped garden vegetables
+Relish + Vegetables = Chow-Chow
+# Britain's yellow mustard relish
+Relish + Farm = Piccalilli
+Relish + Candy = Pickle Candy [dish]
+Relish + Rock Candy = Pickle Candy
+Relish + Rock Salt = Pickles
+Relish + Brine = Pickles
+Relish + Rice = Kimbap
+Relish + Syrup = Chutney
+Relish + Sugar Cubes = Sweet Relish
+# sweet pickles
+Relish + Bee = Bread and Butter Pickles
+Relish + Hen = Chicken Salad
+Relish + Egg = Deviled Eggs
+Relish + Cereal = Slop
+Relish + Cow = Burger
+Relish + Fruit = Cranberry Relish
+Relish + Roast = Cranberry Relish
+Relish + Seaweed = Furikake
+Relish + Corn = Corn Relish
+# the old-school holiday tray of pickles, olives and crackers
+Relish + Crackers = Relish Tray [dish]
+Relish + Caramel = Slop
+Relish + Salted Caramel = Slop
+Relish + Ice = Pickle Pops [dish]
+Relish + Popcorn = Dill Pickle Popcorn
+Relish + Boiling Water = Pickle Soup
+Relish + Vegetable Soup = Pickle Soup
+Relish + Broth = Pickle Soup
+Relish + Sparkling Water = Pickle Juice [drink]
+Relish + Porridge = Slop
+Relish + Oats = Slop
+Relish + Kale Chips = Slop
+Relish + Green Smoothie = Slop
+Relish + Beer = Fried Pickles
+Relish + Stir-Fry = Kimchi
+Relish + Herbs = Chimichurri
+Relish + Mint = Mint Chutney
+Relish + Barbecue = Cookout
+Relish + Meat = Chicago Dog
+Relish + Powdered Sugar = Slop
+Relish + Flour = Relish [nothing]
+Relish + Jerky = Relish [nothing]
+Relish + Steam = Relish [nothing]
+Relish + Granola = Relish [nothing]
+Relish + Flower = Relish [nothing]
