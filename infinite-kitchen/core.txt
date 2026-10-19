@@ -2668,9 +2668,9 @@ Feast + East Asian = Hot Pot [dish]
 Feast + Feast = Buffet [dish]
 Feast + Platter = Buffet
 
-Middle Eastern: Mezze
-East Asian: Dim Sum, Hot Pot, Seafood Pancake, Moo Shu, Mandarin Pancakes, Sweet and Sour Fish
-Indian: Thali
+Middle Eastern: Mezze, Fesenjan
+East Asian: Dim Sum, Hot Pot, Seafood Pancake, Moo Shu, Mandarin Pancakes, Sweet and Sour Fish, Hayashi Rice
+Indian: Thali, Chicken Tikka, Bhel Puri, Sambar, Upma, Hakka Noodles, Seekh Kebab, Keema, Papadum, Jaljeera
 
 # Round 11: chip flavours
 Potato Chips + Sour Cream = Sour Cream and Onion Chips [dish]
@@ -15309,3 +15309,174 @@ Relish + Jerky = Relish [nothing]
 Relish + Steam = Relish [nothing]
 Relish + Granola = Relish [nothing]
 Relish + Flower = Relish [nothing]
+
+## Step 2 layer 2, batch 27 (2026-10-19): Beef Stew, Chutney, Gummy Bears
+
+# Beef Stew
+Beef Stew + Ocean = Surf and Turf
+Beef Stew + Fish = Surf and Turf
+Beef Stew + Wheat = Beef Barley Soup
+Beef Stew + Tree = Bay Leaves
+Beef Stew + Farm = Irish Stew
+Beef Stew + Mint = Irish Stew
+Beef Stew + Rock Salt = Corned Beef
+# Japan's beef stew over rice
+Beef Stew + Rice = Hayashi Rice [dish]
+Beef Stew + Vegetables = Pot Roast
+Beef Stew + Roast = Pot Roast
+# Iran's sweet-sour pomegranate and walnut stew
+Beef Stew + Syrup = Fesenjan [dish]
+Beef Stew + Hen = Chicken and Dumplings
+Beef Stew + Cow = Oxtail Stew [dish]
+Beef Stew + Fruit = Tagine
+Beef Stew + Bee = Tagine
+# Korea's seaweed soup is made with beef
+Beef Stew + Seaweed = Seaweed Soup
+Beef Stew + Egg = Loco Moco
+Beef Stew + Flour = Gravy
+Beef Stew + Corn = Pozole
+Beef Stew + Crackers = Chili
+# Vietnam's caramel-braised meat
+Beef Stew + Caramel = Thit Kho [dish]
+Beef Stew + Salted Caramel = Thit Kho
+Beef Stew + Ice = Leftovers
+Beef Stew + Hot Dog = Franks and Beans [dish]
+Beef Stew + Brine = Sauerbraten
+Beef Stew + Jerky = Pemmican
+Beef Stew + Steam = Stew and Dumplings [dish]
+Beef Stew + Boiling Water = Broth
+Beef Stew + Porridge = Congee
+Beef Stew + Oats = Haggis
+Beef Stew + Beer = Carbonnade
+Beef Stew + Kale Chips = Caldo Verde
+Beef Stew + Vegetable Soup = Vegetable Beef Soup [dish]
+Beef Stew + Stir-Fry = Beef and Broccoli
+Beef Stew + Herbs = Beef Bourguignon
+Beef Stew + Barbecue = Brisket
+Beef Stew + Broth = Pho
+Beef Stew + Meat = Goulash
+Beef Stew + Candy = Slop
+Beef Stew + Cereal = Slop
+Beef Stew + Green Smoothie = Slop
+Beef Stew + Sugar Cubes = Slop
+Beef Stew + Powdered Sugar = Slop
+Beef Stew + Popcorn = Beef Stew [nothing]
+Beef Stew + Sparkling Water = Beef Stew [nothing]
+Beef Stew + Granola = Beef Stew [nothing]
+Beef Stew + Flower = Beef Stew [nothing]
+Beef Stew + Rock Candy = Beef Stew [nothing]
+
+# Chutney
+Chutney + Ocean = Fish Curry [dish]
+Chutney + Fish = Fish Curry
+# the crisp lentil wafers served with chutney
+Chutney + Wheat = Papadum [dish]
+Chutney + Tree = Mango Chutney
+Chutney + Fruit = Mango Chutney
+Chutney + Sugar Cubes = Mango Chutney
+Chutney + Caramel = Mango Chutney
+Chutney + Candy = Jam
+Chutney + Syrup = Jam
+# India's sweet fruit preserve
+Chutney + Rock Candy = Murabba
+# Britain's cheese, bread and chutney pub lunch
+Chutney + Farm = Ploughman's Lunch
+Chutney + Cow = Ploughman's Lunch
+Chutney + Beer = Pub Grub
+Chutney + Rock Salt = Pickles
+Chutney + Brine = Pickles
+Chutney + Rice = Thali
+Chutney + Vegetables = Pakora
+Chutney + Kale Chips = Pakora
+Chutney + Hen = Chicken Tikka [dish]
+# Mumbai's puffed-rice street snack
+Chutney + Cereal = Bhel Puri [dish]
+Chutney + Popcorn = Bhel Puri
+Chutney + Egg = Scotch Egg
+Chutney + Flour = Samosa
+Chutney + Corn = Corn Relish
+Chutney + Crackers = Cheese and Crackers
+Chutney + Hot Dog = Sausage Roll
+Chutney + Steam = Idli
+Chutney + Boiling Water = Sambar [dish]
+Chutney + Vegetable Soup = Sambar
+# India's spiced cumin water
+Chutney + Sparkling Water = Jaljeera [drink]
+# a savory semolina porridge from South India
+Chutney + Porridge = Upma [dish]
+# Indo-Chinese noodles
+Chutney + Stir-Fry = Hakka Noodles [dish]
+Chutney + Herbs = Mint Chutney
+Chutney + Mint = Mint Chutney
+Chutney + Green Smoothie = Mint Chutney
+# a sweet preserve of rose petals
+Chutney + Flower = Gulkand
+Chutney + Barbecue = Seekh Kebab [dish]
+Chutney + Roast = Sunday Roast
+Chutney + Broth = Mulligatawny
+Chutney + Meat = Keema [dish]
+Chutney + Oats = Slop
+Chutney + Granola = Slop
+Chutney + Seaweed = Chutney [nothing]
+Chutney + Bee = Chutney [nothing]
+Chutney + Ice = Chutney [nothing]
+Chutney + Jerky = Chutney [nothing]
+Chutney + Salted Caramel = Chutney [nothing]
+Chutney + Powdered Sugar = Chutney [nothing]
+
+# Gummy Bears
+Gummy Bears + Ocean = Gummy Sharks
+Gummy Bears + Fish = Swedish Fish
+# Twizzlers are made from wheat flour
+Gummy Bears + Wheat = Twizzlers
+Gummy Bears + Flour = Twizzlers
+Gummy Bears + Tree = Fruit Snacks
+Gummy Bears + Fruit = Fruit Snacks
+Gummy Bears + Farm = Dirt Cup
+# a bag from the bulk candy wall
+Gummy Bears + Candy = Pick and Mix [dish]
+Gummy Bears + Salted Caramel = Pick and Mix
+Gummy Bears + Rock Candy = Pick and Mix
+# Finland's salty licorice
+Gummy Bears + Rock Salt = Salmiakki
+Gummy Bears + Rice = Mochi
+Gummy Bears + Vegetables = Gummy Vitamins [dish]
+Gummy Bears + Kale Chips = Gummy Vitamins
+Gummy Bears + Herbs = Gummy Vitamins
+Gummy Bears + Green Smoothie = Gummy Vitamins
+Gummy Bears + Syrup = Jell-O
+# agar, the seaweed gelatin
+Gummy Bears + Seaweed = Jell-O
+Gummy Bears + Boiling Water = Jell-O
+# bone broth is where gelatin comes from
+Gummy Bears + Broth = Jell-O
+Gummy Bears + Hen = Peeps
+Gummy Bears + Cereal = Lucky Charms
+Gummy Bears + Cow = Milk Duds
+# bears and honey
+Gummy Bears + Bee = Teddy Grahams
+Gummy Bears + Egg = Cadbury Creme Egg
+Gummy Bears + Corn = Candy Corn
+Gummy Bears + Crackers = Animal Crackers
+Gummy Bears + Caramel = Turtles
+Gummy Bears + Ice = Freeze-Dried Candy [dish]
+Gummy Bears + Popcorn = Concession Stand
+Gummy Bears + Hot Dog = Kids Meal
+Gummy Bears + Brine = Pickle Candy
+Gummy Bears + Jerky = Road Trip Snacks
+Gummy Bears + Sparkling Water = Sour Patch Kids
+Gummy Bears + Sugar Cubes = Sour Patch Kids
+Gummy Bears + Granola = Trail Mix
+Gummy Bears + Oats = Granola Bar
+Gummy Bears + Beer = Bar Snacks
+# gummy candy sushi is a real candy-shop item
+Gummy Bears + Stir-Fry = Candy Sushi
+Gummy Bears + Flower = Turkish Delight
+Gummy Bears + Powdered Sugar = Turkish Delight
+Gummy Bears + Mint = Tic Tacs
+Gummy Bears + Barbecue = Gummy Burger [dish]
+Gummy Bears + Meat = Gummy Burger
+Gummy Bears + Steam = Slop
+Gummy Bears + Porridge = Slop
+Gummy Bears + Vegetable Soup = Slop
+Gummy Bears + Roast = Slop
