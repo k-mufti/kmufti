@@ -15818,3 +15818,168 @@ Brisket + Roast = Sunday Roast
 Brisket + Broth = Pho
 Brisket + Granola = Brisket [nothing]
 Brisket + Flower = Brisket [nothing]
+
+## Step 2 layer 2, batch 30 (2026-10-19): Lunchables, Meat Pie, Candy Bar
+
+Graham Crackers + Crackers = Party Mix
+
+# Lunchables
+Lunchables + Ocean = Tuna Salad
+Lunchables + Wheat = Sandwich
+Lunchables + Roast = Sandwich
+Lunchables + Tree = Picnic
+Lunchables + Ice = Picnic
+Lunchables + Farm = Ploughman's Lunch
+Lunchables + Candy = Lunchbox
+Lunchables + Sparkling Water = Lunchbox
+Lunchables + Green Smoothie = Lunchbox
+Lunchables + Rock Salt = Saltines
+# Japan's lunchbox
+Lunchables + Rice = Bento
+Lunchables + Seaweed = Bento
+Lunchables + Vegetables = Veggie Tray
+Lunchables + Kale Chips = Veggie Tray
+Lunchables + Fish = Sardines
+Lunchables + Hen = Chicken Salad
+Lunchables + Cereal = Breakfast
+Lunchables + Cow = Cheese and Crackers
+Lunchables + Fruit = Fruit Cup
+Lunchables + Bee = PB&J
+Lunchables + Egg = Egg Salad
+# there are make-your-own pizza and nacho Lunchables
+Lunchables + Flour = Pizza
+Lunchables + Corn = Nachos
+Lunchables + Crackers = Ritz
+Lunchables + Caramel = Kids Meal
+Lunchables + Salted Caramel = Kids Meal
+Lunchables + Sugar Cubes = Kids Meal
+Lunchables + Rock Candy = Kids Meal
+Lunchables + Popcorn = Road Trip Snacks
+Lunchables + Hot Dog = Pigs in a Blanket
+Lunchables + Brine = Relish Tray
+Lunchables + Jerky = Slim Jim
+Lunchables + Steam = Dim Sum
+Lunchables + Boiling Water = Cup Noodles [dish]
+Lunchables + Granola = Granola Bar
+Lunchables + Oats = Granola Bar
+Lunchables + Beer = Bar Snacks
+Lunchables + Vegetable Soup = Soup and Sandwich
+Lunchables + Broth = Soup and Sandwich
+Lunchables + Stir-Fry = Takeout
+Lunchables + Herbs = Ranch
+Lunchables + Mint = Tic Tacs
+Lunchables + Barbecue = Sliders
+Lunchables + Meat = Cold Cuts
+# the lunchbox cookies with frosting to dip them in
+Lunchables + Powdered Sugar = Dunkaroos
+Lunchables + Syrup = Lunchables [nothing]
+Lunchables + Porridge = Lunchables [nothing]
+Lunchables + Flower = Lunchables [nothing]
+
+# Meat Pie
+Meat Pie + Ocean = Fish Pie
+Meat Pie + Fish = Fish Pie
+Meat Pie + Wheat = Cornish Pasty [dish]
+Meat Pie + Herbs = Cornish Pasty
+# Quebec's spiced Christmas meat pie
+Meat Pie + Tree = Tourtiere [dish]
+Meat Pie + Farm = Shepherd's Pie
+Meat Pie + Mint = Shepherd's Pie
+Meat Pie + Vegetable Soup = Shepherd's Pie
+Meat Pie + Kale Chips = Shepherd's Pie
+# mincemeat used to be made with real meat
+Meat Pie + Candy = Mince Pie
+Meat Pie + Fruit = Mince Pie
+Meat Pie + Syrup = Mince Pie
+Meat Pie + Caramel = Mince Pie
+Meat Pie + Salted Caramel = Mince Pie
+Meat Pie + Sugar Cubes = Mince Pie
+Meat Pie + Rock Candy = Mince Pie
+Meat Pie + Rock Salt = Pork Pie [dish]
+# dum biryani is baked under a pastry lid
+Meat Pie + Rice = Biryani
+Meat Pie + Vegetables = Cottage Pie [dish]
+# Morocco's sweet-savory pie, dusted with sugar
+Meat Pie + Powdered Sugar = Pastilla [dish]
+Meat Pie + Bee = Pastilla
+Meat Pie + Hen = Chicken Pot Pie
+Meat Pie + Cow = Steak and Kidney Pie
+Meat Pie + Meat = Steak and Kidney Pie
+Meat Pie + Egg = Quiche
+Meat Pie + Flour = Empanada
+Meat Pie + Barbecue = Empanada
+Meat Pie + Corn = Tamale Pie [dish]
+Meat Pie + Crackers = Lunchbox
+Meat Pie + Ice = Leftovers
+Meat Pie + Popcorn = Fair Food
+Meat Pie + Hot Dog = Sausage Roll
+Meat Pie + Brine = Corned Beef
+Meat Pie + Jerky = Pemmican
+Meat Pie + Steam = Bao
+Meat Pie + Boiling Water = Dumplings
+Meat Pie + Oats = Haggis
+Meat Pie + Beer = Steak and Ale Pie [dish]
+Meat Pie + Stir-Fry = Curry Puff [dish]
+Meat Pie + Roast = Beef Wellington
+# London's pie, mash and gravy
+Meat Pie + Broth = Pie and Mash [dish]
+Meat Pie + Porridge = Pie and Mash
+Meat Pie + Green Smoothie = Slop
+Meat Pie + Cereal = Meat Pie [nothing]
+Meat Pie + Seaweed = Meat Pie [nothing]
+Meat Pie + Sparkling Water = Meat Pie [nothing]
+Meat Pie + Granola = Meat Pie [nothing]
+Meat Pie + Flower = Meat Pie [nothing]
+
+# Candy Bar
+Candy Bar + Ocean = Saltwater Taffy
+Candy Bar + Wheat = Kit Kat
+# coconut and almonds
+Candy Bar + Tree = Almond Joy [dish]
+Candy Bar + Farm = Milky Way
+Candy Bar + Candy = Halloween Candy
+Candy Bar + Sugar Cubes = Halloween Candy
+Candy Bar + Rock Candy = Halloween Candy
+Candy Bar + Rock Salt = Salted Caramel
+Candy Bar + Rice = Crunch Bar
+Candy Bar + Vegetables = Carrot Cake
+Candy Bar + Fish = Swedish Fish
+Candy Bar + Syrup = Twix
+Candy Bar + Hen = Peeps
+Candy Bar + Cereal = Protein Bar
+Candy Bar + Cow = Milk Chocolate
+Candy Bar + Fruit = Chocolate-Covered Strawberry
+# honey and almond nougat
+Candy Bar + Bee = Toblerone [dish]
+Candy Bar + Egg = Cadbury Creme Egg
+Candy Bar + Flour = Brownie
+# there are cornflakes inside a Butterfinger
+Candy Bar + Corn = Butterfinger
+Candy Bar + Caramel = Snickers
+Candy Bar + Salted Caramel = Turtles
+Candy Bar + Ice = Ice Cream Bar [dish]
+Candy Bar + Popcorn = Concession Stand
+Candy Bar + Hot Dog = Fair Food
+Candy Bar + Brine = Pickle Candy
+Candy Bar + Jerky = Road Trip Snacks
+Candy Bar + Steam = Fondue
+Candy Bar + Boiling Water = Hot Chocolate
+Candy Bar + Granola = Granola Bar
+Candy Bar + Porridge = Oatmeal
+Candy Bar + Oats = No-Bake Cookies [dish]
+Candy Bar + Kale Chips = Party Mix
+Candy Bar + Stir-Fry = Mole
+# Fry's makes a rose Turkish Delight bar
+Candy Bar + Flower = Turkish Delight
+Candy Bar + Mint = Peppermint Patty
+Candy Bar + Barbecue = S'mores
+Candy Bar + Roast = S'mores
+Candy Bar + Meat = Pig Candy
+Candy Bar + Powdered Sugar = 3 Musketeers
+Candy Bar + Vegetable Soup = Slop
+Candy Bar + Green Smoothie = Slop
+Candy Bar + Broth = Slop
+Candy Bar + Seaweed = Candy Bar [nothing]
+Candy Bar + Sparkling Water = Candy Bar [nothing]
+Candy Bar + Beer = Candy Bar [nothing]
+Candy Bar + Herbs = Candy Bar [nothing]

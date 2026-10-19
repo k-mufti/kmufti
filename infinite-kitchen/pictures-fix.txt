@@ -511,3 +511,5 @@ Pick and Mix = Pick 'n' mix
 Gummy Burger = -
 Campfire = -
 Spa Water = -
+Ice Cream Bar = -
+No-Bake Cookies = -
