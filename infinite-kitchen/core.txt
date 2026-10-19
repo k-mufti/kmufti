@@ -2669,7 +2669,7 @@ Feast + Feast = Buffet [dish]
 Feast + Platter = Buffet
 
 Middle Eastern: Mezze
-East Asian: Dim Sum, Hot Pot
+East Asian: Dim Sum, Hot Pot, Seafood Pancake, Moo Shu, Mandarin Pancakes, Sweet and Sour Fish
 Indian: Thali
 
 # Round 11: chip flavours
@@ -14981,3 +14981,170 @@ Fried Chicken + Granola = Fried Chicken [nothing]
 Fried Chicken + Flower = Fried Chicken [nothing]
 Fried Chicken + Mint = Fried Chicken [nothing]
 Fried Chicken + Rock Candy = Fried Chicken [nothing]
+
+## Step 2 layer 2, batch 25 (2026-10-19): Fish and Chips, Pancakes, Goldfish
+
+# Fish and Chips
+Fish and Chips + Ocean = Seafood Platter [dish]
+Fish and Chips + Wheat = Fish Sandwich
+Fish and Chips + Tree = Cedar Plank Salmon
+Fish and Chips + Farm = Ploughman's Lunch
+Fish and Chips + Candy = Swedish Fish
+Fish and Chips + Rock Salt = Salt and Vinegar Chips
+# smoked fish, rice and egg - the British-Indian breakfast
+Fish and Chips + Rice = Kedgeree [dish]
+Fish and Chips + Porridge = Kedgeree
+Fish and Chips + Vegetables = Mushy Peas
+Fish and Chips + Mint = Mushy Peas
+Fish and Chips + Syrup = Slop
+Fish and Chips + Hen = Chicken and Chips [dish]
+Fish and Chips + Cereal = Fish Sticks
+Fish and Chips + Oats = Fish Sticks
+Fish and Chips + Cow = Steak Frites
+Fish and Chips + Fruit = Ceviche
+Fish and Chips + Seaweed = Seaweed Snacks
+Fish and Chips + Bee = Honey Glazed Salmon [dish]
+Fish and Chips + Egg = Tartar Sauce
+Fish and Chips + Flour = Beer-Battered Fish
+Fish and Chips + Corn = Hush Puppies
+Fish and Chips + Crackers = Goldfish
+Fish and Chips + Caramel = Slop
+Fish and Chips + Ice = TV Dinner
+Fish and Chips + Popcorn = Popcorn Shrimp
+# a battered sausage and chips, from the same chip shop
+Fish and Chips + Hot Dog = Saveloy and Chips [dish]
+# the jar on every chip shop counter
+Fish and Chips + Brine = Pickled Onions
+Fish and Chips + Salted Caramel = Slop
+Fish and Chips + Steam = Steamed Fish
+Fish and Chips + Boiling Water = Fish Soup
+# "chippy tea": a Friday-night chip shop dinner
+Fish and Chips + Sparkling Water = Chippy Tea [dish]
+Fish and Chips + Beer = Pub Grub [dish]
+Fish and Chips + Kale Chips = Baked Fish
+# Scotland's smoked fish chowder
+Fish and Chips + Vegetable Soup = Cullen Skink [dish]
+Fish and Chips + Stir-Fry = Sweet and Sour Fish [dish]
+Fish and Chips + Herbs = Herb-Crusted Fish [dish]
+Fish and Chips + Green Smoothie = Slop
+# the American Friday fish fry
+Fish and Chips + Barbecue = Fish Fry [dish]
+Fish and Chips + Roast = Sunday Roast
+Fish and Chips + Broth = Fish Soup
+Fish and Chips + Meat = Surf and Turf
+Fish and Chips + Sugar Cubes = Slop
+# a Scottish chip shop classic
+Fish and Chips + Powdered Sugar = Deep-Fried Mars Bar [dish]
+Fish and Chips + Jerky = Fish and Chips [nothing]
+Fish and Chips + Granola = Fish and Chips [nothing]
+Fish and Chips + Flower = Fish and Chips [nothing]
+Fish and Chips + Rock Candy = Fish and Chips [nothing]
+
+# Pancakes
+# Korea's haemul pajeon
+Pancakes + Ocean = Seafood Pancake [dish]
+Pancakes + Wheat = Blini
+Pancakes + Fish = Blini
+Pancakes + Tree = Maple Syrup
+Pancakes + Farm = Breakfast
+Pancakes + Candy = Chocolate Chip Pancakes
+Pancakes + Mint = Chocolate Chip Pancakes
+# Vietnam's crispy rice-flour crepe
+Pancakes + Rice = Banh Xeo [dish]
+Pancakes + Vegetables = Okonomiyaki
+Pancakes + Syrup = Short Stack [dish]
+Pancakes + Salted Caramel = Short Stack
+Pancakes + Rock Candy = Short Stack
+Pancakes + Hen = Chicken and Waffles
+# tiny pancakes eaten like cereal
+Pancakes + Cereal = Pancake Cereal [dish]
+Pancakes + Popcorn = Pancake Cereal
+Pancakes + Cow = Buttermilk Pancakes [dish]
+Pancakes + Fruit = Blueberry Pancakes
+Pancakes + Seaweed = Scallion Pancakes
+Pancakes + Kale Chips = Scallion Pancakes
+Pancakes + Herbs = Scallion Pancakes
+Pancakes + Bee = Hotteok
+Pancakes + Caramel = Hotteok
+Pancakes + Egg = Dutch Baby
+Pancakes + Flour = Crepe
+Pancakes + Sugar Cubes = Crepe
+# corn pancakes, from colonial America
+Pancakes + Corn = Johnnycakes [dish]
+Pancakes + Crackers = S'mores Pancakes [dish]
+Pancakes + Ice = Eggo Waffles
+Pancakes + Steam = Mandarin Pancakes [dish]
+Pancakes + Boiling Water = Dumplings
+# soda water makes them tall and fluffy, like Japan's souffle pancakes
+Pancakes + Sparkling Water = Souffle Pancakes [dish]
+Pancakes + Granola = Breakfast
+Pancakes + Porridge = Brunch
+Pancakes + Beer = Brunch
+Pancakes + Oats = Protein Pancakes [dish]
+Pancakes + Green Smoothie = Protein Pancakes
+# Austria's Frittatensuppe: pancake strips in broth
+Pancakes + Vegetable Soup = Pancake Soup [dish]
+Pancakes + Broth = Pancake Soup
+# thin pancakes you wrap the filling in
+Pancakes + Stir-Fry = Moo Shu [dish]
+Pancakes + Barbecue = McGriddle
+Pancakes + Jerky = McGriddle
+# the frozen-aisle sausage wrapped in pancake, on a stick
+Pancakes + Meat = Pancake on a Stick [dish]
+# the same batter, baked under the roast
+Pancakes + Roast = Yorkshire Pudding
+Pancakes + Rock Salt = Pancakes [nothing]
+Pancakes + Brine = Pancakes [nothing]
+Pancakes + Flower = Pancakes [nothing]
+
+# Goldfish
+Goldfish + Ocean = Oyster Crackers
+Goldfish + Wheat = Wheat Thins
+Goldfish + Tree = Trail Mix
+Goldfish + Farm = Animal Crackers
+Goldfish + Powdered Sugar = Animal Crackers
+Goldfish + Candy = Swedish Fish
+Goldfish + Rock Salt = Saltines
+Goldfish + Rice = Rice Crackers
+Goldfish + Vegetables = Veggie Straws
+Goldfish + Kale Chips = Veggie Straws
+Goldfish + Fish = Sardines
+Goldfish + Egg = Fish Sticks
+Goldfish + Syrup = Graham Crackers
+Goldfish + Sugar Cubes = Graham Crackers
+Goldfish + Hen = Chicken in a Biskit [dish]
+Goldfish + Cereal = Chex Mix
+Goldfish + Crackers = Chex Mix
+Goldfish + Cow = Cheez-It
+Goldfish + Fruit = Fruit Snacks
+Goldfish + Seaweed = Seaweed Snacks
+# honey grahams shaped like little bears
+Goldfish + Bee = Teddy Grahams [dish]
+Goldfish + Flour = Crackers
+Goldfish + Corn = Fritos
+Goldfish + Caramel = Cracker Jack
+Goldfish + Popcorn = Concession Stand
+Goldfish + Hot Dog = Lunchables
+Goldfish + Meat = Lunchables
+Goldfish + Jerky = Slim Jim
+Goldfish + Salted Caramel = Party Mix [dish]
+Goldfish + Roast = Party Mix
+Goldfish + Rock Candy = Party Mix
+Goldfish + Boiling Water = Slop
+Goldfish + Porridge = Slop
+Goldfish + Green Smoothie = Slop
+# a juice box and crackers
+Goldfish + Sparkling Water = Lunchbox [dish]
+Goldfish + Granola = Trail Mix
+Goldfish + Oats = Granola Bar
+Goldfish + Beer = Bar Snacks [dish]
+Goldfish + Vegetable Soup = Tomato Soup
+Goldfish + Broth = Chicken Noodle Soup
+Goldfish + Stir-Fry = Shrimp Chips
+Goldfish + Herbs = Ranch
+Goldfish + Mint = Tic Tacs
+Goldfish + Barbecue = BBQ Chips
+Goldfish + Ice = Goldfish [nothing]
+Goldfish + Brine = Goldfish [nothing]
+Goldfish + Steam = Goldfish [nothing]
+Goldfish + Flower = Goldfish [nothing]
