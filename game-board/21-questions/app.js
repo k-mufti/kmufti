@@ -6,7 +6,7 @@
 // notebook beside it - every question so far, numbered to 21, with the
 // answer stamped next to it. The card is only rebuilt when the moment
 // changes, so a question you're typing survives other people's moves.
-import * as R from "./rules.js?v=1";
+import * as R from "./rules.js?v=3";
 import * as snd from "../frequency/sound.js?v=3";
 
 const $ = (id) => document.getElementById(id);
@@ -60,6 +60,7 @@ function send(m) {
    ======================================================================== */
 let S = null;
 let stateAt = 0;
+let finalMode = false;           // on my turn: I've opened the final guess card
 let lastPhase = null, lastLog = 0, lastTurnKey = "";
 const me = () => S && S.players.find((p) => p.id === S.you);
 const playerOf = (id) => S.players.find((p) => p.id === id);
@@ -80,6 +81,7 @@ function onMessage(m) {
   stateAt = performance.now();
   if (S.phase !== lastPhase) enterPhase(S.phase, prev);
   if (S.log.length > lastLog && prev) snd.tick();
+  if (S.phase === "answer" && S.pending && S.pending.guess && !(prev && prev.pending)) { snd.drumroll(1.6); snd.buzz([40, 30, 40, 30, 120]); }
   lastLog = S.log.length;
   const turnKey = `${S.round}:${S.phase}:${S.log.length}:${S.turn}`;
   if (turnKey !== lastTurnKey && (myTurn() || (S.phase === "answer" && answering()) || (S.phase === "secret" && answering()))) {
@@ -158,7 +160,7 @@ function renderLobby() {
 /* ---------- everyone, along the top ---------- */
 function renderPeople() {
   $("people").innerHTML = S.players.map((p) => {
-    const tag = p.id === S.answerer ? "answering" : p.id === S.asker ? "asking" : "";
+    const tag = p.id === S.answerer ? "answering" : p.id === S.asker ? "asking" : S.guessed.includes(p.id) ? "guessed" : "";
     return `<div class="person${tag ? " " + tag : ""}${p.id === S.you ? " me" : ""}${p.online ? "" : " away"}" style="--c:${esc(p.color || "#e4572e")}">` +
       `${avatar(p)}<span class="pn">${esc(p.id === S.you ? "You" : p.name)}</span>` +
       `<span class="pt">${tag ? `<em>${tag}</em>` : ""}${p.score ? `<b>${p.score}</b>` : ""}</span></div>`;
@@ -168,7 +170,8 @@ function renderPeople() {
 /* ---------- the card: what you can do right now ---------- */
 let cardKey = "";
 function renderCard() {
-  const key = [S.phase, S.round, S.asker, S.log.length, !!S.pending, S.secret].join("|");
+  if (!myTurn()) finalMode = false;
+  const key = [S.phase, S.round, S.asker, S.log.length, !!S.pending, S.secret, finalMode].join("|");
   if (key === cardKey) return;
   cardKey = key;
   const c = $("card");
@@ -188,28 +191,37 @@ function renderCard() {
     }
   } else if (S.phase === "ask") {
     h = `<p class="kicker">Question ${used + 1} of ${R.QUESTIONS}</p>` + hint + mySecret;
-    if (myTurn()) {
+    const spent = S.guessed.includes(S.you);
+    if (myTurn() && finalMode) {
+      h = `<p class="fg-banner">Final guess</p>` + hint +
+        `<h2 class="big">You only get one</h2><p class="sub">Right, you win the round. Wrong, no more guessing for you.</p>` +
+        `<form class="stack" id="finalForm"><input id="finalInput" maxlength="120" placeholder="It's…" autocomplete="off" />` +
+        `<div class="two"><button class="btn big fg" type="submit">Lock it in</button><button class="btn big alt" type="button" id="backBtn">Back</button></div></form>`;
+    } else if (myTurn()) {
       h += `<h2 class="big">Your turn</h2>` +
         `<form class="stack" id="askForm"><input id="askInput" maxlength="120" placeholder="Is it…?" autocomplete="off" />` +
-        `<div class="two"><button class="btn big" type="submit" data-kind="ask">Ask</button><button class="btn big alt" type="submit" data-kind="guess">Guess</button></div></form>`;
+        `<div class="two"><button class="btn big" type="submit">Ask</button>` +
+        (spent ? "" : `<button class="btn big fg-open" type="button" id="finalBtn">Final guess</button>`) + `</div></form>` +
+        (spent ? `<p class="sub">You've used your final guess</p>` : "");
     } else {
       h += `<h2 class="big">${esc(nameOf(S.asker))}'s turn</h2>`;
     }
   } else if (S.phase === "answer") {
     const q = S.pending;
-    h = `<p class="kicker">${q.guess ? "A guess" : `Question ${used + 1} of ${R.QUESTIONS}`} · ${esc(nameOf(q.by))}</p>` + mySecret +
+    h = (q.guess ? `<p class="fg-banner">Final guess</p><p class="kicker light">${esc(nameOf(q.by))}</p>` : `<p class="kicker">Question ${used + 1} of ${R.QUESTIONS} · ${esc(nameOf(q.by))}</p>`) + mySecret +
       `<p class="asked${q.guess ? " guess" : ""}">${esc(q.guess ? asGuess(q.text) : q.text)}</p>`;
     if (answering()) {
       h += q.guess
         ? `<div class="answers two"><button class="ans right" data-a="right">Right</button><button class="ans wrong" data-a="wrong">Wrong</button></div>`
-        : `<div class="answers">${R.ANSWERS.map((a) => `<button class="ans ${a}" data-a="${a}">${R.LABEL[a]}</button>`).join("")}</div>`;
+        : `<div class="answers">${R.ANSWERS.map((a) => `<button class="ans ${a}" data-a="${a}">${R.LABEL[a]}</button>`).join("")}</div>` +
+          `<form class="custom" id="customForm"><input id="customInput" maxlength="${R.CUSTOM_MAX}" placeholder="Or say something else…" autocomplete="off" /><button class="btn" type="submit">Send</button></form>`;
     } else {
-      h += `<p class="wait">${esc(nameOf(S.answerer))} is answering…</p>`;
+      h += `<p class="wait">${q.guess ? "Is it right…?" : `${esc(nameOf(S.answerer))} is answering…`}</p>`;
     }
   } else if (S.phase === "reveal") {
     const r = S.result;
-    const head = r.why === "guessed" ? `${esc(nameOf(r.by))} got it` : r.why === "stumped" ? `${esc(nameOf(r.by))} stumped everyone` : "Round's off";
-    const sub = r.why === "guessed" ? `in ${r.used} question${r.used === 1 ? "" : "s"}` : r.why === "stumped" ? `all ${R.QUESTIONS} questions used` : r.why === "left" ? "the answerer left" : "";
+    const head = r.why === "guessed" ? `${esc(nameOf(r.by))} got it` : r.why === "stumped" || r.why === "outguessed" ? `${esc(nameOf(r.by))} stumped everyone` : "Round's off";
+    const sub = r.why === "guessed" ? `final guess, question ${r.used}` : r.why === "stumped" ? `all ${R.QUESTIONS} questions used` : r.why === "outguessed" ? "every final guess was wrong" : r.why === "left" ? "the answerer left" : "";
     h = `<p class="kicker">Round ${S.round}</p><p class="itwas">It was</p><p class="secret">${esc(r.secret || "?")}</p>` +
       `<h2 class="big">${head}</h2>${sub ? `<p class="sub">${sub}</p>` : ""}` +
       (isHost() || S.quick
@@ -218,7 +230,8 @@ function renderCard() {
   }
   c.innerHTML = `<div class="timer"><i id="timerFill"></i></div>` + h;
   c.dataset.phase = S.phase;
-  const focus = $("secretInput") || $("askInput");
+  c.classList.toggle("final", (S.phase === "answer" && !!S.pending?.guess) || (myTurn() && finalMode));
+  const focus = $("secretInput") || $("finalInput") || $("askInput");
   if (focus) focus.focus();
   tickTimer();
 }
@@ -243,10 +256,10 @@ function renderNotebook() {
     const q = S.log[i];
     const now = !q && i === S.log.length && S.pending;
     if (q) {
-      rows.push(`<li class="${q.guess ? "g" : ""}"><span class="n">${q.n}</span><span class="q">${esc(q.guess ? asGuess(q.text) : q.text)}</span>` +
-        `<span class="by">${esc(nameOf(q.by))}</span><span class="stamp ${q.answer}">${R.LABEL[q.answer]}</span></li>`);
+      rows.push(`<li class="${q.guess ? "g" : ""}"><span class="n">${q.n}</span><span class="q">${q.guess ? `<i class="fg-tag">Final</i>` : ""}${esc(q.guess ? asGuess(q.text) : q.text)}</span>` +
+        `<span class="by">${esc(nameOf(q.by))}</span><span class="stamp ${q.answer}"${q.said ? ` title="${esc(q.said)}"` : ""}>${esc(q.said || R.LABEL[q.answer])}</span></li>`);
     } else if (now) {
-      rows.push(`<li class="now"><span class="n">${i + 1}</span><span class="q">${esc(S.pending.guess ? asGuess(S.pending.text) : S.pending.text)}</span><span class="by">${esc(nameOf(S.pending.by))}</span><span class="stamp wait">…</span></li>`);
+      rows.push(`<li class="now${S.pending.guess ? " g" : ""}"><span class="n">${i + 1}</span><span class="q">${S.pending.guess ? `<i class="fg-tag">Final</i>` : ""}${esc(S.pending.guess ? asGuess(S.pending.text) : S.pending.text)}</span><span class="by">${esc(nameOf(S.pending.by))}</span><span class="stamp wait">…</span></li>`);
     } else {
       rows.push(`<li class="empty"><span class="n">${i + 1}</span></li>`);
     }
@@ -282,14 +295,14 @@ function renderFinal() {
 /* ========================================================================
    Taps
    ======================================================================== */
-let askKind = "ask";
 document.addEventListener("click", (e) => {
   if (!e.target.closest("#exitBtn") && exitArmed) armExit(false);
   const b = e.target.closest("button");
   if (!b) return;
-  if (b.dataset.kind) askKind = b.dataset.kind;            // which submit button sent the form
   if (b.dataset.a) { snd.lock(); snd.buzz(30); return send({ t: "answer", a: b.dataset.a }); }
   switch (b.id) {
+    case "finalBtn": finalMode = true; snd.swoosh(0.5); return renderCard();
+    case "backBtn": finalMode = false; return renderCard();
     case "nextBtn": return send({ t: "next" });
     case "endBtn": return send({ t: "end" });
     case "againBtn": return send({ t: "again" });
@@ -313,11 +326,17 @@ document.addEventListener("submit", (e) => {
     const text = $("secretInput").value.trim();
     if (text) send({ t: "secret", text, hint: $("hintInput").value.trim() });
   }
+  if (id === "customForm") {
+    const text = $("customInput").value.trim();
+    if (text) { snd.lock(); send({ t: "answer", a: "custom", text }); }
+  }
   if (id === "askForm") {
-    const kind = e.submitter?.dataset.kind || askKind;
     const text = $("askInput").value.trim();
-    if (text) { snd.lock(); send({ t: "ask", text, guess: kind === "guess" }); }
-    askKind = "ask";
+    if (text) { snd.lock(); send({ t: "ask", text, guess: false }); }
+  }
+  if (id === "finalForm") {
+    const text = $("finalInput").value.trim();
+    if (text) { snd.lock(); finalMode = false; send({ t: "ask", text, guess: true }); }
   }
   if (id === "joinForm") {
     const code = $("codeInput").value.trim().toUpperCase();

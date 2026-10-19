@@ -5,16 +5,18 @@
 // until the round's over.
 //
 // A round: the answerer types a secret (secret); the askers take turns, one
-// question or guess each (ask), and the answerer replies (answer). A right
-// guess, or 21 questions gone, ends it (reveal). The host deals the next
+// question each - or their one final guess (ask) - and the answerer replies
+// (answer). A right final guess, 21 questions gone, or every asker's final
+// guess spent and wrong ends it (reveal). The host deals the next
 // round, with the next player answering, or ends the game (final).
 //
 // Protocol, client -> server, on top of server.js's hello/leave:
 //   {t:"create"} {t:"join", code} {t:"quick"} {t:"leave"} {t:"name", name}
 //   {t:"start"}                 host: the first round
 //   {t:"secret", text, hint}    the answerer's secret, and an optional hint
-//   {t:"ask", text, guess}      on my turn: a yes/no question, or a guess
-//   {t:"answer", a}             the answerer: yes|no|sometimes|unsure, or right|wrong for a guess
+//   {t:"ask", text, guess}      on my turn: a yes/no question, or my one final guess
+//   {t:"answer", a, text}       the answerer: yes|no|sometimes|unsure, or right|wrong for a guess,
+//                               or "custom" with their own words (questions only)
 //   {t:"next"}                  host: the next round
 //   {t:"end"}                   host: to the final standings
 //   {t:"again"}                 host: from the final standings, back to the lobby
@@ -49,7 +51,8 @@ module.exports = function questions({ send, cleanText, cleanName, newCode, R }) 
       secret: null, hint: "",
       order: [], turn: 0, // the askers, and whose turn it is
       pending: null,      // { by, text, guess } - waiting on the answerer
-      log: [],            // [{ n, by, text, guess, answer }]
+      guessed: new Set(), // who's used their one final guess this round
+      log: [],            // [{ n, by, text, guess, answer, said }] - said: a custom answer's words
       result: null,       // { winner: "asker" | "answerer" | null, by, secret, why }
       history: [],
       deadline: 0, timer: null,
@@ -88,6 +91,7 @@ module.exports = function questions({ send, cleanText, cleanName, newCode, R }) 
       turn: room.turn,
       asker: room.phase === "ask" || room.phase === "answer" ? room.order[room.turn] : null,
       pending: room.pending,
+      guessed: [...room.guessed],
       log: room.log,
       result: room.result,
       msLeft: room.deadline ? Math.max(0, room.deadline - Date.now()) : 0,
@@ -128,6 +132,7 @@ module.exports = function questions({ send, cleanText, cleanName, newCode, R }) 
     room.secret = null; room.hint = "";
     room.order = []; room.turn = 0;
     room.pending = null; room.log = []; room.result = null;
+    room.guessed = new Set();
     room.phase = "secret";
     // no secret in time: the next player answers instead
     setTimer(room, R.SECRET_SECS, () => { room.round--; startRound(room); });
@@ -161,6 +166,7 @@ module.exports = function questions({ send, cleanText, cleanName, newCode, R }) 
   }
 
   function ask(room, p, text, guess) {
+    if (guess) room.guessed.add(p.id);
     room.pending = { by: p.id, text, guess };
     p.stats.asked++;
     if (guess && R.sameThing(text, room.secret)) return answer(room, "right");
@@ -169,12 +175,15 @@ module.exports = function questions({ send, cleanText, cleanName, newCode, R }) 
     pushState(room);
   }
 
-  function answer(room, a) {
+  function answer(room, a, said) {
     const q = room.pending;
-    room.log.push({ n: room.log.length + 1, by: q.by, text: q.text, guess: q.guess, answer: a });
+    room.log.push({ n: room.log.length + 1, by: q.by, text: q.text, guess: q.guess, answer: a, said: said || null });
     room.pending = null;
     if (q.guess && a === "right") return finish(room, "asker", q.by, "guessed");
     if (room.log.length >= R.QUESTIONS) return finish(room, "answerer", room.answerer, "stumped");
+    // every asker still here has spent their final guess, all wrong
+    const askers = room.order.map((id) => playerOf(room, id)).filter((p) => p && online(p));
+    if (q.guess && askers.length && askers.every((p) => room.guessed.has(p.id))) return finish(room, "answerer", room.answerer, "outguessed");
     room.turn = (room.turn + 1) % room.order.length;
     beginAsk(room);
   }
@@ -348,7 +357,7 @@ module.exports = function questions({ send, cleanText, cleanName, newCode, R }) 
       return say({ t: "secret", text, hint });
     }
     if (room.phase === "ask" && room.order[room.turn] === b.id) {
-      const guess = room.log.length >= 6 && Math.random() < 0.3;
+      const guess = !room.guessed.has(b.id) && room.log.length >= 6 && Math.random() < 0.3;
       return say({ t: "ask", text: guess ? pick(BOT_GUESSES) : pick(BOT_QUESTIONS), guess });
     }
     if (room.phase === "answer" && room.answerer === b.id && room.pending) {
@@ -409,10 +418,15 @@ module.exports = function questions({ send, cleanText, cleanName, newCode, R }) 
         if (room.phase !== "ask" || room.order[room.turn] !== me.id) return;
         const text = cleanText(m.text, 120);
         if (!text) return;
+        if (m.guess && room.guessed.has(me.id)) return send(peer, { t: "error", msg: "You've used your final guess this round." });
         return ask(room, me, text, !!m.guess);
       }
       case "answer": {
         if (room.phase !== "answer" || room.answerer !== me.id || !room.pending) return;
+        if (m.a === "custom" && !room.pending.guess) {
+          const said = cleanText(m.text, R.CUSTOM_MAX);
+          return said ? answer(room, "custom", said) : undefined;
+        }
         const ok = room.pending.guess ? ["right", "wrong"].includes(m.a) : R.ANSWERS.includes(m.a);
         if (!ok) return;
         return answer(room, m.a);

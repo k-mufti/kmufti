@@ -2,9 +2,10 @@
 // page (which explains them). An ES module, so both load the same file.
 //
 // One player is the answerer and types any secret. Everyone else takes
-// turns asking yes/no questions - or guessing, which uses up a question
-// too. Guess it within 21 and you win the round; if nobody does, the
-// answerer stumped you all. Then the next player is the answerer.
+// turns asking yes/no questions. Each asker has ONE final guess a round
+// (it uses up a question too). Guess it within 21 and you win the round;
+// if nobody does - or everyone's final guess was wrong - the answerer
+// stumped you all. Then the next player is the answerer.
 
 export const MIN_PLAYERS = 2;
 export const MAX_PLAYERS = 10;
@@ -22,11 +23,12 @@ export const POINTS = {
 // What the answerer can say. A guess gets right or wrong instead.
 export const ANSWERS = ["yes", "no", "sometimes", "unsure"];
 export const LABEL = { yes: "Yes", no: "No", sometimes: "Sometimes", unsure: "Not sure", right: "Right!", wrong: "Wrong" };
+export const CUSTOM_MAX = 40;      // or the answerer types their own answer to a question
 
 // A guess that matches the secret (case, spaces, punctuation, "a/an/the"
 // and a plural "s" don't count) is right without the answerer saying so.
 export function norm(s) {
-  return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+  return String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .replace(/^(a|an|the)\s+/, "").replace(/[^a-z0-9]/g, "").replace(/^(.{3,}?)(es|s)$/, "$1");
 }
 export const sameThing = (guess, secret) => !!norm(guess) && norm(guess) === norm(secret);
