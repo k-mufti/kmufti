@@ -982,10 +982,10 @@ Mexican: Taco, Burrito, Quesadilla, Nachos, Enchilada, Tamale, Fajitas, Carne As
 East Asian: Sushi, Sashimi, Donburi, Congee, California Roll, Sushi Roll, Ramen, Lo Mein, Chow Mein, Kung Pao Chicken, Beef and Broccoli, Miso Soup, Bao, Peking Duck, Bulgogi, Tempura, Mochi, Mochi Ice Cream, Boba, Matcha Latte, Fortune Cookie, Orange Chicken, General Tso's Chicken, Sweet and Sour Chicken, Korean Fried Chicken, Spring Rolls, Egg Rolls, Bibimbap, Hot and Sour Soup, Scallion Pancakes
 Indian: Curry, Biryani, Naan, Samosa, Tandoori Chicken, Butter Chicken, Saag Paneer, Dal, Lassi, Mango Lassi, Chai, Kheer, Chicken Tikka Masala, Chana Masala, Aloo Gobi, Pakora, Garlic Naan, Roti, Paratha, Dosa, Idli, Raita, Gulab Jamun, Jalebi
 Middle Eastern: Hummus, Falafel, Kabsa, Falafel Wrap, Shawarma, Kebab, Mansaf, Maqluba, Tabbouleh, Fattoush, Knafeh, Baklava, Turkish Coffee, Hummus and Pita, Baba Ganoush, Shish Tawook, Kofta, Mandi, Musakhan, Mutabal, Manakish, Stuffed Grape Leaves, Kibbeh, Shakshuka, Ful Medames, Ma'amoul, Qatayef, Jallab, Qamar al-Din, Halva
-Fast Food: Combo Meal, Big Mac, Whopper, Filet-O-Fish, Quarter Pounder, Double Cheeseburger, Happy Meal, McGriddle, Egg McMuffin, McFlurry, Frosty, Doritos Locos Taco, Crunchwrap Supreme, Mexican Pizza, Stuffed Crust Pizza, Bucket of Chicken, Frappuccino, Pumpkin Spice Latte, Donut Holes, Chicken McNuggets, McChicken, Spicy Chicken Sandwich, Chick-fil-A Sandwich, Shamrock Shake, Waffle Fries, Double-Double, Baconator, Chicken Fries, Chalupa, Cheesy Gordita Crunch, Nachos BellGrande, Baja Blast, Quesarito, Cinnabon, Pretzel Bites, Footlong, Hot-N-Ready, Slurpee, Hot Pocket, Sausage McMuffin, Croissan'wich, Munchkins, Krispy Kreme, Pizza Rolls, Cheesy Bread, Snack Wrap, Cherry Limeade, Frosted Lemonade, Spicy Nuggets, McRib, Kids Meal
-Southeast Asian: Pad Thai, Pho, Banh Mi, Satay, Laksa, Nasi Goreng, Rendang, Tom Yum, Green Curry, Lumpia, Halo-Halo, Pancit, Hainanese Chicken Rice, Nasi Lemak, Chicken Adobo, Lechon, Summer Rolls, Som Tam, Gado-Gado, Larb, Vietnamese Coffee, Thai Iced Tea, Kaya Toast, Leche Flan, Fish Amok, Bibingka, Roti Canai, Char Kway Teow, Tom Kha, Massaman Curry, Khao Soi, Sinigang, Kare-Kare, Sisig, Pandan Cake, Cendol, Bun Cha, Turon, Banh Xeo, Bun Bo Hue, Com Tam, Egg Coffee, Chè, Pad Kra Pao, Pad See Ew, Drunken Noodles, Red Curry, Panang Curry, Khao Pad, Gai Yang, Banana Roti, Bubur Ayam, Soto Ayam, Mie Goreng, Indomie, Martabak Manis, Ayam Penyet, Bakso, Klepon, Teh Tarik, Milo, Chili Crab, Bak Kut Teh, Tapsilog, Longsilog, Balut, Ube Halaya, Ube Ice Cream, Pandesal, Buko Pie, Kinilaw, Arroz Caldo, Mohinga, Tea Leaf Salad
-African: Jollof Rice, Fufu, Injera, Doro Wat, Bobotie, Bunny Chow, Biltong, Suya, Egusi Soup, Tagine, Peri-Peri Chicken, Puff-Puff, Bissap, Msemen, Pastilla, Rooibos, Kelewele, Yassa, Nyama Choma, Braai, Mafe, Pepper Soup, Thieboudienne, Akara, Koshari, Ugali, Sukuma Wiki, Mandazi, Chin Chin, Malva Pudding, Koeksister, Chakalaka, Okra Soup, Misir Wat, Tibs, Kitfo, Shiro, Ethiopian Coffee, Tej, Moi Moi, Efo Riro, Kilishi, Banku, Waakye, Red Red, Thiakry, Harira, Couscous Royale, Zaalouk, Chebakia, Brik, Lablabi, Ta'ameya, Feteer, Pilau, Chapati, Kachumbari, Matoke, Rolex, Zanzibar Pizza, Vetkoek, Melktert, Potjiekos, Rusks, Attiéké, Ndolé
-Latin American: Empanada, Arepa, Feijoada, Brigadeiro, Churrasco, Asado, Alfajores, Pupusa, Mofongo, Ropa Vieja, Cuban Sandwich, Arroz con Leche, Acai Bowl, Jerk Chicken, Pão de Queijo, Yerba Mate, Tostones, Gallo Pinto, Arroz con Pollo, Pollo a la Brasa, Lomo Saltado, Pernil, Choripan, Maduros, Causa, Cachapa, Sancocho, Cafecito, Jamaican Patty, Coxinha, Milanesa, Provoleta, Anticuchos, Cachaça, Inca Kola, Moqueca, Acarajé, Quindim, Beijinho, Escondidinho, Tapioca Crepe, Chivito, Medialunas, Fugazzeta, Arroz Chaufa, Papa a la Huancaína, Picarones, Chicha Morada, Pisco, Rocoto Relleno, Tiradito, Suspiro Limeño, Bandeja Paisa, Pabellón Criollo, Hallaca, Tequeños, Ajiaco, Casado, Pastel de Choclo, Completo, Curanto, Salteña, Rice and Peas, Ackee and Saltfish, Curry Goat, Doubles, Callaloo, Festival, Conch Fritters, Arroz con Gandules, Pastelón, Tembleque, Coquito, Medianoche, Pastelitos, Vaca Frita, Yuca con Mojo, Mangú
+Fast Food: Combo Meal, Big Mac, Whopper, Filet-O-Fish, Quarter Pounder, Double Cheeseburger, Happy Meal, McGriddle, Egg McMuffin, McFlurry, Frosty, Doritos Locos Taco, Crunchwrap Supreme, Mexican Pizza, Stuffed Crust Pizza, Bucket of Chicken, Frappuccino, Pumpkin Spice Latte, Donut Holes, Chicken McNuggets, McChicken, Spicy Chicken Sandwich, Chick-fil-A Sandwich, Shamrock Shake, Waffle Fries, Double-Double, Baconator, Chicken Fries, Chalupa, Cheesy Gordita Crunch, Nachos BellGrande, Baja Blast, Quesarito, Cinnabon, Pretzel Bites, Footlong, Hot-N-Ready, Slurpee, Hot Pocket, Sausage McMuffin, Croissan'wich, Munchkins, Krispy Kreme, Pizza Rolls, Cheesy Bread, Snack Wrap, Cherry Limeade, Frosted Lemonade, Spicy Nuggets, McRib, Kids Meal, Hash Brown Patty, Fried Apple Pie, Cinnamon Twists, Beef 'n Cheddar, Butter Burger, Concrete, Dipped Cone, Blizzard, Iced Caramel Macchiato, Soft Pretzel, Oklahoma Onion Burger, Egg Bites
+Southeast Asian: Pad Thai, Pho, Banh Mi, Satay, Laksa, Nasi Goreng, Rendang, Tom Yum, Green Curry, Lumpia, Halo-Halo, Pancit, Hainanese Chicken Rice, Nasi Lemak, Chicken Adobo, Lechon, Summer Rolls, Som Tam, Gado-Gado, Larb, Vietnamese Coffee, Thai Iced Tea, Kaya Toast, Leche Flan, Fish Amok, Bibingka, Roti Canai, Char Kway Teow, Tom Kha, Massaman Curry, Khao Soi, Sinigang, Kare-Kare, Sisig, Pandan Cake, Cendol, Bun Cha, Turon, Banh Xeo, Bun Bo Hue, Com Tam, Egg Coffee, Chè, Pad Kra Pao, Pad See Ew, Drunken Noodles, Red Curry, Panang Curry, Khao Pad, Gai Yang, Banana Roti, Bubur Ayam, Soto Ayam, Mie Goreng, Indomie, Martabak Manis, Ayam Penyet, Bakso, Klepon, Teh Tarik, Milo, Chili Crab, Bak Kut Teh, Tapsilog, Longsilog, Balut, Ube Halaya, Ube Ice Cream, Pandesal, Buko Pie, Kinilaw, Arroz Caldo, Mohinga, Tea Leaf Salad, Curry Laksa, Asam Laksa, Black Pepper Crab, Chai Tow Kway, Murtabak, Milo Dinosaur, Tempeh Goreng, Tahu Telor, Pisang Goreng, Avocado Shake, Moo Ping, Nam Tok, Green Curry Chicken, Red Curry Duck, Pho Ga, Cha Ca, Bakwan Jagung, Goi Cuon, Cha Gio, Banh Chung
+African: Jollof Rice, Fufu, Injera, Doro Wat, Bobotie, Bunny Chow, Biltong, Suya, Egusi Soup, Tagine, Peri-Peri Chicken, Puff-Puff, Bissap, Msemen, Pastilla, Rooibos, Kelewele, Yassa, Nyama Choma, Braai, Mafe, Pepper Soup, Thieboudienne, Akara, Koshari, Ugali, Sukuma Wiki, Mandazi, Chin Chin, Malva Pudding, Koeksister, Chakalaka, Okra Soup, Misir Wat, Tibs, Kitfo, Shiro, Ethiopian Coffee, Tej, Moi Moi, Efo Riro, Kilishi, Banku, Waakye, Red Red, Thiakry, Harira, Couscous Royale, Zaalouk, Chebakia, Brik, Lablabi, Ta'ameya, Feteer, Pilau, Chapati, Kachumbari, Matoke, Rolex, Zanzibar Pizza, Vetkoek, Melktert, Potjiekos, Rusks, Attiéké, Ndolé, Groundnut Stew, Pounded Yam, Eba, Lamb Couscous, Chicken Tagine with Olives, Moroccan Mint Tea, Gnamakoudji, Pap, Milk Tart, Palm Wine, Sorghum Beer
+Latin American: Empanada, Arepa, Feijoada, Brigadeiro, Churrasco, Asado, Alfajores, Pupusa, Mofongo, Ropa Vieja, Cuban Sandwich, Arroz con Leche, Acai Bowl, Jerk Chicken, Pão de Queijo, Yerba Mate, Tostones, Gallo Pinto, Arroz con Pollo, Pollo a la Brasa, Lomo Saltado, Pernil, Choripan, Maduros, Causa, Cachapa, Sancocho, Cafecito, Jamaican Patty, Coxinha, Milanesa, Provoleta, Anticuchos, Cachaça, Inca Kola, Moqueca, Acarajé, Quindim, Beijinho, Escondidinho, Tapioca Crepe, Chivito, Medialunas, Fugazzeta, Arroz Chaufa, Papa a la Huancaína, Picarones, Chicha Morada, Pisco, Rocoto Relleno, Tiradito, Suspiro Limeño, Bandeja Paisa, Pabellón Criollo, Hallaca, Tequeños, Ajiaco, Casado, Pastel de Choclo, Completo, Curanto, Salteña, Rice and Peas, Ackee and Saltfish, Curry Goat, Doubles, Callaloo, Festival, Conch Fritters, Arroz con Gandules, Pastelón, Tembleque, Coquito, Medianoche, Pastelitos, Vaca Frita, Yuca con Mojo, Mangú, Empanada Salteña, Milanesa a la Napolitana, Panqueques con Dulce de Leche, Yuca Frita, Reina Pepiada, Choripán, Humitas, Chicha, Leche de Tigre, Arepa de Queso, Pastelito de Guayaba, Lechón Asado
 European: Quiche, Ratatouille, Coq au Vin, Beef Bourguignon, French Onion Soup, Creme Brulee, Macaron, Eclair, Souffle, Croque Monsieur, Bouillabaisse, Duck à l'Orange, Duck Confit, Pot-au-Feu, Vichyssoise, Clafoutis, Kouign-Amann, Nicoise Salad, Steak Frites, Fondue, Tapas, Patatas Bravas, Churros, Sangria, Croquetas, Salmorejo, Spanish Tortilla, Caldo Verde, Schnitzel, Black Forest Cake, Apple Strudel, Spaetzle, Sauerbraten, Goulash, Pierogi, Borscht, Blini, Beef Stroganoff, Kvass, Chicken Kiev, Shepherd's Pie, Bangers and Mash, Full English, Sunday Roast, Yorkshire Pudding, Scone, Crumpet, Trifle, Sticky Toffee Pudding, Cornish Pasty, Haggis, Irish Stew, Ploughman's Lunch, Scotch Egg, Toad in the Hole, Pie and Mash, Steak and Ale Pie, Kedgeree, Fish Pie, Afternoon Tea, Mushy Peas, Cullen Skink, Colcannon, Soda Bread, Guinness, Carbonnade, Stroopwafel, Hagelslag, Gravlax, Lutefisk, Moussaka, Gyro, Souvlaki, Spanakopita, Greek Salad, Avgolemono, Mulled Wine, Chicken Paprikash, Schweinshaxe, Currywurst, Swedish Meatballs, Leberkäse, Bocadillo, Francesinha, Welsh Rarebit, Smørrebrød, Pumpernickel, Pan con Tomate, Torrijas, Rösti, Stamppot, Olivier Salad, Bubble and Squeak, Raclette, Käsespätzle, Saganaki, Pastitsio, Tarte Flambée, Bigos, Kasha, Cassoulet, Moules Frites, Bitterballen, Pastéis de Bacalhau, Pulpo a la Gallega, Gambas al Ajillo, Jansson's Temptation, Pelmeni, Poffertjes, Kaiserschmarrn, Crêpes Suzette, Belgian Waffle, Syrniki, Pastel de Nata, Crema Catalana, Mille-Feuille, Profiteroles, Tarte Tatin, Bakewell Tart, Banoffee Pie, Victoria Sponge, Sachertorte, Medovik, Princess Cake, Semla, Kanelbulle, Stollen, Lebkuchen, Madeleine, Speculoos, Eton Mess, Berliner, Loukoumades, Turrón, Cranachan, Cream Tea, Café au Lait, Roast Goose, Mozartkugel, Khinkali, Churchkhela, Cevapi, Pljeskavica, Shopska Salad, Banitsa, Tulumba, Rakija, Ouzo, Fasolada, Stifado, Kleftiko, Gemista, Bougatsa, Galaktoboureko, Kourabiedes, Greek Frappé, Retsina, Crispbread, Kladdkaka, Karelian Pie, Lefse, Fårikål, Glögg, Aquavit, Cardamom Bun, Fiskesuppe, Pirozhki, Shashlik, Solyanka, Shchi, Okroshka, Vareniki, Holodets, Draniki, Herring Under a Fur Coat, Kissel, Kompot, Paskha, Kulich, Lángos, Dobos Torte, Chimney Cake, Lecsó, Túró Rudi, Svíčková, Bread Dumplings, Halušky, Wiener Schnitzel, Tafelspitz, Germknödel, Linzer Torte, Melange, Topfenstrudel, Marillenknödel, Bircher Muesli, Zürcher Geschnetzeltes, Älplermagronen, Maultaschen, Rouladen, Labskaus, Königsberger Klopse, Himmel und Erde, Bienenstich, Streuselkuchen, Rote Grütze, Apfelschorle, Rollmops, Hutspot, Kibbeling, Oliebollen, Waterzooi, Stoemp, Liège Waffle, Pissaladière, Socca, Brandade, Daube, Navarin, Hachis Parmentier, Gratin Dauphinois, Aligot, Tartiflette, Choucroute Garnie, Quiche Lorraine, Moules Marinières, Sole Meunière, Blanquette de Veau, Poule au Pot, Far Breton, Paris-Brest, Saint-Honoré, Religieuse, Opera Cake, Financier, Canelé, Marrons Glacés, Galette des Rois, Croquembouche, Calvados, Champagne, Fabada, Cocido, Fideuà, Arroz Negro, Pimientos de Padrón, Bocadillo de Calamares, Boquerones, Polvorones, Ensaïmada, Tarta de Santiago, Leche Frita, Pintxos, Gilda, Marmitako, Bifana, Prego, Bacalhau à Brás, Arroz de Pato, Grilled Sardines, Bola de Berlim, Neeps and Tatties, Scotch Pie, Clootie Dumpling, Tablet, Irn-Bru, Welsh Cakes, Bara Brith, Cawl, Boxty, Coddle, Champ, Ulster Fry, Jellied Eels, Spotted Dick, Jam Roly-Poly, Treacle Tart, Bread and Butter Pudding, Eccles Cake, Parkin, Lancashire Hotpot, Faggots, Pork Scratchings, Chip Butty, Fish Finger Sandwich, Coronation Chicken, Balti, Jaffa Cakes, Custard Creams, Battenberg, Lemon Drizzle Cake, Arctic Roll, Yule Log, Khachapuri, Aebleskiver, Kolache, Croque Madame, Steak Tartare, Pisto, Escalivada, Laverbread, Kefir, Cabbage Rolls
 
 ## American
@@ -1679,7 +1679,7 @@ Italian: Chicken Alfredo, Arancini, Affogato, Ossobuco, Saltimbocca, Vitello Ton
 Mexican: Chips and Queso, Esquites, Carne Asada Fries, Cochinita Pibil, Mole Poblano, Chiles Rellenos, Chiles en Nogada, Birria, Menudo, Sopes, Gorditas, Huaraches, Tlayuda, Flautas, Taquitos, Tortas Ahogadas, Migas, Sopa de Lima, Aguachile, Molletes, Enchiladas Suizas, Queso Fundido, Sincronizada, Mexican Hot Chocolate, Champurrado, Café de Olla, Agua de Jamaica, Tepache, Rosca de Reyes, Capirotada, Buñuelos, Mazapán, Tostilocos, Charro Beans, Picadillo, Albóndigas, Caldo de Res, Chilaquiles, Barbacoa, Huevos Rancheros, Tortilla Soup, Atole, Paleta, Concha, Pan de Muerto, Mexican Wedding Cookies, Mangonada, Machaca, Quesabirria, Chicharrón, Gringa, Volcanes, Tinga, Tostada de Tinga, Pollo Asado, Mole Negro, Mole Verde, Pipián, Quesadilla de Flor de Calabaza, Tamales de Rajas, Tamales Oaxaqueños, Tlacoyos, Memelas, Enmoladas, Entomatadas, Enfrijoladas, Papadzules, Panuchos, Sopa Azteca, Caldo de Pollo, Caldo de Camarón, Coctel de Camarón, Ceviche de Camarón, Huachinango a la Veracruzana, Carne en su Jugo, Tampiqueña, Arrachera, Machaca con Huevo, Chorizo con Huevo, Huevos Motuleños, Huevos Divorciados, Chilaquiles Verdes, Orejas, Marranitos, Empanadas de Calabaza, Pan de Elote, Jericalla, Flan Napolitano, Gelatina de Mosaico, Cocada, Alegría, Glorias, Chamoyada, Raspado, Nieve, Agua de Pepino, Atole de Elote, Tascalate, Tejuino, Mezcal, Jarritos, Mexican Coke, Topo Chico, Birria Tacos, Campechana, Taquito
 East Asian: Potstickers, Wonton Soup, Kimchi Fried Rice
 Indian: Cheese Naan, Masala Dosa
-American: Nashville Hot Chicken, Cincinnati Chili, Toasted Ravioli, Texas Barbecue, Beef on Weck, Muffuletta, Po' Boy, Crawfish Boil, Crawfish Étouffée, Red Beans and Rice, Grits and Eggs, Fried Green Tomatoes, Hoppin' John, Sweet Potato Pie, Chess Pie, Moon Pie, Bananas Foster, Huli Huli Chicken, Haupia, Mac Salad, Plate Lunch, Hot Brown, Fried Catfish, Texas Chili, Chicago Hot Dog, Italian Beef, Tater Tot Hotdish, Juicy Lucy, Fried Cheese Curds, Wild Rice Soup, Green Chile Stew, Fry Bread, Navajo Taco, Sopapilla, Breakfast Taco, Cobb Salad, Mission Burrito, Manhattan Clam Chowder, Boston Cream Pie, Boston Baked Beans, Indian Pudding, New York Pizza, Bagel and Lox, Pastrami on Rye, Black and White Cookie, New York Cheesecake, Shoofly Pie, Ham Biscuit, Lowcountry Boil, Bourbon, Moonshine, Fried Twinkie, Deep Fried Oreos, Jello Salad, Tuna Casserole, Blondie, Shrimp and Grits, Hush Puppies, Collard Greens, Chicken Fried Steak, Banana Pudding, Peach Cobbler, Beignets, King Cake, Poke Bowl, Spam Musubi, Loco Moco, Shave Ice, Kalua Pork, Malasadas, Brunswick Stew, Frito Pie, Buffalo Wings, Kansas City BBQ, Burnt Ends, Clambake, Whoopie Pie, Johnnycakes, Apple Cider Donuts, Sugar on Snow, Egg Cream, Knish, Chicken and Dumplings, Scrapple, Crab Cakes, Pralines, Ambrosia, Green Bean Casserole, Sloppy Joe, Monte Cristo, French Dip
+American: Nashville Hot Chicken, Cincinnati Chili, Toasted Ravioli, Texas Barbecue, Beef on Weck, Muffuletta, Po' Boy, Crawfish Boil, Crawfish Étouffée, Red Beans and Rice, Grits and Eggs, Fried Green Tomatoes, Hoppin' John, Sweet Potato Pie, Chess Pie, Moon Pie, Bananas Foster, Huli Huli Chicken, Haupia, Mac Salad, Plate Lunch, Hot Brown, Fried Catfish, Texas Chili, Chicago Hot Dog, Italian Beef, Tater Tot Hotdish, Juicy Lucy, Fried Cheese Curds, Wild Rice Soup, Green Chile Stew, Fry Bread, Navajo Taco, Sopapilla, Breakfast Taco, Cobb Salad, Mission Burrito, Manhattan Clam Chowder, Boston Cream Pie, Boston Baked Beans, Indian Pudding, New York Pizza, Bagel and Lox, Pastrami on Rye, Black and White Cookie, New York Cheesecake, Shoofly Pie, Ham Biscuit, Lowcountry Boil, Bourbon, Moonshine, Fried Twinkie, Deep Fried Oreos, Jello Salad, Tuna Casserole, Blondie, Shrimp and Grits, Hush Puppies, Collard Greens, Chicken Fried Steak, Banana Pudding, Peach Cobbler, Beignets, King Cake, Poke Bowl, Spam Musubi, Loco Moco, Shave Ice, Kalua Pork, Malasadas, Brunswick Stew, Frito Pie, Buffalo Wings, Kansas City BBQ, Burnt Ends, Clambake, Whoopie Pie, Johnnycakes, Apple Cider Donuts, Sugar on Snow, Egg Cream, Knish, Chicken and Dumplings, Scrapple, Crab Cakes, Pralines, Ambrosia, Green Bean Casserole, Sloppy Joe, Monte Cristo, French Dip, Fried Okra, Southern Greens, Pimento Cheese Sandwich, Barbecue Ribs, Memphis Ribs, Chili Bread Bowl, Clam Chowder Bread Bowl, Fried Clams, Clams Casino, Beer Brats, Poi, Salmon Jerky, Bread Pudding with Whiskey Sauce, Buckeyes, Fried Butter, Birch Beer, Detroit-Style Pizza, Pork Tenderloin Sandwich, Green Chile Cheeseburger, Gooey Butter Cake
 
 ## Notebook batch (2026-10-13): pairs players tried with no recipe
 # Kareem's notebook, minus pairs already written and ones naming the old
@@ -2676,9 +2676,9 @@ Feast + East Asian = Hot Pot [dish]
 Feast + Feast = Buffet [dish]
 Feast + Platter = Buffet
 
-Middle Eastern: Mezze, Fesenjan, Fatteh, Mujaddara, Sfiha, Pide, Börek, Manti, Iskender Kebab, Adana Kebab, Imam Bayildi, Mahshi, Tahdig, Ghormeh Sabzi, Chelo Kebab, Jeweled Rice, Ash Reshteh, Sabich, Muhammara, Mutabbaq, Harees, Machboos, Basbousa, Umm Ali, Muhallebi, Sahlab, Arabic Coffee, Karak, Luqaimat, Molokhia, Hawawshi, Fatayer, Lahmacun, Doner Kebab, Simit, Ayran, Turkish Delight, Hünkar Beğendi, Karnıyarık, Menemen, Çılbır, Kumpir, Midye Dolma, Balık Ekmek, Gözleme, Tavuk Göğsü, Sütlaç, Aşure, Şalgam, Poğaça, Bal Kaymak, Pişmaniye, Dondurma, Dürüm, Çiğ Köfte, Kebab Koobideh, Joojeh Kebab, Tahchin, Zereshk Polo, Baghali Polo, Sabzi Polo, Kuku Sabzi, Mirza Ghasemi, Abgoosht, Bastani, Gaz, Sohan, Barbari, Thareed, Balaleet, Khameer, Chebab, Bint al-Sahn, Malawach, Bamba, Rugelach, Sufganiyah, Gefilte Fish, Kugel, Cholent, Bourekas, Jerusalem Bagel, Msabbaha, Kibbeh Labanieh, Ouzi, Sayadieh, Samke Harra, Kofta bil Tahini, Halawet el Jibn, Ghraybeh, Meghli, Limonana, Pomegranate Juice, Turkish Tea, Sholeh Zard, Faloodeh, Doogh
+Middle Eastern: Mezze, Fesenjan, Fatteh, Mujaddara, Sfiha, Pide, Börek, Manti, Iskender Kebab, Adana Kebab, Imam Bayildi, Mahshi, Tahdig, Ghormeh Sabzi, Chelo Kebab, Jeweled Rice, Ash Reshteh, Sabich, Muhammara, Mutabbaq, Harees, Machboos, Basbousa, Umm Ali, Muhallebi, Sahlab, Arabic Coffee, Karak, Luqaimat, Molokhia, Hawawshi, Fatayer, Lahmacun, Doner Kebab, Simit, Ayran, Turkish Delight, Hünkar Beğendi, Karnıyarık, Menemen, Çılbır, Kumpir, Midye Dolma, Balık Ekmek, Gözleme, Tavuk Göğsü, Sütlaç, Aşure, Şalgam, Poğaça, Bal Kaymak, Pişmaniye, Dondurma, Dürüm, Çiğ Köfte, Kebab Koobideh, Joojeh Kebab, Tahchin, Zereshk Polo, Baghali Polo, Sabzi Polo, Kuku Sabzi, Mirza Ghasemi, Abgoosht, Bastani, Gaz, Sohan, Barbari, Thareed, Balaleet, Khameer, Chebab, Bint al-Sahn, Malawach, Bamba, Rugelach, Sufganiyah, Gefilte Fish, Kugel, Cholent, Bourekas, Jerusalem Bagel, Msabbaha, Kibbeh Labanieh, Ouzi, Sayadieh, Samke Harra, Kofta bil Tahini, Halawet el Jibn, Ghraybeh, Meghli, Limonana, Pomegranate Juice, Turkish Tea, Sholeh Zard, Faloodeh, Doogh, Plov, Samsa, Pumpkin Manti, Kurut, Shir Chay, Shah Pilaf, Lagman
 East Asian: Dim Sum, Hot Pot, Seafood Pancake, Moo Shu, Mandarin Pancakes, Sweet and Sour Fish, Hayashi Rice, Gukbap, Samgyetang, Seolleongtang, Sujebi, Naengguk, Budae Jjigae, Kimchi Jjigae, Doenjang Jjigae, Yakgwa, Dalgona, Bingsu, Haejangguk, Bugeoguk, Jajangmyeon, Sundubu Jjigae, Samgyeopsal, Galbi, Bossam, Dakgalbi, Soju, Haemul Pajeon, Naengmyeon, Taiyaki, Yakisoba, Tonkatsu, Japanese Curry, Katsu Curry, Katsudon, Tendon, Tamagoyaki, Sukiyaki, Miso Ramen, Tonkotsu Ramen, Castella, Melon Pan, Ramune, Calpis, Mapo Tofu, Dan Dan Noodles, Twice-Cooked Pork, Har Gow, Siu Mai, Soup Dumplings, Egg Tarts, Tangyuan, Jianbing, Century Egg, Beef Noodle Soup, Lu Rou Fan, Stinky Tofu, Pineapple Cake, Sesame Balls, Egg Fried Rice, Salt and Pepper Shrimp, Honey Walnut Shrimp, Moo Shu Pork, Sesame Chicken, Pepper Steak, Almond Cookies, Oolong, Egg Waffle, Hong Kong French Toast, Japchae, Tteokbokki, Kimbap, Hotteok, Patbingsu, Banchan, Takoyaki, Okonomiyaki, Udon, Karaage, Oyakodon, Gyudon, Unagi, Chirashi, Nigiri, Temaki, Shabu-Shabu, Yakitori, Dorayaki, Dango, Daifuku, Char Siu, Mooncake, Zongzi, Char Siu Bao, Lo Mai Gai, Tea Eggs, Gua Bao, Bubble Tea, Crab Rangoon, Chop Suey, Egg Foo Young, Lemon Chicken, Cashew Chicken, Mongolian Beef, Tanghulu, Hong Kong Milk Tea, Korean BBQ, Chawanmushi, Ochazuke, Genmaicha, Barley Tea, Tsukemen, Shoyu Ramen, Shio Ramen, Hiyashi Chuka, Tempura Udon, Kitsune Udon, Curry Udon, Nikujaga, Tonjiru, Chankonabe, Yudofu, Agedashi Tofu, Hiyayakko, Hamburg Steak, Korokke, Menchi Katsu, Ebi Fry, Kushikatsu, Gyoza, Onigiri, Spicy Tuna Roll, Rainbow Roll, Unagi Don, Kaisendon, Tekkadon, Yakiniku, Jingisukan, Teppanyaki, Monjayaki, Imagawayaki, Warabi Mochi, Anmitsu, Pocky, Hi-Chew, Kit Kat Matcha, Japanese Cheesecake, Soufflé Pancakes, Fruit Sando, Katsu Sando, Tamago Sando, Melon Soda, Yakult, Umeshu, Shochu, Yangnyeom Chicken, Galbi Jjim, LA Galbi, Jokbal, Tuna Kimbap, Rabokki, Bungeoppang, Kimchi Pancake, Bibim Guksu, Kalguksu, Galbitang, Gamjatang, Yukgaejang, Tangsuyuk, Dosirak, Corn Cheese, Yuja Tea, Fish-Fragrant Eggplant, Dry-Fried Green Beans, Shuizhu Yu, Laziji, Liangpi, Biangbiang Noodles, Roujiamo, Cumin Lamb, Lamb Skewers, Shengjian Bao, Wontons in Chili Oil, Siu Yuk, White Cut Chicken, Soy Sauce Chicken, Drunken Chicken, Red-Braised Pork, Dongpo Pork, Lion's Head Meatballs, West Lake Fish, Salt-Baked Chicken, Cheung Fun, Turnip Cake, Taro Cake, Pineapple Bun, Cocktail Bun, Wife Cake, Mango Pudding, Douhua, Eight Treasure Rice, Grass Jelly, Haw Flakes, Yuanyang, Youtiao, Shaobing, Mantou, Taiwanese Fried Chicken, Oyster Omelette, Mango Shaved Ice, Shaved Snow, Baked Ziti, Rainbow Cookies, Pescado Zarandeado, Camarones a la Diabla, Bolillo, Obleas, Oden, Natto, Tebasaki, Butadon, Yokan, Sencha, Amazake, Gyeran-ppang, Jjamppong, Makgeolli, Zhajiangmian, Clay Pot Rice, Red Bean Soup, Ramen Burger, Tamago Kake Gohan, Omurice, Inari, Temari Sushi, Dragon Roll, Philadelphia Roll, Hibachi, Kakigori, Mitarashi Dango, Senbei, Hojicha, Kalbi, Banana Milk, Sikhye, Egg Tart, Chrysanthemum Tea, White Rabbit
-Indian: Thali, Chicken Tikka, Bhel Puri, Sambar, Upma, Hakka Noodles, Seekh Kebab, Keema, Papadum, Jaljeera, Rogan Josh, Vindaloo, Korma, Paneer Tikka, Paneer Butter Masala, Malai Kofta, Dal Makhani, Rajma, Puri, Chole Bhature, Pani Puri, Dahi Puri, Pav Bhaji, Vada Pav, Dhokla, Kachori, Aloo Tikki, Samosa Chaat, Papdi Chaat, Uttapam, Medu Vada, Rasam, Khichdi, Pongal, Appam, Puttu, Avial, Kerala Fish Curry, Prawn Curry, Chicken 65, Haleem, Nihari, Kathi Roll, Thukpa, Pulao, Jeera Rice, Lemon Rice, Curd Rice, Aloo Paratha, Kulcha, Kulfi, Falooda, Rasgulla, Rasmalai, Sandesh, Peda, Mysore Pak, Sooji Halwa, Shrikhand, Payasam, Filter Coffee, Egg Curry, Baingan Bharta, Bhindi Masala, Gobi Manchurian, Chilli Chicken, Butter Naan, Bombay Mix, Nankhatai, Chakli, Thandai, Nimbu Pani, Sugarcane Juice, Momos, Barfi, Ladoo, Gajar Halwa, Rose Lassi
+Indian: Thali, Chicken Tikka, Bhel Puri, Sambar, Upma, Hakka Noodles, Seekh Kebab, Keema, Papadum, Jaljeera, Rogan Josh, Vindaloo, Korma, Paneer Tikka, Paneer Butter Masala, Malai Kofta, Dal Makhani, Rajma, Puri, Chole Bhature, Pani Puri, Dahi Puri, Pav Bhaji, Vada Pav, Dhokla, Kachori, Aloo Tikki, Samosa Chaat, Papdi Chaat, Uttapam, Medu Vada, Rasam, Khichdi, Pongal, Appam, Puttu, Avial, Kerala Fish Curry, Prawn Curry, Chicken 65, Haleem, Nihari, Kathi Roll, Thukpa, Pulao, Jeera Rice, Lemon Rice, Curd Rice, Aloo Paratha, Kulcha, Kulfi, Falooda, Rasgulla, Rasmalai, Sandesh, Peda, Mysore Pak, Sooji Halwa, Shrikhand, Payasam, Filter Coffee, Egg Curry, Baingan Bharta, Bhindi Masala, Gobi Manchurian, Chilli Chicken, Butter Naan, Bombay Mix, Nankhatai, Chakli, Thandai, Nimbu Pani, Sugarcane Juice, Momos, Barfi, Ladoo, Gajar Halwa, Rose Lassi, Matar Paneer, Saag Aloo, Chicken Saag, Saag Gosht, Chicken Korma, Pork Vindaloo, Chettinad Chicken, Aloo Bonda, Mirchi Bajji, Kothu Parotta, Tamarind Rice, Hyderabadi Biryani, Kaju Katli, Chaas, Badam Milk, Tender Coconut, Poha, Besan Ladoo, Til Ladoo
 
 # Round 11: chip flavours
 Potato Chips + Sour Cream = Sour Cream and Onion Chips [dish]
@@ -17377,3 +17377,224 @@ Sake + Milk = Makgeolli [drink]
 Pasta + Black Bean Sauce = Zhajiangmian [dish]
 Lap Cheong + Rice = Clay Pot Rice [dish]
 Beans + Syrup = Red Bean Soup [dish]
+
+#############################################################################
+# Growing the cookbooks, round 6 (2026-10-20): second passes on Indian,
+# Southeast Asian, African, Latin American, Fast Food and American, plus
+# Central Asia in the Middle Eastern book
+#############################################################################
+
+## Indian
+Paneer + Peas = Matar Paneer [dish]
+Paneer + Butter Chicken = Paneer Butter Masala [dish]
+Paneer + Stove = Paneer Tikka [dish]
+Potato + Cauliflower = Aloo Gobi [dish]
+Saag Paneer + Potato = Saag Aloo [dish]
+Lentils + Butter = Dal Makhani [dish]
+Saag Paneer + Chicken = Chicken Saag [dish]
+Saag Paneer + Lamb = Saag Gosht [dish]
+Lamb + Yogurt = Rogan Josh [dish]
+Korma + Chicken = Chicken Korma [dish]
+Vindaloo + Pork = Pork Vindaloo [dish]
+Curry + Pepper = Chettinad Chicken [dish]
+Kebab + Indian = Seekh Kebab [dish]
+Burger + Indian = Vada Pav [dish]
+Chickpeas + Bread = Chole Bhature [dish]
+Puffed Rice + Indian = Bhel Puri [dish]
+Samosa + Chickpeas = Samosa Chaat [dish]
+Pakora + Potato = Aloo Bonda [dish]
+Onion + Batter = Onion Bhaji [dish]
+Pakora + Chili Pepper = Mirchi Bajji [dish]
+Idli + Stove = Dosa [dish]
+Dosa + Onion = Uttapam [dish]
+Soup + Tamarind = Rasam [dish]
+Lentils + Tamarind = Sambar [dish]
+Coconut + Chutney = Coconut Chutney [ingredient]
+Mint + Yogurt = Mint Chutney [ingredient]
+Flatbread + Potato = Aloo Paratha [dish]
+Flatbread + Ghee = Paratha [dish]
+Paratha + Stove = Kothu Parotta [dish]
+Rice + Tamarind = Tamarind Rice [dish]
+Biryani + Lamb = Hyderabadi Biryani [dish]
+Carrot + Pudding = Gajar Halwa [dish]
+Rasgulla + Cream = Rasmalai [dish]
+Fudge + Indian = Barfi [dish]
+Cashews + Fudge = Kaju Katli [dish]
+Funnel Cake + Indian = Jalebi [dish]
+Ice Cream + Pistachios = Kulfi [dish]
+Buttermilk + Indian = Chaas [drink]
+Lemonade + Salt = Nimbu Pani [drink]
+Mango + Milk = Mango Milkshake [drink]
+Almond Milk + Indian = Badam Milk [drink]
+Ginger + Lemonade = Ginger Lemonade [drink]
+Coconut Water + Indian = Tender Coconut [drink]
+Puffed Rice + Turmeric = Poha [dish]
+Ladoo + Chickpeas = Besan Ladoo [dish]
+Ladoo + Sesame Seeds = Til Ladoo [dish]
+
+## Southeast Asian
+Laksa + Coconut Milk = Curry Laksa [dish]
+Laksa + Tamarind = Asam Laksa [dish]
+Rice + Coconut Milk = Nasi Lemak [dish]
+Crab + Pepper = Black Pepper Crab [dish]
+Turnip Cake + Omelette = Chai Tow Kway [dish]
+Flatbread + Curry = Roti Canai [dish]
+Roti Canai + Egg = Murtabak [dish]
+Coconut + Jam = Kaya [ingredient]
+Tea + Condensed Milk = Teh Tarik [drink]
+Milo + Ice = Milo Dinosaur [drink]
+Salad + Peanut Sauce = Gado-Gado [dish]
+Fried Chicken + Chili Pepper = Ayam Penyet [dish]
+Soup + Turmeric = Soto Ayam [dish]
+Tempeh + Stove = Tempeh Goreng [dish]
+Tofu + Peanut Sauce = Tahu Telor [dish]
+Banana + Batter = Banana Fritters [dish]
+Banana Fritters + Southeast Asian = Pisang Goreng [dish]
+Coconut Milk + Ice = Cendol [dish]
+Avocado + Milkshake = Avocado Shake [drink]
+Satay + Pork = Moo Ping [dish]
+Papaya + Salad = Som Tam [dish]
+Beef + Salad = Larb [dish]
+Larb + Pork = Nam Tok [dish]
+Green Curry + Chicken = Green Curry Chicken [dish]
+Red Curry + Duck = Red Curry Duck [dish]
+Pho + Chicken = Pho Ga [dish]
+Soup + Rice Noodles = Bun Bo Hue [dish]
+Crepe + Shrimp = Banh Xeo [dish]
+Fried Fish + Turmeric = Cha Ca [dish]
+Coffee + Egg = Egg Coffee [drink]
+Coffee + Coconut = Coconut Coffee [drink]
+Pork + Tamarind = Sinigang [dish]
+Ube + Jam = Ube Halaya [dish]
+Bread + Southeast Asian = Pandesal [dish]
+Corn Fritters + Southeast Asian = Bakwan Jagung [dish]
+Spring Rolls + Rice Noodles = Goi Cuon [dish]
+Egg Rolls + Southeast Asian = Cha Gio [dish]
+Sticky Rice + Pork = Banh Chung [dish]
+
+## African
+Stew + Peanut Sauce = Groundnut Stew [dish]
+Yam + Blender = Pounded Yam [dish]
+Cassava + Clock = Gari [ingredient]
+Gari + Water = Eba [dish]
+Soup + Pepper = Pepper Soup [dish]
+Peanuts + Candy = Peanut Brittle
+Chicken + Berbere = Doro Wat [dish]
+Lentils + Berbere = Misir Wat [dish]
+Beef + Butter = Kitfo [dish]
+Chickpeas + Berbere = Shiro [dish]
+Honey + Wine = Tej [drink]
+Couscous + Lamb = Lamb Couscous [dish]
+Tagine + Olives = Chicken Tagine with Olives [dish]
+Tomato + Pepper = Shakshuka
+Mint + Green Tea = Moroccan Mint Tea [drink]
+Beef Jerky + African = Biltong [dish]
+Donut + Syrup = Koeksister [dish]
+Rice + Spices = Pilau [dish]
+Ginger + Water = Ginger Beer
+Ginger Beer + African = Gnamakoudji [drink]
+Rooibos + Milk = Rooibos Latte [drink]
+Polenta + African = Pap [dish]
+Egg Tart + African = Milk Tart [dish]
+Palm Sugar + Clock = Palm Wine [drink]
+Beer + African = Sorghum Beer [drink]
+
+## Latin American
+Empanada + Beef = Empanada Salteña [dish]
+Milanesa + Pizza = Milanesa a la Napolitana [dish]
+Corn + Pie = Pastel de Choclo [dish]
+Crepe + Dulce de Leche = Panqueques con Dulce de Leche [dish]
+Meringue + Fruit = Pavlova
+Chocolate + Sprinkles = Brigadeiro [dish]
+Coconut + Candy = Cocada [dish]
+Stew + Coconut Milk = Moqueca [dish]
+Cassava + Stove = Yuca Frita [dish]
+Acai + Granola = Acai Bowl [dish]
+Fish + Lime = Ceviche [dish]
+Arepa + Chicken = Reina Pepiada [dish]
+Chicken Soup + Potato = Ajiaco [dish]
+Ground Beef + Raisins = Picadillo [dish]
+Jerk Chicken + Rice = Rice and Peas
+Flatbread + Chickpeas = Doubles [dish]
+Roti + Curry = Curry Goat
+Chorizo + Bread = Choripán [dish]
+Tamale + Corn = Humitas [dish]
+Beer + Latin American = Chicha [drink]
+Ceviche + Lime = Leche de Tigre [drink]
+Arepa + Cheese = Arepa de Queso [dish]
+Puff Pastry + Guava = Pastelito de Guayaba [dish]
+Lechon + Orange Juice = Lechón Asado [dish]
+
+## Fast Food
+Burger + Pickles = Big Mac
+Hash Browns + Fast Food = Hash Brown Patty [dish]
+Apple Pie + Fast Food = Fried Apple Pie [dish]
+Chocolate Milkshake + Fast Food = Frosty [dish]
+Quesadilla + Fast Food = Chalupa [dish]
+Cinnamon + Pork Rinds = Cinnamon Twists [dish]
+Lemonade + Fast Food = Frosted Lemonade
+Roast Beef + Fast Food = Beef 'n Cheddar [dish]
+French Fries + Pepper = Curly Fries [dish]
+Burger + Butter = Butter Burger [dish]
+Frozen Custard + Fast Food = Concrete [dish]
+Ice Cream Cone + Chocolate = Dipped Cone [dish]
+Ice Cream + Candy Bar = Blizzard [dish]
+Hot Chocolate + Fast Food = Hot Cocoa
+Iced Coffee + Caramel = Iced Caramel Macchiato [drink]
+Muffin + Fast Food = Cake Pop
+Pretzel + Butter = Soft Pretzel [dish]
+Sliders + Onion = Oklahoma Onion Burger [dish]
+Omelette + Fast Food = Egg Bites [dish]
+
+## American
+Shrimp + Grits = Shrimp and Grits
+Okra + Cornmeal = Fried Okra [dish]
+Cornbread + Batter = Hush Puppies [dish]
+Collard Greens + Bacon = Southern Greens [dish]
+Pimento Cheese + Sandwich = Pimento Cheese Sandwich [dish]
+Ribs + Barbecue = Barbecue Ribs [dish]
+Ribs + Dry Rub = Memphis Ribs [dish]
+Beef + Burnt = Burnt Ends [dish]
+Chili Fries + Cheese = Chili Cheese Fries [dish]
+Chili + Bread Bowl = Chili Bread Bowl [dish]
+Clam Chowder + Bread = Clam Chowder Bread Bowl [dish]
+Clams + Batter = Fried Clams [dish]
+Clams + Oven = Clams Casino [dish]
+Crab + Cake = Crab Cakes
+Roast Beef + Italian = Italian Beef [dish]
+Bratwurst + Beer = Beer Brats [dish]
+Meat Pie + American = Pasty
+Bacon-Wrapped Hot Dog + Mexican = Sonoran Hot Dog [dish]
+Chili Pepper + Stew = Green Chile Stew
+Burrito + Rice = Mission Burrito [dish]
+Taro + Blender = Poi [dish]
+Salmon + Beef Jerky = Salmon Jerky [dish]
+Crawfish + Stew = Crawfish Étouffée [dish]
+Bread Pudding + Whiskey = Bread Pudding with Whiskey Sauce [dish]
+Fudge + Peanut Butter = Buckeyes [dish]
+Peanut Butter + Truffle = Buckeyes [dish]
+Ravioli + Batter = Toasted Ravioli [dish]
+Pork + Cornmeal = Scrapple [dish]
+Butter + Batter = Fried Butter [dish]
+Pickles + Batter = Fried Pickles [dish]
+Cider + Donut = Apple Cider Donuts
+Maple Syrup + Candy = Maple Candy [dish]
+Root Beer + American = Birch Beer [drink]
+Soda + Cream = Cream Soda
+Deep Dish Pizza + Cheese = Detroit-Style Pizza [dish]
+Schnitzel + American = Pork Tenderloin Sandwich [dish]
+Cheeseburger + Hatch Chile = Green Chile Cheeseburger [dish]
+Cake Mix + Butter = Gooey Butter Cake [dish]
+
+## Middle Eastern
+# Central Asia: Uzbek, Kazakh, Azerbaijani
+Pilaf + Carrot = Plov [dish]
+Samosa + Oven = Samsa [dish]
+Dumplings + Lamb = Manti [dish]
+Manti + Pumpkin = Pumpkin Manti [dish]
+Labneh + Clock = Kurut [dish]
+Yogurt + Salt = Ayran
+Milk Tea + Salt = Shir Chay [drink]
+Plov + Flatbread = Shah Pilaf [dish]
+Dumplings + Soup Dumplings = Khinkali
+Lanzhou Noodles + Lamb = Lagman [dish]
