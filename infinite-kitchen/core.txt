@@ -1675,11 +1675,11 @@ Biscuit + Strawberry = Strawberry Shortcake
 French Fries + Chili = Chili Fries [dish]
 
 ## Batch 3a: new regional dishes join their cookbooks
-Italian: Chicken Alfredo, Arancini, Affogato
-Mexican: Chips and Queso, Esquites, Carne Asada Fries
+Italian: Chicken Alfredo, Arancini, Affogato, Ossobuco, Saltimbocca, Vitello Tonnato, Veal Parmesan, Cacio e Pepe, Amatriciana, Penne alla Vodka, Linguine alle Vongole, Puttanesca, Aglio e Olio, Pasta e Fagioli, Carpaccio, Bistecca alla Fiorentina, Grissini, Piadina, Supplì, Porchetta, Chicken Piccata, Chicken Marsala, Sfogliatella, Bombolone, Panettone, Zabaglione, Semifreddo, Amaretti, Pizzelle, Torrone, Spumoni, Tortellini in Brodo, Orecchiette, Chianti, Italian Sub, Cassata, Ricotta Cheesecake, Rum Baba, Maritozzo, Ribollita, Cioppino, Stromboli, Zeppole, Pandoro, Granita, Panzanella, Caponata, Antipasto, Crostini, Limoncello, Frittata
+Mexican: Chips and Queso, Esquites, Carne Asada Fries, Cochinita Pibil, Mole Poblano, Chiles Rellenos, Chiles en Nogada, Birria, Menudo, Sopes, Gorditas, Huaraches, Tlayuda, Flautas, Taquitos, Tortas Ahogadas, Migas, Sopa de Lima, Aguachile, Molletes, Enchiladas Suizas, Queso Fundido, Sincronizada, Mexican Hot Chocolate, Champurrado, Café de Olla, Agua de Jamaica, Tepache, Rosca de Reyes, Capirotada, Buñuelos, Mazapán, Tostilocos, Charro Beans, Picadillo, Albóndigas, Caldo de Res, Chilaquiles, Barbacoa, Huevos Rancheros, Tortilla Soup, Atole, Paleta, Concha, Pan de Muerto, Mexican Wedding Cookies, Mangonada, Machaca
 East Asian: Potstickers, Wonton Soup, Kimchi Fried Rice
 Indian: Cheese Naan, Masala Dosa
-American: Nashville Hot Chicken, Cincinnati Chili, Toasted Ravioli, Texas Barbecue, Beef on Weck
+American: Nashville Hot Chicken, Cincinnati Chili, Toasted Ravioli, Texas Barbecue, Beef on Weck, Muffuletta
 
 ## Notebook batch (2026-10-13): pairs players tried with no recipe
 # Kareem's notebook, minus pairs already written and ones naming the old
@@ -2676,7 +2676,7 @@ Feast + East Asian = Hot Pot [dish]
 Feast + Feast = Buffet [dish]
 Feast + Platter = Buffet
 
-Middle Eastern: Mezze, Fesenjan
+Middle Eastern: Mezze, Fesenjan, Fatteh, Mujaddara, Sfiha, Pide, Börek, Manti, Iskender Kebab, Adana Kebab, Imam Bayildi, Mahshi, Tahdig, Ghormeh Sabzi, Chelo Kebab, Jeweled Rice, Ash Reshteh, Sabich, Muhammara, Mutabbaq, Harees, Machboos, Basbousa, Umm Ali, Muhallebi, Sahlab, Arabic Coffee, Karak, Luqaimat, Molokhia, Hawawshi, Fatayer, Lahmacun, Doner Kebab, Simit, Ayran, Turkish Delight
 East Asian: Dim Sum, Hot Pot, Seafood Pancake, Moo Shu, Mandarin Pancakes, Sweet and Sour Fish, Hayashi Rice, Gukbap, Samgyetang, Seolleongtang, Sujebi, Naengguk, Budae Jjigae, Kimchi Jjigae, Doenjang Jjigae, Yakgwa, Dalgona, Bingsu, Haejangguk, Bugeoguk
 Indian: Thali, Chicken Tikka, Bhel Puri, Sambar, Upma, Hakka Noodles, Seekh Kebab, Keema, Papadum, Jaljeera
 
@@ -16342,3 +16342,157 @@ Goose + Oven = Roast Goose [dish]
 Goose + Apple = Roast Goose
 Goose + European = Roast Goose
 Marzipan + Chocolate = Mozartkugel [dish]
+
+#############################################################################
+# Growing the older cookbooks (2026-10-19): Italian, Mexican, Middle Eastern
+#############################################################################
+
+## Italian
+Veal + Italian = Ossobuco [dish]
+Veal + Prosciutto = Saltimbocca [dish]
+# cold veal in tuna sauce, from Piedmont
+Veal + Tuna = Vitello Tonnato [dish]
+Chicken Parmesan + Veal = Veal Parmesan [dish]
+Pasta + Parmesan = Cacio e Pepe [dish]
+Pancetta + Tomato Sauce = Amatriciana [dish]
+Spaghetti + Pancetta = Amatriciana
+Pasta + Vodka = Penne alla Vodka [dish]
+Pasta + Clams = Linguine alle Vongole [dish]
+Spaghetti + Olives = Puttanesca [dish]
+Spaghetti + Capers = Puttanesca
+Spaghetti + Garlic = Aglio e Olio [dish]
+Spaghetti + Olive Oil = Aglio e Olio
+Minestrone + Beans = Pasta e Fagioli [dish]
+Beef + Italian = Carpaccio [dish]
+Steak + Italian = Bistecca alla Fiorentina [dish]
+Breadsticks + Italian = Grissini [dish]
+Flatbread + Italian = Piadina [dish]
+# Rome's arancini, with mozzarella that pulls like a phone cord
+Arancini + Mozzarella = Supplì [dish]
+Pork + Italian = Porchetta [dish]
+Roast + Italian = Porchetta
+Chicken + Capers = Chicken Piccata [dish]
+Chicken + Mushroom = Chicken Marsala [dish]
+Puff Pastry + Ricotta = Sfogliatella [dish]
+Donut + Italian = Bombolone [dish]
+Fruitcake + Italian = Panettone [dish]
+Brioche + Italian = Panettone
+Custard + Italian = Zabaglione [dish]
+Custard + Wine = Zabaglione
+Chocolate Mousse + Fridge = Semifreddo [dish]
+Macaron + Italian = Amaretti [dish]
+Waffle + Italian = Pizzelle [dish]
+Nougat + Italian = Torrone [dish]
+Gelato + Cherry = Spumoni [dish]
+Ravioli + Broth = Tortellini in Brodo [dish]
+Pasta + Broccoli = Orecchiette [dish]
+Wine + Italian = Chianti [drink]
+Sub + Italian = Italian Sub [dish]
+# New Orleans' Sicilian sandwich, with olive salad
+Sub + Olives = Muffuletta [dish]
+Cake + Ricotta = Cassata [dish]
+Cheesecake + Ricotta = Ricotta Cheesecake [dish]
+Cake + Rum = Rum Baba [dish]
+Brioche + Whipped Cream = Maritozzo [dish]
+Cold Cuts + Italian = Mortadella [ingredient]
+Mozzarella + Cream = Burrata [ingredient]
+Blue Cheese + Italian = Gorgonzola [ingredient]
+Vinegar + Italian = Balsamic Vinegar [ingredient]
+
+## Mexican
+Pulled Pork + Mexican = Cochinita Pibil [dish]
+Pulled Pork + Orange = Cochinita Pibil
+Mole + Chicken = Mole Poblano [dish]
+Stuffed Peppers + Mexican = Chiles Rellenos [dish]
+# Puebla's stuffed chiles in walnut sauce with pomegranate seeds
+Chiles Rellenos + Pomegranate = Chiles en Nogada [dish]
+Goat + Mexican = Birria [dish]
+Soup + Mexican = Menudo [dish]
+Cornmeal + Mexican = Masa [ingredient]
+Masa + Refried Beans = Sopes [dish]
+Masa + Cheese = Gorditas [dish]
+Masa + Beans = Huaraches [dish]
+Pizza + Mexican = Tlayuda [dish]
+Enchilada + Stove = Flautas [dish]
+Taco + Oil = Taquitos [dish]
+Torta + Salsa = Tortas Ahogadas [dish]
+Scrambled Eggs + Tortilla Chips = Migas [dish]
+Chicken Soup + Lime = Sopa de Lima [dish]
+Ceviche + Chili Pepper = Aguachile [dish]
+Bread + Refried Beans = Molletes [dish]
+Enchilada + Cream = Enchiladas Suizas [dish]
+Enchilada + Sour Cream = Enchiladas Suizas
+Fondue + Mexican = Queso Fundido [dish]
+Chorizo + Cheese = Queso Fundido
+Quesadilla + Ham = Sincronizada [dish]
+Hot Chocolate + Mexican = Mexican Hot Chocolate [drink]
+Atole + Chocolate = Champurrado [drink]
+Mexican Hot Chocolate + Cornmeal = Champurrado
+Coffee + Mexican = Café de Olla [drink]
+Flower + Mexican = Agua de Jamaica [drink]
+Pineapple + Mexican = Tepache [drink]
+Brioche + Mexican = Rosca de Reyes [dish]
+Dulce de Leche + Mexican = Cajeta [ingredient]
+Caramel + Mexican = Cajeta
+Bread Pudding + Mexican = Capirotada [dish]
+Pancakes + Mexican = Buñuelos [dish]
+Peanuts + Mexican = Mazapán [dish]
+Chili Powder + Lime = Tajín [ingredient]
+Plum + Chili Pepper = Chamoy [ingredient]
+Tortilla Chips + Chamoy = Tostilocos [dish]
+Baked Beans + Mexican = Charro Beans [dish]
+Beans + Bacon = Charro Beans
+# corn smut, the "Mexican truffle"
+Corn + Mushroom = Huitlacoche [ingredient]
+Ground Beef + Mexican = Picadillo [dish]
+Meatballs + Mexican = Albóndigas [dish]
+Beef Stew + Mexican = Caldo de Res [dish]
+Jalapeno + Barbecue = Chipotle [ingredient]
+
+## Middle Eastern
+Pita + Yogurt = Fatteh [dish]
+Hummus + Bread = Fatteh
+Lentils + Rice = Mujaddara [dish]
+Lentils + Middle Eastern = Mujaddara
+Meat Pie + Middle Eastern = Sfiha [dish]
+Flatbread + Egg = Pide [dish]
+Puff Pastry + Middle Eastern = Börek [dish]
+Spanakopita + Middle Eastern = Börek
+Dumplings + Middle Eastern = Manti [dish]
+Dumplings + Yogurt = Manti
+Doner Kebab + Yogurt = Iskender Kebab [dish]
+Kofta + Chili Pepper = Adana Kebab [dish]
+# "the imam fainted" - eggplant braised in olive oil
+Eggplant + Olive Oil = Imam Bayildi [dish]
+Stuffed Peppers + Middle Eastern = Mahshi [dish]
+# the crispy rice from the bottom of a Persian pot
+Crispy Rice + Middle Eastern = Tahdig [dish]
+Crispy Rice + Saffron = Tahdig
+Stew + Middle Eastern = Ghormeh Sabzi [dish]
+Kebab + Saffron = Chelo Kebab [dish]
+Pilaf + Middle Eastern = Jeweled Rice [dish]
+Pilaf + Pomegranate = Jeweled Rice
+Lentil Soup + Herbs = Ash Reshteh [dish]
+Pita + Eggplant = Sabich [dish]
+Bell Pepper + Walnuts = Muhammara [dish]
+Bell Pepper + Middle Eastern = Muhammara
+Crepe + Middle Eastern = Mutabbaq [dish]
+Porridge + Middle Eastern = Harees [dish]
+Fish + Middle Eastern = Machboos [dish]
+Cake + Middle Eastern = Basbousa [dish]
+Cream of Wheat + Syrup = Basbousa
+Bread Pudding + Middle Eastern = Umm Ali [dish]
+Pudding + Middle Eastern = Muhallebi [dish]
+Pudding + Rose Water = Muhallebi
+Milk + Middle Eastern = Sahlab [drink]
+Coffee + Cardamom = Arabic Coffee [drink]
+Chai + Middle Eastern = Karak [drink]
+Donut Holes + Middle Eastern = Luqaimat [dish]
+Garlic + Middle Eastern = Toum [ingredient]
+Spinach + Middle Eastern = Molokhia [dish]
+Wheat + Middle Eastern = Freekeh [ingredient]
+Couscous + Middle Eastern = Maftoul [ingredient]
+Pita + Kofta = Hawawshi [dish]
+Spices + Middle Eastern = Sumac [ingredient]
+Pomegranate + Syrup = Pomegranate Molasses [ingredient]
+Bagel + Middle Eastern = Simit
