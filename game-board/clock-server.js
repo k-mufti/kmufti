@@ -71,6 +71,7 @@ module.exports = function clock({ send, cleanName, newCode, R }) {
       phase: room.phase, round: room.round, rounds: R.ROUNDS, target: room.target,
       order: room.order, turn: room.turn, current: room.order[room.turn] || null,
       times: room.times, last: room.last,
+      elapsed: room.phase === "running" ? Date.now() - room.runningSince : 0,   // so watchers can run the clock too
       history: room.phase === "final" ? room.history : [],
       msLeft: room.deadline ? Math.max(0, room.deadline - Date.now()) : 0,
     };

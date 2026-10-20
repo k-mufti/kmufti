@@ -123,7 +123,7 @@ input::placeholder { color: rgba(138, 152, 142, 0.6); }
     0 34px 70px -30px rgba(0, 0, 0, 0.9);
 }
 .seg { position: relative; display: inline-block; font-family: "DSEG7", monospace; font-size: clamp(60px, 13vw, 124px); line-height: 1; }
-.ghost { position: absolute; inset: 0; color: var(--led); opacity: 0.07; }
+.unlit { position: absolute; inset: 0; color: var(--led); opacity: 0.07; }
 .digits { position: relative; color: var(--led); text-shadow: 0 0 6px var(--glow), 0 0 22px var(--glow); }
 .unit { font-family: "Russo One", sans-serif; font-size: clamp(20px, 3.4vw, 32px); color: var(--led); opacity: 0.55; padding-bottom: 4px; }
 .under { margin: 26px 0 0; min-height: 1.4em; font-size: 18px; color: var(--soft); }
@@ -238,3 +238,18 @@ ol.standings b { font-family: "Russo One", sans-serif; font-size: 20px; color: v
   .go { width: 168px; height: 168px; font-size: 26px; }
   .exit { left: 12px; bottom: 12px; }
 }
+
+/* whose clock: a tag above it, and theirs ringed in their colour */
+.owner { display: inline-flex; align-items: center; gap: 8px; min-height: 30px; margin: 0 0 18px; padding: 0 14px 0 4px; border-radius: 99px; font-weight: 800; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
+.owner:empty { visibility: hidden; }
+.owner.mine { padding: 0 14px; color: var(--green); background: rgba(34, 224, 107, 0.1); }
+.owner.theirs { background: color-mix(in srgb, var(--oc) 20%, transparent); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--oc); }
+.owner .av { width: 24px; height: 24px; font-size: 12px; }
+.watch.theirs .face { box-shadow: 0 0 0 10px #141615, 0 0 0 13px var(--oc), inset 0 2px 12px rgba(0, 0, 0, 0.9), 0 34px 70px -30px rgba(0, 0, 0, 0.9); }
+
+/* the practice clock in the lobby */
+.face.mini { --led: #39ff6a; --glow: rgba(57, 255, 106, 0.55); width: min(100%, 300px); margin: 6px auto 26px; padding: 16px 12px; cursor: pointer; font: inherit; color: inherit; }
+.face.mini .seg { font-size: clamp(40px, 9vw, 56px); }
+.face.mini .unit { font-size: 18px; }
+.face.mini.stopped .digits { color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
+.face.mini:active { transform: scale(0.98); }

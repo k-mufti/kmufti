@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet" />
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-BoldItalic.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=6" />
 </head>
 <body>
   <header class="bar">
@@ -54,6 +54,8 @@
   <!-- In a room, before the first round -->
   <section class="screen" id="lobby" hidden>
     <div class="lobby">
+      <!-- a clock to practise on while you wait: tap to stop it, tap again to restart -->
+      <button class="face mini" id="lobbyClock" aria-label="Practice clock: tap to stop and start"><span class="seg"><span class="unlit" id="lobbyUnlit" aria-hidden="true">88.88</span><span class="digits" id="lobbyDigits">0.00</span></span><span class="unit">s</span></button>
       <p class="room-line" id="roomLine">Room code</p>
       <p class="room-code" id="lobbyCode"></p>
       <p class="room-hint" id="roomHint"></p>
@@ -70,7 +72,8 @@
     <p class="round" id="roundLine"></p>
     <p class="target" id="targetLine"></p>
     <div class="watch" id="watch">
-      <div class="face"><span class="seg"><span class="ghost" id="ghost" aria-hidden="true">8.88</span><span class="digits" id="digits">0.00</span></span><span class="unit">s</span></div>
+      <p class="owner" id="owner"></p>
+      <div class="face"><span class="seg"><span class="unlit" id="ghost" aria-hidden="true">8.88</span><span class="digits" id="digits">0.00</span></span><span class="unit">s</span></div>
       <p class="under" id="under"></p>
     </div>
     <div class="act" id="act"></div>
@@ -85,6 +88,6 @@
 
   <script src="../../you.js?v=2"></script>
   <script src="../dev-seat.js?v=2"></script>
-  <script type="module" src="app.js?v=4"></script>
+  <script type="module" src="app.js?v=5"></script>
 </body>
 </html>

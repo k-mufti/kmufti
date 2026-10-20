@@ -127,6 +127,7 @@ function renderLobby() {
   const host = isHost() && !S.quick;
   $("startBtn").hidden = !host;
   $("botRow").hidden = !(S.dev && isHost());
+  lobbyTick();
   clearInterval(countdownTimer);
   if (S.quick && S.startsIn) {
     const ends = Date.now() + S.startsIn;
@@ -136,6 +137,22 @@ function renderLobby() {
   } else setStatus(host || S.quick ? "" : `Waiting for ${nameOf(S.host)} to start.`);
 }
 
+// The practice clock in the lobby: runs, tap stops it, tap again starts over.
+let lobbyT0 = performance.now(), lobbyStopped = false, lobbyRaf = null;
+function lobbyTick() {
+  cancelAnimationFrame(lobbyRaf);
+  if ($("lobby").hidden || lobbyStopped) return;
+  const ms = (performance.now() - lobbyT0) % 100000;
+  $("lobbyDigits").textContent = R.fmt(ms);
+  $("lobbyUnlit").textContent = R.fmt(ms).replace(/[0-9]/g, "8");
+  lobbyRaf = requestAnimationFrame(lobbyTick);
+}
+$("lobbyClock").addEventListener("pointerdown", () => {
+  lobbyStopped = !lobbyStopped;
+  $("lobbyClock").classList.toggle("stopped", lobbyStopped);
+  if (!lobbyStopped) { lobbyT0 = performance.now(); lobbyTick(); } else snd.side?.(true);
+});
+
 /* ---------- the game ---------- */
 // The unlit segments behind the digits, like a real LED clock: every lit
 // digit sits on top of a dim "8".
@@ -143,6 +160,8 @@ new MutationObserver(() => { $("ghost").textContent = $("digits").textContent.re
   .observe(document.getElementById("digits"), { childList: true, characterData: true, subtree: true });
 
 let countUp = null;              // the result's time, counting up
+let live = null, liveKey = "";   // someone else's clock, running on my screen
+function stopLive() { cancelAnimationFrame(live); live = null; liveKey = ""; }
 function renderGame() {
   const tgt = R.fmt(S.target * 1000);
   $("roundLine").textContent = `Round ${S.round}/${S.rounds}`;
@@ -158,11 +177,18 @@ function renderGame() {
     act.innerHTML = "";
   } else if (S.phase === "ready") {
     d.textContent = "0.00";
-    u.textContent = myTurn() ? "Your turn" : `${who}'s turn`;
+    u.textContent = myTurn() ? "Your turn" : "";
     act.innerHTML = myTurn() ? `<button class="go" id="goBtn">Start<small>space</small></button>` : "";
   } else if (S.phase === "running") {
-    d.textContent = "--.--";
-    u.textContent = myTurn() ? "" : `${who}…`;
+    if (myTurn()) d.textContent = "--.--";
+    else if (liveKey !== key) {
+      // their clock, running here too (they can't see it on their screen)
+      liveKey = key;
+      const t0 = performance.now() - (S.elapsed || 0);
+      const tick = () => { d.textContent = R.fmt(performance.now() - t0); live = requestAnimationFrame(tick); };
+      tick();
+    }
+    u.textContent = "";
     act.innerHTML = myTurn() ? `<button class="go stop" id="stopBtn">Stop<small>space</small></button>` : "";
   } else if (S.phase === "result") {
     const l = S.last;
@@ -180,6 +206,15 @@ function renderGame() {
       (isHost() || S.quick ? `<button class="btn big" id="nextBtn">Next round</button>` : "");
   }
   if (S.phase !== "result") { cancelAnimationFrame(countUp); lastShown = ""; }
+  if (S.phase !== "running" || myTurn()) stopLive();
+  // whose clock this is: yours, or theirs in their colour
+  const owner = S.phase === "result" ? S.last?.id : ["ready", "running"].includes(S.phase) ? S.current : null;
+  const op = owner && playerOf(owner);
+  const theirs = !!owner && owner !== S.you;
+  w.classList.toggle("theirs", theirs);
+  w.style.setProperty("--oc", op?.color || "#22e06b");
+  $("owner").innerHTML = !owner ? "" : theirs ? `${avatar(op)}<span>${esc(op?.name || "someone")}'s clock</span>` : `<span>Your clock</span>`;
+  $("owner").className = "owner" + (theirs ? " theirs" : owner ? " mine" : "");
   renderLineup();
 }
 

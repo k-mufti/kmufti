@@ -493,8 +493,8 @@ const ARTWORK = {
   /* Bust — a photo of the real thing: the bust page's own render, cropped
      to the tile (bust/cover.jpg). */
   bust: `<img src="bust/cover.jpg?v=2" alt="" loading="lazy" />`,
-  /* Game Board — the shelf: Wavelength's box and Imposter's standing on a
-     plank, a gap beside them for what's next. */
+  /* Game Board — the shelf: Wavelength's box, Imposter's and Stop the
+     Clock's LED clock standing on a plank. */
   "game-board": `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -509,8 +509,14 @@ const ARTWORK = {
         <clipPath id="gb-lid"><rect x="-62" y="-60" width="124" height="72"/></clipPath>
       </defs>
       <rect width="320" height="200" fill="url(#gb-wall)"/>
-      <!-- the gap for the next game -->
-      <rect x="268" y="74" width="40" height="88" rx="4" fill="none" stroke="#c9b8a6" stroke-opacity="0.25" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <!-- Stop the Clock: the black LED clock, its red button on top -->
+      <ellipse cx="289" cy="116" rx="8" ry="3.2" fill="#8a1209"/>
+      <path d="M281 116A8 6 0 0 1 297 116Z" fill="#f2392b"/>
+      <rect x="283" y="116" width="12" height="6" fill="#141615"/>
+      <rect x="270" y="122" width="38" height="40" rx="4" fill="#141615"/>
+      <rect x="273" y="130" width="32" height="20" rx="2" fill="#000"/>
+      <text x="289" y="144" text-anchor="middle" font-family="'Courier New', monospace" font-weight="700" font-size="10.5" fill="#39ff6a" fill-opacity="0.12">88.88</text>
+      <text x="289" y="144" text-anchor="middle" font-family="'Courier New', monospace" font-weight="700" font-size="10.5" fill="#39ff6a">10.00</text>
       <!-- Wavelength: the box, its side in shadow, its dial on the lid -->
       <rect x="140" y="50" width="8" height="112" fill="#bfb6a6"/>
       <rect x="22" y="46" width="120" height="116" rx="5" fill="#efe8da"/>
