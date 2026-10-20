@@ -68,6 +68,7 @@
     "Southeast Asian": ["#a51931", "#f4f5f8", "#2d2a4a", "#f4f5f8", "#a51931"],
     African: ["#ce1126", "#fcd116", "#009e49", "#111111"],
     "Latin American": ["#74acdf", "#ffffff", "#f6b40e", "#009c3b"],
+    European: ["#003399", "#003399", "#ffcc00", "#003399", "#003399"],
   };
   const stripeOf = (name) => STRIPES[UNLOCKS.get(name)] || null;
   window.kitchenStripe = stripeOf;            // the 3D cards use it too (food3d.js)
@@ -1137,7 +1138,7 @@
   window.addEventListener("resize", layout);
 
   /* ---------- start ---------- */
-  fetch("recipes.json?v=5e8f7401")
+  fetch("recipes.json?v=5c3f420c")
     .then((r) => r.json())
     .then((data) => {
       DATA = data;

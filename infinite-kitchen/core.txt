@@ -974,6 +974,7 @@ Cuisine: Fast Food
 Cuisine: Southeast Asian
 Cuisine: African
 Cuisine: Latin American
+Cuisine: European
 
 American: Apple Pie, Burger, Cheeseburger, Mac and Cheese, PB&J, BLT, Cheesesteak, Chili Dog, Chicken and Waffles, Thanksgiving Dinner, Pulled Pork, Clam Chowder, Pumpkin Pie, Red Velvet Cake, S'mores, Sweet Potato Casserole, Fluffernutter, Root Beer, Deep Dish Pizza, Key Lime Pie, Jambalaya, Gumbo, Biscuits and Gravy, Pecan Pie, Lobster Roll, Reuben, Patty Melt
 Italian: Pizza, Pepperoni Pizza, Mushroom Pizza, Calzone, Spaghetti, Lasagna, Alfredo, Pesto Pasta, Carbonara, Spaghetti Bolognese, Spaghetti and Meatballs, Chicken Parmesan, Risotto, Minestrone, Tiramisu, Gelato, Focaccia, Polenta, Bruschetta, Biscotti, Panini, Espresso, Cappuccino, Margherita Pizza, Ravioli, Gnocchi, Caprese Salad, Cannoli, Panna Cotta, Eggplant Parmesan
@@ -985,6 +986,7 @@ Fast Food: Combo Meal, Big Mac, Whopper, Filet-O-Fish, Quarter Pounder, Double C
 Southeast Asian: Pad Thai, Pho, Banh Mi, Satay, Laksa, Nasi Goreng, Rendang, Tom Yum, Green Curry, Lumpia, Halo-Halo, Pancit, Hainanese Chicken Rice, Nasi Lemak, Chicken Adobo, Lechon, Summer Rolls, Som Tam, Gado-Gado, Larb, Vietnamese Coffee, Thai Iced Tea, Kaya Toast, Leche Flan, Fish Amok, Bibingka, Roti Canai, Char Kway Teow, Tom Kha, Massaman Curry, Khao Soi, Sinigang, Kare-Kare, Sisig, Pandan Cake, Cendol, Bun Cha, Turon
 African: Jollof Rice, Fufu, Injera, Doro Wat, Bobotie, Bunny Chow, Biltong, Suya, Egusi Soup, Tagine, Peri-Peri Chicken, Puff-Puff, Bissap, Msemen, Pastilla, Rooibos, Kelewele, Yassa, Nyama Choma, Braai, Mafe, Pepper Soup, Thieboudienne, Akara, Koshari, Ugali, Sukuma Wiki, Mandazi, Chin Chin, Malva Pudding, Koeksister, Chakalaka, Okra Soup, Misir Wat
 Latin American: Empanada, Arepa, Feijoada, Brigadeiro, Churrasco, Asado, Alfajores, Pupusa, Mofongo, Ropa Vieja, Cuban Sandwich, Arroz con Leche, Acai Bowl, Jerk Chicken, Pão de Queijo, Yerba Mate, Tostones, Gallo Pinto, Arroz con Pollo, Pollo a la Brasa, Lomo Saltado, Pernil, Choripan, Maduros, Causa, Cachapa, Sancocho, Cafecito, Jamaican Patty, Coxinha, Milanesa, Provoleta, Anticuchos, Cachaça, Inca Kola
+European: Quiche, Ratatouille, Coq au Vin, Beef Bourguignon, French Onion Soup, Creme Brulee, Macaron, Eclair, Souffle, Croque Monsieur, Bouillabaisse, Duck à l'Orange, Duck Confit, Pot-au-Feu, Vichyssoise, Clafoutis, Kouign-Amann, Nicoise Salad, Steak Frites, Fondue, Tapas, Patatas Bravas, Churros, Sangria, Croquetas, Salmorejo, Spanish Tortilla, Caldo Verde, Schnitzel, Black Forest Cake, Apple Strudel, Spaetzle, Sauerbraten, Goulash, Pierogi, Borscht, Blini, Beef Stroganoff, Kvass, Chicken Kiev, Shepherd's Pie, Bangers and Mash, Full English, Sunday Roast, Yorkshire Pudding, Scone, Crumpet, Trifle, Sticky Toffee Pudding, Cornish Pasty, Haggis, Irish Stew, Ploughman's Lunch, Scotch Egg, Toad in the Hole, Pie and Mash, Steak and Ale Pie, Kedgeree, Fish Pie, Afternoon Tea, Mushy Peas, Cullen Skink, Colcannon, Soda Bread, Guinness, Carbonnade, Stroopwafel, Hagelslag, Gravlax, Lutefisk, Moussaka, Gyro, Souvlaki, Spanakopita, Greek Salad, Avgolemono, Mulled Wine, Chicken Paprikash, Schweinshaxe, Currywurst, Swedish Meatballs, Leberkäse, Bocadillo, Francesinha, Welsh Rarebit, Smørrebrød, Pumpernickel, Pan con Tomate, Torrijas, Rösti, Stamppot, Olivier Salad, Bubble and Squeak, Raclette, Käsespätzle, Saganaki, Pastitsio, Tarte Flambée, Bigos, Kasha, Cassoulet, Moules Frites, Bitterballen, Pastéis de Bacalhau, Pulpo a la Gallega, Gambas al Ajillo, Jansson's Temptation, Pelmeni, Poffertjes, Kaiserschmarrn, Crêpes Suzette, Belgian Waffle, Syrniki, Pastel de Nata, Crema Catalana, Mille-Feuille, Profiteroles, Tarte Tatin, Bakewell Tart, Banoffee Pie, Victoria Sponge, Sachertorte, Medovik, Princess Cake, Semla, Kanelbulle, Stollen, Lebkuchen, Madeleine, Speculoos, Eton Mess, Berliner, Loukoumades, Turrón, Cranachan, Cream Tea, Café au Lait, Roast Goose, Mozartkugel
 
 ## American
 Water + American = Sweet Tea
@@ -16222,3 +16224,121 @@ Kebab + Latin American = Anticuchos [dish]
 Sugarcane + Latin American = Cachaça [drink]
 Soda + Latin American = Inca Kola [drink]
 Rice Pudding + Latin American = Arroz con Leche
+
+#############################################################################
+# European cookbook (2026-10-19): France, Spain, Portugal, Germany, the
+# Low Countries, Britain and Ireland, Scandinavia, Eastern Europe, Greece.
+# Italy keeps its own book.
+#############################################################################
+
+## European
+Water + European = Earl Grey
+Grain + European = Rye [ingredient]
+Plant + European = Beet
+# the Christmas goose
+Animal + European = Goose [ingredient]
+# salted cod, Portugal's bacalhau
+Salt + European = Bacalhau [ingredient]
+Sugar + European = Marzipan [ingredient]
+Rice + European = Paella
+Seafood + European = Paella
+Broth + European = French Onion Soup
+Soup + European = Borscht
+Stew + European = Goulash
+Beef + European = Beef Bourguignon
+Steak + European = Steak Frites
+Roast Beef + European = Sunday Roast
+Lamb + European = Irish Stew
+Duck + European = Duck Confit
+Chicken + European = Chicken Paprikash [dish]
+Chicken + Paprika = Chicken Paprikash
+Pork + European = Schweinshaxe [dish]
+Pork Chop + European = Schnitzel
+Sausage + European = Black Pudding [ingredient]
+Hot Dog + European = Currywurst [dish]
+Bratwurst + Curry = Currywurst
+Meatballs + European = Swedish Meatballs [dish]
+Meatloaf + European = Leberkäse [dish]
+Ham + European = Jamón [ingredient]
+Jamón + Bread = Bocadillo [dish]
+Sandwich + European = Croque Monsieur
+Ham Sandwich + European = Croque Monsieur
+# beer-and-tomato sauce over a meat-stuffed toastie, from Porto
+Croque Monsieur + Beer = Francesinha [dish]
+Grilled Cheese + European = Welsh Rarebit [dish]
+Rye Bread + European = Smørrebrød [dish]
+Rye + Dough = Pumpernickel [dish]
+Rye + Oven = Rye Bread
+Rye + Water = Kvass
+Bread + European = Pan con Tomate [dish]
+French Toast + European = Torrijas [dish]
+Egg + European = Quiche
+Omelette + European = Spanish Tortilla
+Potato + European = Rösti [dish]
+Hash Browns + European = Rösti
+Mashed Potatoes + Sauerkraut = Stamppot [dish]
+Mashed Potatoes + European = Stamppot
+Potato Salad + European = Olivier Salad [dish]
+# fried-up leftover roast and vegetables
+Leftovers + European = Bubble and Squeak [dish]
+Cheese + European = Raclette [dish]
+Swiss Cheese + Potato = Raclette
+Spaetzle + Cheese = Käsespätzle [dish]
+Feta + European = Saganaki [dish]
+Pasta + European = Pastitsio [dish]
+Pizza + European = Tarte Flambée [dish]
+Sauerkraut + European = Bigos [dish]
+Porridge + European = Kasha [dish]
+Beans + European = Cassoulet [dish]
+Baked Beans + Duck = Cassoulet
+Mussels + European = Moules Frites [dish]
+Mussels + French Fries = Moules Frites
+Croquetas + European = Bitterballen [dish]
+Cod + European = Bacalhau
+Bacalhau + Potato = Pastéis de Bacalhau [dish]
+Octopus + European = Pulpo a la Gallega [dish]
+Shrimp + European = Gambas al Ajillo [dish]
+Gratin + Anchovies = Jansson's Temptation [dish]
+Olives + European = Tapas
+Dumplings + European = Pierogi
+Pierogi + Meat = Pelmeni [dish]
+Pancakes + European = Poffertjes [dish]
+Pancakes + Raisins = Kaiserschmarrn [dish]
+Crepe + European = Crêpes Suzette [dish]
+Waffle + European = Belgian Waffle [dish]
+Cottage Cheese + Pancakes = Syrniki [dish]
+Cottage Cheese + European = Syrniki
+Custard + European = Pastel de Nata [dish]
+Creme Brulee + Cinnamon = Crema Catalana [dish]
+Puff Pastry + European = Mille-Feuille [dish]
+Cream Puff + European = Profiteroles [dish]
+Apple Pie + European = Tarte Tatin [dish]
+Apple + European = Apple Strudel
+Pie + European = Bakewell Tart [dish]
+Banana Cream Pie + Toffee = Banoffee Pie [dish]
+Cake + European = Victoria Sponge [dish]
+Chocolate Cake + European = Sachertorte [dish]
+Honey Cake + European = Medovik [dish]
+Cake + Marzipan = Princess Cake [dish]
+Brioche + Marzipan = Semla [dish]
+Cinnamon Roll + European = Kanelbulle [dish]
+Fruitcake + European = Stollen [dish]
+Gingerbread + European = Lebkuchen [dish]
+Muffin + European = Madeleine [dish]
+Cookie + European = Speculoos [dish]
+Meringue + European = Eton Mess [dish]
+Donut + European = Berliner [dish]
+Donut Holes + Honey = Loukoumades [dish]
+Chocolate + European = Chocolate Mousse [dish]
+Nuts + European = Turrón [dish]
+Oats + European = Cranachan [dish]
+Scone + European = Cream Tea [dish]
+Tea + European = Afternoon Tea
+Coffee + European = Café au Lait [drink]
+Wine + European = Sangria
+Beer + European = Guinness
+Cherry + European = Clafoutis
+Goose + Oven = Roast Goose [dish]
+Goose + Apple = Roast Goose
+Goose + European = Roast Goose
+Marzipan + Chocolate = Mozartkugel [dish]
