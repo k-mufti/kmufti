@@ -922,6 +922,7 @@ const BOOK_COLORS = {
   American: 0x2d4a7a, Italian: 0x8e2a1f, Mexican: 0x2f6b3a, "East Asian": 0xa11d1d,
   Indian: 0xc2601e, "Middle Eastern": 0xb07a2a, "Fast Food": 0xd6a21f,
   "Southeast Asian": 0x5a2d6e, African: 0x3d5a1e, "Latin American": 0x1f6f8b, European: 0x23395d,
+  Pacific: 0x0e6b5c,
 };
 const bookGroup = new THREE.Group();
 scene.add(bookGroup);
