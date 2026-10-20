@@ -303,7 +303,8 @@ input:focus { border-color: var(--gold); }
 
 .actions { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 16px auto 0; max-width: 520px; }
 .pick { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-.card-btn { width: 100%; border: 0; padding: 0; margin: 0; cursor: pointer; transition: transform 0.1s ease; display: grid; grid-template-columns: 1fr 1fr; }
+.card-btn { width: 100%; border: 0; padding: 0; margin: 0; cursor: pointer; transition: transform 0.1s ease; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); overflow: hidden; }
+.card-end { min-width: 0; overflow-wrap: normal; word-break: normal; hyphens: manual; }   /* a long word shrinks (fitCards), it never breaks */
 .card-btn:hover { transform: translateY(-2px); }
 .clue-form { display: flex; gap: 8px; width: 100%; }
 .clue-form input { flex: 1; min-width: 0; font-size: 16px; }
@@ -600,8 +601,8 @@ body.tv #home .field, body.tv #home .starts, body.tv #home .or, body.tv #home .j
   .spectrum .end.l { grid-area: endL; align-items: flex-start; text-align: left; }
   .spectrum .end.r { grid-area: endR; align-items: flex-end; text-align: right; flex-direction: column-reverse; }
   .spectrum .end i { font-size: 1.1em; }
-  .card-end { font-size: 22px; padding: 22px 18px; }
-  .pick { flex-direction: row; gap: 16px; }
+  .card-end { font-size: 21px; padding: 20px 16px; }
+  .pick { gap: 12px; }   /* stacked, so each card gets the console's full width */
   .card-btn { max-width: none; border-radius: 18px; }
   .clue-form { max-width: 640px; }
   .clue-form input { font-size: 20px; padding: 15px 18px; }

@@ -1,0 +1,229 @@
+/* Stop the Clock - a dark room and one black LED clock with bright green
+   seven-segment digits; while the clock runs there are none, just dashes. */
+:root {
+  --bg: #0b100d;
+  --bg2: #131a15;
+  --panel: #1a231d;
+  --ink: #eef5ef;
+  --soft: #8a988e;
+  --green: #22e06b;
+  --green-deep: #0f9a43;
+  --lcd: #06280f;
+  --gold: #ffd23f;
+  --red: #ff5a4f;
+  --line: rgba(238, 245, 239, 0.1);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  min-height: 100vh;
+  background: radial-gradient(ellipse 70% 55% at 50% 40%, #16231a 0%, var(--bg) 70%);
+  color: var(--ink);
+  font-family: "Manrope", system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+button, input { font: inherit; }
+[hidden] { display: none !important; }
+
+/* ---------- top bar ---------- */
+.bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; }
+.back { color: var(--soft); text-decoration: none; font-size: 14px; min-width: 120px; }
+.back:hover { color: var(--ink); }
+.logo { font-family: "Russo One", sans-serif; font-size: 18px; letter-spacing: 1px; color: var(--green); }
+.bar-r { display: flex; align-items: center; gap: 10px; min-width: 120px; justify-content: flex-end; }
+.code { font-family: "Russo One", monospace; letter-spacing: 3px; background: var(--panel); border: 1px solid var(--line); padding: 4px 10px; border-radius: 8px; font-size: 13px; }
+.mute { border: 0; background: none; color: var(--ink); cursor: pointer; opacity: 0.7; padding: 4px; display: inline-flex; }
+.mute:hover { opacity: 1; }
+
+/* ---------- buttons and fields ---------- */
+.btn {
+  border: 0; border-radius: 14px; padding: 12px 22px;
+  background: var(--green); color: var(--lcd);
+  font-weight: 800; cursor: pointer;
+  transition: transform 0.08s ease, filter 0.15s ease;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.35; cursor: default; }
+.btn.big { padding: 15px 26px; font-size: 17px; }
+.btn.alt { background: var(--panel); color: var(--ink); }
+.btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px var(--line); }
+.btn small { display: block; font-size: 12px; font-weight: 400; opacity: 0.75; }
+.link { background: none; border: 0; color: var(--soft); text-decoration: underline; cursor: pointer; margin-top: 10px; font-size: 14px; }
+input {
+  border: 2px solid var(--line); background: rgba(0, 0, 0, 0.3); color: var(--ink);
+  border-radius: 12px; padding: 13px 16px; outline: none; font-size: 17px; width: 100%;
+}
+input:focus { border-color: var(--green); }
+input::placeholder { color: rgba(138, 152, 142, 0.6); }
+.status { min-height: 1.3em; color: var(--soft); font-size: 14px; margin: 12px 0 0; }
+.wait { color: var(--soft); margin: 0; animation: blink 1.8s ease-in-out infinite; }
+@keyframes blink { 50% { opacity: 0.4; } }
+
+/* ---------- home ---------- */
+.screen { padding: 0 16px 40px; }
+.home { max-width: 1100px; margin: 5vh auto 0; display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: center; }
+.title { margin: 0; font-family: "Russo One", sans-serif; font-size: clamp(52px, 7.5vw, 104px); line-height: 0.95; letter-spacing: -1px; }
+.title span { color: var(--green); text-shadow: 0 0 40px rgba(34, 224, 107, 0.35); }
+.tag { font-size: clamp(20px, 2vw, 27px); line-height: 1.25; margin: 18px 0 28px; color: var(--soft); }
+.tag b { color: var(--ink); }
+.how { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.how li { display: flex; gap: 14px; align-items: flex-start; font-size: 16px; color: var(--soft); line-height: 1.4; }
+.how li b { color: var(--ink); }
+.how li span { flex: none; width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: var(--panel); color: var(--green); font-family: "Russo One", sans-serif; font-size: 13px; }
+.home-card, .lobby { background: var(--bg2); border: 1px solid var(--line); border-radius: 22px; padding: 32px; }
+.home-card { display: flex; flex-direction: column; gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--soft); margin-bottom: 6px; }
+.or { position: relative; text-align: center; margin: 10px 0 2px; color: var(--soft); font-size: 13px; }
+.or::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px solid var(--line); }
+.or span { position: relative; background: var(--bg2); padding: 0 10px; }
+.join { display: flex; gap: 8px; }
+.join input { flex: 1; min-width: 0; text-align: center; font-family: "Russo One", monospace; letter-spacing: 8px; font-size: 20px; text-transform: uppercase; }
+
+/* ---------- lobby ---------- */
+.lobby { max-width: 620px; margin: 4vh auto 0; text-align: center; }
+.room-line { margin: 0; color: var(--soft); font-size: 14px; }
+.room-code { margin: 6px 0 4px; font-family: "Russo One", monospace; font-size: clamp(48px, 10vw, 84px); letter-spacing: 10px; color: var(--green); }
+.room-hint { margin: 0 0 20px; color: var(--soft); font-size: 15px; }
+.crew { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 18px; text-align: left; }
+.mate { display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: center; background: var(--panel); border-radius: 14px; padding: 10px 12px; }
+.mate .av { grid-row: span 2; }
+.mate .mn { font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mate small { color: var(--soft); font-size: 12px; }
+.mate.away { opacity: 0.45; }
+.bots { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 0 0 16px; }
+.bots .link { margin: 0; }
+.bots small { color: var(--soft); font-size: 12px; width: 100%; }
+
+.av { --c: #22e06b; width: 36px; height: 36px; border-radius: 50%; display: inline-grid; place-items: center; flex: none; background: var(--c); color: #fff; font-weight: 800; font-size: 15px; }
+
+/* ---------- the game ---------- */
+#game { text-align: center; padding-bottom: 90px; }
+.round { margin: 2vh 0 0; color: var(--soft); font-size: 13px; letter-spacing: 3px; text-transform: uppercase; font-weight: 800; }
+.target { margin: 4px 0 18px; font-size: clamp(22px, 3vw, 30px); color: var(--soft); }
+.target b { font-family: "Russo One", sans-serif; color: var(--ink); font-size: 1.35em; margin-left: 4px; }
+
+/* the clock: a black LED box with bright green seven-segment digits */
+@font-face {
+  font-family: "DSEG7"; font-display: block;
+  src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-BoldItalic.woff2") format("woff2");
+}
+.watch { display: flex; flex-direction: column; align-items: center; --led: #39ff6a; --glow: rgba(57, 255, 106, 0.55); }
+.face {
+  position: relative;
+  display: flex; align-items: flex-end; justify-content: center; gap: 10px;
+  width: min(calc(100vw - 52px), 600px); padding: clamp(22px, 4.5vw, 44px) 16px;
+  background: linear-gradient(#050605, #000 60%);
+  border-radius: 14px;
+  border: 1px solid #2a2d2b;
+  box-shadow:
+    0 0 0 10px #141615, 0 0 0 11px #2c2f2d,                 /* the case */
+    inset 0 2px 12px rgba(0, 0, 0, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 34px 70px -30px rgba(0, 0, 0, 0.9);
+}
+.seg { position: relative; display: inline-block; font-family: "DSEG7", monospace; font-size: clamp(60px, 13vw, 124px); line-height: 1; }
+.ghost { position: absolute; inset: 0; color: var(--led); opacity: 0.07; }
+.digits { position: relative; color: var(--led); text-shadow: 0 0 6px var(--glow), 0 0 22px var(--glow); }
+.unit { font-family: "Russo One", sans-serif; font-size: clamp(20px, 3.4vw, 32px); color: var(--led); opacity: 0.55; padding-bottom: 4px; }
+.under { margin: 26px 0 0; min-height: 1.4em; font-size: 18px; color: var(--soft); }
+.under b { font-family: "Russo One", sans-serif; color: var(--ink); }
+.under b.pf { color: var(--gold); }
+
+.watch.intro .face { animation: pop 0.5s cubic-bezier(.3, 1.6, .5, 1); }
+.watch.intro .under { color: var(--green); font-weight: 800; letter-spacing: 3px; text-transform: uppercase; font-size: 14px; }
+.watch.ready .digits { opacity: 0.8; }
+.watch.running .digits { animation: ledblink 1s steps(2, jump-none) infinite; }
+@keyframes ledblink { 50% { opacity: 0.25; } }
+@keyframes pop { from { transform: scale(0.85); } }
+.watch.close { --led: #b8ff3a; --glow: rgba(184, 255, 58, 0.55); }
+.watch.far { --led: #ffb23a; --glow: rgba(255, 178, 58, 0.55); }
+.watch.perfect { --led: var(--gold); --glow: rgba(255, 210, 63, 0.7); }
+.watch.perfect .face { animation: perfect 0.7s cubic-bezier(.2, 1.8, .4, 1); box-shadow: 0 0 0 10px #141615, 0 0 0 11px #2c2f2d, inset 0 2px 12px rgba(0, 0, 0, 0.9), 0 0 120px -10px rgba(255, 210, 63, 0.7); }
+@keyframes perfect { 40% { transform: scale(1.06) rotate(-1deg); } }
+
+/* the big button */
+.act { margin: 26px auto 0; display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 560px; min-height: 120px; }
+.go {
+  width: min(84vw, 340px); height: 120px; border: 0; border-radius: 30px; cursor: pointer;
+  background: var(--ink); color: var(--bg);
+  font-family: "Russo One", sans-serif; font-size: 34px; letter-spacing: 3px; text-transform: uppercase;
+  touch-action: manipulation; user-select: none; -webkit-user-select: none;
+  box-shadow: 0 10px 0 #9fb0a4, 0 20px 40px -20px #000;
+  transition: transform 0.05s, box-shadow 0.05s;
+}
+.go:active { transform: translateY(8px); box-shadow: 0 2px 0 #9fb0a4; }
+.go small { display: block; font-family: "Manrope", sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; opacity: 0.55; margin-top: 4px; }
+@media (hover: none) { .go small { display: none; } }
+.go.stop { background: var(--red); color: #fff; box-shadow: 0 10px 0 #a3302a, 0 20px 40px -20px #000; }
+.go.stop:active { box-shadow: 0 2px 0 #a3302a; }
+
+/* this round's ranking */
+.ranking { width: 100%; }
+.ranking ol, .standings { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; text-align: left; }
+.ranking li, .standings li { display: grid; grid-template-columns: 26px auto 1fr auto auto; gap: 10px; align-items: center; background: var(--bg2); border: 1px solid var(--line); border-radius: 14px; padding: 8px 14px; }
+.ranking .rk, .standings .rk { font-family: "Russo One", sans-serif; color: var(--soft); text-align: center; }
+.ranking .nm, .standings .nm { font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ranking .tm { font-family: "Russo One", sans-serif; }
+.ranking .of { font-family: "Russo One", sans-serif; font-size: 13px; color: var(--soft); min-width: 74px; text-align: right; }
+.ranking li.pf { border-color: var(--gold); }
+.ranking li.pf .of { color: var(--gold); }
+
+/* the turn order, along the bottom */
+.lineup { list-style: none; margin: 28px auto 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 900px; }
+.lineup li { display: flex; align-items: center; gap: 8px; background: var(--bg2); border: 2px solid var(--line); border-radius: 14px; padding: 6px 12px 6px 6px; }
+.lineup .av { width: 28px; height: 28px; font-size: 12px; }
+.lineup .nm { font-weight: 800; font-size: 14px; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lineup .tm { font-family: "Russo One", sans-serif; font-size: 12px; color: var(--soft); }
+.lineup .sc { font-family: "Russo One", sans-serif; font-size: 13px; color: var(--green); }
+.lineup li.now { border-color: var(--c); }
+.lineup li.now .tm { color: var(--ink); }
+.lineup li.done { opacity: 0.85; }
+
+/* ---------- the end ---------- */
+.final { max-width: 640px; margin: 2vh auto 0; text-align: center; }
+.final-head { margin: 6px 0 22px; font-family: "Russo One", sans-serif; font-size: clamp(34px, 6vw, 62px); color: var(--green); }
+.awards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.award { background: var(--bg2); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 2px; }
+.award .at { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gold); font-weight: 800; }
+.award b { font-size: 18px; }
+.award small { color: var(--soft); }
+.standings li { grid-template-columns: 26px auto 1fr auto; }
+.standings b { font-family: "Russo One", sans-serif; font-size: 20px; color: var(--green); }
+.final h3 { margin: 22px 0 10px; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--soft); }
+.rounds { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.rounds li { display: flex; justify-content: space-between; gap: 10px; background: var(--bg2); border-radius: 12px; padding: 9px 14px; }
+.rounds li b { font-family: "Russo One", sans-serif; }
+.rounds li span { color: var(--soft); font-size: 14px; }
+.row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 24px; }
+
+/* ---------- bits ---------- */
+.exit {
+  position: fixed; left: 20px; bottom: 20px; z-index: 15;
+  border-radius: 999px; padding: 7px 14px;
+  background: var(--panel); color: var(--soft); border: 1px solid var(--line);
+  font-size: 13px; cursor: pointer;
+}
+.exit b { font-weight: 600; }
+.exit:hover { color: var(--ink); }
+.exit.armed { background: var(--red); color: #fff; border-color: transparent; }
+.toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+  background: var(--ink); color: var(--bg);
+  padding: 10px 18px; border-radius: 12px; font-size: 15px; font-weight: 700;
+  z-index: 30; max-width: calc(100vw - 32px);
+}
+
+/* ---------- phones ---------- */
+@media (max-width: 860px) {
+  .home { grid-template-columns: 1fr; gap: 24px; margin-top: 2vh; }
+}
+@media (max-width: 520px) {
+  .bar { padding: 12px 16px; }
+  .back { min-width: 0; font-size: 13px; }
+  .bar-r { min-width: 0; }
+  .logo { font-size: 14px; }
+  .home-card, .lobby { padding: 22px 18px; }
+  .go { height: 104px; font-size: 30px; }
+  .exit { left: 12px; bottom: 12px; }
+}

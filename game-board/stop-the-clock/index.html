@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Stop the Clock</title>
+  <link rel="icon" href="favicon.svg?v=1" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-BoldItalic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="styles.css?v=4" />
+</head>
+<body>
+  <header class="bar">
+    <a class="back" href="../">&larr; Game Board</a>
+    <span class="logo">Stop the Clock</span>
+    <span class="bar-r">
+      <span class="code" id="codeChip" hidden></span>
+      <button class="mute" id="muteBtn" aria-label="Sound on"></button>
+    </span>
+  </header>
+
+  <!-- Not in a room yet -->
+  <section class="screen" id="home">
+    <div class="home">
+      <div class="home-pitch">
+        <h1 class="title">Stop the<br /><span>Clock</span></h1>
+        <p class="tag">Stop it on the exact time.<br /><b>No numbers to look at.</b></p>
+        <ol class="how">
+          <li><span>1</span><div><b>Every round has a target,</b> like 10.00 seconds.</div></li>
+          <li><span>2</span><div><b>Take turns.</b> Start the clock and count in your head.</div></li>
+          <li><span>3</span><div><b>Stop it</b> as close to the target as you can.</div></li>
+          <li><span>4</span><div><b>Closest wins the round.</b> Five rounds.</div></li>
+        </ol>
+      </div>
+      <div class="home-card">
+        <label class="field">
+          <span>Your name</span>
+          <input id="nameInput" maxlength="18" autocomplete="nickname" spellcheck="false" />
+        </label>
+        <button class="btn big" id="createBtn">Start a room</button>
+        <button class="btn big alt" id="quickBtn">Quick game<small>play with whoever's around</small></button>
+        <div class="or"><span>or join one</span></div>
+        <form class="join" id="joinForm">
+          <input id="codeInput" maxlength="4" placeholder="CODE" autocomplete="off" spellcheck="false" autocapitalize="characters" />
+          <button class="btn" type="submit">Join</button>
+        </form>
+        <p class="status" id="homeStatus"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- In a room, before the first round -->
+  <section class="screen" id="lobby" hidden>
+    <div class="lobby">
+      <p class="room-line" id="roomLine">Room code</p>
+      <p class="room-code" id="lobbyCode"></p>
+      <p class="room-hint" id="roomHint"></p>
+      <div class="crew" id="lobbyPlayers"></div>
+      <div class="bots" id="botRow" hidden><button class="btn ghost" id="addBotBtn">Add a bot</button><button class="link" id="clearBotsBtn">Remove bots</button><small>Dev mode (localhost only)</small></div>
+      <button class="btn big" id="startBtn">Start</button>
+      <p class="status" id="lobbyStatus"></p>
+      <button class="link" id="leaveBtn">Leave room</button>
+    </div>
+  </section>
+
+  <!-- The game: the target, the clock, the turn order -->
+  <section class="screen" id="game" hidden>
+    <p class="round" id="roundLine"></p>
+    <p class="target" id="targetLine"></p>
+    <div class="watch" id="watch">
+      <div class="face"><span class="seg"><span class="ghost" id="ghost" aria-hidden="true">8.88</span><span class="digits" id="digits">0.00</span></span><span class="unit">s</span></div>
+      <p class="under" id="under"></p>
+    </div>
+    <div class="act" id="act"></div>
+    <ol class="lineup" id="lineup"></ol>
+  </section>
+
+  <!-- The end -->
+  <section class="screen" id="final" hidden></section>
+
+  <button class="exit" id="exitBtn" hidden>&larr; <b>Leave game</b></button>
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../../you.js?v=2"></script>
+  <script src="../dev-seat.js?v=2"></script>
+  <script type="module" src="app.js?v=3"></script>
+</body>
+</html>

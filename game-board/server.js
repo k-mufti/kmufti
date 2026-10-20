@@ -1,6 +1,6 @@
 // Zero-dependency Node backend for Game Board, the shelf of board-game
 // spin-offs. It runs Frequency (here), Draft (./draft-server.js), 21 Questions
-// (./questions-server.js) and Imposter (./imposter-server.js,
+// (./questions-server.js), Stop the Clock (./clock-server.js) and Imposter (./imposter-server.js,
 // which gets every message from a player who said hello from its page).
 //
 // The server keeps the secret. The target's position is chosen here when
@@ -61,6 +61,7 @@ const QUICK_MAX = 8;                   // a quick game stops taking strangers he
 let R = null, CARDS = null;            // loaded below (ES modules)
 let IMP = null;                        // Imposter, once its words are loaded
 let QS = null;                         // 21 Questions
+let CLK = null;                        // Stop the Clock
 let DRF = null;                        // Draft, once its categories are loaded
 
 /* ========================================================================
@@ -170,7 +171,7 @@ function newCode() {
   for (;;) {
     let c = "";
     for (let i = 0; i < 4; i++) c += CODE_ALPHABET[crypto.randomInt(0, CODE_ALPHABET.length)];
-    if (!rooms.has(c) && !(IMP && IMP.rooms.has(c)) && !(DRF && DRF.rooms.has(c)) && !(QS && QS.rooms.has(c))) return c;
+    if (!rooms.has(c) && !(IMP && IMP.rooms.has(c)) && !(DRF && DRF.rooms.has(c)) && !(QS && QS.rooms.has(c)) && !(CLK && CLK.rooms.has(c))) return c;
   }
 }
 
@@ -500,6 +501,7 @@ function dropped(peer) {
   if (peer.game === "imposter") return IMP && IMP.dropped(peer);
   if (peer.game === "draft") return DRF && DRF.dropped(peer);
   if (peer.game === "questions") return QS && QS.dropped(peer);
+  if (peer.game === "clock") return CLK && CLK.dropped(peer);
   unwatch(peer);
   const room = peer.room ? rooms.get(peer.room) : null;
   if (!room) return;
@@ -532,6 +534,11 @@ function onMessage(peer, raw) {
       send(peer, { t: "welcome", id: peer.id });
       return IMP ? IMP.hello(peer) : send(peer, { t: "idle" });
     }
+    if (m.game === "clock") {
+      peer.game = "clock";
+      send(peer, { t: "welcome", id: peer.id });
+      return CLK ? CLK.hello(peer) : send(peer, { t: "idle" });
+    }
     if (m.game === "questions") {
       peer.game = "questions";
       send(peer, { t: "welcome", id: peer.id });
@@ -559,6 +566,7 @@ function onMessage(peer, raw) {
   if (peer.game === "imposter") return IMP && IMP.handle(peer, m);
   if (peer.game === "draft") return DRF && DRF.handle(peer, m);
   if (peer.game === "questions") return QS && QS.handle(peer, m);
+  if (peer.game === "clock") return CLK && CLK.handle(peer, m);
 
   if (m.t === "create") {
     leaveRoom(peer);
@@ -666,7 +674,7 @@ const server = http.createServer((req, res) => {
   const route = url.pathname.replace(/^\/game-board/, "");
   if (route === "/api/health") {
     res.writeHead(200, { "content-type": "application/json" });
-    res.end(JSON.stringify({ ok: true, peers: peers.size, rooms: rooms.size, quick: [...rooms.values()].filter((r) => r.quick).length, imposter: IMP ? IMP.rooms.size : 0, draft: DRF ? DRF.rooms.size : 0, questions: QS ? QS.rooms.size : 0 }));
+    res.end(JSON.stringify({ ok: true, peers: peers.size, rooms: rooms.size, quick: [...rooms.values()].filter((r) => r.quick).length, imposter: IMP ? IMP.rooms.size : 0, draft: DRF ? DRF.rooms.size : 0, questions: QS ? QS.rooms.size : 0, clock: CLK ? CLK.rooms.size : 0 }));
     return;
   }
   res.writeHead(404).end();
@@ -721,5 +729,7 @@ server.on("upgrade", (req, socket) => {
   DRF = require("./draft-server.js")({ send, cleanText, cleanName, newCode, C: DC, R: DR });
   const QR = await import("./21-questions/rules.js");
   QS = require("./questions-server.js")({ send, cleanText, cleanName, newCode, R: QR });
+  const CR = await import("./stop-the-clock/rules.js");
+  CLK = require("./clock-server.js")({ send, cleanName, newCode, R: CR });
   server.listen(PORT, () => console.log(`game-board server on :${PORT}`));
 })();

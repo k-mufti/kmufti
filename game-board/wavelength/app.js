@@ -396,6 +396,18 @@ function cardColors(card) {
   for (const c of card.join("|")) h = (h * 31 + c.charCodeAt(0)) >>> 0;
   return CARD_COLORS[h % CARD_COLORS.length];
 }
+// A card's two ends share it half and half; a long word shrinks to fit its
+// half instead of breaking in the middle or pushing the other end off.
+function fitCards() {
+  for (const el of document.querySelectorAll(".card-end")) {
+    el.style.fontSize = "";
+    let size = parseFloat(getComputedStyle(el).fontSize);
+    while (el.scrollWidth > el.clientWidth + 1 && size > 12) el.style.fontSize = `${--size}px`;
+  }
+}
+addEventListener("resize", () => { if (document.querySelector(".card-end")) fitCards(); });
+document.fonts.ready.then(() => { if (document.querySelector(".card-end")) fitCards(); });   // the real font is wider
+
 function cardHTML(card) {
   const [a, b] = cardColors(card);
   return `<span class="card-end l" style="background:${a}"><i>&larr;</i>${esc(card[0])}</span>` +
@@ -586,6 +598,7 @@ function renderTable() {
   // keep a half-typed clue through re-renders
   const typed = $("clueInput")?.value;
   actions.innerHTML = TV ? "" : bits.join("");
+  if (S.phase === "pick") fitCards();
   if (typed && $("clueInput")) $("clueInput").value = typed;
 }
 
