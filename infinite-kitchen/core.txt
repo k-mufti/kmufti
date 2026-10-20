@@ -971,6 +971,9 @@ Cuisine: East Asian
 Cuisine: Indian
 Cuisine: Middle Eastern
 Cuisine: Fast Food
+Cuisine: Southeast Asian
+Cuisine: African
+Cuisine: Latin American
 
 American: Apple Pie, Burger, Cheeseburger, Mac and Cheese, PB&J, BLT, Cheesesteak, Chili Dog, Chicken and Waffles, Thanksgiving Dinner, Pulled Pork, Clam Chowder, Pumpkin Pie, Red Velvet Cake, S'mores, Sweet Potato Casserole, Fluffernutter, Root Beer, Deep Dish Pizza, Key Lime Pie, Jambalaya, Gumbo, Biscuits and Gravy, Pecan Pie, Lobster Roll, Reuben, Patty Melt
 Italian: Pizza, Pepperoni Pizza, Mushroom Pizza, Calzone, Spaghetti, Lasagna, Alfredo, Pesto Pasta, Carbonara, Spaghetti Bolognese, Spaghetti and Meatballs, Chicken Parmesan, Risotto, Minestrone, Tiramisu, Gelato, Focaccia, Polenta, Bruschetta, Biscotti, Panini, Espresso, Cappuccino, Margherita Pizza, Ravioli, Gnocchi, Caprese Salad, Cannoli, Panna Cotta, Eggplant Parmesan
@@ -979,6 +982,9 @@ East Asian: Sushi, Sashimi, Donburi, Congee, California Roll, Sushi Roll, Ramen,
 Indian: Curry, Biryani, Naan, Samosa, Tandoori Chicken, Butter Chicken, Saag Paneer, Dal, Lassi, Mango Lassi, Chai, Kheer, Chicken Tikka Masala, Chana Masala, Aloo Gobi, Pakora, Garlic Naan, Roti, Paratha, Dosa, Idli, Raita, Gulab Jamun, Jalebi
 Middle Eastern: Hummus, Falafel, Kabsa, Falafel Wrap, Shawarma, Kebab, Mansaf, Maqluba, Tabbouleh, Fattoush, Knafeh, Baklava, Turkish Coffee, Hummus and Pita, Baba Ganoush, Shish Tawook, Kofta, Mandi, Musakhan, Mutabal, Manakish, Stuffed Grape Leaves, Kibbeh, Shakshuka, Ful Medames, Ma'amoul, Qatayef, Jallab, Qamar al-Din, Halva
 Fast Food: Combo Meal, Big Mac, Whopper, Filet-O-Fish, Quarter Pounder, Double Cheeseburger, Happy Meal, McGriddle, Egg McMuffin, McFlurry, Frosty, Doritos Locos Taco, Crunchwrap Supreme, Mexican Pizza, Stuffed Crust Pizza, Bucket of Chicken, Frappuccino, Pumpkin Spice Latte, Donut Holes
+Southeast Asian: Pad Thai, Pho, Banh Mi, Satay, Laksa, Nasi Goreng, Rendang, Tom Yum, Green Curry, Lumpia, Halo-Halo, Pancit, Hainanese Chicken Rice, Nasi Lemak, Chicken Adobo, Lechon, Summer Rolls, Som Tam, Gado-Gado, Larb, Vietnamese Coffee, Thai Iced Tea, Kaya Toast, Leche Flan, Fish Amok, Bibingka, Roti Canai, Char Kway Teow, Tom Kha, Massaman Curry, Khao Soi, Sinigang, Kare-Kare, Sisig, Pandan Cake, Cendol, Bun Cha, Turon
+African: Jollof Rice, Fufu, Injera, Doro Wat, Bobotie, Bunny Chow, Biltong, Suya, Egusi Soup, Tagine, Peri-Peri Chicken, Puff-Puff, Bissap, Msemen, Pastilla, Rooibos, Kelewele, Yassa, Nyama Choma, Braai, Mafe, Pepper Soup, Thieboudienne, Akara, Koshari, Ugali, Sukuma Wiki, Mandazi, Chin Chin, Malva Pudding, Koeksister, Chakalaka, Okra Soup, Misir Wat
+Latin American: Empanada, Arepa, Feijoada, Brigadeiro, Churrasco, Asado, Alfajores, Pupusa, Mofongo, Ropa Vieja, Cuban Sandwich, Arroz con Leche, Acai Bowl, Jerk Chicken, Pão de Queijo, Yerba Mate, Tostones, Gallo Pinto, Arroz con Pollo, Pollo a la Brasa, Lomo Saltado, Pernil, Choripan, Maduros, Causa, Cachapa, Sancocho, Cafecito, Jamaican Patty, Coxinha, Milanesa, Provoleta, Anticuchos, Cachaça, Inca Kola
 
 ## American
 Water + American = Sweet Tea
@@ -15983,3 +15989,236 @@ Candy Bar + Seaweed = Candy Bar [nothing]
 Candy Bar + Sparkling Water = Candy Bar [nothing]
 Candy Bar + Beer = Candy Bar [nothing]
 Candy Bar + Herbs = Candy Bar [nothing]
+
+#############################################################################
+# New cookbooks (2026-10-19): Southeast Asian, African, Latin American. Their
+# dishes that were already in the game are tagged above; the rest come
+# through the cookbook or one more real ingredient.
+#############################################################################
+
+## Southeast Asian
+Water + Southeast Asian = Coconut Water
+Grain + Southeast Asian = Sticky Rice [ingredient]
+Plant + Southeast Asian = Lemongrass [ingredient]
+Animal + Southeast Asian = Shrimp
+Salt + Southeast Asian = Fish Sauce
+Sugar + Southeast Asian = Palm Sugar [ingredient]
+Rice + Southeast Asian = Sticky Rice
+Fried Rice + Southeast Asian = Nasi Goreng
+Rice Noodles + Southeast Asian = Pad Thai
+# Filipino pancit is the everyday noodle stir-fry
+Pasta + Southeast Asian = Pancit
+Broth + Southeast Asian = Pho
+Soup + Southeast Asian = Tom Yum
+Curry + Southeast Asian = Green Curry
+Beef + Southeast Asian = Rendang
+Chicken + Southeast Asian = Chicken Adobo
+# the Filipino whole roast pig
+Pork + Southeast Asian = Lechon [dish]
+Sandwich + Southeast Asian = Banh Mi
+Baguette + Southeast Asian = Banh Mi
+Kebab + Southeast Asian = Satay
+Spring Rolls + Southeast Asian = Lumpia
+# Vietnamese fresh rolls, not fried
+Wrap + Southeast Asian = Summer Rolls [dish]
+# green papaya salad
+Papaya + Southeast Asian = Som Tam [dish]
+Salad + Southeast Asian = Gado-Gado [dish]
+# Lao minced meat salad
+Meat + Southeast Asian = Larb [dish]
+Coffee + Southeast Asian = Vietnamese Coffee [drink]
+Iced Coffee + Condensed Milk = Vietnamese Coffee
+Tea + Southeast Asian = Thai Iced Tea [drink]
+Milk Tea + Southeast Asian = Thai Iced Tea
+Shaved Ice + Southeast Asian = Halo-Halo
+Mango + Southeast Asian = Mango Sticky Rice
+Sticky Rice + Mango = Mango Sticky Rice
+Coconut + Southeast Asian = Coconut Milk
+Peanuts + Southeast Asian = Peanut Sauce
+Chili Pepper + Southeast Asian = Sambal
+Yam + Southeast Asian = Ube
+# kaya is coconut egg jam, Singapore's breakfast toast
+Egg + Southeast Asian = Kaya [ingredient]
+Kaya + Toast = Kaya Toast [dish]
+Toast + Southeast Asian = Kaya Toast
+Flan + Southeast Asian = Leche Flan [dish]
+# Cambodian fish steamed in coconut curry
+Fish + Southeast Asian = Fish Amok [dish]
+Rice Cakes + Southeast Asian = Bibingka [dish]
+Roti + Southeast Asian = Roti Canai [dish]
+Stir-Fry + Southeast Asian = Char Kway Teow [dish]
+Ramen + Southeast Asian = Laksa
+Tom Yum + Coconut Milk = Tom Kha [dish]
+Green Curry + Potato = Massaman Curry [dish]
+Curry + Peanuts = Massaman Curry
+# Chiang Mai curry noodles
+Green Curry + Pasta = Khao Soi [dish]
+# the Filipino sour soup
+Fish Soup + Southeast Asian = Sinigang [dish]
+# Filipino oxtail stew in peanut sauce
+Beef Stew + Peanut Butter = Kare-Kare [dish]
+Beef Stew + Southeast Asian = Kare-Kare
+Pork Rinds + Southeast Asian = Sisig [dish]
+Cake + Southeast Asian = Pandan Cake [dish]
+Shaved Ice + Coconut Milk = Cendol [dish]
+# Hanoi grilled pork meatballs with noodles
+Rice Noodles + Meatballs = Bun Cha [dish]
+Meatballs + Southeast Asian = Bun Cha
+# a banana spring roll
+Banana + Spring Rolls = Turon [dish]
+Banana + Southeast Asian = Turon
+Rice Ball + Southeast Asian = Hainanese Chicken Rice
+Lemongrass + Water = Herbal Tea
+Lemongrass + Chicken = Lemongrass Chicken [dish]
+Lemongrass + Soup = Tom Yum
+Sticky Rice + Stove = Rice Cakes
+Sticky Rice + Pot = Steamed Rice
+Sticky Rice + Coconut Milk = Mango Sticky Rice
+Palm Sugar + Coconut Milk = Kaya
+Palm Sugar + Water = Syrup
+
+## African
+Water + African = Rooibos [drink]
+Grain + African = Teff
+Plant + African = Okra
+Animal + African = Goat
+# Moroccan salt-cured lemons
+Salt + African = Preserved Lemon [ingredient]
+Sugar + African = Puff-Puff
+Rice + African = Jollof Rice
+Cassava + African = Fufu
+Yam + African = Fufu
+# Ghana's spiced fried plantains
+Plantains + African = Kelewele [dish]
+Fried Plantains + African = Kelewele
+Teff + African = Injera
+Crepe + African = Injera
+Pancakes + African = Msemen
+# Senegal's lemon and onion chicken
+Chicken + African = Yassa [dish]
+Chicken Soup + African = Doro Wat
+Beef + African = Suya
+Kebab + African = Suya
+# Kenyan grilled goat
+Goat + African = Nyama Choma [dish]
+# the South African barbecue
+Barbecue + African = Braai [dish]
+Sausage + African = Boerewors [ingredient]
+Boerewors + Barbecue = Braai
+Lamb + African = Tagine
+Preserved Lemon + Chicken = Tagine
+Jerky + African = Biltong
+# Senegalese peanut stew
+Peanut Butter + African = Mafe [dish]
+Soup + African = Pepper Soup [dish]
+# Senegal's national dish: fish and rice
+Fish + African = Thieboudienne [dish]
+# black-eyed pea fritters
+Beans + African = Akara [dish]
+# Ethiopian red lentil stew
+Lentils + African = Misir Wat [dish]
+Lentils + Injera = Misir Wat
+# Egypt's rice, lentils and pasta
+Pasta + African = Koshari [dish]
+Ground Beef + African = Bobotie
+Bread + African = Bunny Chow
+Curry + African = Bunny Chow
+Corn + African = Ugali [dish]
+Cornmeal + African = Ugali
+Porridge + African = Ugali
+Kale + African = Sukuma Wiki [dish]
+Collard Greens + African = Sukuma Wiki
+# East African doughnuts
+Donut + African = Mandazi [dish]
+Donut Holes + African = Puff-Puff
+Cookie + African = Chin Chin [dish]
+Cake + African = Malva Pudding [dish]
+Mandazi + Syrup = Koeksister [dish]
+Tea + African = Mint Tea
+Flower + African = Bissap
+Ginger + African = Ginger Beer [drink]
+Pie + African = Pastilla
+Egg + African = Shakshuka
+Vegetables + African = Chakalaka [dish]
+Okra + African = Okra Soup [dish]
+Okra + Soup = Okra Soup
+Roast Chicken + African = Peri-Peri Chicken
+Chili Pepper + African = Harissa
+Sunflower Seeds + African = Egusi Soup
+
+## Latin American
+Water + Latin American = Yerba Mate [drink]
+Tea + Latin American = Yerba Mate
+Grain + Latin American = Quinoa
+Plant + Latin American = Plantains
+Animal + Latin American = Asado
+# salted, twice-fried green plantains
+Salt + Latin American = Tostones [dish]
+Plantains + Salt = Tostones
+Sugar + Latin American = Dulce de Leche
+Corn + Latin American = Arepa
+Cornmeal + Latin American = Arepa
+Black Beans + Latin American = Feijoada
+Beans + Latin American = Feijoada
+# Costa Rica's rice and beans
+Rice and Beans + Latin American = Gallo Pinto [dish]
+Rice and Meat + Latin American = Arroz con Pollo [dish]
+Rice + Latin American = Arroz con Pollo
+# Peruvian rotisserie chicken
+Chicken + Latin American = Pollo a la Brasa [dish]
+Rotisserie Chicken + Latin American = Pollo a la Brasa
+Steak + Latin American = Churrasco
+# Peru's stir-fried beef with fries
+Beef + Latin American = Lomo Saltado [dish]
+Stir-Fry + Latin American = Lomo Saltado
+Pot Roast + Latin American = Ropa Vieja
+# Puerto Rican slow-roast pork shoulder
+Pork + Latin American = Pernil [dish]
+Sandwich + Latin American = Cuban Sandwich
+# Argentina's chorizo sandwich
+Sausage + Latin American = Choripan [dish]
+Hot Dog + Latin American = Choripan
+Meat Pie + Latin American = Empanada
+Dumplings + Latin American = Empanada
+Fish + Latin American = Ceviche
+Cheese + Latin American = Pão de Queijo
+Cheese Bread + Latin American = Pão de Queijo
+Cookie + Latin American = Alfajores
+Condensed Milk + Latin American = Brigadeiro
+Chocolate + Latin American = Brigadeiro
+Custard + Latin American = Flan
+Cake + Latin American = Tres Leches Cake
+Fruit + Latin American = Acai [ingredient]
+Acai + Smoothie Bowl = Acai Bowl
+Acai + Blender = Acai Bowl
+Smoothie Bowl + Latin American = Acai Bowl
+# sweet fried ripe plantains
+Plantains + Latin American = Maduros [dish]
+Fried Plantains + Latin American = Mofongo
+Cassava + Latin American = Yuca Fries
+# Peru's layered potato
+Potato + Latin American = Causa [dish]
+Mashed Potatoes + Latin American = Causa
+# Venezuelan corn pancakes
+Pancakes + Latin American = Cachapa [dish]
+Tortilla + Latin American = Pupusa
+Quesadilla + Latin American = Pupusa
+Stew + Latin American = Sancocho [dish]
+Chicken Soup + Latin American = Sancocho
+# Cuban espresso
+Coffee + Latin American = Cafecito [drink]
+BBQ Chicken + Latin American = Jerk Chicken
+Barbecue + Latin American = Asado
+Empanada + Curry = Jamaican Patty [dish]
+Meat Pie + Curry = Jamaican Patty
+# Brazilian chicken croquettes
+Croquetas + Chicken = Coxinha [dish]
+Chicken Nuggets + Latin American = Coxinha
+Schnitzel + Latin American = Milanesa [dish]
+# grilled provolone, Argentine steakhouse style
+Grilled Cheese + Latin American = Provoleta [dish]
+# Peruvian beef-heart skewers
+Kebab + Latin American = Anticuchos [dish]
+Sugarcane + Latin American = Cachaça [drink]
+Soda + Latin American = Inca Kola [drink]
+Rice Pudding + Latin American = Arroz con Leche
