@@ -174,7 +174,8 @@ function renderGame() {
     }
   } else if (S.phase === "standings") {
     d.textContent = tgt;
-    u.textContent = "";
+    const win = roundWinner();
+    u.innerHTML = win ? `<span class="wl">Round winner</span><span class="win${win.perfect ? " pf" : ""}">${esc(nameOf(win.id))}</span>` : "";
     act.innerHTML = `<div class="ranking">${rankingHTML(S.times)}</div>` +
       (isHost() || S.quick ? `<button class="btn big" id="nextBtn">Next round</button>` : "");
   }
@@ -202,14 +203,24 @@ function showStop(l) {
 }
 
 // This round's times, closest first.
+function rankedTimes(times) {
+  const target = S.target * 1000;
+  return Object.entries(times).sort((a, b) =>
+    (a[1] === null) - (b[1] === null) || Math.abs(a[1] - target) - Math.abs(b[1] - target));
+}
+function roundWinner() {
+  const [top] = rankedTimes(S.times || {});
+  if (!top || top[1] === null) return null;
+  return { id: top[0], perfect: Math.abs(top[1] - S.target * 1000) <= R.PERFECT_MS };
+}
 function rankingHTML(times) {
   const target = S.target * 1000;
-  const rows = Object.entries(times).sort((a, b) =>
-    (a[1] === null) - (b[1] === null) || Math.abs(a[1] - target) - Math.abs(b[1] - target));
+  const rows = rankedTimes(times);
   return `<ol>${rows.map(([id, ms], i) => {
     const p = playerOf(id);
     const off = ms === null ? null : ms - target;
-    return `<li class="${off !== null && Math.abs(off) <= R.PERFECT_MS ? "pf" : ""}"><span class="rk">${ms === null ? "–" : i + 1}</span>${avatar(p)}<span class="nm">${esc(nameOf(id))}</span>` +
+    const cls = [i === 0 && ms !== null ? "win" : "", off !== null && Math.abs(off) <= R.PERFECT_MS ? "pf" : ""].join(" ").trim();
+    return `<li class="${cls}"><span class="rk">${ms === null ? "–" : i + 1}</span>${avatar(p)}<span class="nm">${esc(nameOf(id))}</span>` +
       `<span class="tm">${ms === null ? "skipped" : R.fmt(ms)}</span><span class="of">${off === null ? "" : Math.abs(off) <= R.PERFECT_MS ? "PERFECT" : R.fmtOff(off)}</span></li>`;
   }).join("")}</ol>`;
 }

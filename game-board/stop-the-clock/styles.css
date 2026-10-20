@@ -133,8 +133,6 @@ input::placeholder { color: rgba(138, 152, 142, 0.6); }
 .watch.intro .face { animation: pop 0.5s cubic-bezier(.3, 1.6, .5, 1); }
 .watch.intro .under { color: var(--green); font-weight: 800; letter-spacing: 3px; text-transform: uppercase; font-size: 14px; }
 .watch.ready .digits { opacity: 0.8; }
-.watch.running .digits { animation: ledblink 1s steps(2, jump-none) infinite; }
-@keyframes ledblink { 50% { opacity: 0.25; } }
 @keyframes pop { from { transform: scale(0.85); } }
 .watch.close { --led: #b8ff3a; --glow: rgba(184, 255, 58, 0.55); }
 .watch.far { --led: #ffb23a; --glow: rgba(255, 178, 58, 0.55); }
@@ -142,28 +140,41 @@ input::placeholder { color: rgba(138, 152, 142, 0.6); }
 .watch.perfect .face { animation: perfect 0.7s cubic-bezier(.2, 1.8, .4, 1); box-shadow: 0 0 0 10px #141615, 0 0 0 11px #2c2f2d, inset 0 2px 12px rgba(0, 0, 0, 0.9), 0 0 120px -10px rgba(255, 210, 63, 0.7); }
 @keyframes perfect { 40% { transform: scale(1.06) rotate(-1deg); } }
 
-/* the big button */
-.act { margin: 26px auto 0; display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 560px; min-height: 120px; }
+/* the big button: a red arcade dome on a black base */
+.act { margin: 30px auto 0; display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 560px; min-height: 120px; }
 .go {
-  width: min(84vw, 340px); height: 120px; border: 0; border-radius: 30px; cursor: pointer;
-  background: var(--ink); color: var(--bg);
-  font-family: "Russo One", sans-serif; font-size: 34px; letter-spacing: 3px; text-transform: uppercase;
+  position: relative;
+  width: 190px; height: 190px; margin-bottom: 24px; border: 0; border-radius: 50%; cursor: pointer;
+  background: radial-gradient(circle at 50% 30%, #ff8476 0%, #f2392b 38%, #cf1f13 72%, #a8160c 100%);
+  color: #fff; text-shadow: 0 2px 0 rgba(120, 10, 4, 0.6);
+  font-family: "Russo One", sans-serif; font-size: 30px; letter-spacing: 2px; text-transform: uppercase;
   touch-action: manipulation; user-select: none; -webkit-user-select: none;
-  box-shadow: 0 10px 0 #9fb0a4, 0 20px 40px -20px #000;
+  /* the dome's side, then the black base ring under it, then its shadow */
+  box-shadow: 0 12px 0 #8a1209, 0 14px 0 16px #0c0d0c, 0 14px 0 17px #2e322f, 0 34px 40px 4px rgba(0, 0, 0, 0.7);
   transition: transform 0.05s, box-shadow 0.05s;
 }
-.go:active { transform: translateY(8px); box-shadow: 0 2px 0 #9fb0a4; }
-.go small { display: block; font-family: "Manrope", sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; opacity: 0.55; margin-top: 4px; }
+.go::after {
+  /* the shine on the dome */
+  content: ""; position: absolute; top: 12%; left: 24%; width: 52%; height: 22%; border-radius: 50%;
+  background: linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0)); pointer-events: none;
+}
+.go:active { transform: translateY(9px); box-shadow: 0 3px 0 #8a1209, 0 5px 0 16px #0c0d0c, 0 5px 0 17px #2e322f, 0 25px 40px 4px rgba(0, 0, 0, 0.7); }
+.go small { display: block; font-family: "Manrope", sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; text-shadow: none; opacity: 0.7; margin-top: 2px; }
 @media (hover: none) { .go small { display: none; } }
-.go.stop { background: var(--red); color: #fff; box-shadow: 0 10px 0 #a3302a, 0 20px 40px -20px #000; }
-.go.stop:active { box-shadow: 0 2px 0 #a3302a; }
+
+/* who took the round */
+.under .win { display: block; margin-top: 2px; font-family: "Russo One", sans-serif; font-size: clamp(30px, 5vw, 44px); color: var(--green); text-shadow: 0 0 24px rgba(34, 224, 107, 0.45); }
+.under .win.pf { color: var(--gold); text-shadow: 0 0 24px rgba(255, 210, 63, 0.5); }
+.under .wl { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; font-weight: 800; color: var(--soft); }
+.ranking li.win { border-color: var(--green); background: rgba(34, 224, 107, 0.1); }
+.ranking li.win .rk { color: var(--green); }
 
 /* this round's ranking */
 .ranking { width: 100%; }
-.ranking ol, .standings { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; text-align: left; }
-.ranking li, .standings li { display: grid; grid-template-columns: 26px auto 1fr auto auto; gap: 10px; align-items: center; background: var(--bg2); border: 1px solid var(--line); border-radius: 14px; padding: 8px 14px; }
-.ranking .rk, .standings .rk { font-family: "Russo One", sans-serif; color: var(--soft); text-align: center; }
-.ranking .nm, .standings .nm { font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ranking ol, ol.standings { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; text-align: left; }
+.ranking li, ol.standings li { display: grid; grid-template-columns: 26px auto 1fr auto auto; gap: 10px; align-items: center; background: var(--bg2); border: 1px solid var(--line); border-radius: 14px; padding: 8px 14px; }
+.ranking .rk, ol.standings .rk { font-family: "Russo One", sans-serif; color: var(--soft); text-align: center; }
+.ranking .nm, ol.standings .nm { font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ranking .tm { font-family: "Russo One", sans-serif; }
 .ranking .of { font-family: "Russo One", sans-serif; font-size: 13px; color: var(--soft); min-width: 74px; text-align: right; }
 .ranking li.pf { border-color: var(--gold); }
@@ -188,8 +199,8 @@ input::placeholder { color: rgba(138, 152, 142, 0.6); }
 .award .at { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gold); font-weight: 800; }
 .award b { font-size: 18px; }
 .award small { color: var(--soft); }
-.standings li { grid-template-columns: 26px auto 1fr auto; }
-.standings b { font-family: "Russo One", sans-serif; font-size: 20px; color: var(--green); }
+ol.standings li { grid-template-columns: 26px auto 1fr auto; }
+ol.standings b { font-family: "Russo One", sans-serif; font-size: 20px; color: var(--green); }
 .final h3 { margin: 22px 0 10px; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--soft); }
 .rounds { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .rounds li { display: flex; justify-content: space-between; gap: 10px; background: var(--bg2); border-radius: 12px; padding: 9px 14px; }
@@ -224,6 +235,6 @@ input::placeholder { color: rgba(138, 152, 142, 0.6); }
   .bar-r { min-width: 0; }
   .logo { font-size: 14px; }
   .home-card, .lobby { padding: 22px 18px; }
-  .go { height: 104px; font-size: 30px; }
+  .go { width: 168px; height: 168px; font-size: 26px; }
   .exit { left: 12px; bottom: 12px; }
 }
