@@ -982,7 +982,7 @@ Mexican: Taco, Burrito, Quesadilla, Nachos, Enchilada, Tamale, Fajitas, Carne As
 East Asian: Sushi, Sashimi, Donburi, Congee, California Roll, Sushi Roll, Ramen, Lo Mein, Chow Mein, Kung Pao Chicken, Beef and Broccoli, Miso Soup, Bao, Peking Duck, Bulgogi, Tempura, Mochi, Mochi Ice Cream, Boba, Matcha Latte, Fortune Cookie, Orange Chicken, General Tso's Chicken, Sweet and Sour Chicken, Korean Fried Chicken, Spring Rolls, Egg Rolls, Bibimbap, Hot and Sour Soup, Scallion Pancakes
 Indian: Curry, Biryani, Naan, Samosa, Tandoori Chicken, Butter Chicken, Saag Paneer, Dal, Lassi, Mango Lassi, Chai, Kheer, Chicken Tikka Masala, Chana Masala, Aloo Gobi, Pakora, Garlic Naan, Roti, Paratha, Dosa, Idli, Raita, Gulab Jamun, Jalebi
 Middle Eastern: Hummus, Falafel, Kabsa, Falafel Wrap, Shawarma, Kebab, Mansaf, Maqluba, Tabbouleh, Fattoush, Knafeh, Baklava, Turkish Coffee, Hummus and Pita, Baba Ganoush, Shish Tawook, Kofta, Mandi, Musakhan, Mutabal, Manakish, Stuffed Grape Leaves, Kibbeh, Shakshuka, Ful Medames, Ma'amoul, Qatayef, Jallab, Qamar al-Din, Halva
-Fast Food: Combo Meal, Big Mac, Whopper, Filet-O-Fish, Quarter Pounder, Double Cheeseburger, Happy Meal, McGriddle, Egg McMuffin, McFlurry, Frosty, Doritos Locos Taco, Crunchwrap Supreme, Mexican Pizza, Stuffed Crust Pizza, Bucket of Chicken, Frappuccino, Pumpkin Spice Latte, Donut Holes
+Fast Food: Combo Meal, Big Mac, Whopper, Filet-O-Fish, Quarter Pounder, Double Cheeseburger, Happy Meal, McGriddle, Egg McMuffin, McFlurry, Frosty, Doritos Locos Taco, Crunchwrap Supreme, Mexican Pizza, Stuffed Crust Pizza, Bucket of Chicken, Frappuccino, Pumpkin Spice Latte, Donut Holes, Chicken McNuggets, McChicken, Spicy Chicken Sandwich, Chick-fil-A Sandwich, Shamrock Shake, Waffle Fries, Double-Double, Baconator, Chicken Fries, Chalupa, Cheesy Gordita Crunch, Nachos BellGrande, Baja Blast, Quesarito, Cinnabon, Pretzel Bites, Footlong, Hot-N-Ready, Slurpee, Hot Pocket, Sausage McMuffin, Croissan'wich, Munchkins, Krispy Kreme, Pizza Rolls, Cheesy Bread, Snack Wrap, Cherry Limeade, Frosted Lemonade, Spicy Nuggets, McRib, Kids Meal
 Southeast Asian: Pad Thai, Pho, Banh Mi, Satay, Laksa, Nasi Goreng, Rendang, Tom Yum, Green Curry, Lumpia, Halo-Halo, Pancit, Hainanese Chicken Rice, Nasi Lemak, Chicken Adobo, Lechon, Summer Rolls, Som Tam, Gado-Gado, Larb, Vietnamese Coffee, Thai Iced Tea, Kaya Toast, Leche Flan, Fish Amok, Bibingka, Roti Canai, Char Kway Teow, Tom Kha, Massaman Curry, Khao Soi, Sinigang, Kare-Kare, Sisig, Pandan Cake, Cendol, Bun Cha, Turon
 African: Jollof Rice, Fufu, Injera, Doro Wat, Bobotie, Bunny Chow, Biltong, Suya, Egusi Soup, Tagine, Peri-Peri Chicken, Puff-Puff, Bissap, Msemen, Pastilla, Rooibos, Kelewele, Yassa, Nyama Choma, Braai, Mafe, Pepper Soup, Thieboudienne, Akara, Koshari, Ugali, Sukuma Wiki, Mandazi, Chin Chin, Malva Pudding, Koeksister, Chakalaka, Okra Soup, Misir Wat
 Latin American: Empanada, Arepa, Feijoada, Brigadeiro, Churrasco, Asado, Alfajores, Pupusa, Mofongo, Ropa Vieja, Cuban Sandwich, Arroz con Leche, Acai Bowl, Jerk Chicken, Pão de Queijo, Yerba Mate, Tostones, Gallo Pinto, Arroz con Pollo, Pollo a la Brasa, Lomo Saltado, Pernil, Choripan, Maduros, Causa, Cachapa, Sancocho, Cafecito, Jamaican Patty, Coxinha, Milanesa, Provoleta, Anticuchos, Cachaça, Inca Kola
@@ -1679,7 +1679,7 @@ Italian: Chicken Alfredo, Arancini, Affogato, Ossobuco, Saltimbocca, Vitello Ton
 Mexican: Chips and Queso, Esquites, Carne Asada Fries, Cochinita Pibil, Mole Poblano, Chiles Rellenos, Chiles en Nogada, Birria, Menudo, Sopes, Gorditas, Huaraches, Tlayuda, Flautas, Taquitos, Tortas Ahogadas, Migas, Sopa de Lima, Aguachile, Molletes, Enchiladas Suizas, Queso Fundido, Sincronizada, Mexican Hot Chocolate, Champurrado, Café de Olla, Agua de Jamaica, Tepache, Rosca de Reyes, Capirotada, Buñuelos, Mazapán, Tostilocos, Charro Beans, Picadillo, Albóndigas, Caldo de Res, Chilaquiles, Barbacoa, Huevos Rancheros, Tortilla Soup, Atole, Paleta, Concha, Pan de Muerto, Mexican Wedding Cookies, Mangonada, Machaca
 East Asian: Potstickers, Wonton Soup, Kimchi Fried Rice
 Indian: Cheese Naan, Masala Dosa
-American: Nashville Hot Chicken, Cincinnati Chili, Toasted Ravioli, Texas Barbecue, Beef on Weck, Muffuletta
+American: Nashville Hot Chicken, Cincinnati Chili, Toasted Ravioli, Texas Barbecue, Beef on Weck, Muffuletta, Po' Boy, Crawfish Boil, Crawfish Étouffée, Red Beans and Rice, Grits and Eggs, Fried Green Tomatoes, Hoppin' John, Sweet Potato Pie, Chess Pie, Moon Pie, Bananas Foster, Huli Huli Chicken, Haupia, Mac Salad, Plate Lunch, Hot Brown, Fried Catfish, Texas Chili, Chicago Hot Dog, Italian Beef, Tater Tot Hotdish, Juicy Lucy, Fried Cheese Curds, Wild Rice Soup, Green Chile Stew, Fry Bread, Navajo Taco, Sopapilla, Breakfast Taco, Cobb Salad, Mission Burrito, Manhattan Clam Chowder, Boston Cream Pie, Boston Baked Beans, Indian Pudding, New York Pizza, Bagel and Lox, Pastrami on Rye, Black and White Cookie, New York Cheesecake, Shoofly Pie, Ham Biscuit, Lowcountry Boil, Bourbon, Moonshine, Fried Twinkie, Deep Fried Oreos, Jello Salad, Tuna Casserole, Blondie, Shrimp and Grits, Hush Puppies, Collard Greens, Chicken Fried Steak, Banana Pudding, Peach Cobbler, Beignets, King Cake, Poke Bowl, Spam Musubi, Loco Moco, Shave Ice, Kalua Pork, Malasadas, Brunswick Stew, Frito Pie, Buffalo Wings, Kansas City BBQ, Burnt Ends, Clambake, Whoopie Pie, Johnnycakes, Apple Cider Donuts, Sugar on Snow, Egg Cream, Knish, Chicken and Dumplings, Scrapple, Crab Cakes, Pralines, Ambrosia, Green Bean Casserole, Sloppy Joe, Monte Cristo, French Dip
 
 ## Notebook batch (2026-10-13): pairs players tried with no recipe
 # Kareem's notebook, minus pairs already written and ones naming the old
@@ -2677,8 +2677,8 @@ Feast + Feast = Buffet [dish]
 Feast + Platter = Buffet
 
 Middle Eastern: Mezze, Fesenjan, Fatteh, Mujaddara, Sfiha, Pide, Börek, Manti, Iskender Kebab, Adana Kebab, Imam Bayildi, Mahshi, Tahdig, Ghormeh Sabzi, Chelo Kebab, Jeweled Rice, Ash Reshteh, Sabich, Muhammara, Mutabbaq, Harees, Machboos, Basbousa, Umm Ali, Muhallebi, Sahlab, Arabic Coffee, Karak, Luqaimat, Molokhia, Hawawshi, Fatayer, Lahmacun, Doner Kebab, Simit, Ayran, Turkish Delight
-East Asian: Dim Sum, Hot Pot, Seafood Pancake, Moo Shu, Mandarin Pancakes, Sweet and Sour Fish, Hayashi Rice, Gukbap, Samgyetang, Seolleongtang, Sujebi, Naengguk, Budae Jjigae, Kimchi Jjigae, Doenjang Jjigae, Yakgwa, Dalgona, Bingsu, Haejangguk, Bugeoguk
-Indian: Thali, Chicken Tikka, Bhel Puri, Sambar, Upma, Hakka Noodles, Seekh Kebab, Keema, Papadum, Jaljeera
+East Asian: Dim Sum, Hot Pot, Seafood Pancake, Moo Shu, Mandarin Pancakes, Sweet and Sour Fish, Hayashi Rice, Gukbap, Samgyetang, Seolleongtang, Sujebi, Naengguk, Budae Jjigae, Kimchi Jjigae, Doenjang Jjigae, Yakgwa, Dalgona, Bingsu, Haejangguk, Bugeoguk, Jajangmyeon, Sundubu Jjigae, Samgyeopsal, Galbi, Bossam, Dakgalbi, Soju, Haemul Pajeon, Naengmyeon, Taiyaki, Yakisoba, Tonkatsu, Japanese Curry, Katsu Curry, Katsudon, Tendon, Tamagoyaki, Sukiyaki, Miso Ramen, Tonkotsu Ramen, Castella, Melon Pan, Ramune, Calpis, Mapo Tofu, Dan Dan Noodles, Twice-Cooked Pork, Har Gow, Siu Mai, Soup Dumplings, Egg Tarts, Tangyuan, Jianbing, Century Egg, Beef Noodle Soup, Lu Rou Fan, Stinky Tofu, Pineapple Cake, Sesame Balls, Egg Fried Rice, Salt and Pepper Shrimp, Honey Walnut Shrimp, Moo Shu Pork, Sesame Chicken, Pepper Steak, Almond Cookies, Oolong, Egg Waffle, Hong Kong French Toast, Japchae, Tteokbokki, Kimbap, Hotteok, Patbingsu, Banchan, Takoyaki, Okonomiyaki, Udon, Karaage, Oyakodon, Gyudon, Unagi, Chirashi, Nigiri, Temaki, Shabu-Shabu, Yakitori, Dorayaki, Dango, Daifuku, Char Siu, Mooncake, Zongzi, Char Siu Bao, Lo Mai Gai, Tea Eggs, Gua Bao, Bubble Tea, Crab Rangoon, Chop Suey, Egg Foo Young, Lemon Chicken, Cashew Chicken, Mongolian Beef, Tanghulu, Hong Kong Milk Tea, Korean BBQ, Chawanmushi, Ochazuke, Genmaicha, Barley Tea
+Indian: Thali, Chicken Tikka, Bhel Puri, Sambar, Upma, Hakka Noodles, Seekh Kebab, Keema, Papadum, Jaljeera, Rogan Josh, Vindaloo, Korma, Paneer Tikka, Paneer Butter Masala, Malai Kofta, Dal Makhani, Rajma, Puri, Chole Bhature, Pani Puri, Dahi Puri, Pav Bhaji, Vada Pav, Dhokla, Kachori, Aloo Tikki, Samosa Chaat, Papdi Chaat, Uttapam, Medu Vada, Rasam, Khichdi, Pongal, Appam, Puttu, Avial, Kerala Fish Curry, Prawn Curry, Chicken 65, Haleem, Nihari, Kathi Roll, Thukpa, Pulao, Jeera Rice, Lemon Rice, Curd Rice, Aloo Paratha, Kulcha, Kulfi, Falooda, Rasgulla, Rasmalai, Sandesh, Peda, Mysore Pak, Sooji Halwa, Shrikhand, Payasam, Filter Coffee, Egg Curry, Baingan Bharta, Bhindi Masala, Gobi Manchurian, Chilli Chicken, Butter Naan, Bombay Mix, Nankhatai, Chakli, Thandai, Nimbu Pani, Sugarcane Juice, Momos, Barfi, Ladoo, Gajar Halwa, Rose Lassi
 
 # Round 11: chip flavours
 Potato Chips + Sour Cream = Sour Cream and Onion Chips [dish]
@@ -16496,3 +16496,249 @@ Pita + Kofta = Hawawshi [dish]
 Spices + Middle Eastern = Sumac [ingredient]
 Pomegranate + Syrup = Pomegranate Molasses [ingredient]
 Bagel + Middle Eastern = Simit
+
+#############################################################################
+# Growing the cookbooks, round 2 (2026-10-19): American, East Asian, Indian,
+# Fast Food
+#############################################################################
+
+## American
+Sub + Shrimp = Po' Boy [dish]
+Baguette + Fried Fish = Po' Boy
+Shrimp + American = Crawfish [ingredient]
+Crawfish + Pot = Crawfish Boil [dish]
+Seafood Boil + Crawfish = Crawfish Boil
+Crawfish + Gravy = Crawfish Étouffée [dish]
+Rice and Beans + American = Red Beans and Rice [dish]
+Cornmeal + American = Grits [ingredient]
+Grits + Egg = Grits and Eggs [dish]
+Tomato + Cornmeal = Fried Green Tomatoes [dish]
+Rice and Beans + Bacon = Hoppin' John [dish]
+Cheese + Mayonnaise = Pimento Cheese [ingredient]
+Sweet Potato + Pie = Sweet Potato Pie [dish]
+Pie + Buttermilk = Chess Pie [dish]
+Cookie + Marshmallow = Moon Pie [dish]
+Banana + Rum = Bananas Foster [dish]
+BBQ Chicken + Pineapple = Huli Huli Chicken [dish]
+Coconut Milk + Jell-O = Haupia [dish]
+Pasta Salad + American = Mac Salad [dish]
+Mac Salad + Kalua Pork = Plate Lunch [dish]
+Rice Ball + Kalua Pork = Plate Lunch
+# Louisville's open-faced turkey sandwich
+Roast Turkey + Toast = Hot Brown [dish]
+Fish + American = Catfish [ingredient]
+Catfish + Cornmeal = Fried Catfish [dish]
+Chili + Steak = Texas Chili [dish]
+Ballpark Hot Dog + Tomato = Chicago Hot Dog [dish]
+Roast Beef + Sub = Italian Beef [dish]
+Casserole + Tater Tots = Tater Tot Hotdish [dish]
+# Minneapolis: the cheese goes inside the burger
+Cheeseburger + Cheese = Juicy Lucy [dish]
+Cheese + Batter = Fried Cheese Curds [dish]
+Rice + American = Wild Rice [ingredient]
+Wild Rice + Soup = Wild Rice Soup [dish]
+Chili Pepper + American = Hatch Chile [ingredient]
+Hatch Chile + Stew = Green Chile Stew [dish]
+Flatbread + Oil = Fry Bread [dish]
+Fry Bread + Chili = Navajo Taco [dish]
+Fry Bread + Honey = Sopapilla [dish]
+Taco + Egg = Breakfast Taco [dish]
+Chicken Salad + Avocado = Cobb Salad [dish]
+Salad + American = Cobb Salad
+Burrito + American = Mission Burrito [dish]
+Clam Chowder + Tomato = Manhattan Clam Chowder [dish]
+Cake + Custard = Boston Cream Pie [dish]
+Baked Beans + Molasses = Boston Baked Beans [dish]
+Cornmeal + Molasses = Indian Pudding [dish]
+Pizza Slice + American = New York Pizza [dish]
+Bagel + Lox = Bagel and Lox [dish]
+Pastrami + Rye Bread = Pastrami on Rye [dish]
+Sugar Cookie + Icing = Black and White Cookie [dish]
+Cheesecake + American = New York Cheesecake [dish]
+Pie + Molasses = Shoofly Pie [dish]
+Seasoning + American = Old Bay [ingredient]
+Ham + Biscuit = Ham Biscuit [dish]
+Seafood Boil + Sausage = Lowcountry Boil [dish]
+Whiskey + American = Bourbon [drink]
+Whiskey + Corn = Moonshine [drink]
+Twinkie + Batter = Fried Twinkie [dish]
+Oreo + Batter = Deep Fried Oreos [dish]
+Jell-O + Salad = Jello Salad [dish]
+Casserole + Tuna = Tuna Casserole [dish]
+Brownie + Butterscotch = Blondie [dish]
+
+## East Asian
+Lo Mein + Black Beans = Jajangmyeon [dish]
+Kimchi Jjigae + Tofu = Sundubu Jjigae [dish]
+Bacon + East Asian = Samgyeopsal [dish]
+Bacon + Korean BBQ = Samgyeopsal
+Ribs + East Asian = Galbi [dish]
+Pork + Kimchi = Bossam [dish]
+Chicken Stir-Fry + Kimchi = Dakgalbi [dish]
+Chicken Stir-Fry + Gochujang = Dakgalbi
+Vodka + East Asian = Soju [drink]
+Scallion Pancakes + Seafood = Haemul Pajeon [dish]
+Ramen + Ice = Naengmyeon [dish]
+# the fish-shaped waffle with red bean inside
+Waffle + Fish = Taiyaki [dish]
+Waffle + Swedish Fish = Taiyaki
+Ramen + Stove = Yakisoba [dish]
+Pork Chop + East Asian = Tonkatsu [dish]
+Schnitzel + East Asian = Tonkatsu
+Curry + East Asian = Japanese Curry [dish]
+Tonkatsu + Curry = Katsu Curry [dish]
+Tonkatsu + Japanese Curry = Katsu Curry
+Tonkatsu + Egg = Katsudon [dish]
+Tonkatsu + Donburi = Katsudon
+Tempura + Donburi = Tendon [dish]
+Tempura + Rice = Tendon
+Omelette + East Asian = Tamagoyaki [dish]
+# beef simmered at the table, then dipped in raw egg
+Shabu-Shabu + Egg = Sukiyaki [dish]
+Ramen + Miso = Miso Ramen [dish]
+Ramen + Pork = Tonkotsu Ramen [dish]
+Honey Cake + East Asian = Castella [dish]
+Bread + Cookie = Melon Pan [dish]
+Soda + East Asian = Ramune [drink]
+Yogurt + East Asian = Calpis [drink]
+Tofu + Chili Pepper = Mapo Tofu [dish]
+Tofu + Ground Beef = Mapo Tofu
+Ramen + Peanut Butter = Dan Dan Noodles [dish]
+Pork Chop + Stir-Fry = Twice-Cooked Pork [dish]
+Dim Sum + Shrimp = Har Gow [dish]
+Dim Sum + Pork = Siu Mai [dish]
+Dumplings + Soup = Soup Dumplings [dish]
+Custard + East Asian = Egg Tarts [dish]
+Mochi + Soup = Tangyuan [dish]
+Mochi + Pot = Tangyuan
+# Beijing's breakfast crepe
+Crepe + East Asian = Jianbing [dish]
+Boiled Egg + East Asian = Century Egg [dish]
+Beef Stew + Ramen = Beef Noodle Soup [dish]
+Pork + Donburi = Lu Rou Fan [dish]
+Tofu + Clock = Stinky Tofu [dish]
+Pineapple + East Asian = Pineapple Cake [dish]
+Mochi + Sesame Seeds = Sesame Balls [dish]
+Fried Rice + Scrambled Eggs = Egg Fried Rice [dish]
+Shrimp + Rock Salt = Salt and Pepper Shrimp [dish]
+Shrimp + Walnuts = Honey Walnut Shrimp [dish]
+Pork + Pancakes = Moo Shu Pork [dish]
+Fried Chicken + Sesame Seeds = Sesame Chicken [dish]
+Steak + Bell Pepper = Pepper Steak [dish]
+Cookie + Almonds = Almond Cookies [dish]
+Green Tea + East Asian = Oolong [drink]
+Waffle + East Asian = Egg Waffle [dish]
+French Toast + East Asian = Hong Kong French Toast [dish]
+
+## Indian
+Lamb + Indian = Rogan Josh [dish]
+Curry + Lamb = Rogan Josh
+Pork + Indian = Vindaloo [dish]
+Curry + Vinegar = Vindaloo
+Curry + Cream = Korma [dish]
+Curry + Nuts = Korma
+Paneer + Kebab = Paneer Tikka [dish]
+Paneer + Tomato Sauce = Paneer Butter Masala [dish]
+Kofta + Cream = Malai Kofta [dish]
+Kofta + Indian = Malai Kofta
+Dal + Butter = Dal Makhani [dish]
+Dal + Cream = Dal Makhani
+Chili + Indian = Rajma [dish]
+Roti + Oil = Puri [dish]
+Chana Masala + Puri = Chole Bhature [dish]
+Puri + Water = Pani Puri [dish]
+Puri + Jaljeera = Pani Puri
+Puri + Yogurt = Dahi Puri [dish]
+Dinner Roll + Curry = Pav Bhaji [dish]
+Dinner Roll + Pakora = Vada Pav [dish]
+Chickpeas + Steam = Dhokla [dish]
+Samosa + Lentils = Kachori [dish]
+Hash Browns + Indian = Aloo Tikki [dish]
+Samosa + Yogurt = Samosa Chaat [dish]
+Tortilla Chips + Indian = Papdi Chaat [dish]
+Dosa + Vegetables = Uttapam [dish]
+Donut + Indian = Medu Vada [dish]
+Donut + Lentils = Medu Vada
+Soup + Indian = Rasam [dish]
+Rice + Dal = Khichdi [dish]
+Khichdi + Ghee = Pongal [dish]
+Crepe + Coconut = Appam [dish]
+Rice Flour + Coconut = Puttu [dish]
+Vegetables + Coconut = Avial [dish]
+Fish Curry + Coconut Milk = Kerala Fish Curry [dish]
+Shrimp + Curry = Prawn Curry [dish]
+Fried Chicken + Indian = Chicken 65 [dish]
+Harees + Indian = Haleem [dish]
+Porridge + Lentils = Haleem
+Beef Stew + Indian = Nihari [dish]
+Paratha + Kebab = Kathi Roll [dish]
+Wrap + Indian = Kathi Roll
+Chicken Noodle Soup + Indian = Thukpa [dish]
+Pilaf + Indian = Pulao [dish]
+Basmati Rice + Spices = Jeera Rice [dish]
+Lemon + Rice = Lemon Rice [dish]
+Rice + Yogurt = Curd Rice [dish]
+Paratha + Potato = Aloo Paratha [dish]
+Naan + Potato = Kulcha [dish]
+Ice Cream + Indian = Kulfi [dish]
+Milkshake + Rose Water = Falooda [dish]
+Kulfi + Rose Water = Falooda
+Paneer + Syrup = Rasgulla [dish]
+Rasgulla + Milk = Rasmalai [dish]
+Paneer + Sugar = Sandesh [dish]
+Condensed Milk + Indian = Peda [dish]
+Ghee + Sugar = Mysore Pak [dish]
+Cream of Wheat + Indian = Sooji Halwa [dish]
+Yogurt + Saffron = Shrikhand [dish]
+Greek Yogurt + Indian = Shrikhand
+Kheer + Coconut Milk = Payasam [dish]
+Coffee + Indian = Filter Coffee [drink]
+Pickles + Indian = Achar [ingredient]
+Mango + Pickles = Achar
+Curry + Egg = Egg Curry [dish]
+Eggplant + Indian = Baingan Bharta [dish]
+Okra + Indian = Bhindi Masala [dish]
+# Indo-Chinese, from Kolkata and Mumbai
+Pakora + Soy Sauce = Gobi Manchurian [dish]
+Chicken 65 + Soy Sauce = Chilli Chicken [dish]
+Naan + Butter = Butter Naan [dish]
+Trail Mix + Indian = Bombay Mix [dish]
+Chex Mix + Indian = Bombay Mix
+Cookie + Ghee = Nankhatai [dish]
+Pretzel + Indian = Chakli [dish]
+Milk + Indian = Thandai [drink]
+Lemonade + Indian = Nimbu Pani [drink]
+Sugarcane + Indian = Sugarcane Juice [drink]
+
+## Fast Food
+Chicken Nuggets + Fast Food = Chicken McNuggets [dish]
+Chicken Sandwich + Fast Food = McChicken [dish]
+Chicken Sandwich + Hot Sauce = Spicy Chicken Sandwich [dish]
+Chicken Sandwich + Pickles = Chick-fil-A Sandwich [dish]
+Milkshake + Mint = Shamrock Shake [drink]
+Waffle + French Fries = Waffle Fries [dish]
+Double Cheeseburger + Onion = Double-Double [dish]
+Double Cheeseburger + Bacon = Baconator [dish]
+Chicken Tenders + French Fries = Chicken Fries [dish]
+Taco + Fry Bread = Chalupa [dish]
+Gorditas + Taco = Cheesy Gordita Crunch [dish]
+Nachos + Fast Food = Nachos BellGrande [dish]
+Mountain Dew + Fast Food = Baja Blast [drink]
+Burrito + Quesadilla = Quesarito [dish]
+Cinnamon Roll + Fast Food = Cinnabon [dish]
+Pretzel + Fast Food = Pretzel Bites [dish]
+Sub + Fast Food = Footlong [dish]
+Pepperoni Pizza + Fast Food = Hot-N-Ready [dish]
+Slushie + Fast Food = Slurpee [drink]
+Calzone + Fridge = Hot Pocket [dish]
+Egg McMuffin + Sausage = Sausage McMuffin [dish]
+Croissant + Fast Food = Croissan'wich [dish]
+Croissant + Bacon and Eggs = Croissan'wich
+Donut Holes + Fast Food = Munchkins [dish]
+Glazed Donut + Fast Food = Krispy Kreme [dish]
+Egg Rolls + Pizza = Pizza Rolls [dish]
+Breadsticks + Cheese = Cheesy Bread [dish]
+Chicken Wrap + Fast Food = Snack Wrap [dish]
+Cherry + Lime = Cherry Limeade [drink]
+Lemonade + Ice Cream = Frosted Lemonade [drink]
+Chicken Nuggets + Hot Sauce = Spicy Nuggets [dish]
