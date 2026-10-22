@@ -16,6 +16,7 @@ persists in the visitor's browser (`localStorage`).
 | Wishlist (`/wishlist/`) | static + **Node** (`wishlist/server.js`) | `/wishlist/api/unfurl` + `/wishlist/api/img` on port 8021 |
 | White Canvas (`/white-canvas/`) | static + **Node** (`draw/server.js`) | SSE stream on port 8022; grid in `/var/lib/kmufti-draw/canvas.bin` |
 | Jigsaw (`/puzzle/`) | static + **Node** (`puzzle/server.js`) | WebSocket table on port 8023; state in `/var/lib/kmufti-puzzle/` |
+| Real or Fake (`/real-or-fake/`) | static + **Node** (rides on `game-board/server.js`) | `/game-board/api/headlines/today`, built by `game-board/headlines-server.js` from UPI Odd News + satire RSS feeds and the AI fakes in `real-or-fake/fakes.txt`. Each day is saved to `$HEADLINES_STATE` (default: the system temp dir) so a restart keeps the same puzzle |
 | Infinite Kitchen (`/infinite-kitchen/`) | static + **Node** (`infinite-kitchen/server.js`) | recipes in `recipes.json` (static, in the repo); the list of pairs tried with no recipe on port 8027, in `/var/lib/kmufti-kitchen/missing.json` |
 | Yahtzee (`/yahtzee/`) | static + **Node** (`yahtzee/server.js`) | 1v1 matches over a WebSocket on port 8024. Nothing persisted — a match lives in memory, and solo-vs-bot works with the backend down |
 | Human check (`/human/api/`) | **Node** (`human/server.js`) | Cloudflare Turnstile, port 8029. Gates White Canvas painting and Wishlist link fetching through nginx `auth_request`; see "Turnstile" below |

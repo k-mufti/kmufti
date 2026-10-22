@@ -21,6 +21,16 @@ const PROJECTS = [
     status: "live",
   },
   {
+    slug: "real-or-fake",
+    title: "Real or Fake",
+    description: "Ten headlines a day. Some really happened, the rest are satire or made up by AI. Call each one before the stamp comes down.",
+    tags: ["game", "daily", "news"],
+    accent: "#b3261e",
+    accentBg: "linear-gradient(135deg, #f4efe4 0%, #e2d9c4 100%)",
+    href: "real-or-fake/",
+    status: "live",
+  },
+  {
     slug: "puzzle",
     title: "Jigsaw",
     description: "One jigsaw puzzle that everybody shares. Watch other people move the pieces in real time, and when it's finished a new one drops on the table.",

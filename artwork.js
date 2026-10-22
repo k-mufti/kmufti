@@ -300,6 +300,39 @@ const ARTWORK = {
       </g>
     </svg>`,
 
+  /* Real or Fake - the front page: masthead, a big headline and the red
+     stamp coming down on it. */
+  "real-or-fake": `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <rect width="320" height="200" fill="#e2d9c4"/>
+      <g transform="rotate(-3 160 100)">
+        <rect x="40" y="14" width="240" height="190" fill="#f4efe4" stroke="#cfc4ac"/>
+        <line x1="54" y1="30" x2="266" y2="30" stroke="#1b1915" stroke-width="1.5"/>
+        <line x1="54" y1="33" x2="266" y2="33" stroke="#1b1915" stroke-width="0.6"/>
+        <text x="160" y="62" font-family="'Playfair Display', Georgia, serif" font-weight="900" font-size="28"
+              fill="#1b1915" text-anchor="middle">Real <tspan font-size="17" font-style="italic" font-weight="700">or</tspan> Fake</text>
+        <line x1="54" y1="72" x2="266" y2="72" stroke="#1b1915" stroke-width="0.6"/>
+        <line x1="54" y1="75" x2="266" y2="75" stroke="#1b1915" stroke-width="1.5"/>
+        <g fill="#1b1915">
+          <rect x="54" y="88" width="212" height="9" rx="1"/>
+          <rect x="54" y="102" width="168" height="9" rx="1"/>
+        </g>
+        <g fill="#1b1915" opacity="0.35">
+          <rect x="54" y="122" width="100" height="3"/><rect x="166" y="122" width="100" height="3"/>
+          <rect x="54" y="130" width="100" height="3"/><rect x="166" y="130" width="100" height="3"/>
+          <rect x="54" y="138" width="86" height="3"/><rect x="166" y="138" width="100" height="3"/>
+          <rect x="54" y="146" width="100" height="3"/><rect x="166" y="146" width="72" height="3"/>
+          <rect x="54" y="154" width="94" height="3"/><rect x="166" y="154" width="100" height="3"/>
+          <rect x="54" y="162" width="100" height="3"/><rect x="166" y="162" width="90" height="3"/>
+        </g>
+      </g>
+      <g transform="rotate(12 228 132)" opacity="0.92">
+        <rect x="186" y="112" width="86" height="38" rx="4" fill="none" stroke="#b3261e" stroke-width="4"/>
+        <text x="229" y="141" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="24"
+              letter-spacing="3" fill="#b3261e" text-anchor="middle">FAKE</text>
+      </g>
+    </svg>`,
+
   /* Lost in Translation — the two-pane translator, mystery phrase on the left,
      a question mark where the meaning should be. */
   translate: `

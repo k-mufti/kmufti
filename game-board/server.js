@@ -52,6 +52,7 @@
 
 const http = require("http");
 const crypto = require("crypto");
+const HEADLINES = require("./headlines-server.js"); // Real or Fake's daily puzzle
 
 const PORT = process.env.PORT || 8028;
 const EMPTY_ROOM_MS = 10 * 60 * 1000;   // a room nobody's in goes after this
@@ -677,6 +678,7 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify({ ok: true, peers: peers.size, rooms: rooms.size, quick: [...rooms.values()].filter((r) => r.quick).length, imposter: IMP ? IMP.rooms.size : 0, draft: DRF ? DRF.rooms.size : 0, questions: QS ? QS.rooms.size : 0, clock: CLK ? CLK.rooms.size : 0 }));
     return;
   }
+  if (HEADLINES.handle(route, req, res)) return;
   res.writeHead(404).end();
 });
 
