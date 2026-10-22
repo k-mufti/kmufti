@@ -848,3 +848,4 @@ Pascualina = Torta pascualina
 Arroz con Pato = Arroz con pato
 Golfeados = Golfeado
 Chifrijo = Chifrijo
+Lettuce Wraps = -
