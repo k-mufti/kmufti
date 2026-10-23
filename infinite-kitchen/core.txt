@@ -3188,10 +3188,10 @@ Candy + Sugar Cubes = Rock Candy
 Candy + Powdered Sugar = Pixy Stix
 Candy + Rock Candy = Jawbreaker
 Candy + Oven = Toffee
-Candy + Jerky = Jerky [nothing]
+Candy + Jerky = Road Trip Snacks
 Candy + Beer = Beer [nothing]
-Candy + Kale Chips = Kale Chips [nothing]
-Candy + Stir-Fry = Stir-Fry [nothing]
+Candy + Kale Chips = Party Mix
+Candy + Stir-Fry = Sweet and Sour Chicken
 
 # Rock Salt
 Rock Salt + Rice = Rice Crackers
@@ -3231,9 +3231,9 @@ Rock Salt + Powdered Sugar = Salted Caramel
 # the old-fashioned ice cream maker: ice packed in rock salt
 Rock Salt + Fridge = Ice Cream
 Rock Salt + Rock Salt = Rock Salt [nothing]
-Rock Salt + Brine = Brine [nothing]
+Rock Salt + Brine = Pickles
 Rock Salt + Salted Caramel = Salted Caramel [nothing]
-Rock Salt + Porridge = Porridge [nothing]
+Rock Salt + Porridge = Grits
 Rock Salt + Kale Chips = Kale Chips [nothing]
 Rock Salt + Vegetable Soup = Vegetable Soup [nothing]
 Rock Salt + Green Smoothie = Green Smoothie [nothing]
@@ -3272,8 +3272,8 @@ Rice + Herbs = Wild Rice
 # fragrant rice
 Rice + Flower = Basmati Rice
 Rice + Rice = Rice [nothing]
-Rice + Green Smoothie = Green Smoothie [nothing]
-Rice + Mint = Mint [nothing]
+Rice + Green Smoothie = Green Curry
+Rice + Mint = Pilaf
 Rice + Fridge = Rice [nothing]
 
 # Vegetables
@@ -3311,8 +3311,8 @@ Vegetables + Mint = Peas
 Vegetables + Barbecue = Roasted Vegetables
 Vegetables + Roast = Pot Roast
 Vegetables + Cereal = Cereal [nothing]
-Vegetables + Vegetable Soup = Vegetable Soup [nothing]
-Vegetables + Stir-Fry = Stir-Fry [nothing]
+Vegetables + Vegetable Soup = Minestrone
+Vegetables + Stir-Fry = Chop Suey
 
 # Fish
 Fish + Syrup = Swedish Fish
@@ -3340,7 +3340,7 @@ Fish + Stir-Fry = Shrimp
 Fish + Herbs = Grilled Salmon
 Fish + Roast = Baked Fish
 Fish + Green Smoothie = Seaweed
-Fish + Bee = Bee [nothing]
+Fish + Bee = Honey Glazed Salmon
 Fish + Flower = Flower [nothing]
 Fish + Mint = Mint [nothing]
 
@@ -3411,14 +3411,14 @@ Hen + Porridge = Chicken and Rice
 Hen + Beer = Roast Chicken
 Hen + Vegetable Soup = Chicken Soup
 Hen + Herbs = Rotisserie Chicken
-Hen + Seaweed = Seaweed [nothing]
+Hen + Seaweed = Karaage
 Hen + Jerky = Jerky [nothing]
-Hen + Salted Caramel = Salted Caramel [nothing]
-Hen + Oats = Hen [nothing]
-Hen + Kale Chips = Kale Chips [nothing]
-Hen + Green Smoothie = Green Smoothie [nothing]
+Hen + Salted Caramel = Teriyaki
+Hen + Oats = Chicken Tenders
+Hen + Kale Chips = Chicken Caesar Salad
+Hen + Green Smoothie = Green Curry
 Hen + Flower = Flower [nothing]
-Hen + Mint = Mint [nothing]
+Hen + Mint = Larb
 
 # Cereal
 Cereal + Seaweed = Cap'n Crunch
@@ -3450,16 +3450,16 @@ Cereal + Clock = Spoiled
 Cereal + Fridge = Overnight Oats
 Cereal + Cereal = Cereal [nothing]
 Cereal + Ice = Ice [nothing]
-Cereal + Hot Dog = Hot Dog [nothing]
+Cereal + Hot Dog = Breakfast
 Cereal + Brine = Brine [nothing]
-Cereal + Salted Caramel = Salted Caramel [nothing]
+Cereal + Salted Caramel = Granola
 Cereal + Sparkling Water = Sparkling Water [nothing]
 Cereal + Beer = Beer [nothing]
-Cereal + Kale Chips = Kale Chips [nothing]
+Cereal + Kale Chips = Chex Mix
 Cereal + Stir-Fry = Stir-Fry [nothing]
 Cereal + Flower = Flower [nothing]
 Cereal + Mint = Mint [nothing]
-Cereal + Barbecue = Barbecue [nothing]
+Cereal + Barbecue = Granola
 Cereal + Knife = Cereal [nothing]
 
 # Cow
@@ -3488,11 +3488,11 @@ Cow + Green Smoothie = Milk
 Cow + Sugar Cubes = Chocolate Milk
 # cream and powdered sugar
 Cow + Powdered Sugar = Whipped Cream
-Cow + Seaweed = Seaweed [nothing]
-Cow + Hot Dog = Hot Dog [nothing]
+Cow + Seaweed = Bulgogi
+Cow + Hot Dog = Chili Dog
 Cow + Kale Chips = Kale Chips [nothing]
 Cow + Flower = Flower [nothing]
-Cow + Mint = Mint [nothing]
+Cow + Mint = Kofta
 
 # Fruit
 Fruit + Bee = Honey
@@ -3524,8 +3524,8 @@ Fruit + Stove = Apple Fritter
 Fruit + Seaweed = Seaweed [nothing]
 Fruit + Corn = Corn [nothing]
 Fruit + Hot Dog = Hot Dog [nothing]
-Fruit + Stir-Fry = Stir-Fry [nothing]
-Fruit + Mint = Mint [nothing]
+Fruit + Stir-Fry = Orange Chicken
+Fruit + Mint = Fruit Salad
 Fruit + Broth = Broth [nothing]
 
 # Seaweed
@@ -3554,20 +3554,20 @@ Seaweed + Herbs = Seasoning
 Seaweed + Meat = Surf and Turf
 Seaweed + Blender = Green Smoothie
 Seaweed + Bee = Bee [nothing]
-Seaweed + Flour = Flour [nothing]
+Seaweed + Flour = Okonomiyaki
 Seaweed + Corn = Corn [nothing]
-Seaweed + Caramel = Caramel [nothing]
-Seaweed + Salted Caramel = Salted Caramel [nothing]
+Seaweed + Caramel = Sweet Seaweed Chips
+Seaweed + Salted Caramel = Sweet Seaweed Chips
 Seaweed + Sparkling Water = Sparkling Water [nothing]
 Seaweed + Granola = Granola [nothing]
-Seaweed + Porridge = Porridge [nothing]
+Seaweed + Porridge = Congee
 Seaweed + Oats = Oats [nothing]
-Seaweed + Beer = Beer [nothing]
-Seaweed + Green Smoothie = Green Smoothie [nothing]
+Seaweed + Beer = Seaweed Snacks
+Seaweed + Green Smoothie = Seaweed Salad
 Seaweed + Flower = Flower [nothing]
 Seaweed + Mint = Mint [nothing]
-Seaweed + Barbecue = Barbecue [nothing]
-Seaweed + Roast = Roast [nothing]
+Seaweed + Barbecue = Seaweed Snacks
+Seaweed + Roast = Seaweed Snacks
 Seaweed + Clock = Seaweed [nothing]
 Seaweed + Fridge = Seaweed [nothing]
 
@@ -3596,13 +3596,13 @@ Bee + Barbecue = BBQ Sauce
 # honey ham
 Bee + Meat = Ham
 Bee + Roast = Roast Chicken
-Bee + Egg = Egg [nothing]
-Bee + Ice = Ice [nothing]
-Bee + Hot Dog = Hot Dog [nothing]
+Bee + Egg = Nougat
+Bee + Ice = Ice Cream
+Bee + Hot Dog = Honey Mustard
 Bee + Brine = Brine [nothing]
-Bee + Salted Caramel = Salted Caramel [nothing]
-Bee + Sparkling Water = Sparkling Water [nothing]
-Bee + Beer = Beer [nothing]
+Bee + Salted Caramel = Toffee
+Bee + Sparkling Water = Soda
+Bee + Beer = Mead
 Bee + Kale Chips = Kale Chips [nothing]
 Bee + Vegetable Soup = Vegetable Soup [nothing]
 Bee + Broth = Broth [nothing]
@@ -3637,11 +3637,11 @@ Egg + Sugar Cubes = Meringue
 Egg + Oven = Meringue
 Egg + Rock Candy = Cadbury Creme Egg
 Egg + Popcorn = Popcorn [nothing]
-Egg + Sparkling Water = Sparkling Water [nothing]
-Egg + Kale Chips = Kale Chips [nothing]
-Egg + Vegetable Soup = Vegetable Soup [nothing]
-Egg + Green Smoothie = Green Smoothie [nothing]
-Egg + Mint = Mint [nothing]
+Egg + Sparkling Water = Egg Cream
+Egg + Kale Chips = Frittata
+Egg + Vegetable Soup = Egg Drop Soup
+Egg + Green Smoothie = Frittata
+Egg + Mint = Kuku Sabzi
 Egg + Fridge = Egg [nothing]
 
 # Flour
@@ -3704,8 +3704,8 @@ Corn + Rock Candy = Candy Corn
 Corn + Powdered Sugar = Kettle Corn
 Corn + Corn = Corn [nothing]
 Corn + Ice = Ice [nothing]
-Corn + Popcorn = Popcorn [nothing]
-Corn + Herbs = Herbs [nothing]
+Corn + Popcorn = Kettle Corn
+Corn + Herbs = Elote
 Corn + Green Smoothie = Green Smoothie [nothing]
 Corn + Mint = Mint [nothing]
 Corn + Fridge = Corn [nothing]
@@ -3738,7 +3738,7 @@ Crackers + Ice = Ice [nothing]
 Crackers + Boiling Water = Boiling Water [nothing]
 Crackers + Sparkling Water = Sparkling Water [nothing]
 Crackers + Porridge = Porridge [nothing]
-Crackers + Kale Chips = Kale Chips [nothing]
+Crackers + Kale Chips = Party Mix
 Crackers + Stir-Fry = Stir-Fry [nothing]
 Crackers + Green Smoothie = Green Smoothie [nothing]
 Crackers + Flower = Flower [nothing]
@@ -3795,14 +3795,14 @@ Ice + Rock Candy = Popsicle
 Ice + Popcorn = Popcorn [nothing]
 Ice + Hot Dog = Hot Dog [nothing]
 Ice + Jerky = Jerky [nothing]
-Ice + Granola = Granola [nothing]
+Ice + Granola = Parfait
 Ice + Beer = Beer [nothing]
 Ice + Kale Chips = Kale Chips [nothing]
 Ice + Stir-Fry = Stir-Fry [nothing]
 Ice + Flower = Flower [nothing]
-Ice + Barbecue = Barbecue [nothing]
-Ice + Roast = Roast [nothing]
-Ice + Meat = Meat [nothing]
+Ice + Barbecue = Cookout
+Ice + Roast = Leftovers
+Ice + Meat = Cold Cuts
 
 # Popcorn
 # ballpark food
@@ -3821,7 +3821,7 @@ Popcorn + Powdered Sugar = Kettle Corn
 Popcorn + Rock Candy = Cracker Jack
 Popcorn + Blender = Cornmeal
 # soggy, then stale
-Popcorn + Steam = Slop
+Popcorn + Steam = Kettle Corn
 Popcorn + Clock = Spoiled
 Popcorn + Brine = Brine [nothing]
 Popcorn + Boiling Water = Boiling Water [nothing]
@@ -3832,7 +3832,7 @@ Popcorn + Herbs = Herbs [nothing]
 Popcorn + Green Smoothie = Green Smoothie [nothing]
 Popcorn + Flower = Flower [nothing]
 Popcorn + Mint = Mint [nothing]
-Popcorn + Roast = Roast [nothing]
+Popcorn + Roast = Kettle Corn
 Popcorn + Broth = Broth [nothing]
 Popcorn + Knife = Popcorn [nothing]
 Popcorn + Fridge = Popcorn [nothing]
@@ -3864,13 +3864,13 @@ Hot Dog + Salted Caramel = Salted Caramel [nothing]
 Hot Dog + Granola = Granola [nothing]
 Hot Dog + Porridge = Porridge [nothing]
 Hot Dog + Oats = Oats [nothing]
-Hot Dog + Kale Chips = Kale Chips [nothing]
-Hot Dog + Vegetable Soup = Vegetable Soup [nothing]
-Hot Dog + Stir-Fry = Stir-Fry [nothing]
-Hot Dog + Herbs = Herbs [nothing]
+Hot Dog + Kale Chips = Chicago Dog
+Hot Dog + Vegetable Soup = Chili Dog
+Hot Dog + Stir-Fry = Sausage and Peppers
+Hot Dog + Herbs = Relish
 Hot Dog + Flower = Flower [nothing]
 Hot Dog + Mint = Mint [nothing]
-Hot Dog + Barbecue = Barbecue [nothing]
+Hot Dog + Barbecue = Cookout
 Hot Dog + Broth = Broth [nothing]
 Hot Dog + Stove = Hot Dog [nothing]
 Hot Dog + Oven = Hot Dog [nothing]
@@ -4172,7 +4172,7 @@ Beer + Stove = Steam
 # beer bread
 Beer + Oven = Bread
 Beer + Beer = Beer [nothing]
-Beer + Stir-Fry = Stir-Fry [nothing]
+Beer + Stir-Fry = Takeout
 # green beer is still beer
 Beer + Green Smoothie = Beer [nothing]
 Beer + Knife = Beer [nothing]
@@ -4220,7 +4220,7 @@ Vegetable Soup + Rock Candy = Slop
 Vegetable Soup + Blender = Baby Food
 Vegetable Soup + Clock = Spoiled
 Vegetable Soup + Flower = Flower [nothing]
-Vegetable Soup + Broth = Broth [nothing]
+Vegetable Soup + Broth = Minestrone
 Vegetable Soup + Knife = Vegetable Soup [nothing]
 
 # Stir-Fry
@@ -10608,7 +10608,7 @@ Pickles + Meat = Burger
 Pickles + Brine = Pickles [nothing]
 Pickles + Granola = Pickles [nothing]
 Pickles + Oats = Pickles [nothing]
-Pickles + Powdered Sugar = Pickles [nothing]
+Pickles + Powdered Sugar = Pickle Candy
 
 # Baby Food
 Baby Food + Ocean = Fish Sticks
@@ -10833,7 +10833,7 @@ Smoothie + Barbecue = Slop
 Smoothie + Stir-Fry = Slop
 Smoothie + Roast = Slop
 # it's just more smoothie
-Smoothie + Fruit = Smoothie [nothing]
+Smoothie + Fruit = Smoothie Bowl
 Smoothie + Steam = Smoothie [nothing]
 
 # Slushie
@@ -11181,7 +11181,7 @@ Herbal Tea + Porridge = Breakfast
 Herbal Tea + Egg = Boiled Egg
 Herbal Tea + Fish = Slop
 Herbal Tea + Hot Dog = Slop
-Herbal Tea + Meat = Slop
+Herbal Tea + Meat = Bak Kut Teh
 Herbal Tea + Stir-Fry = Slop
 Herbal Tea + Ocean = Herbal Tea [nothing]
 Herbal Tea + Brine = Herbal Tea [nothing]
@@ -11701,8 +11701,8 @@ Overnight Oats + Herbs = Congee
 Overnight Oats + Broth = Congee
 # cold oats and meat
 Overnight Oats + Meat = Slop
-Overnight Oats + Roast = Slop
-Overnight Oats + Barbecue = Slop
+Overnight Oats + Roast = Granola
+Overnight Oats + Barbecue = Granola
 Overnight Oats + Hot Dog = Slop
 Overnight Oats + Jerky = Slop
 Overnight Oats + Ocean = Overnight Oats [nothing]
@@ -11765,7 +11765,7 @@ Soda + Powdered Sugar = Kool-Aid
 Soda + Rock Candy = Pop Rocks
 Soda + Fish = Slop
 Soda + Seaweed = Slop
-Soda + Egg = Slop
+Soda + Egg = Egg Cream
 Soda + Vegetable Soup = Slop
 Soda + Broth = Slop
 Soda + Kale Chips = Soda [nothing]
@@ -12694,7 +12694,7 @@ Gravy + Beer = Irish Stew
 # American Chinese omelettes, under brown gravy
 Gravy + Stir-Fry = Egg Foo Young [dish]
 Gravy + Green Smoothie = Slop
-Gravy + Granola = Slop
+Gravy + Granola = Stuffing
 Gravy + Kale Chips = Slop
 # mint sauce with lamb
 Gravy + Mint = Lamb Chops
@@ -12921,7 +12921,7 @@ Chili + Steam = Tamale
 Chili + Boiling Water = Soup
 Chili + Granola = Trail Mix
 Chili + Porridge = Slop
-Chili + Green Smoothie = Slop
+Chili + Green Smoothie = Green Chile Stew
 Chili + Oats = Meatloaf
 # Mexico's beer with lime, chili and salt
 Chili + Beer = Michelada [drink]
@@ -13326,7 +13326,7 @@ Gazpacho + Syrup = Ketchup
 Gazpacho + Hen = Tortilla Soup
 Gazpacho + Cereal = Slop
 Gazpacho + Granola = Slop
-Gazpacho + Porridge = Slop
+Gazpacho + Porridge = Salmorejo
 Gazpacho + Oats = Slop
 Gazpacho + Fruit = Sangria [drink]
 Gazpacho + Egg = Shakshuka
@@ -15202,7 +15202,7 @@ Kettle Corn + Kale Chips = Veggie Straws
 Kettle Corn + Vegetable Soup = Corn Chowder
 Kettle Corn + Herbs = Seasoned Popcorn [dish]
 Kettle Corn + Green Smoothie = Slop
-Kettle Corn + Flour = Slop
+Kettle Corn + Flour = Funnel Cake
 Kettle Corn + Broth = Slop
 Kettle Corn + Mint = Tic Tacs
 Kettle Corn + Barbecue = BBQ Popcorn [dish]
@@ -15717,7 +15717,7 @@ Iced Tea + Fish = Slop
 Iced Tea + Vegetable Soup = Slop
 Iced Tea + Flour = Iced Tea [nothing]
 Iced Tea + Brine = Iced Tea [nothing]
-Iced Tea + Boiling Water = Iced Tea [nothing]
+Iced Tea + Boiling Water = Tea
 Iced Tea + Beer = Iced Tea [nothing]
 
 # Graham Crackers
@@ -16145,7 +16145,7 @@ Pie + Broth = Pie and Mash
 Pie + Sugar Cubes = Chess Pie
 Pie + Powdered Sugar = Chess Pie
 Pie + Rock Candy = Chess Pie
-Pie + Boiling Water = Slop
+Pie + Boiling Water = Pierogi
 Pie + Porridge = Slop
 Pie + Cereal = Pie [nothing]
 Pie + Seaweed = Pie [nothing]
@@ -16356,7 +16356,7 @@ Baked Fish + Herbs = Grilled Salmon
 Baked Fish + Mint = Grilled Salmon
 Baked Fish + Barbecue = Grilled Salmon
 Baked Fish + Roast = Baked Potato
-Baked Fish + Porridge = Slop
+Baked Fish + Porridge = Congee
 Baked Fish + Green Smoothie = Slop
 Baked Fish + Sugar Cubes = Slop
 Baked Fish + Sparkling Water = Baked Fish [nothing]
@@ -16675,7 +16675,7 @@ Chicken Nuggets + Roast = Chicken Parmesan
 Chicken Nuggets + Rock Candy = Korean Fried Chicken
 Chicken Nuggets + Granola = Slop
 Chicken Nuggets + Porridge = Slop
-Chicken Nuggets + Oats = Slop
+Chicken Nuggets + Oats = Chicken Tenders
 Chicken Nuggets + Green Smoothie = Slop
 Chicken Nuggets + Flower = Chicken Nuggets [nothing]
 Chicken Nuggets + Mint = Chicken Nuggets [nothing]
@@ -16833,8 +16833,8 @@ Rice Soup + Roast = Casserole
 # rice with hot broth or green tea poured over
 Rice Soup + Broth = Ochazuke
 Rice Soup + Green Smoothie = Slop
-Rice Soup + Powdered Sugar = Slop
-Rice Soup + Rock Candy = Slop
+Rice Soup + Powdered Sugar = Rice Pudding
+Rice Soup + Rock Candy = Rice Pudding
 Rice Soup + Popcorn = Rice Soup [nothing]
 Rice Soup + Sparkling Water = Rice Soup [nothing]
 Rice Soup + Beer = Rice Soup [nothing]
@@ -17095,7 +17095,7 @@ Kombucha + Hen = Spoiled
 Kombucha + Egg = Spoiled
 Kombucha + Hot Dog = Spoiled
 Kombucha + Jerky = Spoiled
-Kombucha + Meat = Spoiled
+Kombucha + Meat = Marinade
 Kombucha + Ocean = Kombucha [nothing]
 Kombucha + Rock Salt = Kombucha [nothing]
 Kombucha + Seaweed = Kombucha [nothing]
@@ -18366,6 +18366,322 @@ Tomato Soup + Granola = Tomato Soup [nothing]
 Tomato Soup + Oats = Tomato Soup [nothing]
 Tomato Soup + Flower = Tomato Soup [nothing]
 Tomato Soup + Powdered Sugar = Tomato Soup [nothing]
+
+## Step 2 layer 2, batch 46 (2026-10-22): Congee, Chex Mix, Sweet and Sour Chicken
+
+# Congee
+Congee + Ocean = Seafood Soup
+Congee + Fish = Fish Soup
+# fried dough sticks for dunking
+Congee + Wheat = Youtiao
+Congee + Farm = Chicken and Rice
+Congee + Hen = Arroz Caldo
+Congee + Cow = Seolleongtang
+Congee + Meat = Gukbap
+Congee + Candy = Rice Pudding
+Congee + Syrup = Rice Pudding
+Congee + Bee = Rice Pudding
+Congee + Caramel = Rice Pudding
+Congee + Salted Caramel = Rice Pudding
+Congee + Sugar Cubes = Rice Pudding
+Congee + Powdered Sugar = Rice Pudding
+Congee + Rock Candy = Rice Pudding
+Congee + Rock Salt = Salted Egg
+Congee + Egg = Century Egg
+Congee + Rice = Rice Soup
+Congee + Boiling Water = Rice Soup
+Congee + Broth = Rice Soup
+Congee + Vegetables = Vegetable Soup
+Congee + Kale Chips = Vegetable Soup
+Congee + Cereal = Cream of Wheat
+Congee + Fruit = Che
+Congee + Seaweed = Ochazuke
+Congee + Flour = Wonton Soup
+Congee + Corn = Corn Soup
+Congee + Crackers = Rice Crackers
+Congee + Ice = Leftovers
+Congee + Hot Dog = Budae Jjigae
+Congee + Brine = Tsukemono
+# pork floss is the classic congee topping
+Congee + Jerky = Pork Floss
+Congee + Steam = Lo Mai Gai
+Congee + Granola = Oatmeal
+Congee + Porridge = Oatmeal
+Congee + Oats = Oatmeal
+Congee + Vegetable Soup = Minestrone
+Congee + Stir-Fry = Fried Rice
+Congee + Herbs = Avgolemono
+Congee + Mint = Pho
+Congee + Barbecue = Char Siu
+Congee + Roast = Crispy Rice
+Congee + Tree = Congee [nothing]
+Congee + Popcorn = Congee [nothing]
+Congee + Sparkling Water = Congee [nothing]
+Congee + Beer = Congee [nothing]
+Congee + Green Smoothie = Congee [nothing]
+Congee + Flower = Congee [nothing]
+
+# Chex Mix
+# the cheddar crackers shaped like fish
+Chex Mix + Ocean = Goldfish
+Chex Mix + Fish = Goldfish
+Chex Mix + Wheat = Wheat Thins
+Chex Mix + Tree = Trail Mix
+Chex Mix + Fruit = Trail Mix
+Chex Mix + Granola = Trail Mix
+Chex Mix + Farm = Party Mix
+Chex Mix + Crackers = Party Mix
+Chex Mix + Popcorn = Party Mix
+Chex Mix + Kale Chips = Party Mix
+# Chex tossed in chocolate, peanut butter and powdered sugar
+Chex Mix + Powdered Sugar = Puppy Chow
+Chex Mix + Candy = M&M's
+Chex Mix + Rock Salt = Pretzel
+Chex Mix + Flour = Pretzel
+Chex Mix + Rice = Rice Crackers
+Chex Mix + Vegetables = Veggie Straws
+Chex Mix + Syrup = Granola
+Chex Mix + Hen = Popcorn Chicken
+Chex Mix + Cereal = Honey Nut Cheerios
+Chex Mix + Bee = Honey Nut Cheerios
+Chex Mix + Porridge = Cereal
+Chex Mix + Cow = Cheez-It
+Chex Mix + Seaweed = Seaweed Snacks
+Chex Mix + Egg = Deviled Eggs
+Chex Mix + Corn = Fritos
+Chex Mix + Caramel = Caramel Corn
+Chex Mix + Salted Caramel = Christmas Crack
+Chex Mix + Hot Dog = Road Trip Snacks
+Chex Mix + Jerky = Road Trip Snacks
+Chex Mix + Oats = Granola Bar
+Chex Mix + Beer = Bar Snacks
+Chex Mix + Vegetable Soup = Croutons
+Chex Mix + Herbs = Ranch
+Chex Mix + Barbecue = BBQ Chips
+Chex Mix + Roast = Roasted Nuts
+Chex Mix + Meat = Slim Jim
+Chex Mix + Sugar Cubes = Cracker Jack
+Chex Mix + Rock Candy = Halloween Candy
+Chex Mix + Mint = Tic Tacs
+Chex Mix + Sparkling Water = Soda
+Chex Mix + Boiling Water = Slop
+Chex Mix + Green Smoothie = Slop
+Chex Mix + Ice = Chex Mix [nothing]
+Chex Mix + Brine = Chex Mix [nothing]
+Chex Mix + Steam = Chex Mix [nothing]
+Chex Mix + Stir-Fry = Chex Mix [nothing]
+Chex Mix + Flower = Chex Mix [nothing]
+Chex Mix + Broth = Chex Mix [nothing]
+
+# Sweet and Sour Chicken
+Sweet and Sour Chicken + Ocean = Honey Walnut Shrimp
+Sweet and Sour Chicken + Fish = Sweet and Sour Fish
+Sweet and Sour Chicken + Wheat = Lo Mein
+Sweet and Sour Chicken + Flour = Egg Rolls
+Sweet and Sour Chicken + Tree = Lemon Chicken
+Sweet and Sour Chicken + Fruit = Orange Chicken
+Sweet and Sour Chicken + Sugar Cubes = Orange Chicken
+Sweet and Sour Chicken + Farm = Takeout
+Sweet and Sour Chicken + Beer = Takeout
+# Korea's sweet and sour pork
+Sweet and Sour Chicken + Meat = Tangsuyuk
+Sweet and Sour Chicken + Candy = Tangsuyuk
+Sweet and Sour Chicken + Rock Salt = Salt and Pepper Shrimp
+Sweet and Sour Chicken + Rice = Chicken Fried Rice
+Sweet and Sour Chicken + Vegetables = Chop Suey
+Sweet and Sour Chicken + Corn = Chop Suey
+Sweet and Sour Chicken + Syrup = Teriyaki
+Sweet and Sour Chicken + Caramel = Teriyaki
+Sweet and Sour Chicken + Salted Caramel = Teriyaki
+Sweet and Sour Chicken + Hen = General Tso's Chicken
+Sweet and Sour Chicken + Cereal = Chicken Nuggets
+Sweet and Sour Chicken + Cow = Mongolian Beef
+Sweet and Sour Chicken + Seaweed = Karaage
+Sweet and Sour Chicken + Bee = Sesame Chicken
+Sweet and Sour Chicken + Egg = Egg Foo Young
+Sweet and Sour Chicken + Crackers = Fortune Cookie
+Sweet and Sour Chicken + Ice = Leftovers
+Sweet and Sour Chicken + Popcorn = Popcorn Chicken
+Sweet and Sour Chicken + Hot Dog = Sausage and Peppers
+Sweet and Sour Chicken + Brine = Pickles
+# Chinese sweet barbecued jerky
+Sweet and Sour Chicken + Jerky = Bakkwa
+Sweet and Sour Chicken + Steam = Bao
+Sweet and Sour Chicken + Boiling Water = Chicken Soup
+Sweet and Sour Chicken + Broth = Wonton Soup
+Sweet and Sour Chicken + Porridge = Congee
+Sweet and Sour Chicken + Kale Chips = Lettuce Wraps
+Sweet and Sour Chicken + Vegetable Soup = Hot and Sour Soup
+Sweet and Sour Chicken + Stir-Fry = Kung Pao Chicken
+Sweet and Sour Chicken + Herbs = Pad Kra Pao
+Sweet and Sour Chicken + Green Smoothie = Green Curry
+Sweet and Sour Chicken + Mint = Larb
+Sweet and Sour Chicken + Barbecue = Char Siu
+Sweet and Sour Chicken + Roast = Peking Duck
+Sweet and Sour Chicken + Sparkling Water = Sweet and Sour Chicken [nothing]
+Sweet and Sour Chicken + Granola = Sweet and Sour Chicken [nothing]
+Sweet and Sour Chicken + Oats = Sweet and Sour Chicken [nothing]
+Sweet and Sour Chicken + Flower = Sweet and Sour Chicken [nothing]
+Sweet and Sour Chicken + Powdered Sugar = Sweet and Sour Chicken [nothing]
+Sweet and Sour Chicken + Rock Candy = Sweet and Sour Chicken [nothing]
+
+## Step 2 layer 2, batch 47 (2026-10-22): Party Mix, Pilaf, Road Trip Snacks
+
+# Party Mix
+Party Mix + Ocean = Goldfish
+Party Mix + Fish = Swedish Fish
+Party Mix + Wheat = Chex Mix
+Party Mix + Cereal = Chex Mix
+Party Mix + Tree = Trail Mix
+Party Mix + Granola = Trail Mix
+Party Mix + Farm = Picnic
+Party Mix + Candy = Halloween Candy
+Party Mix + Rock Candy = Halloween Candy
+Party Mix + Rock Salt = Pretzel
+Party Mix + Rice = Rice Crackers
+Party Mix + Vegetables = Veggie Tray
+Party Mix + Syrup = Popcorn Ball
+Party Mix + Hen = Buffalo Wings
+Party Mix + Cow = Cheese and Crackers
+Party Mix + Fruit = Fruit Salad
+Party Mix + Seaweed = Seaweed Snacks
+Party Mix + Bee = Honey Nut Cheerios
+Party Mix + Egg = Deviled Eggs
+Party Mix + Flour = Birthday Cake
+Party Mix + Corn = Tortilla Chips
+Party Mix + Crackers = Wheat Thins
+Party Mix + Caramel = Caramel Corn
+# a punch bowl on the party table
+Party Mix + Ice = Punch
+Party Mix + Popcorn = Kettle Corn
+Party Mix + Hot Dog = Pigs in a Blanket
+Party Mix + Brine = Relish Tray
+Party Mix + Jerky = Road Trip Snacks
+Party Mix + Salted Caramel = Christmas Crack
+Party Mix + Sparkling Water = Soda
+Party Mix + Oats = Granola Bar
+Party Mix + Beer = Bar Snacks
+Party Mix + Kale Chips = Veggie Straws
+Party Mix + Vegetable Soup = Chips and Dip
+Party Mix + Stir-Fry = Hurricane Popcorn
+Party Mix + Herbs = Ranch
+Party Mix + Mint = Tic Tacs
+Party Mix + Barbecue = BBQ Chips
+Party Mix + Roast = Roasted Nuts
+Party Mix + Meat = Charcuterie Board
+Party Mix + Sugar Cubes = Cake Pop
+Party Mix + Powdered Sugar = Puppy Chow
+Party Mix + Steam = Party Mix [nothing]
+Party Mix + Boiling Water = Party Mix [nothing]
+Party Mix + Porridge = Party Mix [nothing]
+Party Mix + Green Smoothie = Party Mix [nothing]
+Party Mix + Flower = Party Mix [nothing]
+Party Mix + Broth = Party Mix [nothing]
+
+# Pilaf
+Pilaf + Ocean = Paella
+Pilaf + Wheat = Bulgur
+# spiced rice with nuts and raisins
+Pilaf + Tree = Kabsa
+Pilaf + Farm = Chicken and Rice
+Pilaf + Candy = Rice Pudding
+Pilaf + Syrup = Rice Pudding
+Pilaf + Bee = Rice Pudding
+Pilaf + Caramel = Rice Pudding
+Pilaf + Salted Caramel = Rice Pudding
+Pilaf + Sugar Cubes = Rice Pudding
+Pilaf + Powdered Sugar = Rice Pudding
+Pilaf + Rock Candy = Rice Pudding
+Pilaf + Rock Salt = Onigiri
+Pilaf + Seaweed = Onigiri
+# the boxed "San Francisco treat"
+Pilaf + Rice = Rice-A-Roni
+# layered and flipped upside down
+Pilaf + Vegetables = Maqluba
+Pilaf + Hen = Arroz con Pollo
+Pilaf + Cereal = Puffed Rice
+Pilaf + Cow = Rice and Meat
+# Persian rice with barberries
+Pilaf + Fruit = Zereshk Polo
+Pilaf + Egg = Kedgeree
+# Russia's fish and rice pie
+Pilaf + Flour = Kulebyaka
+Pilaf + Corn = Spanish Rice
+Pilaf + Ice = Leftovers
+Pilaf + Hot Dog = Jambalaya
+# rice rolled in brined grape leaves
+Pilaf + Brine = Stuffed Grape Leaves
+Pilaf + Jerky = Dirty Rice
+Pilaf + Steam = Steamed Rice
+Pilaf + Boiling Water = Rice Soup
+Pilaf + Porridge = Congee
+Pilaf + Kale Chips = Sabzi Polo
+Pilaf + Vegetable Soup = Gumbo
+Pilaf + Stir-Fry = Fried Rice
+Pilaf + Green Smoothie = Green Curry
+Pilaf + Flower = Biryani
+Pilaf + Mint = Tabbouleh
+Pilaf + Barbecue = Chelo Kebab
+Pilaf + Roast = Mansaf
+Pilaf + Broth = Risotto
+Pilaf + Meat = Plov
+Pilaf + Crackers = Pilaf [nothing]
+Pilaf + Popcorn = Pilaf [nothing]
+Pilaf + Sparkling Water = Pilaf [nothing]
+Pilaf + Granola = Pilaf [nothing]
+Pilaf + Oats = Pilaf [nothing]
+Pilaf + Beer = Pilaf [nothing]
+
+# Road Trip Snacks
+Road Trip Snacks + Ocean = Saltwater Taffy
+Road Trip Snacks + Fish = Swedish Fish
+Road Trip Snacks + Wheat = Pretzel
+Road Trip Snacks + Tree = Trail Mix
+Road Trip Snacks + Farm = Lunchables
+Road Trip Snacks + Candy = M&M's
+Road Trip Snacks + Rock Salt = Corn Nuts
+Road Trip Snacks + Rice = Rice Crackers
+Road Trip Snacks + Vegetables = Veggie Straws
+Road Trip Snacks + Kale Chips = Veggie Straws
+Road Trip Snacks + Syrup = Gummy Bears
+Road Trip Snacks + Hen = Chicken Nuggets
+Road Trip Snacks + Cereal = Chex Mix
+Road Trip Snacks + Cow = Beef Jerky
+Road Trip Snacks + Meat = Beef Jerky
+Road Trip Snacks + Fruit = Fruit Snacks
+Road Trip Snacks + Seaweed = Seaweed Snacks
+Road Trip Snacks + Bee = Honey Nut Cheerios
+# the gas station jar
+Road Trip Snacks + Egg = Pickled Egg
+Road Trip Snacks + Brine = Pickles
+Road Trip Snacks + Flour = Pop-Tart
+Road Trip Snacks + Corn = Fritos
+Road Trip Snacks + Crackers = Cheez-It
+Road Trip Snacks + Caramel = Cracker Jack
+Road Trip Snacks + Popcorn = Caramel Corn
+Road Trip Snacks + Ice = Slushie
+Road Trip Snacks + Hot Dog = Corn Dog
+Road Trip Snacks + Jerky = Slim Jim
+Road Trip Snacks + Salted Caramel = Turtles
+Road Trip Snacks + Boiling Water = Cup Noodles
+Road Trip Snacks + Vegetable Soup = Cup Noodles
+Road Trip Snacks + Broth = Cup Noodles
+Road Trip Snacks + Sparkling Water = Soda
+Road Trip Snacks + Granola = Granola Bar
+Road Trip Snacks + Oats = Granola Bar
+Road Trip Snacks + Porridge = Oatmeal
+Road Trip Snacks + Beer = Bar Snacks
+Road Trip Snacks + Stir-Fry = Takeout
+Road Trip Snacks + Herbs = Ranch
+Road Trip Snacks + Green Smoothie = Smoothie
+Road Trip Snacks + Mint = Tic Tacs
+Road Trip Snacks + Barbecue = BBQ Chips
+Road Trip Snacks + Roast = Roasted Nuts
+Road Trip Snacks + Sugar Cubes = Sour Patch Kids
+Road Trip Snacks + Powdered Sugar = Pixy Stix
+Road Trip Snacks + Rock Candy = Jawbreaker
+Road Trip Snacks + Steam = Road Trip Snacks [nothing]
+Road Trip Snacks + Flower = Road Trip Snacks [nothing]
 
 #############################################################################
 # New cookbooks (2026-10-19): Southeast Asian, African, Latin American. Their
