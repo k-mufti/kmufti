@@ -865,3 +865,4 @@ Kool-Aid Pickles = Koolickles
 Corn Pops = Corn Pops
 Cornflake Cakes = -
 Pastel de Elote = -
+Mentos = Mentos
