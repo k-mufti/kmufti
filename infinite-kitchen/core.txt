@@ -19773,6 +19773,1032 @@ Bacon + Sparkling Water = Bacon [nothing]
 Bacon + Flower = Bacon [nothing]
 Bacon + Mint = Bacon [nothing]
 
+## Step 2 layer 2, batch 54 (2026-10-24): Cookout, Candy Cane, Kimchi
+
+# Cookout
+Cookout + Ocean = Seafood Boil
+Cookout + Fish = Fish Fry
+Cookout + Wheat = Burger
+Cookout + Cow = Burger
+Cookout + Flour = Biscuit
+# peach tree
+Cookout + Tree = Peach Cobbler
+Cookout + Farm = Picnic
+# the cookout drink
+Cookout + Sugar Cubes = Sweet Tea
+Cookout + Syrup = Sweet Tea
+Cookout + Ice = Sweet Tea
+Cookout + Candy = S'mores
+Cookout + Rock Candy = S'mores
+Cookout + Crackers = S'mores
+# the cookout dessert
+Cookout + Caramel = Banana Pudding
+Cookout + Salted Caramel = Banana Pudding
+Cookout + Powdered Sugar = Banana Pudding
+# salt and pepper rub, Texas style
+Cookout + Rock Salt = Brisket
+Cookout + Rice = Jambalaya
+Cookout + Vegetables = Coleslaw
+Cookout + Hen = BBQ Chicken
+Cookout + Bee = Chicken Wings
+Cookout + Fruit = Watermelon
+# New England cookout steamed under seaweed
+Cookout + Seaweed = Clambake
+Cookout + Steam = Clambake
+Cookout + Egg = Deviled Eggs
+Cookout + Corn = Corn on the Cob
+Cookout + Boiling Water = Corn on the Cob
+Cookout + Popcorn = Kettle Corn
+Cookout + Hot Dog = Chili Dog
+# the relish tray
+Cookout + Brine = Pickles
+Cookout + Jerky = Burnt Ends
+Cookout + Sparkling Water = Soda
+Cookout + Beer = Beer Can Chicken
+Cookout + Kale Chips = Collard Greens
+Cookout + Green Smoothie = Salad
+Cookout + Vegetable Soup = Brunswick Stew
+Cookout + Broth = Brunswick Stew
+# Japanese-American grill
+Cookout + Stir-Fry = Hibachi
+# Argentine asado sauce
+Cookout + Herbs = Chimichurri
+Cookout + Barbecue = Pulled Pork
+# Filipino whole roast pig
+Cookout + Roast = Lechon
+Cookout + Meat = Ribs
+Cookout + Porridge = Slop
+Cookout + Cereal = Cookout [nothing]
+Cookout + Granola = Cookout [nothing]
+Cookout + Oats = Cookout [nothing]
+Cookout + Flower = Cookout [nothing]
+Cookout + Mint = Cookout [nothing]
+
+# Candy Cane
+Candy Cane + Ocean = Saltwater Taffy
+Candy Cane + Rock Salt = Saltwater Taffy
+Candy Cane + Wheat = Gingerbread
+Candy Cane + Flour = Sugar Cookie
+Candy Cane + Tree = Gingerbread House
+# a peppermint stir stick
+Candy Cane + Farm = Hot Chocolate
+Candy Cane + Cow = Hot Chocolate
+Candy Cane + Candy = Lollipop
+Candy Cane + Sugar Cubes = Lollipop
+Candy Cane + Rock Candy = Jawbreaker
+Candy Cane + Rice = Rice Krispies Treat
+Candy Cane + Fish = Swedish Fish
+Candy Cane + Syrup = Snow Cone
+Candy Cane + Ice = Snow Cone
+Candy Cane + Hen = Peeps
+# "reindeer chow"
+Candy Cane + Cereal = Puppy Chow
+Candy Cane + Fruit = Fruitcake
+Candy Cane + Bee = Cough Drops
+Candy Cane + Egg = Eggnog
+# the other striped candy
+Candy Cane + Corn = Candy Corn
+# saltine toffee, a holiday tray classic
+Candy Cane + Crackers = Christmas Crack
+Candy Cane + Caramel = Butterscotch
+Candy Cane + Salted Caramel = Butterscotch
+Candy Cane + Popcorn = Popcorn Ball
+Candy Cane + Brine = Pickle Candy
+Candy Cane + Jerky = Road Trip Snacks
+Candy Cane + Steam = Mint Tea
+Candy Cane + Boiling Water = Mint Tea
+Candy Cane + Herbs = Mint Tea
+Candy Cane + Sparkling Water = Soda
+Candy Cane + Granola = Granola Bar
+Candy Cane + Oats = Granola Bar
+Candy Cane + Green Smoothie = Shamrock Shake
+Candy Cane + Mint = Tic Tacs
+# Christmas dinner
+Candy Cane + Meat = Glazed Ham
+Candy Cane + Vegetables = Christmas Dinner
+Candy Cane + Roast = Christmas Dinner
+Candy Cane + Barbecue = S'mores
+Candy Cane + Powdered Sugar = Peppermint Patty
+Candy Cane + Hot Dog = Slop
+Candy Cane + Vegetable Soup = Slop
+# Scandinavian Christmas rice porridge
+Candy Cane + Porridge = Rice Pudding
+Candy Cane + Seaweed = Candy Cane [nothing]
+Candy Cane + Beer = Candy Cane [nothing]
+Candy Cane + Kale Chips = Candy Cane [nothing]
+Candy Cane + Broth = Candy Cane [nothing]
+Candy Cane + Stir-Fry = Candy Cane [nothing]
+Candy Cane + Flower = Candy Cane [nothing]
+
+# Kimchi
+# canned tuna kimchi stew
+Kimchi + Ocean = Kimchi Jjigae
+Kimchi + Fish = Kimchi Jjigae
+Kimchi + Broth = Kimchi Jjigae
+Kimchi + Boiling Water = Kimchi Jjigae
+Kimchi + Vegetable Soup = Kimchi Jjigae
+Kimchi + Wheat = Ramen
+Kimchi + Flour = Kimchi Pancake
+# kimchi grilled cheese
+Kimchi + Farm = Grilled Cheese
+Kimchi + Cow = Grilled Cheese
+Kimchi + Rice = Kimchi Fried Rice
+Kimchi + Egg = Kimchi Fried Rice
+Kimchi + Vegetables = Bibimbap
+Kimchi + Kale Chips = Bibimbap
+Kimchi + Green Smoothie = Bibimbap
+Kimchi + Hen = Korean Fried Chicken
+# sweet-spicy rice cakes
+Kimchi + Syrup = Tteokbokki
+Kimchi + Bee = Tteokbokki
+# the sweet marinade on the table beside it
+Kimchi + Caramel = Bulgogi
+Kimchi + Salted Caramel = Bulgogi
+Kimchi + Seaweed = Kimbap
+# kimchi tacos, LA food-truck style
+Kimchi + Corn = Taco
+Kimchi + Crackers = Nachos
+# kimchi cold noodles
+Kimchi + Ice = Naengmyeon
+Kimchi + Hot Dog = Budae Jjigae
+# the German cousin
+Kimchi + Rock Salt = Sauerkraut
+Kimchi + Brine = Sauerkraut
+# anju - Korean drinking snacks
+Kimchi + Popcorn = Bar Snacks
+Kimchi + Jerky = Bar Snacks
+Kimchi + Steam = Mandu
+Kimchi + Oats = Congee
+Kimchi + Porridge = Congee
+Kimchi + Beer = Soju
+Kimchi + Stir-Fry = Dak Galbi
+Kimchi + Herbs = Lettuce Wraps
+Kimchi + Barbecue = Korean BBQ
+Kimchi + Roast = Korean BBQ
+Kimchi + Meat = Korean BBQ
+# fizzy radish water kimchi, with Asian pear
+Kimchi + Sparkling Water = Dongchimi [dish]
+Kimchi + Fruit = Dongchimi
+Kimchi + Mint = Lettuce Wraps
+Kimchi + Candy = Slop
+Kimchi + Sugar Cubes = Slop
+Kimchi + Rock Candy = Kimchi [nothing]
+Kimchi + Cereal = Kimchi [nothing]
+Kimchi + Granola = Kimchi [nothing]
+Kimchi + Flower = Kimchi [nothing]
+Kimchi + Tree = Kimchi [nothing]
+Kimchi + Powdered Sugar = Kimchi [nothing]
+
+## Step 2 layer 2, batch 55 (2026-10-24): Ranch, Turtles, Cadbury Creme Egg
+
+# Ranch
+Ranch + Ocean = Popcorn Shrimp
+Ranch + Fish = Fish Tacos
+Ranch + Wheat = Pizza
+Ranch + Flour = Pizza
+# apples, walnuts, creamy dressing
+Ranch + Tree = Waldorf Salad
+Ranch + Fruit = Waldorf Salad
+Ranch + Farm = Cobb Salad
+# ranch-seasoned sweet and salty snack mix
+Ranch + Candy = Party Mix
+Ranch + Caramel = Party Mix
+Ranch + Salted Caramel = Party Mix
+Ranch + Rock Candy = Party Mix
+Ranch + Granola = Party Mix
+# sugar turns it into coleslaw dressing
+Ranch + Sugar Cubes = Coleslaw
+Ranch + Powdered Sugar = Coleslaw
+Ranch + Rock Salt = Chips and Dip
+Ranch + Vegetables = Veggie Tray
+# steamed broccoli, the kid way
+Ranch + Steam = Veggie Tray
+Ranch + Syrup = Honey Mustard
+Ranch + Bee = Honey Mustard
+Ranch + Hen = Chicken Tenders
+Ranch + Cereal = Chex Mix
+# ranch oyster crackers
+Ranch + Crackers = Oyster Crackers
+Ranch + Cow = Cheese Fries
+Ranch + Meat = Burger
+Ranch + Seaweed = Seaweed Salad
+Ranch + Egg = Deviled Eggs
+# Cool Ranch
+Ranch + Corn = Doritos
+Ranch + Popcorn = Popcorn Chicken
+Ranch + Hot Dog = Corn Dog
+Ranch + Brine = Fried Pickles
+Ranch + Jerky = Bar Snacks
+Ranch + Beer = Chicken Wings
+Ranch + Kale Chips = Salad
+Ranch + Green Smoothie = Salad
+Ranch + Flower = Salad
+# a creamy herb dip
+Ranch + Mint = Tzatziki
+Ranch + Barbecue = BBQ Chicken
+Ranch + Roast = Baked Potato
+# boiled potatoes in ranch
+Ranch + Boiling Water = Potato Salad
+Ranch + Porridge = Slop
+Ranch + Vegetable Soup = Slop
+Ranch + Ice = Ranch [nothing]
+Ranch + Stir-Fry = Ranch [nothing]
+Ranch + Rice = Ranch [nothing]
+Ranch + Sparkling Water = Ranch [nothing]
+Ranch + Broth = Ranch [nothing]
+Ranch + Oats = Ranch [nothing]
+
+# Turtles
+# boardwalk candy shop
+Turtles + Ocean = Saltwater Taffy
+Turtles + Wheat = Cookie
+Turtles + Flour = Brownie
+# pecan tree
+Turtles + Tree = Pecan Pie
+Turtles + Farm = Milk Chocolate
+Turtles + Cow = Chocolate Milk
+Turtles + Candy = Candy Bar
+Turtles + Sugar Cubes = Toffee
+Turtles + Rock Candy = Halloween Candy
+Turtles + Powdered Sugar = Fudge
+Turtles + Rock Salt = Salted Caramel
+# pecans and caramel, New Orleans style
+Turtles + Caramel = Pralines
+Turtles + Salted Caramel = Pralines
+Turtles + Rice = Rice Krispies Treat
+# pecans and brown sugar on top
+Turtles + Vegetables = Sweet Potato Casserole
+Turtles + Fish = Swedish Fish
+Turtles + Syrup = Hot Fudge
+Turtles + Hen = Chocolate Mousse
+Turtles + Cereal = Puppy Chow
+Turtles + Fruit = Chocolate-Covered Strawberry
+Turtles + Bee = Nougat
+# turtle cheesecake
+Turtles + Egg = Cheesecake
+Turtles + Corn = Candy Corn
+Turtles + Crackers = S'mores
+Turtles + Barbecue = S'mores
+Turtles + Ice = Sundae
+Turtles + Popcorn = Caramel Corn
+Turtles + Hot Dog = Fair Food
+Turtles + Brine = Pickle Candy
+Turtles + Jerky = Road Trip Snacks
+Turtles + Steam = Fondue
+Turtles + Boiling Water = Hot Chocolate
+# chocolate egg cream
+Turtles + Sparkling Water = Egg Cream
+Turtles + Granola = Granola Bar
+Turtles + Oats = No-Bake Cookies
+# Filipino chocolate rice porridge
+Turtles + Porridge = Champorado
+Turtles + Stir-Fry = Mole
+Turtles + Mint = Peppermint Patty
+Turtles + Roast = Roasted Nuts
+Turtles + Meat = Pig Candy
+# flowers and a box of chocolates
+Turtles + Flower = Box of Chocolates [dish]
+Turtles + Vegetable Soup = Slop
+Turtles + Broth = Slop
+Turtles + Kale Chips = Turtles [nothing]
+Turtles + Green Smoothie = Turtles [nothing]
+Turtles + Herbs = Turtles [nothing]
+Turtles + Seaweed = Turtles [nothing]
+Turtles + Beer = Turtles [nothing]
+
+# Cadbury Creme Egg
+Cadbury Creme Egg + Ocean = Saltwater Taffy
+# Easter buns
+Cadbury Creme Egg + Wheat = Hot Cross Buns
+Cadbury Creme Egg + Flour = Hot Cross Buns
+# the egg hunt
+Cadbury Creme Egg + Tree = Easter Basket
+Cadbury Creme Egg + Flower = Easter Basket
+Cadbury Creme Egg + Sugar Cubes = Easter Basket
+Cadbury Creme Egg + Rock Candy = Easter Basket
+Cadbury Creme Egg + Farm = Milk Chocolate
+Cadbury Creme Egg + Cow = Chocolate Milk
+Cadbury Creme Egg + Candy = Jelly Beans
+Cadbury Creme Egg + Rock Salt = Salted Caramel
+Cadbury Creme Egg + Rice = Rice Krispies Treat
+# the Easter bunny's carrot
+Cadbury Creme Egg + Vegetables = Carrot Cake
+Cadbury Creme Egg + Fish = Swedish Fish
+Cadbury Creme Egg + Syrup = Hot Fudge
+# Easter chicks
+Cadbury Creme Egg + Hen = Peeps
+Cadbury Creme Egg + Cereal = Puppy Chow
+Cadbury Creme Egg + Fruit = Chocolate-Covered Strawberry
+Cadbury Creme Egg + Bee = Nougat
+Cadbury Creme Egg + Egg = Easter Egg
+Cadbury Creme Egg + Corn = Candy Corn
+Cadbury Creme Egg + Crackers = S'mores
+Cadbury Creme Egg + Barbecue = S'mores
+Cadbury Creme Egg + Caramel = Rolo
+Cadbury Creme Egg + Salted Caramel = Rolo
+Cadbury Creme Egg + Ice = Sundae
+Cadbury Creme Egg + Popcorn = Concession Stand
+Cadbury Creme Egg + Brine = Pickle Candy
+Cadbury Creme Egg + Jerky = Road Trip Snacks
+Cadbury Creme Egg + Steam = Fondue
+Cadbury Creme Egg + Boiling Water = Hot Chocolate
+Cadbury Creme Egg + Sparkling Water = Egg Cream
+Cadbury Creme Egg + Granola = Granola Bar
+Cadbury Creme Egg + Oats = Granola Bar
+# Filipino chocolate rice porridge
+Cadbury Creme Egg + Porridge = Champorado
+Cadbury Creme Egg + Stir-Fry = Mole
+Cadbury Creme Egg + Mint = Peppermint Patty
+# Easter dinner
+Cadbury Creme Egg + Roast = Roast Lamb
+Cadbury Creme Egg + Meat = Glazed Ham
+Cadbury Creme Egg + Powdered Sugar = Fudge
+Cadbury Creme Egg + Hot Dog = Slop
+Cadbury Creme Egg + Vegetable Soup = Slop
+Cadbury Creme Egg + Seaweed = Cadbury Creme Egg [nothing]
+Cadbury Creme Egg + Beer = Cadbury Creme Egg [nothing]
+Cadbury Creme Egg + Kale Chips = Cadbury Creme Egg [nothing]
+Cadbury Creme Egg + Green Smoothie = Cadbury Creme Egg [nothing]
+Cadbury Creme Egg + Broth = Cadbury Creme Egg [nothing]
+Cadbury Creme Egg + Herbs = Cadbury Creme Egg [nothing]
+
+## Step 2 layer 2, batch 56 (2026-10-24): Couscous, Frittata, Honey Glazed Salmon
+
+# Couscous
+# fish tagine, and olives with preserved lemon
+Couscous + Ocean = Tagine
+Couscous + Fish = Tagine
+Couscous + Brine = Tagine
+Couscous + Hen = Tagine
+Couscous + Cow = Tagine
+Couscous + Wheat = Pasta
+# Moroccan sweet couscous with almonds, cinnamon and powdered sugar
+Couscous + Tree = Seffa
+Couscous + Candy = Seffa
+Couscous + Powdered Sugar = Seffa
+Couscous + Sugar Cubes = Seffa
+Couscous + Syrup = Seffa
+Couscous + Bee = Seffa
+Couscous + Fruit = Seffa
+Couscous + Caramel = Seffa
+Couscous + Salted Caramel = Seffa
+Couscous + Rock Candy = Seffa
+# orange-blossom water on top
+Couscous + Flower = Seffa
+# eaten as a sweet breakfast too
+Couscous + Farm = Seffa
+Couscous + Cereal = Seffa
+Couscous + Granola = Seffa
+Couscous + Oats = Seffa
+Couscous + Porridge = Seffa
+# with merguez, lamb and chicken
+Couscous + Meat = Couscous Royale
+Couscous + Hot Dog = Couscous Royale
+Couscous + Jerky = Couscous Royale
+# steamed over the stew
+Couscous + Steam = Couscous Royale
+Couscous + Rice = Pilaf
+Couscous + Stir-Fry = Pilaf
+Couscous + Vegetables = Tabbouleh
+Couscous + Herbs = Tabbouleh
+Couscous + Mint = Tabbouleh
+Couscous + Kale Chips = Tabbouleh
+Couscous + Green Smoothie = Tabbouleh
+Couscous + Ice = Tabbouleh
+Couscous + Egg = Shakshuka
+Couscous + Broth = Harira
+Couscous + Vegetable Soup = Harira
+Couscous + Barbecue = Kebab
+# Moroccan whole roast lamb
+Couscous + Roast = Mechoui
+Couscous + Flour = Pasta
+Couscous + Popcorn = Slop
+Couscous + Crackers = Slop
+Couscous + Corn = Couscous [nothing]
+Couscous + Boiling Water = Couscous [nothing]
+Couscous + Beer = Couscous [nothing]
+Couscous + Sparkling Water = Couscous [nothing]
+Couscous + Rock Salt = Couscous [nothing]
+Couscous + Seaweed = Couscous [nothing]
+
+# Frittata
+# Taiwanese oyster omelette
+Frittata + Ocean = Oyster Omelette
+# lox, eggs and onions
+Frittata + Fish = Brunch
+Frittata + Wheat = Sandwich
+Frittata + Flour = Quiche
+Frittata + Cow = Quiche
+Frittata + Kale Chips = Quiche
+Frittata + Farm = Breakfast
+Frittata + Cereal = Breakfast
+Frittata + Hot Dog = Breakfast
+Frittata + Granola = Breakfast
+Frittata + Oats = Breakfast
+# Austrian torn sweet pancake
+Frittata + Candy = Kaiserschmarrn
+Frittata + Sugar Cubes = Kaiserschmarrn
+Frittata + Rock Candy = Kaiserschmarrn
+Frittata + Caramel = Kaiserschmarrn
+Frittata + Salted Caramel = Kaiserschmarrn
+Frittata + Powdered Sugar = Kaiserschmarrn
+Frittata + Syrup = Dutch Baby
+Frittata + Bee = Dutch Baby
+Frittata + Vegetables = Spanish Tortilla
+Frittata + Rice = Omurice
+Frittata + Hen = Omelette
+Frittata + Egg = Omelette
+Frittata + Fruit = Shakshuka
+Frittata + Seaweed = Tamagoyaki
+# Tex-Mex eggs and tortilla
+Frittata + Corn = Migas
+# Passover matzo and eggs
+Frittata + Crackers = Matzo Brei
+Frittata + Ice = Leftovers
+Frittata + Jerky = Steak and Eggs
+Frittata + Meat = Steak and Eggs
+Frittata + Barbecue = Steak and Eggs
+Frittata + Steam = Chawanmushi
+Frittata + Broth = Egg Drop Soup
+Frittata + Vegetable Soup = Egg Drop Soup
+Frittata + Green Smoothie = Green Eggs and Ham
+Frittata + Stir-Fry = Egg Foo Young
+# Persian herb frittata
+Frittata + Mint = Kuku Sabzi
+Frittata + Brine = Pickled Egg
+# roasted potatoes and egg
+Frittata + Roast = Spanish Tortilla
+Frittata + Boiling Water = Slop
+Frittata + Porridge = Slop
+Frittata + Tree = Frittata [nothing]
+Frittata + Rock Salt = Frittata [nothing]
+Frittata + Popcorn = Frittata [nothing]
+Frittata + Sparkling Water = Frittata [nothing]
+Frittata + Beer = Frittata [nothing]
+Frittata + Flower = Frittata [nothing]
+
+# Honey Glazed Salmon
+Honey Glazed Salmon + Ocean = Seafood Platter
+Honey Glazed Salmon + Fish = Seafood Platter
+Honey Glazed Salmon + Wheat = Fish Sandwich
+# salmon patties
+Honey Glazed Salmon + Flour = Fish Cake
+Honey Glazed Salmon + Crackers = Fish Cake
+Honey Glazed Salmon + Tree = Cedar Plank Salmon
+Honey Glazed Salmon + Barbecue = Cedar Plank Salmon
+Honey Glazed Salmon + Roast = Cedar Plank Salmon
+Honey Glazed Salmon + Farm = Fish Pie
+# Pacific Northwest candied salmon
+Honey Glazed Salmon + Candy = Salmon Candy
+Honey Glazed Salmon + Sugar Cubes = Salmon Candy
+Honey Glazed Salmon + Rock Candy = Salmon Candy
+Honey Glazed Salmon + Caramel = Salmon Candy
+Honey Glazed Salmon + Salted Caramel = Salmon Candy
+Honey Glazed Salmon + Powdered Sugar = Salmon Candy
+Honey Glazed Salmon + Syrup = Salmon Candy
+Honey Glazed Salmon + Jerky = Salmon Candy
+Honey Glazed Salmon + Bee = Salmon Candy
+Honey Glazed Salmon + Rock Salt = Gravlax
+Honey Glazed Salmon + Herbs = Gravlax
+Honey Glazed Salmon + Brine = Lox
+Honey Glazed Salmon + Rice = Onigiri
+Honey Glazed Salmon + Vegetables = Nicoise Salad
+Honey Glazed Salmon + Kale Chips = Nicoise Salad
+Honey Glazed Salmon + Green Smoothie = Nicoise Salad
+Honey Glazed Salmon + Hen = Surf and Turf
+Honey Glazed Salmon + Cow = Surf and Turf
+Honey Glazed Salmon + Meat = Surf and Turf
+Honey Glazed Salmon + Cereal = Brunch
+Honey Glazed Salmon + Egg = Eggs Benedict
+Honey Glazed Salmon + Seaweed = Sushi Roll
+Honey Glazed Salmon + Corn = Fish Tacos
+Honey Glazed Salmon + Ice = Leftovers
+Honey Glazed Salmon + Steam = Steamed Fish
+Honey Glazed Salmon + Boiling Water = Fish Soup
+Honey Glazed Salmon + Broth = Fish Soup
+Honey Glazed Salmon + Vegetable Soup = Fish Soup
+Honey Glazed Salmon + Porridge = Congee
+Honey Glazed Salmon + Beer = Fish and Chips
+Honey Glazed Salmon + Stir-Fry = Teriyaki
+Honey Glazed Salmon + Fruit = Teriyaki
+Honey Glazed Salmon + Popcorn = Slop
+Honey Glazed Salmon + Hot Dog = Slop
+Honey Glazed Salmon + Granola = Honey Glazed Salmon [nothing]
+Honey Glazed Salmon + Oats = Honey Glazed Salmon [nothing]
+Honey Glazed Salmon + Sparkling Water = Honey Glazed Salmon [nothing]
+Honey Glazed Salmon + Flower = Honey Glazed Salmon [nothing]
+Honey Glazed Salmon + Mint = Honey Glazed Salmon [nothing]
+
+## Step 2 layer 2, batch 57 (2026-10-24): Jawbreaker, Meatballs, Mint Chocolate Chip
+
+# Jawbreaker
+Jawbreaker + Ocean = Saltwater Taffy
+Jawbreaker + Rock Salt = Saltwater Taffy
+Jawbreaker + Wheat = Lunchbox
+Jawbreaker + Crackers = Lunchbox
+Jawbreaker + Flour = Sugar Cookie
+Jawbreaker + Tree = Candy Cane
+Jawbreaker + Syrup = Candy Cane
+Jawbreaker + Farm = Kids Meal
+Jawbreaker + Candy = Halloween Candy
+Jawbreaker + Rice = Mochi
+Jawbreaker + Fish = Swedish Fish
+Jawbreaker + Hen = Peeps
+Jawbreaker + Cereal = Lucky Charms
+Jawbreaker + Cow = Milk Duds
+Jawbreaker + Fruit = Skittles
+Jawbreaker + Bee = Honeycomb
+Jawbreaker + Egg = Easter Egg
+Jawbreaker + Corn = Candy Corn
+Jawbreaker + Caramel = Butterscotch
+Jawbreaker + Salted Caramel = Butterscotch
+Jawbreaker + Ice = Snow Cone
+Jawbreaker + Popcorn = Concession Stand
+Jawbreaker + Hot Dog = Road Trip Snacks
+Jawbreaker + Jerky = Road Trip Snacks
+Jawbreaker + Brine = Pickle Candy
+# melt it and regrow the crystals
+Jawbreaker + Boiling Water = Rock Candy
+Jawbreaker + Sparkling Water = Soda
+Jawbreaker + Granola = Granola Bar
+Jawbreaker + Oats = Granola Bar
+Jawbreaker + Beer = Bar Snacks
+Jawbreaker + Kale Chips = Party Mix
+# the Japanese candy aisle
+Jawbreaker + Seaweed = Hi-Chew
+Jawbreaker + Flower = Turkish Delight
+Jawbreaker + Mint = Tic Tacs
+Jawbreaker + Meat = Pig Candy
+Jawbreaker + Powdered Sugar = Pixy Stix
+Jawbreaker + Sugar Cubes = Lollipop
+Jawbreaker + Rock Candy = Lollipop
+Jawbreaker + Stir-Fry = Fortune Cookie
+Jawbreaker + Porridge = Slop
+Jawbreaker + Vegetable Soup = Slop
+# herbal throat drops
+Jawbreaker + Herbs = Cough Drops
+Jawbreaker + Vegetables = Jawbreaker [nothing]
+Jawbreaker + Green Smoothie = Jawbreaker [nothing]
+Jawbreaker + Steam = Jawbreaker [nothing]
+Jawbreaker + Barbecue = Jawbreaker [nothing]
+Jawbreaker + Roast = Jawbreaker [nothing]
+Jawbreaker + Broth = Jawbreaker [nothing]
+
+# Meatballs
+Meatballs + Ocean = Fish Balls
+Meatballs + Fish = Fish Balls
+Meatballs + Wheat = Meatball Sub
+Meatballs + Hot Dog = Meatball Sub
+Meatballs + Flour = Spaghetti and Meatballs
+# cream gravy and lingonberries
+Meatballs + Farm = Swedish Meatballs
+Meatballs + Cow = Swedish Meatballs
+Meatballs + Fruit = Swedish Meatballs
+# the potluck crockpot classic
+Meatballs + Candy = Sweet and Sour Meatballs [dish]
+Meatballs + Syrup = Sweet and Sour Meatballs
+Meatballs + Caramel = Sweet and Sour Meatballs
+Meatballs + Salted Caramel = Sweet and Sour Meatballs
+Meatballs + Sugar Cubes = Sweet and Sour Meatballs
+Meatballs + Rock Candy = Sweet and Sour Meatballs
+Meatballs + Powdered Sugar = Sweet and Sour Meatballs
+Meatballs + Bee = Sweet and Sour Meatballs
+# rice-studded meatballs
+Meatballs + Rice = Porcupine Meatballs [dish]
+Meatballs + Vegetables = Stuffed Peppers
+# Japanese chicken meatballs
+Meatballs + Hen = Tsukune
+Meatballs + Seaweed = Tsukune
+# the binder - crackers, cereal or oats
+Meatballs + Crackers = Meatloaf
+Meatballs + Cereal = Meatloaf
+Meatballs + Oats = Meatloaf
+Meatballs + Roast = Meatloaf
+Meatballs + Egg = Scotch Egg
+Meatballs + Corn = Polenta
+Meatballs + Ice = Leftovers
+# steamed beef balls
+Meatballs + Steam = Dim Sum
+Meatballs + Boiling Water = Italian Wedding Soup
+Meatballs + Vegetable Soup = Italian Wedding Soup
+Meatballs + Kale Chips = Italian Wedding Soup
+Meatballs + Porridge = Congee
+Meatballs + Beer = Bar Snacks
+Meatballs + Jerky = Charcuterie Board
+# giant Chinese pork meatballs
+Meatballs + Stir-Fry = Lion's Head Meatballs
+# herby Middle Eastern meatballs
+Meatballs + Herbs = Kofta
+Meatballs + Mint = Kofta
+# grilled Balkan meatballs
+Meatballs + Barbecue = Cevapi
+Meatballs + Meat = Burger
+Meatballs + Granola = Slop
+Meatballs + Green Smoothie = Slop
+Meatballs + Tree = Meatballs [nothing]
+Meatballs + Rock Salt = Meatballs [nothing]
+Meatballs + Popcorn = Meatballs [nothing]
+Meatballs + Brine = Meatballs [nothing]
+Meatballs + Sparkling Water = Meatballs [nothing]
+Meatballs + Flower = Meatballs [nothing]
+
+# Mint Chocolate Chip
+# boardwalk ice cream
+Mint Chocolate Chip + Ocean = Saltwater Taffy
+Mint Chocolate Chip + Wheat = Ice Cream Sandwich
+Mint Chocolate Chip + Flour = Brownie
+Mint Chocolate Chip + Tree = Rocky Road
+Mint Chocolate Chip + Farm = Milkshake
+Mint Chocolate Chip + Cow = Milkshake
+Mint Chocolate Chip + Candy = Andes Mints
+Mint Chocolate Chip + Mint = Andes Mints
+Mint Chocolate Chip + Rock Salt = Salted Caramel
+Mint Chocolate Chip + Rice = Mochi Ice Cream
+Mint Chocolate Chip + Seaweed = Mochi Ice Cream
+Mint Chocolate Chip + Fish = Swedish Fish
+Mint Chocolate Chip + Syrup = Sundae
+Mint Chocolate Chip + Caramel = Sundae
+Mint Chocolate Chip + Salted Caramel = Sundae
+Mint Chocolate Chip + Hen = Frozen Custard
+Mint Chocolate Chip + Egg = Frozen Custard
+Mint Chocolate Chip + Cereal = Cereal Milk
+Mint Chocolate Chip + Fruit = Banana Split
+# cookie-crumb crust, green mint filling
+Mint Chocolate Chip + Crackers = Grasshopper Pie
+Mint Chocolate Chip + Herbs = Grasshopper Pie
+Mint Chocolate Chip + Ice = Popsicle
+Mint Chocolate Chip + Popcorn = Concession Stand
+Mint Chocolate Chip + Hot Dog = Fair Food
+Mint Chocolate Chip + Jerky = Road Trip Snacks
+Mint Chocolate Chip + Steam = Hot Chocolate
+Mint Chocolate Chip + Boiling Water = Hot Chocolate
+# root beer float, beer float
+Mint Chocolate Chip + Sparkling Water = Float
+Mint Chocolate Chip + Beer = Float
+Mint Chocolate Chip + Granola = Parfait
+Mint Chocolate Chip + Oats = Parfait
+Mint Chocolate Chip + Kale Chips = Shamrock Shake
+Mint Chocolate Chip + Green Smoothie = Shamrock Shake
+# the restaurant dessert
+Mint Chocolate Chip + Stir-Fry = Fried Ice Cream
+Mint Chocolate Chip + Flower = Gelato
+Mint Chocolate Chip + Barbecue = S'mores
+Mint Chocolate Chip + Roast = S'mores
+Mint Chocolate Chip + Sugar Cubes = Candy Cane
+Mint Chocolate Chip + Rock Candy = Candy Cane
+Mint Chocolate Chip + Powdered Sugar = Peppermint Patty
+Mint Chocolate Chip + Porridge = Slop
+Mint Chocolate Chip + Vegetable Soup = Slop
+Mint Chocolate Chip + Bee = Mint Chocolate Chip [nothing]
+Mint Chocolate Chip + Corn = Mint Chocolate Chip [nothing]
+Mint Chocolate Chip + Brine = Mint Chocolate Chip [nothing]
+Mint Chocolate Chip + Meat = Mint Chocolate Chip [nothing]
+Mint Chocolate Chip + Broth = Mint Chocolate Chip [nothing]
+Mint Chocolate Chip + Vegetables = Mint Chocolate Chip [nothing]
+
+## Step 2 layer 2, batch 58 (2026-10-24): Sweet Rice, Applesauce, Carrot Cake
+
+# Sweet Rice
+# mochi dough in a donut
+Sweet Rice + Wheat = Mochi Donut
+Sweet Rice + Flour = Mochi
+Sweet Rice + Candy = Mochi
+Sweet Rice + Sugar Cubes = Mochi
+Sweet Rice + Powdered Sugar = Mochi
+# sakura mochi, and kusa mochi made with mugwort
+Sweet Rice + Flower = Mochi
+Sweet Rice + Herbs = Mochi
+Sweet Rice + Green Smoothie = Mochi
+Sweet Rice + Tree = Mango Sticky Rice
+Sweet Rice + Fruit = Mango Sticky Rice
+Sweet Rice + Farm = Rice Pudding
+Sweet Rice + Cow = Rice Pudding
+# boiled glutinous rice balls in sweet syrup
+Sweet Rice + Rock Candy = Tangyuan
+Sweet Rice + Boiling Water = Tangyuan
+# Filipino sticky rice cake with coconut caramel
+Sweet Rice + Syrup = Biko
+Sweet Rice + Caramel = Biko
+Sweet Rice + Salted Caramel = Biko
+Sweet Rice + Bee = Biko
+Sweet Rice + Rock Salt = Onigiri
+Sweet Rice + Seaweed = Onigiri
+# sticky rice steamed in a lotus leaf
+Sweet Rice + Hen = Lo Mai Gai
+Sweet Rice + Steam = Lo Mai Gai
+# bamboo-leaf parcels with pork, mushroom and salted egg
+Sweet Rice + Meat = Zongzi
+Sweet Rice + Jerky = Zongzi
+Sweet Rice + Vegetables = Zongzi
+# Filipino baked rice cake
+Sweet Rice + Egg = Bibingka
+# Filipino sweet corn and sticky rice pudding
+Sweet Rice + Corn = Ginataang Mais [dish]
+Sweet Rice + Crackers = Rice Crackers
+Sweet Rice + Popcorn = Rice Crackers
+Sweet Rice + Ice = Mochi Ice Cream
+Sweet Rice + Broth = Congee
+Sweet Rice + Vegetable Soup = Congee
+Sweet Rice + Porridge = Congee
+Sweet Rice + Cereal = Rice Krispies Treat
+# fizzy Korean rice wine
+Sweet Rice + Sparkling Water = Makgeolli
+Sweet Rice + Beer = Sake
+Sweet Rice + Stir-Fry = Sticky Rice
+# grilled rice dumplings
+Sweet Rice + Barbecue = Dango
+Sweet Rice + Roast = Dango
+Sweet Rice + Hot Dog = Slop
+Sweet Rice + Brine = Slop
+Sweet Rice + Oats = Congee
+Sweet Rice + Ocean = Sweet Rice [nothing]
+Sweet Rice + Fish = Sweet Rice [nothing]
+Sweet Rice + Rice = Sweet Rice [nothing]
+Sweet Rice + Kale Chips = Sweet Rice [nothing]
+Sweet Rice + Granola = Sweet Rice [nothing]
+Sweet Rice + Mint = Sweet Rice [nothing]
+
+# Applesauce
+Applesauce + Wheat = Muffin
+Applesauce + Egg = Muffin
+Applesauce + Corn = Muffin
+Applesauce + Flour = Apple Pie
+# apples, honey and nuts at Passover
+Applesauce + Tree = Charoset
+Applesauce + Bee = Charoset
+# pork chops and applesauce
+Applesauce + Farm = Pork Chop
+Applesauce + Meat = Pork Chop
+Applesauce + Roast = Pork Chop
+Applesauce + Hot Dog = Pork Chop
+Applesauce + Barbecue = Pulled Pork
+Applesauce + Candy = Candy Apple
+Applesauce + Caramel = Candy Apple
+Applesauce + Salted Caramel = Candy Apple
+Applesauce + Sugar Cubes = Candy Apple
+Applesauce + Rock Candy = Candy Apple
+Applesauce + Powdered Sugar = Apple Strudel
+# cook it down
+Applesauce + Syrup = Apple Butter
+Applesauce + Boiling Water = Apple Butter
+# Hanukkah latkes with applesauce
+Applesauce + Vegetables = Latkes
+# the applesauce cup on the side
+Applesauce + Hen = Kids Meal
+Applesauce + Fish = Kids Meal
+# rice cereal and applesauce
+Applesauce + Cereal = Baby Food
+Applesauce + Steam = Baby Food
+Applesauce + Kale Chips = Baby Food
+Applesauce + Cow = Baby Food
+Applesauce + Fruit = Fruit Cup
+Applesauce + Crackers = Apple Crisp
+Applesauce + Granola = Apple Crisp
+Applesauce + Oats = Apple Crisp
+Applesauce + Ice = Sorbet
+# dried applesauce
+Applesauce + Jerky = Fruit Leather
+Applesauce + Porridge = Oatmeal
+Applesauce + Beer = Cider
+Applesauce + Sparkling Water = Cider
+Applesauce + Green Smoothie = Smoothie
+# Anglo-Indian curry soup made with apple
+Applesauce + Broth = Mulligatawny
+Applesauce + Vegetable Soup = Mulligatawny
+Applesauce + Stir-Fry = Sweet and Sour Pork
+Applesauce + Ocean = Slop
+Applesauce + Brine = Slop
+Applesauce + Rice = Rice Pudding
+Applesauce + Rock Salt = Applesauce [nothing]
+Applesauce + Seaweed = Applesauce [nothing]
+Applesauce + Popcorn = Applesauce [nothing]
+Applesauce + Herbs = Applesauce [nothing]
+Applesauce + Flower = Applesauce [nothing]
+Applesauce + Mint = Applesauce [nothing]
+
+# Carrot Cake
+# morning glory muffins - carrots, oats and nuts
+Carrot Cake + Wheat = Muffin
+Carrot Cake + Cereal = Muffin
+Carrot Cake + Oats = Muffin
+Carrot Cake + Granola = Muffin
+Carrot Cake + Corn = Muffin
+Carrot Cake + Flour = Cupcake
+Carrot Cake + Powdered Sugar = Cupcake
+# pineapple, pecans and banana
+Carrot Cake + Tree = Hummingbird Cake
+Carrot Cake + Fruit = Hummingbird Cake
+# Indian carrot and milk pudding
+Carrot Cake + Farm = Gajar Halwa
+# carrot cake cheesecake, crumb crust
+Carrot Cake + Cow = Cheesecake
+Carrot Cake + Crackers = Cheesecake
+Carrot Cake + Candy = Easter Basket
+Carrot Cake + Sugar Cubes = Easter Basket
+Carrot Cake + Rock Candy = Easter Basket
+Carrot Cake + Flower = Easter Basket
+Carrot Cake + Hen = Peeps
+Carrot Cake + Egg = Easter Egg
+Carrot Cake + Meat = Glazed Ham
+Carrot Cake + Roast = Glazed Ham
+# carrot kheer
+Carrot Cake + Rice = Kheer
+Carrot Cake + Vegetables = Zucchini Bread
+Carrot Cake + Kale Chips = Zucchini Bread
+Carrot Cake + Green Smoothie = Zucchini Bread
+Carrot Cake + Syrup = Sticky Toffee Pudding
+Carrot Cake + Caramel = Sticky Toffee Pudding
+Carrot Cake + Salted Caramel = Sticky Toffee Pudding
+Carrot Cake + Bee = Honey Cake
+Carrot Cake + Ice = Ice Cream Cake
+# Singapore's stir-fried "carrot cake" made from radish cake
+Carrot Cake + Stir-Fry = Chai Tow Kway
+# lo bak go - the steamed radish "carrot cake" at dim sum
+Carrot Cake + Steam = Turnip Cake
+# cake and a cuppa
+Carrot Cake + Boiling Water = Afternoon Tea
+Carrot Cake + Herbs = Afternoon Tea
+Carrot Cake + Mint = Afternoon Tea
+# sparklers on top
+Carrot Cake + Sparkling Water = Birthday Cake
+Carrot Cake + Porridge = Oatmeal
+# pickled carrots
+Carrot Cake + Brine = Pickles
+Carrot Cake + Fish = Swedish Fish
+Carrot Cake + Hot Dog = Fair Food
+Carrot Cake + Popcorn = Concession Stand
+Carrot Cake + Vegetable Soup = Slop
+Carrot Cake + Broth = Slop
+Carrot Cake + Ocean = Carrot Cake [nothing]
+Carrot Cake + Rock Salt = Carrot Cake [nothing]
+Carrot Cake + Seaweed = Carrot Cake [nothing]
+Carrot Cake + Jerky = Carrot Cake [nothing]
+Carrot Cake + Beer = Carrot Cake [nothing]
+Carrot Cake + Barbecue = Carrot Cake [nothing]
+
+## Step 2 layer 2, batch 59 (2026-10-24): Cheese, Cheese and Crackers, Chicken Caesar Salad
+
+# Cheese
+Cheese + Wheat = Grilled Cheese
+Cheese + Tree = Charcuterie Board
+Cheese + Jerky = Charcuterie Board
+# cheese, bread and pickle - the farmhand's lunch
+Cheese + Farm = Ploughman's Lunch
+Cheese + Candy = Cheesecake
+Cheese + Sugar Cubes = Cheesecake
+Cheese + Powdered Sugar = Cheesecake
+Cheese + Rock Candy = Cheesecake
+Cheese + Salted Caramel = Cheesecake
+# sweet cheese pastry soaked in syrup
+Cheese + Syrup = Knafeh
+# salty aged cheese
+Cheese + Rock Salt = Parmesan
+Cheese + Fish = Tuna Melt
+Cheese + Hen = Chicken Parmesan
+Cheese + Cow = Cheeseburger
+# tomato, mozzarella, basil
+Cheese + Fruit = Caprese
+Cheese + Bee = Baked Brie
+Cheese + Popcorn = Cheetos
+Cheese + Hot Dog = Chili Dog
+Cheese + Brine = Feta
+Cheese + Steam = Fondue
+Cheese + Boiling Water = Fondue
+Cheese + Porridge = Grits
+# spinach and feta
+Cheese + Kale Chips = Spanakopita
+Cheese + Green Smoothie = Spanakopita
+# the cheese lid on top
+Cheese + Vegetable Soup = French Onion Soup
+Cheese + Broth = French Onion Soup
+# basil and parmesan
+Cheese + Herbs = Pesto
+# grilled halloumi with mint, Cypriot style
+Cheese + Barbecue = Halloumi
+Cheese + Mint = Halloumi
+# melted under the heat and scraped off
+Cheese + Roast = Raclette
+# cheese-stuffed squash blossoms
+Cheese + Flower = Squash Blossoms
+# Indo-Chinese chili paneer
+Cheese + Stir-Fry = Paneer
+Cheese + Granola = Slop
+Cheese + Oats = Slop
+Cheese + Cereal = Cheese [nothing]
+Cheese + Seaweed = Cheese [nothing]
+Cheese + Ice = Cheese [nothing]
+Cheese + Sparkling Water = Cheese [nothing]
+
+# Cheese and Crackers
+# the soup crackers named for oysters
+Cheese and Crackers + Ocean = Oyster Crackers
+Cheese and Crackers + Wheat = Cheez-It
+Cheese and Crackers + Flour = Cheez-It
+Cheese and Crackers + Tree = Charcuterie Board
+Cheese and Crackers + Fruit = Charcuterie Board
+Cheese and Crackers + Jerky = Charcuterie Board
+Cheese and Crackers + Cow = Charcuterie Board
+Cheese and Crackers + Farm = Ploughman's Lunch
+# graham crust and cream cheese
+Cheese and Crackers + Candy = Cheesecake
+Cheese and Crackers + Sugar Cubes = Cheesecake
+Cheese and Crackers + Powdered Sugar = Cheesecake
+Cheese and Crackers + Rock Candy = Cheesecake
+Cheese and Crackers + Syrup = Cheesecake
+Cheese and Crackers + Caramel = Cheesecake
+Cheese and Crackers + Salted Caramel = Cheesecake
+Cheese and Crackers + Rock Salt = Pretzel
+Cheese and Crackers + Rice = Rice Crackers
+Cheese and Crackers + Seaweed = Rice Crackers
+Cheese and Crackers + Vegetables = Veggie Tray
+Cheese and Crackers + Green Smoothie = Veggie Tray
+Cheese and Crackers + Fish = Tuna Melt
+Cheese and Crackers + Hen = Chicken Salad
+Cheese and Crackers + Cereal = Chex Mix
+# ham, cheese and crackers in a tray
+Cheese and Crackers + Meat = Lunchables
+Cheese and Crackers + Bee = Baked Brie
+Cheese and Crackers + Egg = Deviled Eggs
+Cheese and Crackers + Corn = Nachos
+Cheese and Crackers + Crackers = Lunchbox
+Cheese and Crackers + Popcorn = Party Mix
+Cheese and Crackers + Kale Chips = Party Mix
+Cheese and Crackers + Hot Dog = Kids Meal
+# the pickle on the tray
+Cheese and Crackers + Brine = Pickles
+# cracker-crumb topping
+Cheese and Crackers + Boiling Water = Mac and Cheese
+Cheese and Crackers + Broth = Soup and Sandwich
+Cheese and Crackers + Vegetable Soup = Soup and Sandwich
+Cheese and Crackers + Granola = Trail Mix
+Cheese and Crackers + Beer = Bar Snacks
+Cheese and Crackers + Roast = Grilled Cheese
+Cheese and Crackers + Barbecue = Cookout
+# a picnic in the meadow
+Cheese and Crackers + Flower = Picnic
+Cheese and Crackers + Porridge = Slop
+Cheese and Crackers + Oats = Slop
+Cheese and Crackers + Ice = Cheese and Crackers [nothing]
+Cheese and Crackers + Steam = Cheese and Crackers [nothing]
+Cheese and Crackers + Sparkling Water = Cheese and Crackers [nothing]
+Cheese and Crackers + Stir-Fry = Cheese and Crackers [nothing]
+Cheese and Crackers + Herbs = Cheese and Crackers [nothing]
+Cheese and Crackers + Mint = Cheese and Crackers [nothing]
+
+# Chicken Caesar Salad
+Chicken Caesar Salad + Fish = Caesar Salad
+Chicken Caesar Salad + Wheat = Wrap
+Chicken Caesar Salad + Flour = Pizza
+Chicken Caesar Salad + Tree = Waldorf Salad
+Chicken Caesar Salad + Farm = Chef Salad
+Chicken Caesar Salad + Cow = Chef Salad
+Chicken Caesar Salad + Meat = Chef Salad
+Chicken Caesar Salad + Syrup = Honey Mustard
+Chicken Caesar Salad + Bee = Honey Mustard
+# mandarin oranges and candied almonds
+Chicken Caesar Salad + Fruit = Chinese Chicken Salad
+Chicken Caesar Salad + Stir-Fry = Chinese Chicken Salad
+Chicken Caesar Salad + Caramel = Chinese Chicken Salad
+Chicken Caesar Salad + Salted Caramel = Chinese Chicken Salad
+Chicken Caesar Salad + Rice = Chicken and Rice
+Chicken Caesar Salad + Hen = Chicken Salad
+Chicken Caesar Salad + Crackers = Chicken Salad
+Chicken Caesar Salad + Vegetables = Cobb Salad
+Chicken Caesar Salad + Egg = Cobb Salad
+Chicken Caesar Salad + Jerky = Cobb Salad
+Chicken Caesar Salad + Seaweed = Seaweed Salad
+Chicken Caesar Salad + Corn = Taco Salad
+Chicken Caesar Salad + Ice = Leftovers
+Chicken Caesar Salad + Popcorn = Popcorn Chicken
+# olives and feta
+Chicken Caesar Salad + Brine = Greek Salad
+Chicken Caesar Salad + Boiling Water = Chicken Soup
+Chicken Caesar Salad + Broth = Chicken Soup
+Chicken Caesar Salad + Vegetable Soup = Chicken Soup
+Chicken Caesar Salad + Beer = Chicken Wings
+Chicken Caesar Salad + Kale Chips = Salad
+Chicken Caesar Salad + Green Smoothie = Salad
+Chicken Caesar Salad + Flower = Salad
+Chicken Caesar Salad + Herbs = Green Goddess
+# Lebanese bread salad with mint
+Chicken Caesar Salad + Mint = Fattoush
+Chicken Caesar Salad + Barbecue = BBQ Chicken
+Chicken Caesar Salad + Roast = Roast Chicken
+Chicken Caesar Salad + Hot Dog = Kids Meal
+Chicken Caesar Salad + Ocean = Shrimp Cocktail
+Chicken Caesar Salad + Candy = Slop
+Chicken Caesar Salad + Rock Candy = Slop
+# cereal-crusted chicken on top
+Chicken Caesar Salad + Cereal = Cornflake Chicken
+Chicken Caesar Salad + Sugar Cubes = Chinese Chicken Salad
+Chicken Caesar Salad + Powdered Sugar = Chinese Chicken Salad
+Chicken Caesar Salad + Porridge = Congee
+Chicken Caesar Salad + Rock Salt = Chicken Caesar Salad [nothing]
+Chicken Caesar Salad + Steam = Chicken Caesar Salad [nothing]
+Chicken Caesar Salad + Sparkling Water = Chicken Caesar Salad [nothing]
+Chicken Caesar Salad + Granola = Chicken Caesar Salad [nothing]
+Chicken Caesar Salad + Oats = Chicken Caesar Salad [nothing]
+
 #############################################################################
 # New cookbooks (2026-10-19): Southeast Asian, African, Latin American. Their
 # dishes that were already in the game are tagged above; the rest come
