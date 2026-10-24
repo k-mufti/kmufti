@@ -881,3 +881,4 @@ Chestnut Soup = -
 Onion Jam = Marmalade
 Wasabi Peas = Wasabi peas
 Wasabi Peas = -
+Trix = Trix (cereal)
