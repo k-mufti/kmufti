@@ -911,3 +911,7 @@ Qutab = Qutab (food)
 Xinjiang Lamb Skewers = Chuanr
 Chicken Scarpariello = -
 Sourdough Pancakes = -
+Xinjiang Lamb Skewers = -
+Ringo Ame = Candy apple
+Testi Kebab = Testi kebab
+Ponche = Ponche navideño
