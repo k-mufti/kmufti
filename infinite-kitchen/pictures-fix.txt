@@ -866,3 +866,6 @@ Corn Pops = Corn Pops
 Cornflake Cakes = -
 Pastel de Elote = -
 Mentos = Mentos
+Crystallized Ginger = Candied fruit
+Olive Oil Cake = -
+Yaki Imo = Yaki-imo
