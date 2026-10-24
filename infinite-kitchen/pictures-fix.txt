@@ -879,3 +879,4 @@ Kalua Pig = Kalua
 Candied Chestnuts = Marron glacé
 Chestnut Soup = -
 Onion Jam = Marmalade
+Wasabi Peas = Wasabi peas
