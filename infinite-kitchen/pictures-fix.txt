@@ -876,3 +876,5 @@ Myeolchi Bokkeum = Myeolchi-bokkeum
 Chao Tom = Chạo tôm
 Hawaiian Rolls = -
 Kalua Pig = Kalua
+Candied Chestnuts = Marron glacé
+Chestnut Soup = -
