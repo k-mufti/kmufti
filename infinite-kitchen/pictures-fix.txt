@@ -862,3 +862,6 @@ Sweet and Sour Meatballs = Meatball
 Mango Pancake = -
 Seafood Pasta = Spaghetti alle vongole
 Kool-Aid Pickles = Koolickles
+Corn Pops = Corn Pops
+Cornflake Cakes = -
+Pastel de Elote = -
