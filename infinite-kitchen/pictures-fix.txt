@@ -859,3 +859,6 @@ Mustard Soup = -
 Maple Bacon = Bacon
 Bacon Crackers = -
 Sweet and Sour Meatballs = Meatball
+Mango Pancake = -
+Seafood Pasta = Spaghetti alle vongole
+Kool-Aid Pickles = Koolickles
