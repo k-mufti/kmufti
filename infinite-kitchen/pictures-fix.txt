@@ -900,3 +900,5 @@ Hoe Cakes = Johnnycake
 Sausage Balls = -
 Shrimp Burger = -
 French Silk Pie = Chocolate cream pie
+Napoleon Cake = Mille-feuille
+Egg Hoppers = Appam
