@@ -872,3 +872,4 @@ Yaki Imo = Yaki-imo
 Custard Bun = -
 Bourbon Balls = Bourbon ball
 Red Bean Bun = Anpan
+Myeolchi Bokkeum = Myeolchi-bokkeum
