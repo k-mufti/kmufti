@@ -888,3 +888,6 @@ Chicken Long Rice = -
 Koko Samoa = -
 Potato Scallop = Potato cake
 Laulau = Laulau
+Beijing Beef = -
+Miso Katsu = -
+Soup Curry = Soup curry
