@@ -869,3 +869,6 @@ Mentos = Mentos
 Crystallized Ginger = Candied fruit
 Olive Oil Cake = -
 Yaki Imo = Yaki-imo
+Custard Bun = -
+Bourbon Balls = Bourbon ball
+Red Bean Bun = Anpan
