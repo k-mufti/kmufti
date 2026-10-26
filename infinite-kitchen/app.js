@@ -1139,7 +1139,7 @@
   window.addEventListener("resize", layout);
 
   /* ---------- start ---------- */
-  fetch("recipes.json?v=b40cfdef")
+  fetch("recipes.json?v=ef28a8e2")
     .then((r) => r.json())
     .then((data) => {
       DATA = data;
