@@ -686,3 +686,26 @@ button { font-family: inherit; cursor: pointer; }
   .cart-fab { bottom: 16px; right: 16px; width: 92px; height: 92px; }
   .cart-icon { width: 44px; height: 44px; }
 }
+
+/* Theme-only decorations stay hidden unless their theme is on (see fire.css). */
+.fire-bed { display: none; }
+html.theme-fire .fire-bed { display: block; }
+
+/* ---------- Dev: theme switcher (top right) ---------- */
+.theme-toggle {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 1100;
+  border: 1px dashed var(--ink-faint);
+  background: var(--bg);
+  color: var(--ink-dim);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  opacity: 0.75;
+  transition: opacity 0.15s ease;
+}
+.theme-toggle:hover { opacity: 1; }
+.theme-toggle[hidden] { display: none; }

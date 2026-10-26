@@ -1,0 +1,139 @@
+/* Cottage theme — active when <html> has class "theme-cottage" (see theme toggle).
+   A live pixel-art meadow (cottage.js) is painted behind the page, and every
+   item sits on its own lace doily that travels with it, so product cutouts
+   still multiply-knock-out against white instead of tinting sky/grass. */
+html.theme-cottage {
+  --bg: #fbf7ee;          /* cream linen (cart screen, inputs) */
+  --ink: #2f3d26;         /* deep moss */
+  --ink-dim: #5d6b4e;
+  --ink-faint: #9aa58a;
+  --line: rgba(70, 90, 50, 0.18);
+  --accent: #7f9c6b;      /* sage */
+  --green: #5f8a4a;
+  --lace: #fffdf8;
+  background: #bfe3f5;    /* sky, until the canvas paints */
+}
+html.theme-cottage body { background: transparent; }
+
+/* The meadow canvas (drawn by cottage.js at low res, scaled up crisp). */
+.meadow { display: none; }
+html.theme-cottage .meadow {
+  display: block;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Text floats on sky and grass: give it a soft cream halo so it stays legible. */
+html.theme-cottage .site-header,
+html.theme-cottage .tagline,
+html.theme-cottage .bookmarklet-hint,
+html.theme-cottage .add-status,
+html.theme-cottage .empty-note {
+  text-shadow: 0 0 6px rgba(255, 253, 245, 0.95), 0 0 2px rgba(255, 253, 245, 0.95);
+}
+html.theme-cottage .brand { font-weight: 500; }
+html.theme-cottage .crumb { color: var(--ink-dim); }
+html.theme-cottage .tagline { color: var(--ink); }
+html.theme-cottage .bookmarklet-hint,
+html.theme-cottage .empty-note { color: var(--ink-dim); }
+
+html.theme-cottage .hero h1 {
+  color: #3f5a2e;
+  text-shadow: 0 0 18px rgba(255, 253, 245, 0.9), 0 2px 0 rgba(255, 253, 245, 0.9);
+}
+/* Form: linen field, sage button with a stitched edge */
+html.theme-cottage #add-input {
+  background: var(--bg);
+  border: 1px solid rgba(95, 138, 74, 0.35);
+  box-shadow: 0 2px 10px rgba(60, 90, 40, 0.12);
+}
+html.theme-cottage #add-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(127, 156, 107, 0.25);
+}
+html.theme-cottage #add-btn {
+  background: var(--accent);
+  color: #fffdf5;
+  font-weight: 600;
+  outline: 1.5px dashed rgba(255, 253, 245, 0.75);
+  outline-offset: -5px;
+  box-shadow: 0 3px 10px rgba(60, 90, 40, 0.25);
+}
+html.theme-cottage .bookmarklet { background: var(--accent); }
+html.theme-cottage .bookmarklet-star { fill: #fff3a6; }
+
+/* ---------- The doily: one per item, behind the cutout ----------
+   A solid linen middle (so white product backgrounds still knock out),
+   framed by a thin open-work lace band with real holes the meadow shows
+   through, finished with a small scalloped edge. */
+html.theme-cottage .item-link::before {
+  --band: 13px;
+  content: "";
+  position: absolute;
+  inset: calc(-3% - var(--band));
+  z-index: -1;
+  pointer-events: none;
+  padding: 4px;                     /* depth of the scallops */
+  box-sizing: border-box;
+  border-radius: 10px;
+  background:
+    linear-gradient(var(--lace) 0 0) center / calc(100% - 2 * var(--band)) calc(100% - 2 * var(--band)) no-repeat,
+    radial-gradient(circle, transparent 0 1.7px, rgba(214, 202, 178, 0.9) 2px 2.5px, transparent 2.8px) 0 0 / 6px 6px,
+    rgba(255, 253, 248, 0.82);
+  /* bottom→top: scallop outline (solid ring + bumps), cut with the hole
+     pattern, then the solid middle added back on top */
+  -webkit-mask:
+    linear-gradient(#000 0 0) center / calc(100% - 2 * var(--band)) calc(100% - 2 * var(--band)) no-repeat,
+    radial-gradient(circle, transparent 0 1.7px, #000 2px) 0 0 / 6px 6px,
+    radial-gradient(circle 4px, #000 96%, transparent) 0 0 / 8px 8px round border-box,
+    linear-gradient(#000 0 0) content-box;
+  -webkit-mask-composite: source-over, source-in, source-over;
+  mask:
+    linear-gradient(#000 0 0) center / calc(100% - 2 * var(--band)) calc(100% - 2 * var(--band)) no-repeat,
+    radial-gradient(circle, transparent 0 1.7px, #000 2px) 0 0 / 6px 6px,
+    radial-gradient(circle 4px, #000 96%, transparent) 0 0 / 8px 8px round border-box,
+    linear-gradient(#000 0 0) content-box;
+  mask-composite: add, intersect, add;
+}
+html.theme-cottage .item-img { filter: none; }
+html.theme-cottage .item:hover .item-img { filter: none; }
+html.theme-cottage .item-fastener.tape { display: none; } /* the doily holds it */
+html.theme-cottage .item-fallback,
+html.theme-cottage .cart-thumb,
+html.theme-cottage .cart-thumb-glyph { background: #eef3e4; box-shadow: none; }
+html.theme-cottage .item-glyph,
+html.theme-cottage .cart-thumb-glyph { color: var(--accent); }
+html.theme-cottage .item-caption { background: rgba(255, 253, 245, 0.96); }
+
+/* Cart + trash: sage buttons with a cream running stitch */
+html.theme-cottage .cart-fab,
+html.theme-cottage .trash-fab {
+  background: var(--accent);
+  color: #fffdf5;
+  outline: 2px dashed rgba(255, 253, 245, 0.8);
+  outline-offset: -9px;
+  box-shadow: 0 10px 24px rgba(50, 80, 30, 0.3);
+}
+html.theme-cottage .cart-fab.cart-fab--over {
+  background: #e7b84a;   /* buttercup */
+  box-shadow: 0 12px 30px rgba(200, 150, 30, 0.45);
+}
+html.theme-cottage .trash-fab.trash-fab--over {
+  background: #c46a5a;
+  box-shadow: 0 12px 30px rgba(180, 80, 60, 0.4);
+}
+html.theme-cottage .cart-badge { background: #e7b84a; color: #3f3010; border-color: #fffdf5; font-weight: 600; }
+
+/* Cart screen: linen page */
+html.theme-cottage .cart-screen { background: var(--bg); }
+html.theme-cottage .cart-screen-title,
+html.theme-cottage .cart-total-value { color: #3f5a2e; }
+html.theme-cottage .cart-row:hover { background: rgba(127, 156, 107, 0.08); }
+html.theme-cottage .cart-share { background: var(--accent); }
+html.theme-cottage .cart-share.copied { background: var(--green); }

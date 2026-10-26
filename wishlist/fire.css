@@ -1,0 +1,163 @@
+/* Fire theme — active when <html> has class "theme-fire" (see theme toggle). */
+html.theme-fire {
+  --bg: #fffaf2;          /* warm ash-white — still light enough for multiply knockout */
+  --ink: #2a0f05;         /* charred */
+  --ink-dim: #7a4a32;
+  --ink-faint: #c49a7e;
+  --line: rgba(122, 52, 10, 0.14);
+  --accent: #ff4d00;      /* flame orange */
+  --green: #e05a00;       /* prices / "ok" glow ember instead of green */
+  --fire: linear-gradient(180deg, #ffd23f 0%, #ff8a00 45%, #e8220a 100%);
+  --coal: #1f0b03;
+}
+/* =====================================================================
+   FIRE THEME
+   The page stays light so product cutouts keep their multiply knockout;
+   the heat lives in a fixed flame bed + rising embers painted *behind*
+   the board (z-index -1, body transparent) so items blend right over it.
+   ===================================================================== */
+html.theme-fire body { background: transparent; }
+html.theme-fire { background: var(--bg); }
+
+/* Heat haze climbing from the bottom of the screen */
+html.theme-fire .fire-bed {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: 46vh;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 70% at 50% 100%, rgba(255, 90, 0, 0.30) 0%, rgba(255, 150, 40, 0.14) 45%, transparent 75%);
+}
+html.theme-fire .fire-bed .flame {
+  position: absolute;
+  bottom: -40px;
+  left: var(--x);
+  width: var(--w, 120px);
+  height: var(--h, 160px);
+  margin-left: calc(var(--w, 120px) / -2);
+  border-radius: 50% 50% 35% 35% / 65% 65% 35% 35%;
+  background: radial-gradient(60% 75% at 50% 85%, #fff2a8 0%, #ffb02e 30%, #ff5a00 60%, rgba(232, 34, 10, 0) 78%);
+  filter: blur(14px);
+  opacity: 0.55;
+  transform-origin: 50% 100%;
+  animation: flame-lick var(--d, 2.4s) ease-in-out var(--delay, 0s) infinite alternate;
+}
+@keyframes flame-lick {
+  0%   { transform: scale(1, 1) skewX(0deg); opacity: 0.45; }
+  35%  { transform: scale(0.92, 1.18) skewX(-4deg); opacity: 0.62; }
+  70%  { transform: scale(1.06, 0.9) skewX(3deg); opacity: 0.5; }
+  100% { transform: scale(0.96, 1.25) skewX(-2deg); opacity: 0.6; }
+}
+html.theme-fire .fire-bed .ember {
+  position: absolute;
+  bottom: 0;
+  left: var(--x);
+  width: var(--s, 4px);
+  height: var(--s, 4px);
+  border-radius: 50%;
+  background: #ffcf4a;
+  box-shadow: 0 0 6px 2px rgba(255, 120, 0, 0.8);
+  opacity: 0;
+  animation: ember-rise var(--d, 6s) linear var(--delay, 0s) infinite;
+}
+@keyframes ember-rise {
+  0%   { opacity: 0; transform: translate(0, 0); }
+  10%  { opacity: 1; }
+  60%  { opacity: 0.8; }
+  100% { opacity: 0; transform: translate(var(--drift, 30px), -44vh); }
+}
+
+/* Header */
+html.theme-fire .brand { font-weight: 500; }
+html.theme-fire .crumb { color: var(--accent); }
+
+/* Title: a living flame gradient with glow */
+html.theme-fire .hero h1 {
+  background: linear-gradient(180deg, #ffd23f 0%, #ff8a00 38%, #ff3d00 68%, #b8160a 100%);
+  background-size: 100% 220%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 18px rgba(255, 106, 0, 0.45)) drop-shadow(0 2px 0 rgba(120, 20, 0, 0.25));
+  animation: title-burn 3.2s ease-in-out infinite alternate;
+}
+@keyframes title-burn {
+  0%   { background-position: 50% 0%;   filter: drop-shadow(0 0 14px rgba(255, 106, 0, 0.35)) drop-shadow(0 2px 0 rgba(120, 20, 0, 0.25)); }
+  50%  { background-position: 50% 60%;  filter: drop-shadow(0 0 24px rgba(255, 70, 0, 0.55)) drop-shadow(0 2px 0 rgba(120, 20, 0, 0.25)); }
+  100% { background-position: 50% 100%; filter: drop-shadow(0 0 16px rgba(255, 140, 0, 0.45)) drop-shadow(0 2px 0 rgba(120, 20, 0, 0.25)); }
+}
+html.theme-fire .tagline { color: var(--ink-dim); }
+
+/* Add form */
+html.theme-fire #add-input {
+  background: #fff4e6;
+  border-color: rgba(255, 106, 0, 0.25);
+}
+html.theme-fire #add-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255, 77, 0, 0.18), 0 0 18px rgba(255, 120, 0, 0.25);
+}
+html.theme-fire #add-btn {
+  background: var(--fire);
+  color: #fff;
+  font-weight: 600;
+  text-shadow: 0 1px 1px rgba(120, 20, 0, 0.45);
+  box-shadow: 0 4px 14px rgba(255, 77, 0, 0.35);
+  transition: box-shadow 0.15s ease, transform 0.08s ease, filter 0.15s ease;
+}
+html.theme-fire #add-btn:hover { opacity: 1; filter: brightness(1.08); box-shadow: 0 6px 22px rgba(255, 77, 0, 0.55); }
+
+html.theme-fire .bookmarklet {
+  background: var(--coal);
+  box-shadow: 0 0 0 1px rgba(255, 106, 0, 0.5), 0 0 10px rgba(255, 106, 0, 0.3);
+}
+html.theme-fire .bookmarklet-star { fill: #ff9a1f; }
+
+/* Cutouts: warm glow shadow instead of a grey one */
+html.theme-fire .item-img { filter: drop-shadow(0 6px 12px rgba(160, 40, 0, 0.22)); }
+html.theme-fire .item:hover .item-img { filter: drop-shadow(0 0 14px rgba(255, 110, 0, 0.55)) drop-shadow(0 6px 10px rgba(160, 40, 0, 0.2)); }
+html.theme-fire .item-fallback, html.theme-fire .cart-thumb, html.theme-fire .cart-thumb-glyph { background: #ffe6cc; }
+html.theme-fire .item-glyph, html.theme-fire .cart-thumb-glyph { color: #ff7a1a; }
+html.theme-fire .item-caption { background: rgba(255, 248, 238, 0.95); }
+
+/* Cart + trash: glowing coals */
+html.theme-fire .cart-fab, html.theme-fire .trash-fab {
+  background: radial-gradient(circle at 50% 35%, #3a1406 0%, var(--coal) 70%);
+  color: #ffb347;
+  box-shadow: 0 10px 26px rgba(120, 30, 0, 0.35), inset 0 -10px 18px rgba(255, 90, 0, 0.35);
+}
+html.theme-fire .cart-fab:hover { box-shadow: 0 12px 30px rgba(255, 77, 0, 0.4), inset 0 -12px 22px rgba(255, 110, 0, 0.5); }
+html.theme-fire .cart-fab.cart-fab--over {
+  background: var(--fire);
+  color: #fff;
+  box-shadow: 0 0 36px rgba(255, 90, 0, 0.75);
+}
+html.theme-fire .trash-fab.trash-fab--over {
+  background: #b8160a;
+  color: #fff;
+  box-shadow: 0 0 36px rgba(232, 34, 10, 0.7);
+}
+html.theme-fire .cart-badge {
+  background: var(--fire);
+  border-color: var(--bg);
+  font-weight: 600;
+}
+
+/* Cart screen */
+html.theme-fire .cart-screen { background: var(--bg); }
+html.theme-fire .cart-screen-title, html.theme-fire .cart-total-value {
+  background: var(--fire);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+html.theme-fire .cart-row:hover { background: rgba(255, 120, 0, 0.06); }
+html.theme-fire .cart-share { background: var(--fire); font-weight: 600; }
+html.theme-fire .cart-share.copied { background: var(--coal); }
+
+@media (prefers-reduced-motion: reduce) {
+  html.theme-fire .fire-bed .flame, html.theme-fire .fire-bed .ember, html.theme-fire .hero h1 { animation: none; }
+  html.theme-fire .fire-bed .ember { display: none; }
+}
