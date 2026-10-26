@@ -2164,3 +2164,5 @@ Mary Janes = Mary Jane (candy)
 Dots = Dots (candy)
 Samosa Pav = Vada pav
 Tamago Nigiri = Tamagoyaki
+Pastry Case = Pâtisserie
+Boston Cream Donut = Boston cream doughnut
