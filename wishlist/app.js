@@ -78,7 +78,10 @@
   // exactly the size they always were, while the extra width still counts for
   // positioning and dragging.
   const SIZE_BASIS = 1120;
-  const itemWidthPx = (item, W) => clamp(item.fw * Math.min(W, SIZE_BASIS), 90, 260);
+  // ITEM_SCALE shrinks every cutout (existing ones too) without touching the
+  // stored fw values.
+  const ITEM_SCALE = 0.8;
+  const itemWidthPx = (item, W) => clamp(item.fw * Math.min(W, SIZE_BASIS), 90, 260) * ITEM_SCALE;
 
   // ---------- Fasteners: each cutout is held to the board by washi tape or a
   // push-pin (chosen once per item, then remembered). ----------
