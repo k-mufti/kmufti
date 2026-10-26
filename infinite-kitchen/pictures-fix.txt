@@ -2134,3 +2134,7 @@ Mozzarella in Carrozza = Mozzarella in carrozza
 Espagueti Verde = Spaghetti
 Cioccolata Calda = Hot chocolate
 Kewpie Mayo = Mayonnaise
+Malai = Cream
+Gatsby = Gatsby (sandwich)
+Agua de Limón = Lemonade
+Mojo de Ajo = Garlic
