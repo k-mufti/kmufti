@@ -29,23 +29,32 @@ html.theme-cottage .meadow {
   image-rendering: crisp-edges;
 }
 
-/* Text floats on sky and grass: give it a soft cream halo so it stays legible. */
+/* Small text floats on sky, clouds and grass: white, a touch bolder, with a
+   soft dark-blue shadow so it reads on blue and on white cloud alike. */
 html.theme-cottage .site-header,
 html.theme-cottage .tagline,
 html.theme-cottage .bookmarklet-hint,
 html.theme-cottage .add-status,
 html.theme-cottage .empty-note {
-  text-shadow: 0 0 6px rgba(255, 253, 245, 0.95), 0 0 2px rgba(255, 253, 245, 0.95);
+  color: #ffffff;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(25, 55, 105, 0.6), 0 0 10px rgba(25, 55, 105, 0.35);
 }
-html.theme-cottage .brand { font-weight: 500; }
-html.theme-cottage .crumb { color: var(--ink-dim); }
-html.theme-cottage .tagline { color: var(--ink); }
-html.theme-cottage .bookmarklet-hint,
-html.theme-cottage .empty-note { color: var(--ink-dim); }
+html.theme-cottage .brand { color: #ffffff; font-weight: 600; }
+html.theme-cottage .crumb { color: rgba(255, 255, 255, 0.85); }
+html.theme-cottage .add-status.error { color: #ffd6cf; }
+html.theme-cottage .add-status.ok { color: #e6ffd6; }
+html.theme-cottage .bookmarklet { text-shadow: none; }
 
+/* Glossy title: #title-gloss (an SVG filter in index.html) adds a crisp
+   highlight on each stroke's top-left edge, a soft lighter top and a gentle
+   inner shadow. The drop shadows go here, outside the filter, so they
+   aren't glossed. */
 html.theme-cottage .hero h1 {
-  color: #3f5a2e;
-  text-shadow: 0 0 18px rgba(255, 253, 245, 0.9), 0 2px 0 rgba(255, 253, 245, 0.9);
+  color: #4f8436;
+  filter: url(#title-gloss)
+          drop-shadow(0 3px 4px rgba(25, 45, 15, 0.35))
+          drop-shadow(0 0 12px rgba(255, 253, 245, 0.75));
 }
 /* Form: linen field, sage button with a stitched edge */
 html.theme-cottage #add-input {
@@ -137,3 +146,10 @@ html.theme-cottage .cart-total-value { color: #3f5a2e; }
 html.theme-cottage .cart-row:hover { background: rgba(127, 156, 107, 0.08); }
 html.theme-cottage .cart-share { background: var(--accent); }
 html.theme-cottage .cart-share.copied { background: var(--green); }
+
+/* first-visit bookmarklet tip on the sky: white arrow with a soft shadow */
+html.theme-cottage .bm-tip-arrow {
+  --tip-ink: #ffffff;
+  filter: drop-shadow(0 1px 2px rgba(25, 55, 105, 0.6));
+}
+html.theme-cottage .bm-tip-ok { background: var(--accent); }

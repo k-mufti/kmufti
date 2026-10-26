@@ -936,7 +936,106 @@
     toggleCartPanel(false);
   });
 
+  // ---------- First-visit tip: drag the bookmarklet up ----------
+  // Once per browser, on desktop only (there's no bookmarks bar to drag to on
+  // a phone): a dashed arrow from the "wish" pill up to the top of the
+  // window, where the bookmarks bar is, plus a little note. Goes away for
+  // good on "got it", Esc, or the moment they start dragging the pill.
+  const TIP_KEY = "wishlist-bm-tip-seen";
+  function setupBookmarkletTip(alreadyHasIt) {
+    const pill = document.getElementById("bookmarklet");
+    if (!pill) return;
+    let seen = false;
+    try { seen = localStorage.getItem(TIP_KEY) === "1"; } catch (_) {}
+    if (new URLSearchParams(location.search).has("tip")) seen = false;   // ?tip to see it again
+    if (alreadyHasIt) { try { localStorage.setItem(TIP_KEY, "1"); } catch (_) {} return; }
+    if (seen || !matchMedia("(pointer: fine) and (min-width: 700px)").matches) return;
+
+    const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+    const NS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("class", "bm-tip-arrow");
+    svg.setAttribute("aria-hidden", "true");
+    const path = document.createElementNS(NS, "path");
+    path.setAttribute("class", "bm-tip-line");
+    const head = document.createElementNS(NS, "path");
+    head.setAttribute("class", "bm-tip-head");
+    const label = document.createElementNS(NS, "text");
+    label.setAttribute("class", "bm-tip-label");
+    label.textContent = "your bookmarks bar is up here";
+    // line + head + label bob together so the arrow never comes apart
+    const group = document.createElementNS(NS, "g");
+    group.setAttribute("class", "bm-tip-group");
+    group.append(path, head, label);
+    svg.append(group);
+
+    // Everything else greys out and holds still while the tip is up.
+    const dim = document.createElement("div");
+    dim.className = "bm-tip-dim";
+    dim.addEventListener("click", () => dismiss());
+
+    const note = document.createElement("div");
+    note.className = "bm-tip";
+    note.setAttribute("role", "dialog");
+    note.setAttribute("aria-label", "How to add the wish button");
+    note.innerHTML =
+      '<p class="bm-tip-title">save things from any store</p>' +
+      '<ol class="bm-tip-steps">' +
+        '<li><span>1</span><div><b>drag</b> this <i class="bm-tip-chip">★ wish</i> button up to your <b>bookmarks bar</b> — the row of saved links at the top of your browser</div></li>' +
+        '<li><span>2</span><div>when you find something you want on any website, <b>click ★ wish</b> up there</div></li>' +
+        '<li><span>3</span><div>it gets added to this wish list automatically</div></li>' +
+      '</ol>' +
+      '<p class="bm-tip-small">don\'t see a bookmarks bar? press <kbd>' + (mac ? "⌘" : "Ctrl") + '</kbd><kbd>' + (mac ? "⇧" : "Shift") + '</kbd><kbd>B</kbd> to show it</p>' +
+      '<button type="button" class="bm-tip-ok">got it</button>';
+
+    let raf = 0;
+    function place() {
+      raf = 0;
+      const r = pill.getBoundingClientRect();
+      const sx = r.left + r.width / 2, sy = r.top - 4;
+      const ex = Math.max(40, sx - Math.min(220, sx * 0.4)), ey = 10;
+      // the curve leaves the pill going straight up and arrives going straight
+      // up, so the solid head sits squarely on the end of the line
+      path.setAttribute("d", `M ${sx} ${sy} C ${sx} ${sy - 110}, ${ex} ${ey + 150}, ${ex} ${ey + 30}`);
+      head.setAttribute("d", `M ${ex} ${ey + 4} L ${ex + 14} ${ey + 30} L ${ex - 14} ${ey + 30} Z`);
+      label.setAttribute("x", ex + 26);
+      label.setAttribute("y", ey + 24);
+      note.style.left = sx + window.scrollX + "px";
+      note.style.top = r.bottom + window.scrollY + 14 + "px";
+      // hide the arrow once the pill is scrolled out of view
+      svg.style.opacity = r.bottom < 0 || r.top > innerHeight ? "0" : "";
+    }
+    const queue = () => { if (!raf) raf = requestAnimationFrame(place); };
+
+    function dismiss() {
+      try { localStorage.setItem(TIP_KEY, "1"); } catch (_) {}
+      pill.classList.remove("bookmarklet--tip");
+      document.documentElement.classList.remove("wish-paused");
+      for (const el of [note, svg, dim]) el.classList.add("bm-tip--out");
+      setTimeout(() => { note.remove(); svg.remove(); dim.remove(); }, 250);
+      removeEventListener("resize", queue);
+      removeEventListener("scroll", queue);
+      removeEventListener("keydown", onKey);
+    }
+    const onKey = (e) => { if (e.key === "Escape") dismiss(); };
+
+    setTimeout(() => {
+      document.body.append(dim, svg, note);
+      document.documentElement.classList.add("wish-paused");
+      pill.classList.add("bookmarklet--tip");
+      place();
+      note.querySelector(".bm-tip-ok").addEventListener("click", dismiss);
+      pill.addEventListener("dragstart", dismiss, { once: true });
+      addEventListener("resize", queue);
+      addEventListener("scroll", queue, { passive: true });
+      addEventListener("keydown", onKey);
+    }, 1200);
+  }
+
+  // Arriving through the bookmarklet means they've already got it set up.
+  const cameFromBookmarklet = new URLSearchParams(location.search).has("bmv");
   ingestQueryParams();
   setupBookmarklet();
+  setupBookmarkletTip(cameFromBookmarklet);
   render();
 })();

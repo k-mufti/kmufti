@@ -486,6 +486,8 @@
     if (!active()) return;
     if (!scene) build();
     frame();
+    // the first-visit tip pauses the scene (html.wish-paused)
+    if (document.documentElement.classList.contains("wish-paused")) return;
     timer = setInterval(() => { if (!document.hidden) frame(); }, 1000 / FPS);
   }
 
