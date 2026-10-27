@@ -95,6 +95,10 @@ function start(wrap) {
   const rim = new THREE.DirectionalLight(0xdfe6f2, 0.7);
   rim.position.set(1.1, 0.6, -1.2);
   scene.add(key, fill, rim);
+  // local only: a handle on the scene, for staging cover shots
+  if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) {
+    window.__bust = { scene, camera, CAM, LOOK, key, fill, rim, renderer, redraw() { shadowDirty = true; kick(); } };
+  }
 
   const pivot = new THREE.Group();
   pivot.rotation.y = YAW;
@@ -1217,7 +1221,10 @@ function start(wrap) {
   const beam = new THREE.Group();
   beam.add(beamCore, beamGlow);
   beam.visible = beamSpot.visible = false;
+  // drawn over everything: it always ends on the stone you can see, so it
+  // should never look like it slips behind his head on the way there
   beamCore.renderOrder = beamGlow.renderOrder = beamSpot.renderOrder = 10;
+  for (const m of [beamCore.material, beamGlow.material, beamSpot.material]) m.depthTest = false;
   scene.add(beam, beamSpot);
   // prev: where the line last got to (bust space), or null when it's broken
   const laser = { on: false, rocks: [], age: 0, end: new THREE.Vector3(), from: new THREE.Vector3(), touching: false, prev: null };
