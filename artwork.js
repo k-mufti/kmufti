@@ -63,17 +63,31 @@ const ARTWORK = {
       </g>
     </svg>`,
 
-  /* Jeopardy — a Jeopardy-style game board: gold values on deep blue. */
+  /* Jeopardy — the game's own title: gold "JEOPARDY!" in Anton, skewed like
+     the logo, with its hard chiseled black offset shadows, over the app's
+     blue spotlight and the original $200-$600 game board, softly blurred. */
   jeopardy: `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
+        <radialGradient id="lp-bg" cx="0.5" cy="0" r="1.1">
+          <stop offset="0" stop-color="#0a12b8"/>
+          <stop offset="0.7" stop-color="#020556"/>
+          <stop offset="1" stop-color="#01023a"/>
+        </radialGradient>
         <linearGradient id="lp-cell" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="#1731d8"/>
           <stop offset="1" stop-color="#0a1a9e"/>
         </linearGradient>
+        <filter id="lp-blur" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="5"/>
+        </filter>
+        <filter id="lp-soft" x="-5%" y="-5%" width="110%" height="110%">
+          <feGaussianBlur stdDeviation="1.1"/>
+        </filter>
       </defs>
-      <rect width="320" height="200" fill="#050a38"/>
-      <g>
+      <rect width="320" height="200" fill="url(#lp-bg)"/>
+      <!-- the board with its dollar values, softly blurred behind the title -->
+      <g opacity="0.7" filter="url(#lp-soft)">
         <rect x="14" y="14" width="92" height="52" rx="4" fill="url(#lp-cell)"/>
         <rect x="114" y="14" width="92" height="52" rx="4" fill="url(#lp-cell)"/>
         <rect x="214" y="14" width="92" height="52" rx="4" fill="url(#lp-cell)"/>
@@ -83,42 +97,72 @@ const ARTWORK = {
         <rect x="14" y="134" width="92" height="52" rx="4" fill="url(#lp-cell)"/>
         <rect x="114" y="134" width="92" height="52" rx="4" fill="url(#lp-cell)"/>
         <rect x="214" y="134" width="92" height="52" rx="4" fill="url(#lp-cell)"/>
+        <g font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="21" text-anchor="middle" fill="#ffce4a">
+          <text x="60" y="48">$200</text><text x="160" y="48">$200</text><text x="260" y="48">$200</text>
+          <text x="60" y="108">$400</text><text x="160" y="108">$400</text><text x="260" y="108">$400</text>
+          <text x="60" y="168">$600</text><text x="160" y="168">$600</text><text x="260" y="168">$600</text>
+        </g>
       </g>
-      <g font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="21" text-anchor="middle" fill="#ffce4a">
-        <text x="60" y="48">$200</text><text x="160" y="48">$200</text><text x="260" y="48">$200</text>
-        <text x="60" y="108">$400</text><text x="160" y="108">$400</text><text x="260" y="108">$400</text>
-        <text x="60" y="168">$600</text><text x="160" y="168">$600</text><text x="260" y="168">$600</text>
+      <!-- the logo: skewed, with stacked hard shadows, then a soft one -->
+      <g font-family="Anton, Impact, sans-serif" font-size="58" letter-spacing="3" text-anchor="middle" transform="translate(160 100) skewX(-6) translate(-160 -100)">
+        <text x="168" y="131" fill="#000" opacity="0.65" filter="url(#lp-blur)">JEOPARDY!</text>
+        <text x="166" y="127" fill="#000" opacity="0.5">JEOPARDY!</text>
+        <text x="164" y="125" fill="#000" opacity="0.75">JEOPARDY!</text>
+        <text x="162" y="123" fill="#000" opacity="0.95">JEOPARDY!</text>
+        <text x="160" y="121" fill="#ffcc00">JEOPARDY!</text>
       </g>
     </svg>`,
 
-  /* Wishlist — a stylized price tag in the app's muted green, reading "wish"
-     in its own display face (Fraunces italic), word and sparkle in the same
-     warm paper colour as the background. */
+  /* Wishlist — a stylized white price tag reading "wish" in the app's display
+     face (Fraunces italic, in its muted green), hanging over a simple version
+     of the cottage theme's pixel meadow: sky bands, sun, clouds, two hills,
+     a few flowers. The pixel art is run-length rects, one path per colour. */
   wishlist: `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="wl-bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#f7f3ec"/>
-          <stop offset="1" stop-color="#e7e0d4"/>
-        </linearGradient>
         <filter id="wl-shadow" x="-30%" y="-30%" width="160%" height="160%">
           <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#1a1a1a" flood-opacity="0.16"/>
         </filter>
       </defs>
-      <rect width="320" height="200" fill="url(#wl-bg)"/>
-      <!-- tilted, and scaled up about its own centre so it fills the tile -->
-      <g transform="translate(160 102) rotate(-8) scale(1.2) translate(-152 -102)">
+      <g shape-rendering="crispEdges">
+        <path fill="#5492e0" d="M0 0h28v4h-28zM48 0h272v4h-272zM0 4h20v4h-20zM56 4h92v4h-92zM160 4h160v4h-160zM0 8h16v4h-16zM60 8h84v4h-84zM164 8h156v4h-156zM0 12h16v4h-16zM60 12h80v4h-80zM168 12h152v4h-152zM76 16h4v4h-4zM92 16h4v4h-4zM108 16h4v4h-4zM124 16h4v4h-4zM172 16h4v4h-4zM188 16h4v4h-4zM204 16h4v4h-4zM220 16h4v4h-4zM236 16h4v4h-4zM252 16h4v4h-4zM284 16h4v4h-4zM300 16h4v4h-4zM316 16h4v4h-4z"/>
+        <path fill="#90b6df" d="M28 0h20v4h-20zM20 4h36v4h-36zM16 8h16v4h-16zM44 8h16v4h-16zM16 12h12v4h-12zM48 12h12v4h-12zM12 16h4v4h-4zM60 16h4v4h-4z"/>
+        <path fill="#ffffff" d="M148 4h12v4h-12zM144 8h20v4h-20zM140 12h28v4h-28zM136 16h36v4h-36zM268 16h16v4h-16zM136 20h36v4h-36zM260 20h28v4h-28zM252 24h40v4h-40zM248 28h52v4h-52zM248 32h52v4h-52zM52 176h4v4h-4zM96 176h4v4h-4zM240 176h4v4h-4zM48 180h4v4h-4zM56 180h4v4h-4zM76 180h4v4h-4zM92 180h4v4h-4zM100 180h4v4h-4zM112 180h4v4h-4zM180 180h4v4h-4zM196 180h4v4h-4zM204 180h4v4h-4zM212 180h4v4h-4zM220 180h4v4h-4zM236 180h4v4h-4zM244 180h4v4h-4zM24 184h4v4h-4zM44 184h4v4h-4zM72 184h4v4h-4zM80 184h4v4h-4zM108 184h4v4h-4zM116 184h4v4h-4zM176 184h4v4h-4zM184 184h4v4h-4zM192 184h4v4h-4zM200 184h4v4h-4zM208 184h4v4h-4zM216 184h4v4h-4zM224 184h4v4h-4zM20 188h4v4h-4zM28 188h4v4h-4zM68 188h4v4h-4zM88 188h4v4h-4zM232 188h4v4h-4zM64 192h4v4h-4zM72 192h4v4h-4zM84 192h4v4h-4zM92 192h4v4h-4zM228 192h4v4h-4zM236 192h4v4h-4z"/>
+        <path fill="#fff4cf" d="M32 8h12v4h-12zM28 12h4v4h-4zM44 12h4v4h-4zM24 16h4v4h-4zM48 16h4v4h-4zM20 20h4v4h-4zM52 20h4v4h-4zM20 24h4v4h-4zM52 24h4v4h-4zM20 28h4v4h-4zM52 28h4v4h-4zM24 32h4v4h-4zM48 32h4v4h-4zM28 36h4v4h-4zM44 36h4v4h-4zM32 40h12v4h-12z"/>
+        <path fill="#fffcec" d="M32 12h12v4h-12zM28 16h20v4h-20zM24 20h28v4h-28zM24 24h28v4h-28zM24 28h28v4h-28zM28 32h20v4h-20zM32 36h12v4h-12z"/>
+        <path fill="#62a0e8" d="M0 16h12v4h-12zM64 16h12v4h-12zM80 16h12v4h-12zM96 16h12v4h-12zM112 16h12v4h-12zM128 16h8v4h-8zM176 16h12v4h-12zM192 16h12v4h-12zM208 16h12v4h-12zM224 16h12v4h-12zM240 16h12v4h-12zM256 16h12v4h-12zM288 16h12v4h-12zM304 16h12v4h-12zM0 20h12v4h-12zM64 20h72v4h-72zM172 20h88v4h-88zM288 20h32v4h-32zM0 24h12v4h-12zM64 24h76v4h-76zM168 24h84v4h-84zM292 24h28v4h-28zM0 28h12v4h-12zM64 28h184v4h-184zM300 28h20v4h-20zM4 32h4v4h-4zM68 32h4v4h-4zM76 32h4v4h-4zM84 32h4v4h-4zM92 32h4v4h-4zM100 32h4v4h-4zM108 32h4v4h-4zM116 32h4v4h-4zM124 32h4v4h-4zM132 32h4v4h-4zM140 32h4v4h-4zM148 32h4v4h-4zM156 32h4v4h-4zM164 32h4v4h-4zM172 32h4v4h-4zM180 32h4v4h-4zM188 32h4v4h-4zM196 32h4v4h-4zM204 32h4v4h-4zM212 32h4v4h-4zM220 32h4v4h-4zM228 32h4v4h-4zM236 32h4v4h-4zM244 32h4v4h-4zM300 32h4v4h-4zM308 32h4v4h-4zM316 32h4v4h-4z"/>
+        <path fill="#99bfe5" d="M16 16h8v4h-8zM52 16h8v4h-8zM12 20h8v4h-8zM56 20h8v4h-8zM12 24h8v4h-8zM56 24h8v4h-8zM12 28h8v4h-8zM56 28h8v4h-8zM12 32h4v4h-4zM20 32h4v4h-4zM52 32h4v4h-4zM60 32h4v4h-4z"/>
+        <path fill="#e6eef4" d="M140 24h28v4h-28zM252 36h44v4h-44z"/>
+        <path fill="#74b0ee" d="M0 32h4v4h-4zM8 32h4v4h-4zM64 32h4v4h-4zM72 32h4v4h-4zM80 32h4v4h-4zM88 32h4v4h-4zM96 32h4v4h-4zM104 32h4v4h-4zM112 32h4v4h-4zM120 32h4v4h-4zM128 32h4v4h-4zM136 32h4v4h-4zM144 32h4v4h-4zM152 32h4v4h-4zM160 32h4v4h-4zM168 32h4v4h-4zM176 32h4v4h-4zM184 32h4v4h-4zM192 32h4v4h-4zM200 32h4v4h-4zM208 32h4v4h-4zM216 32h4v4h-4zM224 32h4v4h-4zM232 32h4v4h-4zM240 32h4v4h-4zM304 32h4v4h-4zM312 32h4v4h-4zM0 36h16v4h-16zM60 36h192v4h-192zM296 36h24v4h-24zM0 40h16v4h-16zM60 40h260v4h-260zM0 44h20v4h-20zM56 44h264v4h-264zM0 48h28v4h-28zM48 48h272v4h-272zM0 52h4v4h-4zM8 52h4v4h-4zM16 52h4v4h-4zM24 52h4v4h-4zM32 52h4v4h-4zM40 52h4v4h-4zM48 52h4v4h-4zM56 52h4v4h-4zM64 52h4v4h-4zM72 52h4v4h-4zM80 52h4v4h-4zM88 52h4v4h-4zM96 52h4v4h-4zM104 52h4v4h-4zM112 52h4v4h-4zM120 52h4v4h-4zM128 52h4v4h-4zM136 52h4v4h-4zM144 52h4v4h-4zM152 52h4v4h-4zM160 52h4v4h-4zM168 52h4v4h-4zM176 52h4v4h-4zM184 52h4v4h-4zM192 52h4v4h-4zM200 52h4v4h-4zM208 52h4v4h-4zM216 52h4v4h-4zM224 52h4v4h-4zM232 52h4v4h-4zM240 52h4v4h-4zM248 52h4v4h-4zM256 52h4v4h-4zM264 52h4v4h-4zM272 52h4v4h-4zM280 52h4v4h-4zM288 52h4v4h-4zM296 52h4v4h-4zM304 52h4v4h-4zM312 52h4v4h-4z"/>
+        <path fill="#a5c9e8" d="M16 32h4v4h-4zM56 32h4v4h-4zM16 36h12v4h-12zM48 36h12v4h-12zM16 40h16v4h-16zM44 40h16v4h-16zM20 44h36v4h-36zM28 48h20v4h-20z"/>
+        <path fill="#88c0f2" d="M4 52h4v4h-4zM12 52h4v4h-4zM20 52h4v4h-4zM28 52h4v4h-4zM36 52h4v4h-4zM44 52h4v4h-4zM52 52h4v4h-4zM60 52h4v4h-4zM68 52h4v4h-4zM76 52h4v4h-4zM84 52h4v4h-4zM92 52h4v4h-4zM100 52h4v4h-4zM108 52h4v4h-4zM116 52h4v4h-4zM124 52h4v4h-4zM132 52h4v4h-4zM140 52h4v4h-4zM148 52h4v4h-4zM156 52h4v4h-4zM164 52h4v4h-4zM172 52h4v4h-4zM180 52h4v4h-4zM188 52h4v4h-4zM196 52h4v4h-4zM204 52h4v4h-4zM212 52h4v4h-4zM220 52h4v4h-4zM228 52h4v4h-4zM236 52h4v4h-4zM244 52h4v4h-4zM252 52h4v4h-4zM260 52h4v4h-4zM268 52h4v4h-4zM276 52h4v4h-4zM284 52h4v4h-4zM292 52h4v4h-4zM300 52h4v4h-4zM308 52h4v4h-4zM316 52h4v4h-4zM0 56h320v4h-320zM0 60h320v4h-320zM0 64h320v4h-320zM0 68h320v4h-320z"/>
+        <path fill="#9ecff5" d="M0 72h320v4h-320zM0 76h320v4h-320zM0 80h320v4h-320zM0 84h320v4h-320zM4 88h4v4h-4zM20 88h4v4h-4zM36 88h4v4h-4zM52 88h4v4h-4zM68 88h4v4h-4zM84 88h4v4h-4zM100 88h4v4h-4zM116 88h4v4h-4zM132 88h4v4h-4zM148 88h4v4h-4zM164 88h4v4h-4zM180 88h4v4h-4zM196 88h4v4h-4zM212 88h4v4h-4zM228 88h4v4h-4zM244 88h4v4h-4zM260 88h4v4h-4zM276 88h4v4h-4zM292 88h4v4h-4zM308 88h4v4h-4z"/>
+        <path fill="#b6dcf6" d="M0 88h4v4h-4zM8 88h12v4h-12zM24 88h12v4h-12zM40 88h12v4h-12zM56 88h12v4h-12zM72 88h12v4h-12zM88 88h12v4h-12zM104 88h12v4h-12zM120 88h12v4h-12zM136 88h12v4h-12zM152 88h12v4h-12zM168 88h12v4h-12zM184 88h12v4h-12zM200 88h12v4h-12zM216 88h12v4h-12zM232 88h12v4h-12zM248 88h12v4h-12zM264 88h12v4h-12zM280 88h12v4h-12zM296 88h12v4h-12zM312 88h8v4h-8zM0 92h320v4h-320zM0 96h320v4h-320zM0 100h320v4h-320zM4 104h4v4h-4zM12 104h4v4h-4zM20 104h4v4h-4zM28 104h4v4h-4zM36 104h4v4h-4zM44 104h4v4h-4zM52 104h4v4h-4zM60 104h4v4h-4zM68 104h4v4h-4zM76 104h4v4h-4zM84 104h4v4h-4zM92 104h4v4h-4zM100 104h4v4h-4zM108 104h4v4h-4zM116 104h4v4h-4zM124 104h4v4h-4zM132 104h4v4h-4zM140 104h4v4h-4zM148 104h4v4h-4zM156 104h4v4h-4zM164 104h4v4h-4zM172 104h4v4h-4zM180 104h4v4h-4zM188 104h4v4h-4zM196 104h4v4h-4zM204 104h4v4h-4zM212 104h4v4h-4zM220 104h4v4h-4zM228 104h4v4h-4zM236 104h4v4h-4zM244 104h4v4h-4zM252 104h4v4h-4zM260 104h4v4h-4zM268 104h4v4h-4zM276 104h4v4h-4zM284 104h4v4h-4zM292 104h4v4h-4zM300 104h4v4h-4zM308 104h4v4h-4zM316 104h4v4h-4z"/>
+        <path fill="#cde6f5" d="M0 104h4v4h-4zM8 104h4v4h-4zM16 104h4v4h-4zM24 104h4v4h-4zM32 104h4v4h-4zM40 104h4v4h-4zM48 104h4v4h-4zM56 104h4v4h-4zM64 104h4v4h-4zM72 104h4v4h-4zM80 104h4v4h-4zM88 104h4v4h-4zM96 104h4v4h-4zM104 104h4v4h-4zM112 104h4v4h-4zM120 104h4v4h-4zM128 104h4v4h-4zM136 104h4v4h-4zM144 104h4v4h-4zM152 104h4v4h-4zM160 104h4v4h-4zM168 104h4v4h-4zM176 104h4v4h-4zM184 104h4v4h-4zM192 104h4v4h-4zM200 104h4v4h-4zM208 104h4v4h-4zM216 104h4v4h-4zM224 104h4v4h-4zM232 104h4v4h-4zM240 104h4v4h-4zM248 104h4v4h-4zM256 104h4v4h-4zM264 104h4v4h-4zM272 104h4v4h-4zM280 104h4v4h-4zM288 104h4v4h-4zM296 104h4v4h-4zM304 104h4v4h-4zM312 104h4v4h-4zM0 108h320v4h-320zM0 112h320v4h-320zM0 116h320v4h-320zM0 120h320v4h-320zM0 124h4v4h-4zM8 124h4v4h-4zM16 124h4v4h-4zM24 124h4v4h-4zM32 124h4v4h-4zM40 124h4v4h-4zM48 124h4v4h-4zM56 124h4v4h-4zM64 124h4v4h-4zM72 124h4v4h-4zM80 124h4v4h-4zM88 124h4v4h-4zM96 124h4v4h-4zM104 124h4v4h-4zM112 124h4v4h-4zM120 124h4v4h-4zM128 124h4v4h-4zM136 124h4v4h-4zM144 124h4v4h-4zM152 124h4v4h-4zM160 124h4v4h-4zM168 124h4v4h-4zM176 124h4v4h-4zM184 124h4v4h-4zM192 124h4v4h-4zM200 124h4v4h-4zM208 124h4v4h-4zM216 124h4v4h-4zM224 124h4v4h-4zM232 124h4v4h-4zM240 124h4v4h-4zM248 124h4v4h-4zM256 124h4v4h-4zM264 124h4v4h-4zM272 124h4v4h-4zM280 124h4v4h-4zM288 124h4v4h-4zM296 124h4v4h-4zM304 124h4v4h-4zM312 124h4v4h-4z"/>
+        <path fill="#e2eaf2" d="M4 124h4v4h-4zM12 124h4v4h-4zM20 124h4v4h-4zM28 124h4v4h-4zM36 124h4v4h-4zM44 124h4v4h-4zM52 124h4v4h-4zM60 124h4v4h-4zM68 124h4v4h-4zM76 124h4v4h-4zM84 124h4v4h-4zM92 124h4v4h-4zM100 124h4v4h-4zM108 124h4v4h-4zM116 124h4v4h-4zM124 124h4v4h-4zM132 124h4v4h-4zM140 124h4v4h-4zM148 124h4v4h-4zM156 124h4v4h-4zM164 124h4v4h-4zM172 124h4v4h-4zM180 124h4v4h-4zM188 124h4v4h-4zM196 124h4v4h-4zM204 124h4v4h-4zM212 124h4v4h-4zM220 124h4v4h-4zM228 124h4v4h-4zM236 124h4v4h-4zM244 124h4v4h-4zM252 124h4v4h-4zM260 124h4v4h-4zM268 124h4v4h-4zM276 124h4v4h-4zM284 124h4v4h-4zM292 124h4v4h-4zM300 124h4v4h-4zM308 124h4v4h-4zM316 124h4v4h-4zM0 128h320v4h-320zM0 132h320v4h-320zM0 136h320v4h-320zM0 140h28v4h-28zM88 140h232v4h-232z"/>
+        <path fill="#a4d08a" d="M28 140h60v4h-60zM4 144h24v4h-24zM88 144h12v4h-12zM0 148h4v4h-4zM100 148h16v4h-16zM304 148h16v4h-16zM116 152h24v4h-24zM292 152h12v4h-12zM140 156h84v4h-84zM276 156h16v4h-16zM224 160h52v4h-52z"/>
+        <path fill="#f2e6e6" d="M0 144h4v4h-4zM100 144h220v4h-220zM116 148h188v4h-188zM140 152h152v4h-152zM224 156h52v4h-52z"/>
+        <path fill="#86b86e" d="M28 144h60v4h-60zM4 148h96v4h-96zM0 152h116v4h-116zM304 152h16v4h-16zM0 156h140v4h-140zM292 156h28v4h-28zM0 160h224v4h-224zM276 160h44v4h-44zM0 164h144v4h-144zM212 164h76v4h-76zM308 164h12v4h-12zM0 168h116v4h-116z"/>
+        <path fill="#8fcf5e" d="M144 164h68v4h-68zM288 164h20v4h-20zM116 168h28v4h-28zM212 168h76v4h-76zM308 168h12v4h-12zM0 172h116v4h-116z"/>
+        <path fill="#6fb447" d="M144 168h68v4h-68zM288 168h20v4h-20zM116 172h204v4h-204zM0 176h52v4h-52zM56 176h40v4h-40zM100 176h44v4h-44zM212 176h28v4h-28zM244 176h44v4h-44zM308 176h12v4h-12zM0 180h8v4h-8zM16 180h32v4h-32zM60 180h16v4h-16zM80 180h12v4h-12zM104 180h8v4h-8z"/>
+        <path fill="#5e9f3c" d="M144 176h68v4h-68zM288 176h20v4h-20zM116 180h64v4h-64zM184 180h12v4h-12zM200 180h4v4h-4zM208 180h4v4h-4zM216 180h4v4h-4zM224 180h12v4h-12zM248 180h72v4h-72zM0 184h12v4h-12zM28 184h16v4h-16zM64 184h8v4h-8zM84 184h12v4h-12zM100 184h8v4h-8zM120 184h56v4h-56zM188 184h4v4h-4zM228 184h12v4h-12zM244 184h76v4h-76zM0 188h20v4h-20zM32 188h16v4h-16zM52 188h16v4h-16zM72 188h4v4h-4zM80 188h8v4h-8zM92 188h20v4h-20zM116 188h64v4h-64zM184 188h12v4h-12zM200 188h4v4h-4zM208 188h4v4h-4zM216 188h4v4h-4zM224 188h8v4h-8zM236 188h20v4h-20zM264 188h56v4h-56zM0 192h24v4h-24zM28 192h36v4h-36zM76 192h8v4h-8zM96 192h132v4h-132zM248 192h72v4h-72zM0 196h68v4h-68zM72 196h16v4h-16zM92 196h140v4h-140zM236 196h84v4h-84z"/>
+        <path fill="#ffd94a" d="M8 180h8v4h-8zM12 184h12v4h-12zM56 184h8v4h-8zM256 188h8v4h-8zM240 192h8v4h-8z"/>
+        <path fill="#f5c02c" d="M52 180h4v4h-4zM96 180h4v4h-4zM240 180h4v4h-4zM48 184h4v4h-4zM76 184h4v4h-4zM112 184h4v4h-4zM180 184h4v4h-4zM196 184h4v4h-4zM204 184h4v4h-4zM212 184h4v4h-4zM220 184h4v4h-4zM24 188h4v4h-4zM68 192h4v4h-4zM88 192h4v4h-4zM232 192h4v4h-4z"/>
+        <path fill="#e2eaee" d="M52 184h4v4h-4zM96 184h4v4h-4zM240 184h4v4h-4zM48 188h4v4h-4zM76 188h4v4h-4zM112 188h4v4h-4zM180 188h4v4h-4zM196 188h4v4h-4zM204 188h4v4h-4zM212 188h4v4h-4zM220 188h4v4h-4zM24 192h4v4h-4zM68 196h4v4h-4zM88 196h4v4h-4zM232 196h4v4h-4z"/>
+      </g>
+      <!-- tilted about its own centre, leaving the meadow showing around it -->
+      <g transform="translate(160 102) rotate(-8) scale(1.0) translate(-152 -102)">
         <!-- tag body -->
         <g filter="url(#wl-shadow)">
-          <path d="M74 50 L250 50 Q270 50 270 72 L270 132 Q270 154 250 154 L74 154 L34 102 Z" fill="#3f7d5a" stroke="#3a3632" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M74 50 L250 50 Q270 50 270 72 L270 132 Q270 154 250 154 L74 154 L34 102 Z" fill="#ffffff" stroke="#3a3632" stroke-width="1.8" stroke-linejoin="round"/>
         </g>
         <!-- punch hole -->
-        <circle cx="60" cy="102" r="11" fill="#f2ede4"/>
+        <circle cx="60" cy="102" r="11" fill="#b6dcf6"/>
         <circle cx="60" cy="102" r="11" fill="none" stroke="#3a3632" stroke-width="1.5"/>
         <!-- sparkle accent -->
-        <g transform="translate(256,62) scale(0.95)"><path d="M0,-9 L2.4,-2.6 L9,-2.6 L3.6,1.3 L5.6,8 L0,3.6 L-5.6,8 L-3.6,1.3 L-9,-2.6 L-2.4,-2.6 Z" fill="#f7f3ec" stroke="#3a3632" stroke-width="2" stroke-linejoin="round" paint-order="stroke"/></g>
+        <g transform="translate(256,62) scale(0.95)"><path d="M0,-9 L2.4,-2.6 L9,-2.6 L3.6,1.3 L5.6,8 L0,3.6 L-5.6,8 L-3.6,1.3 L-9,-2.6 L-2.4,-2.6 Z" fill="#ffd94a" stroke="#3a3632" stroke-width="2" stroke-linejoin="round" paint-order="stroke"/></g>
         <!-- the word, in the app's Fraunces italic display face -->
-        <text x="172" y="125" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="700" font-style="italic" font-size="66" fill="#f7f3ec" stroke="#3a3632" stroke-width="3" stroke-linejoin="round" paint-order="stroke">wish</text>
+        <text x="172" y="125" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="700" font-style="italic" font-size="66" fill="#3f7d5a" stroke="#3a3632" stroke-width="3" stroke-linejoin="round" paint-order="stroke">wish</text>
       </g>
     </svg>`,
 
