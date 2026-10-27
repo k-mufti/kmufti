@@ -1949,20 +1949,38 @@ function start(wrap) {
   // down to the board. Restore sends it all back to your pocket.
   const BILL_W = 0.072, BILL_H = 0.031, MAX_BILLS = 160;
   const flatBill = new THREE.PlaneGeometry(BILL_W, BILL_H, 8, 4);
-  const billMat = new THREE.MeshStandardMaterial({
-    map: billTexture(), roughness: 0.85, metalness: 0, side: THREE.DoubleSide,
+  // A real hundred: the Treasury's own series-2009 specimen scans (public
+  // domain, from Wikimedia Commons), Franklin on the front and Independence
+  // Hall on the back. One mesh per side, so each face gets its own picture.
+  const billSide = (side) => new THREE.MeshStandardMaterial({
+    color: 0xdde6d6, roughness: 0.8, metalness: 0, side,
     // drawn a hair in front of the stone it lies on, so it never flickers into it
     polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
   });
-  billMat.map.anisotropy = renderer.capabilities.getMaxAnisotropy();
-  // the 100s are in the page's Playfair: redraw once it has loaded
-  document.fonts?.load("italic 900 44px 'Playfair Display'").then(() => {
-    const t = billTexture();
-    t.anisotropy = billMat.map.anisotropy;
-    billMat.map.dispose();
-    billMat.map = t;
-    kick();
-  }).catch(() => {});
+  const billFront = billSide(THREE.FrontSide), billBack = billSide(THREE.BackSide);
+  const texLoader = new THREE.TextureLoader();
+  for (const [mat, file, mirror] of [[billFront, "cash/100-front.jpg", false], [billBack, "cash/100-back.jpg", true]]) {
+    texLoader.load(new URL(file, import.meta.url).href, (t) => {
+      t.colorSpace = THREE.SRGBColorSpace;
+      t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      // seen from behind, a plane shows its picture mirrored: flip it back
+      if (mirror) { t.wrapS = THREE.RepeatWrapping; t.repeat.x = -1; t.offset.x = 1; }
+      mat.map = t;
+      mat.color.set(0xffffff);
+      mat.needsUpdate = true;
+      kick();
+    });
+  }
+  function billMesh() {
+    const m = new THREE.Mesh(flatBill, billFront), back = new THREE.Mesh(flatBill, billBack);
+    m.receiveShadow = back.receiveShadow = true;
+    m.add(back);
+    return m;
+  }
+  function setBillGeometry(m, g) {
+    m.geometry = g;
+    m.children[0].geometry = g;
+  }
   // each bill: { mesh, state: fly | stuck | fall | rest | home, ... }
   const bills = [];
   let cashThrown = 0;
@@ -1991,8 +2009,7 @@ function start(wrap) {
       n = hit.face.normal.clone().transformDirection(hit.object.matrixWorld);
       if (n.dot(ray.ray.direction) > 0) n.negate();
     }
-    const mesh = new THREE.Mesh(flatBill, billMat);
-    mesh.receiveShadow = true;
+    const mesh = billMesh();
     mesh.position.copy(from);
     scene.add(mesh);
     const dist = from.distanceTo(to);
@@ -2035,7 +2052,7 @@ function start(wrap) {
     g.computeVertexNormals();
     g.computeBoundingSphere();
     const m = b.mesh;
-    m.geometry = g;
+    setBillGeometry(m, g);
     model.add(m);
     m.position.copy(anchor);
     m.quaternion.identity();
@@ -2422,70 +2439,6 @@ function starTexture() {
     g.ellipse(64, 64, w, h, 0, 0, Math.PI * 2);
     g.fill();
   }
-  const t = new THREE.CanvasTexture(c);
-  t.colorSpace = THREE.SRGBColorSpace;
-  return t;
-}
-
-// a hundred: pale green paper, a dark green frame, the denomination in the
-// corners and the don himself (a little marble profile) in the middle
-function billTexture() {
-  const W = 512, H = 221;
-  const c = document.createElement("canvas");
-  c.width = W; c.height = H;
-  const g = c.getContext("2d");
-  const paper = g.createLinearGradient(0, 0, W, H);
-  paper.addColorStop(0, "#dfe8cf");
-  paper.addColorStop(0.5, "#c9d9b4");
-  paper.addColorStop(1, "#d6e2c2");
-  g.fillStyle = paper;
-  g.fillRect(0, 0, W, H);
-  // fine wavy lines across the paper
-  g.strokeStyle = "rgba(47,93,58,0.12)";
-  g.lineWidth = 1;
-  for (let y = -10; y < H + 10; y += 7) {
-    g.beginPath();
-    for (let x = 0; x <= W; x += 8) g.lineTo(x, y + Math.sin(x / 22) * 6);
-    g.stroke();
-  }
-  // the frame
-  g.strokeStyle = "#2f5d3a";
-  g.lineWidth = 8;
-  g.strokeRect(10, 10, W - 20, H - 20);
-  g.lineWidth = 2;
-  g.strokeRect(22, 22, W - 44, H - 44);
-  // the medallion, with his profile in it
-  const cx = W / 2, cy = H / 2;
-  g.fillStyle = "#b8cca0";
-  g.beginPath(); g.ellipse(cx, cy, 58, 74, 0, 0, Math.PI * 2); g.fill();
-  g.lineWidth = 4;
-  g.strokeStyle = "#2f5d3a";
-  g.stroke();
-  g.save();
-  g.beginPath(); g.ellipse(cx, cy, 56, 72, 0, 0, Math.PI * 2); g.clip();
-  g.fillStyle = "#3d6b47";
-  g.beginPath(); g.ellipse(cx + 2, cy - 14, 26, 30, 0, 0, Math.PI * 2); g.fill();   // head
-  g.beginPath();
-  g.moveTo(cx - 40, cy + 74); g.quadraticCurveTo(cx - 34, cy + 22, cx, cy + 16);
-  g.quadraticCurveTo(cx + 34, cy + 22, cx + 40, cy + 74); g.closePath();   // shoulders
-  g.fill();
-  g.fillStyle = "#c8a548";   // his gold aviators, even here
-  g.fillRect(cx - 18, cy - 22, 40, 9);
-  g.restore();
-  // the denomination, and the words
-  g.fillStyle = "#24472c";
-  g.font = "italic 900 44px 'Playfair Display', Georgia, serif";
-  g.textBaseline = "middle";
-  g.textAlign = "left";
-  g.fillText("100", 34, 56);
-  g.fillText("100", 34, H - 52);
-  g.textAlign = "right";
-  g.fillText("100", W - 34, 56);
-  g.fillText("100", W - 34, H - 52);
-  g.textAlign = "center";
-  g.font = "600 15px Georgia, serif";
-  g.fillText("IN DON WE TRUST", cx, 34);
-  g.fillText("ONE HUNDRED", cx, H - 34);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
