@@ -166,40 +166,37 @@ const ARTWORK = {
       </g>
     </svg>`,
 
-  /* Meccha Chameleon — the blank white figure behind bold "FIND MECCHA" in
-     the game's own Anton display face (MECCHA in a mix of the title's letter colours),
-     on the game's near-black. */
+  /* Meccha Chameleon — "FIND MECCHA" painted onto the blank white figure the
+     way the game paints him: the letters are clipped to his silhouette and
+     multiplied over his own shading, so they wrap his curves and fall off his
+     edges. Anton display face, MECCHA in the title's letter colours, on black. */
   chameleon: `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="mc-bg" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#18171d"/>
-          <stop offset="1" stop-color="#0b0a0e"/>
-        </linearGradient>
-        <linearGradient id="mc-fig" x1="0.3" y1="0.15" x2="0.72" y2="1">
-          <stop offset="0" stop-color="#ffffff"/>
-          <stop offset="1" stop-color="#c9c9c9"/>
-        </linearGradient>
-        <filter id="mc-tsh" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.5"/>
+        <!-- turns the render's alpha into solid white, for a silhouette mask -->
+        <filter id="mc-solid" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+          <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0"/>
         </filter>
+        <!-- The real 3D figure (pose 2), exported straight from the game's own
+             renderer, laid on its side across the tile. Square box centred on
+             the tile so the rotation can't clip it; 270° puts his head left. -->
+        <g id="mc-fig" transform="rotate(270 160 100)">
+          <image href="images/meccha-pose2.png?v=2" x="-5" y="-65" width="330" height="330"
+                 preserveAspectRatio="xMidYMid meet"/>
+        </g>
+        <mask id="mc-body" maskUnits="userSpaceOnUse" x="0" y="0" width="320" height="200">
+          <use href="#mc-fig" filter="url(#mc-solid)"/>
+        </mask>
       </defs>
       <rect width="320" height="200" fill="#000000"/>
-      <!-- The real 3D figure (pose 2), exported straight from the game's own
-           renderer, laid on its side across the tile. -->
-      <!-- Square box centred on the tile so the rotation can't clip it: the
-           figure's long axis spans the tile's width. 270° = 90° + a 180° flip,
-           so he lies the other way round. -->
-      <g transform="rotate(270 160 100)">
-        <image href="images/meccha-pose2.png?v=2" x="-5" y="-65" width="330" height="330"
-               preserveAspectRatio="xMidYMid meet"/>
-      </g>
-      <!-- FIND MECCHA — Anton, red, over the figure -->
-      <g fill="#e23b2e" font-family="Anton, sans-serif" text-anchor="middle" filter="url(#mc-tsh)">
-        <text x="160" y="84" font-size="54" textLength="150" lengthAdjust="spacingAndGlyphs">FIND</text>
+      <use href="#mc-fig"/>
+      <!-- the paint: only lands on him, and his shading shows through it -->
+      <g mask="url(#mc-body)" style="mix-blend-mode:multiply" opacity="0.94"
+         font-family="Anton, sans-serif" text-anchor="middle">
+        <text x="56" y="114" font-size="40" textLength="52" lengthAdjust="spacingAndGlyphs" fill="#e23b2e">FIND</text>
         <!-- six different colours picked from across the game's MECCHA
              CHAMELEON title, none repeated -->
-        <text x="160" y="170" font-size="84" textLength="306" lengthAdjust="spacingAndGlyphs"><tspan fill="#a8e10c">M</tspan><tspan fill="#8b45d6">E</tspan><tspan fill="#ff8a1f">C</tspan><tspan fill="#58c4f0">C</tspan><tspan fill="#e5189c">H</tspan><tspan fill="#ffd21f">A</tspan></text>
+        <text x="198" y="150" font-size="78" textLength="226" lengthAdjust="spacingAndGlyphs"><tspan fill="#a8e10c">M</tspan><tspan fill="#8b45d6">E</tspan><tspan fill="#ff8a1f">C</tspan><tspan fill="#58c4f0">C</tspan><tspan fill="#e5189c">H</tspan><tspan fill="#ffd21f">A</tspan></text>
       </g>
     </svg>`,
 
