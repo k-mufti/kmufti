@@ -272,6 +272,7 @@ function start(wrap) {
       if (c.gone) { model.remove(mesh); blocks[c.id] = null; continue; }
       setGeometry(mesh, soupGeometry(c), true);
     }
+    knockCash(rocks);   // any bill stuck where the stone just went comes off
     // his things: a chunk that breaks off takes whatever it was wearing with
     // it; anything the rock dug out from under falls off
     const knocked = [], carried = [];
@@ -1061,6 +1062,7 @@ function start(wrap) {
     { name: "sledgehammer", every: 0.9, dmg: 3.5, pellets: 1, spread: 0, r: 2.3, deep: 0.75, chips: 40, shake: 1.6, sound: () => hammerSound() },
     { name: "laser", every: 0.04, dmg: 2, beam: true, r: LASER_R, deep: 5, chips: 0, shake: 0.05 },
     { name: "rocket launcher", every: 1.4, dmg: 99, rocket: true, r: 3.0, deep: 1.0, chips: 70, shake: 2.4 },
+    { name: "cash", every: 0.09, cash: true },   // make it rain: see Cash
   ];
   let weapon = WEAPONS[0];
 
@@ -1119,6 +1121,7 @@ function start(wrap) {
   function shoot() {
     if (weapon.beam) return laserSample();
     if (weapon.rocket) return launch();
+    if (weapon.cash) return throwCash();
     const w = weapon, rocks = [], hits = [];
     let anyBroken = false, hitSomething = false, anyStone = false;
     for (let i = 0; i < w.pellets; i++) {
@@ -1628,6 +1631,7 @@ function start(wrap) {
     laserStop();
     clearBurns();
     for (const rk of rockets.splice(0)) { scene.remove(rk.mesh); rk.sound?.stop(); }
+    pocketCash();
     rewind = {
       t: 0, shots: history.length,
       chips: chips.map((c) => ({ c, at: c.p.clone(), delay: rnd(0, 0.45), lift: rnd(0.03, 0.12) })),
@@ -1936,8 +1940,218 @@ function start(wrap) {
     } catch (e) { /* no audio, no problem */ }
   }
 
+  // ---------- Cash ----------
+  // Make it rain. Every throw flings one bill from your hand: it tumbles
+  // over in a little arc, slaps onto him and stays there, draped over
+  // whatever it hit (every point of the bill is pressed down onto the
+  // stone, so it folds over his nose or round his cheek). Shoot near a bill
+  // and it's knocked loose; one that misses him, or hits his bling, drifts
+  // down to the board. Restore sends it all back to your pocket.
+  const BILL_W = 0.072, BILL_H = 0.031, MAX_BILLS = 160;
+  const flatBill = new THREE.PlaneGeometry(BILL_W, BILL_H, 8, 4);
+  const billMat = new THREE.MeshStandardMaterial({
+    map: billTexture(), roughness: 0.85, metalness: 0, side: THREE.DoubleSide,
+    // drawn a hair in front of the stone it lies on, so it never flickers into it
+    polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+  });
+  billMat.map.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  // the 100s are in the page's Playfair: redraw once it has loaded
+  document.fonts?.load("italic 900 44px 'Playfair Display'").then(() => {
+    const t = billTexture();
+    t.anisotropy = billMat.map.anisotropy;
+    billMat.map.dispose();
+    billMat.map = t;
+    kick();
+  }).catch(() => {});
+  // each bill: { mesh, state: fly | stuck | fall | rest | home, ... }
+  const bills = [];
+  let cashThrown = 0;
+  const drapeRay = new THREE.Raycaster();
+  const UP = new THREE.Vector3(0, 1, 0), billX = new THREE.Vector3(), billY = new THREE.Vector3(), billM = new THREE.Matrix4();
+
+  // lying flat on a surface facing n, long side level, turned by roll
+  function faceQ(n, roll) {
+    billX.crossVectors(UP, n);
+    if (billX.lengthSq() < 1e-4) billX.set(1, 0, 0);
+    billX.normalize();
+    billY.crossVectors(n, billX);
+    return new THREE.Quaternion().setFromRotationMatrix(billM.makeBasis(billX, billY, n))
+      .multiply(new THREE.Quaternion().setFromAxisAngle(Z, roll));
+  }
+
+  function throwCash() {
+    if (!ready || drop || rewind) return;
+    // a loose handful: each bill lands a little off the aim
+    const a = Math.random() * Math.PI * 2, d = Math.sqrt(Math.random()) * 0.03;
+    const hit = pick(new THREE.Vector2(Math.cos(a) * d, Math.sin(a) * d * camera.aspect));
+    const from = muzzle(new THREE.Vector3());
+    const to = hit ? hit.point.clone() : ray.ray.at(1.3, new THREE.Vector3());
+    let n = null;
+    if (hit && blocks.includes(hit.object)) {
+      n = hit.face.normal.clone().transformDirection(hit.object.matrixWorld);
+      if (n.dot(ray.ray.direction) > 0) n.negate();
+    }
+    const mesh = new THREE.Mesh(flatBill, billMat);
+    mesh.receiveShadow = true;
+    mesh.position.copy(from);
+    scene.add(mesh);
+    const dist = from.distanceTo(to);
+    bills.push({
+      mesh, state: "fly", from, to, n, t: 0, dur: Math.max(0.16, dist / 2.6),
+      rot: new THREE.Euler(rnd(0, 6), rnd(0, 6), rnd(0, 6)),
+      spin: new THREE.Vector3(rnd(-16, 16), rnd(-16, 16), rnd(-24, 24)),
+      endQ: n ? faceQ(n, rnd(-0.5, 0.5)) : null,
+      back: ray.ray.direction.clone().negate(),
+    });
+    while (bills.length > MAX_BILLS) removeBill(bills[0]);
+    cashThrown += 100;
+    updateStats();
+    wrap.classList.add("shot");
+    if (restoreBtn) restoreBtn.hidden = false;
+    cashSound(false);
+    kick();
+  }
+
+  // Press the bill onto the stone: every vertex of a flat bill lying on the
+  // tangent plane at p is dropped along -n onto whatever stone is under it.
+  // Kept in model space, about its own middle, so it turns with him.
+  function drape(b) {
+    const q = b.endQ, n = b.n, p = b.to;
+    const g = flatBill.clone(), pos = g.attributes.position;
+    const live = blocks.filter(Boolean), v = new THREE.Vector3(), down = n.clone().negate();
+    const inv = new THREE.Matrix4().copy(model.matrixWorld).invert();
+    const anchor = p.clone().applyMatrix4(inv);
+    drapeRay.far = 0.075;
+    for (let i = 0; i < pos.count; i++) {
+      v.set(pos.getX(i), pos.getY(i), 0).applyQuaternion(q).add(p);
+      drapeRay.set(v.clone().addScaledVector(n, 0.05), down);
+      const h = drapeRay.intersectObjects(live, false)[0];
+      // hanging off an edge with nothing under it: curl it back a little
+      if (h) v.copy(h.point).addScaledVector(n, 0.0012);
+      else v.addScaledVector(n, -0.006);
+      v.applyMatrix4(inv).sub(anchor);
+      pos.setXYZ(i, v.x, v.y, v.z);
+    }
+    g.computeVertexNormals();
+    g.computeBoundingSphere();
+    const m = b.mesh;
+    m.geometry = g;
+    model.add(m);
+    m.position.copy(anchor);
+    m.quaternion.identity();
+    b.anchor = anchor;
+    b.state = "stuck";
+  }
+
+  // let a bill go: off his face (or out of the air) and down to the board
+  function loosen(b, push) {
+    if (b.mesh.parent !== scene) scene.attach(b.mesh);
+    b.state = "fall";
+    b.t = 0;
+    b.v = push.clone().add(new THREE.Vector3(rnd(-0.08, 0.08), rnd(0.02, 0.12), rnd(0, 0.1)));
+    b.w = new THREE.Vector3(rnd(-5, 5), rnd(-3, 3), rnd(-5, 5));
+    b.phase = rnd(0, 6);
+  }
+
+  function knockCash(rocks) {
+    if (!rocks?.length) return;
+    for (const b of bills) {
+      if (b.state !== "stuck") continue;
+      for (const rk of rocks) {
+        const r = Math.max(...rk.scale) * (rk.stretch || 1) * 1.25 + 0.01;
+        if (b.anchor.distanceToSquared(new THREE.Vector3().fromArray(rk.position)) > r * r) continue;
+        const away = b.anchor.clone().sub(new THREE.Vector3().fromArray(rk.position)).normalize()
+          .transformDirection(model.matrixWorld).multiplyScalar(rnd(0.25, 0.45));
+        loosen(b, away);
+        break;
+      }
+    }
+  }
+
+  function removeBill(b) {
+    b.mesh.parent?.remove(b.mesh);
+    if (b.mesh.geometry !== flatBill) b.mesh.geometry.dispose();
+    bills.splice(bills.indexOf(b), 1);
+  }
+
+  // restore: every bill, wherever it is, flies back to your hand
+  function pocketCash() {
+    for (const b of bills) {
+      if (b.mesh.parent !== scene) scene.attach(b.mesh);
+      b.state = "home";
+      b.t = 0;
+      b.from = b.mesh.position.clone();
+      b.q0 = b.mesh.quaternion.clone();
+      b.dur = rnd(0.3, 0.55);
+    }
+    cashThrown = 0;
+    updateStats();
+  }
+
+  const billQ = new THREE.Quaternion(), hand = new THREE.Vector3();
+  function stepBills(dt) {
+    let moving = false;
+    for (let i = bills.length - 1; i >= 0; i--) {
+      const b = bills[i], m = b.mesh;
+      if (b.state === "stuck" || b.state === "rest") continue;
+      moving = true;
+      b.t += dt;
+      if (b.state === "fly") {
+        const u = Math.min(1, b.t / b.dur);
+        m.position.lerpVectors(b.from, b.to, u);
+        m.position.y += Math.sin(Math.PI * u) * 0.05;
+        b.rot.x += b.spin.x * dt; b.rot.y += b.spin.y * dt; b.rot.z += b.spin.z * dt;
+        m.quaternion.setFromEuler(b.rot);
+        // it turns to meet the face it's about to hit
+        if (b.endQ) m.quaternion.slerp(b.endQ, u * u * u);
+        if (u >= 1) {
+          if (b.n) { drape(b); cashSound(true); }
+          else loosen(b, b.back.clone().multiplyScalar(0.2));
+        }
+      } else if (b.state === "fall") {
+        // paper: slow to fall, quick to lose speed, and it sways as it goes
+        b.v.y -= GRAVITY * 0.3 * dt;
+        b.v.multiplyScalar(Math.pow(0.35, dt));
+        m.position.addScaledVector(b.v, dt);
+        m.position.x += Math.sin(b.t * 5 + b.phase) * 0.05 * dt;
+        m.rotateX(b.w.x * dt + Math.sin(b.t * 4 + b.phase) * 2 * dt);
+        m.rotateY(b.w.y * dt);
+        m.rotateZ(b.w.z * dt);
+        if (m.position.y <= 0.0015) {
+          // landed: lies flat on the board, any way round
+          m.position.y = 0.0015;
+          m.quaternion.copy(faceQ(UP, rnd(0, Math.PI * 2)));
+          b.state = "rest";
+        }
+      } else if (b.state === "home") {
+        const u = Math.min(1, b.t / b.dur), e = u * u;
+        muzzle(hand);
+        m.position.lerpVectors(b.from, hand, e);
+        m.position.y += Math.sin(Math.PI * u) * 0.05;
+        m.quaternion.slerpQuaternions(b.q0, billQ.setFromEuler(camera.rotation), e);
+        m.scale.setScalar(1 - e * 0.7);
+        if (u >= 1) removeBill(b);
+      }
+    }
+    return moving;
+  }
+
+  // a flick of paper on the way out; a soft slap when it lands
+  function cashSound(slap) {
+    try {
+      audio();
+      const t = actx.currentTime;
+      if (slap) {
+        burst(t, { f0: rnd(1400, 2000), f1: 500, q: 0.9, gain: 0.22, dur: 0.06 });
+        thump(t, rnd(180, 230), 0.06, 0.05);
+      } else {
+        burst(t, { type: "highpass", f0: rnd(2500, 3500), f1: 6000, q: 0.5, gain: 0.07, dur: 0.12 });
+      }
+    } catch (e) { /* no audio, no problem */ }
+  }
+
   // ---------- Weapon switch ----------
-  // Soft-launched: a quiet label that cycles on click, and keys 1 to 5.
+  // Soft-launched: a quiet label that cycles on click, and keys 1 to 6.
   const weaponBtn = wrap.querySelector(".bust-weapon");
   function setWeapon(i) {
     laserStop();
@@ -1949,7 +2163,7 @@ function start(wrap) {
   weaponBtn?.addEventListener("click", () => setWeapon(WEAPONS.indexOf(weapon) + 1));
   window.addEventListener("keydown", (e) => {
     if (!ready || e.metaKey || e.ctrlKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
-    const i = ["1", "2", "3", "4", "5"].indexOf(e.key);
+    const i = ["1", "2", "3", "4", "5", "6"].indexOf(e.key);
     if (i >= 0) setWeapon(i);
   });
 
@@ -1957,9 +2171,12 @@ function start(wrap) {
   const stats = wrap.querySelector(".bust-stats");
   function updateStats() {
     if (!stats) return;
-    stats.hidden = shots === 0;
+    stats.hidden = shots === 0 && cashThrown === 0;
     const gone = Math.max(0, Math.min(100, (1 - left) * 100));
-    stats.textContent = `${shots} shot${shots === 1 ? "" : "s"} · ${gone < 10 ? gone.toFixed(1) : Math.round(gone)}% gone`;
+    const parts = [];
+    if (shots) parts.push(`${shots} shot${shots === 1 ? "" : "s"} · ${gone < 10 ? gone.toFixed(1) : Math.round(gone)}% gone`);
+    if (cashThrown) parts.push(`$${cashThrown.toLocaleString("en-US")} thrown`);
+    stats.textContent = parts.join(" · ");
   }
 
   // ---------- Size: stand the plinth on the board's top edge ----------
@@ -2049,6 +2266,7 @@ function start(wrap) {
       }
     }
     if (rockets.length) { stepRockets(dt); busy = true; }
+    if (stepBills(dt)) busy = true;
     // laser burns cooling
     if (uniforms.uHeatCount.value) {
       uniforms.uTime.value = clock();
@@ -2204,6 +2422,70 @@ function starTexture() {
     g.ellipse(64, 64, w, h, 0, 0, Math.PI * 2);
     g.fill();
   }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+// a hundred: pale green paper, a dark green frame, the denomination in the
+// corners and the don himself (a little marble profile) in the middle
+function billTexture() {
+  const W = 512, H = 221;
+  const c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const g = c.getContext("2d");
+  const paper = g.createLinearGradient(0, 0, W, H);
+  paper.addColorStop(0, "#dfe8cf");
+  paper.addColorStop(0.5, "#c9d9b4");
+  paper.addColorStop(1, "#d6e2c2");
+  g.fillStyle = paper;
+  g.fillRect(0, 0, W, H);
+  // fine wavy lines across the paper
+  g.strokeStyle = "rgba(47,93,58,0.12)";
+  g.lineWidth = 1;
+  for (let y = -10; y < H + 10; y += 7) {
+    g.beginPath();
+    for (let x = 0; x <= W; x += 8) g.lineTo(x, y + Math.sin(x / 22) * 6);
+    g.stroke();
+  }
+  // the frame
+  g.strokeStyle = "#2f5d3a";
+  g.lineWidth = 8;
+  g.strokeRect(10, 10, W - 20, H - 20);
+  g.lineWidth = 2;
+  g.strokeRect(22, 22, W - 44, H - 44);
+  // the medallion, with his profile in it
+  const cx = W / 2, cy = H / 2;
+  g.fillStyle = "#b8cca0";
+  g.beginPath(); g.ellipse(cx, cy, 58, 74, 0, 0, Math.PI * 2); g.fill();
+  g.lineWidth = 4;
+  g.strokeStyle = "#2f5d3a";
+  g.stroke();
+  g.save();
+  g.beginPath(); g.ellipse(cx, cy, 56, 72, 0, 0, Math.PI * 2); g.clip();
+  g.fillStyle = "#3d6b47";
+  g.beginPath(); g.ellipse(cx + 2, cy - 14, 26, 30, 0, 0, Math.PI * 2); g.fill();   // head
+  g.beginPath();
+  g.moveTo(cx - 40, cy + 74); g.quadraticCurveTo(cx - 34, cy + 22, cx, cy + 16);
+  g.quadraticCurveTo(cx + 34, cy + 22, cx + 40, cy + 74); g.closePath();   // shoulders
+  g.fill();
+  g.fillStyle = "#c8a548";   // his gold aviators, even here
+  g.fillRect(cx - 18, cy - 22, 40, 9);
+  g.restore();
+  // the denomination, and the words
+  g.fillStyle = "#24472c";
+  g.font = "italic 900 44px 'Playfair Display', Georgia, serif";
+  g.textBaseline = "middle";
+  g.textAlign = "left";
+  g.fillText("100", 34, 56);
+  g.fillText("100", 34, H - 52);
+  g.textAlign = "right";
+  g.fillText("100", W - 34, 56);
+  g.fillText("100", W - 34, H - 52);
+  g.textAlign = "center";
+  g.font = "600 15px Georgia, serif";
+  g.fillText("IN DON WE TRUST", cx, 34);
+  g.fillText("ONE HUNDRED", cx, H - 34);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
