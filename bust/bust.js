@@ -32,7 +32,8 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
-import { buildBling, carveMouth } from "./bling.js?v=4";
+import { MeshBVH } from "three-mesh-bvh";
+import { buildBling, carveMouth } from "./bling.js?v=5";
 
 const HIT_R = 0.024;        // radius of the rock one shot knocks out, in metres (bust is ~0.49 tall)
 const REWIND = 0.9;         // seconds for restore to undo every shot, newest first
@@ -97,7 +98,7 @@ function start(wrap) {
   scene.add(key, fill, rim);
   // local only: a handle on the scene, for staging cover shots
   if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) {
-    window.__bust = { scene, camera, CAM, LOOK, key, fill, rim, renderer, redraw() { shadowDirty = true; kick(); } };
+    window.__bust = { scene, camera, CAM, LOOK, key, fill, rim, renderer, redraw() { shadowDirty = true; kick(); }, get accs() { return accs; }, get ropes() { return ropes; } };
   }
 
   const pivot = new THREE.Group();
@@ -272,6 +273,7 @@ function start(wrap) {
       if (c.gone) { model.remove(mesh); blocks[c.id] = null; continue; }
       setGeometry(mesh, soupGeometry(c), true);
     }
+    knockCash(rocks);   // any bill stuck where the stone just went comes off
     // his things: a chunk that breaks off takes whatever it was wearing with
     // it; anything the rock dug out from under falls off
     const knocked = [], carried = [];
@@ -429,25 +431,7 @@ function start(wrap) {
     }
   }
 
-  // A chain isn't rigid: once it's down it slumps flat where it lies (in
-  // its own frame, which is level as it comes off him), gathering itself
-  // into a heap rather than standing as a hoop.
-  const levelQ = new THREE.Quaternion();
-  function slump(pc, dt) {
-    const a = pc.acc;
-    pc.flat = Math.min(1, pc.flat + dt * 2.5);
-    const s = 1 - 0.85 * pc.flat * (2 - pc.flat);
-    a.group.scale.set(1, s, 1);
-    a.group.position.set(-a.center.x, -a.center.y * s, -a.center.z);
-    pc.hull = a.hullRel.map((h) => new THREE.Vector3(h.x, h.y * s, h.z));
-    model.getWorldQuaternion(levelQ);
-    levelQ.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), pc.yaw ??= rnd(-0.6, 0.6)));
-    pc.mesh.quaternion.slerp(levelQ, Math.min(1, dt * 6));
-    pc.w.multiplyScalar(Math.pow(0.01, dt));
-    return pc.flat < 1;
-  }
   function stepPiece(pc, dt) {
-    if (pc.acc?.kind === "chain" && pc.landed && slump(pc, dt)) pc.rest = false;
     if (pc.rest || pc.shattered) return false;
     if (pc.free > 0) pc.free -= dt;
     pc.v.y -= GRAVITY * dt;
@@ -542,8 +526,23 @@ function start(wrap) {
     a.carrier.carried.splice(a.carrier.carried.indexOf(a), 1);
     a.carrier = null;
   }
-  // knock it off: a body of its own where it is now, moving at v
-  function detach(a, v) {
+  // knock it off: a body of its own where it is now, moving at v (a chain
+  // snaps and goes as a rope instead, see Chains on the loose; at: where it
+  // was hit, if it was)
+  function detach(a, v, at) {
+    if (a.kind === "chain") {
+      if (a.rope) ropeKick(a, at, v);
+      else {
+        a.jolt = null;
+        // gently: it's heavy and floppy, and it should pool at his feet where you can see it
+        startRope(a, v.clone().multiplyScalar(0.3), at);
+        a.state = "loose";
+        syncContacts();
+      }
+      shadowDirty = true;
+      kick();
+      return;
+    }
     if (a.state === "loose") {
       a.pc.v.add(v);
       a.pc.w.add(new THREE.Vector3(rnd(-6, 6), rnd(-6, 6), rnd(-6, 6)));
@@ -562,9 +561,7 @@ function start(wrap) {
     a.group.quaternion.identity();
     body.add(a.group);
     scene.add(body);
-    // a chain doesn't tumble: it slides off him forward, roughly level
-    const spin = a.kind === "chain" ? new THREE.Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-0.5, 0.5)) : new THREE.Vector3(rnd(-7, 7), rnd(-7, 7), rnd(-7, 7));
-    if (a.kind === "chain") v = v.clone().add(new THREE.Vector3(0, 0, 0.25));
+    const spin = new THREE.Vector3(rnd(-7, 7), rnd(-7, 7), rnd(-7, 7));
     a.pc = { mesh: body, hull: a.hullRel, v: v.clone(), w: spin, rest: false, landed: false, acc: a, flat: 0, free: 0.3 };
     a.state = "loose";
     loose.push(a.pc);
@@ -574,6 +571,7 @@ function start(wrap) {
   }
   function home(a) {
     if (a.state === "on") return;
+    if (a.rope) endRope(a);
     if (a.pc) { scene.remove(a.pc.mesh); loose.splice(loose.indexOf(a.pc), 1); a.pc = null; }
     unCarry(a);
     a.group.removeFromParent();
@@ -585,6 +583,337 @@ function start(wrap) {
     syncContacts();
     shadowDirty = true;
   }
+  // ---------- Chains on the loose ----------
+  // A chain that's knocked off snaps at the link nearest the shot and comes
+  // away as a rope: a point per link, each held to its neighbours at the
+  // spacing it had on him, falling under gravity and settling on whatever's
+  // under it (him, from above, or the board), in world space. The links are
+  // drawn from the points, turning to lie flat once they're down. The
+  // medallion is a heavier point of its own, swinging from its link.
+  // Restore reels it back onto him.
+  const ROPE_H = 1 / 120, ROPE_ITERS = 12;
+  const ropes = [];
+  const rA = new THREE.Vector3(), rB = new THREE.Vector3(), rUp = new THREE.Vector3(0, 1, 0);
+  const rM = new THREE.Matrix4(), rTw = new THREE.Matrix4();
+  // a link's frame without its alternating twist: position and the way it faces
+  function untwist(m, i, tw) {
+    return rM.copy(m).multiply(rTw.makeRotationX(i % 2 ? -tw * 0.5 : tw * 0.5));
+  }
+  function startRope(a, v, at) {
+    const links = a.meshes.find((o) => o.isInstancedMesh && o.userData.twist !== undefined);
+    const tw = links.userData.twist, n = links.count;
+    if (!a.restMats) {
+      a.restMats = [];
+      for (let i = 0; i < n; i++) { const m = new THREE.Matrix4(); links.getMatrixAt(i, m); a.restMats.push(m); }
+    }
+    a.group.updateWorldMatrix(true, true);
+    const G0 = a.group.matrixWorld.clone();
+    const restP = [], restN = [], P = [], N = [], prev = [];
+    for (let i = 0; i < n; i++) {
+      untwist(a.restMats[i], i, tw);
+      restP.push(new THREE.Vector3().setFromMatrixPosition(rM));
+      restN.push(new THREE.Vector3().setFromMatrixColumn(rM, 2).normalize());
+      P.push(restP[i].clone().applyMatrix4(G0));
+      N.push(restN[i].clone().transformDirection(G0));
+    }
+    // it keeps going the way it was knocked, with a little twist of its own
+    const mid = P.reduce((s, p) => s.add(p), new THREE.Vector3()).divideScalar(n);
+    const w = new THREE.Vector3(rnd(-3, 3), rnd(-3, 3), rnd(-3, 3));
+    for (let i = 0; i < n; i++) {
+      const vi = v.clone().add(rA.subVectors(P[i], mid).cross(w).negate());
+      prev.push(P[i].clone().addScaledVector(vi, -ROPE_H));
+    }
+    // the gap between each link and the next (on him it's a loop: the last
+    // holds the first), and where it snaps
+    const d = P.map((p, i) => p.distanceTo(P[(i + 1) % n]));
+    let cut = 0;
+    if (at) { let best = Infinity; P.forEach((p, i) => { const q = p.distanceTo(at); if (q < best) { best = q; cut = i; } }); }
+    else cut = P.reduce((b, p, i) => (p.z < P[b].z ? i : b), 0);   // round the back of his neck
+    let md = null;
+    const m = a.group.userData.medal;
+    if (m) {
+      const F = m.f.clone().premultiply(G0);
+      const M = new THREE.Vector3().setFromMatrixPosition(F);
+      md = {
+        group: m.group, k: m.k, restF: m.f, restInv: F.clone().invert(),
+        M, prev: M.clone().addScaledVector(v, -ROPE_H), out: new THREE.Vector3().setFromMatrixColumn(F, 2).normalize(),
+        r: M.distanceTo(P[m.k]), down: false, cn: new THREE.Vector3(0, 1, 0),
+      };
+      m.group.matrixAutoUpdate = false;
+    }
+    a.group.traverse((o) => { if (o.userData.pick) o.layers.set(1); });   // the hit tube stays behind; the links themselves take shots now
+    unCarry(a);
+    a.group.removeFromParent();
+    scene.add(a.group);
+    a.group.matrixAutoUpdate = false;
+    a.group.matrix.copy(G0);
+    a.group.matrixWorld.copy(G0);
+    links.frustumCulled = false;
+    a.rope = {
+      links, tw, n, G0, G0inv: G0.clone().invert(), restP, restN, P, N, prev, d, cut, md,
+      rad: links.userData.ring * 1.2, down: new Uint8Array(n), face: new Int8Array(n), vy: new Float32Array(n), cn: P.map(() => new THREE.Vector3(0, 1, 0)), cnTmp: new THREE.Vector3(), grid: null, acc: 0, still: 0, sleep: false, clinkT: 0,
+    };
+    ropes.push(a);
+  }
+  function endRope(a) {
+    const R = a.rope;
+    for (let i = 0; i < R.n; i++) R.links.setMatrixAt(i, a.restMats[i]);
+    R.links.instanceMatrix.needsUpdate = true;
+    R.links.boundingSphere = null;
+    R.links.frustumCulled = true;
+    if (R.md) { R.md.group.matrix.identity(); R.md.group.matrixAutoUpdate = true; }
+    a.group.traverse((o) => { if (o.userData.pick) o.layers.set(0); });
+    a.group.matrixAutoUpdate = true;
+    ropes.splice(ropes.indexOf(a), 1);
+    a.rope = null;
+  }
+  // a shove: v on the links near at (all of it, without one)
+  function ropeKick(a, at, v, reach = 0.07) {
+    const R = a.rope;
+    const shove = (p, q) => {
+      const f = at ? Math.max(0, 1 - p.distanceTo(at) / reach) : 1;
+      if (f > 0) q.addScaledVector(v, -ROPE_H * f);
+    };
+    R.P.forEach((p, i) => shove(p, R.prev[i]));
+    if (R.md) shove(R.md.M, R.md.prev);
+    R.sleep = false;
+    R.still = 0;
+  }
+  // a blast: every link thrown away from it, harder the nearer it was
+  function ropeBlast(a, at, reach, power) {
+    const R = a.rope;
+    const throwOne = (p, q) => {
+      rA.subVectors(p, at);
+      const dd = rA.length();
+      if (dd > reach) return;
+      const push = (1 - dd / reach) * power;
+      q.addScaledVector(rA.normalize(), -ROPE_H * push).addScaledVector(rUp, -ROPE_H * push * 0.6);
+    };
+    R.P.forEach((p, i) => throwOne(p, R.prev[i]));
+    if (R.md) throwOne(R.md.M, R.md.prev);
+    R.sleep = false;
+    R.still = 0;
+  }
+  // hold two points d apart, moved in proportion to wa : wb
+  function hold(p, q, d, wa, wb) {
+    rA.subVectors(q, p);
+    const len = rA.length();
+    if (len < 1e-9) return;
+    rA.multiplyScalar((len - d) / len / (wa + wb));
+    p.addScaledVector(rA, wa);
+    q.addScaledVector(rA, -wb);
+  }
+  // Keep the links out of him: each is held a link's radius off the stone,
+  // found as the nearest point on the blocks round it (each block gets a
+  // bounding-volume tree the first time a chain comes near it; a carved
+  // block is a new geometry, so it gets a fresh one), and pushed back out
+  // along that triangle's face. A contact stops it going any further in
+  // (q, its last position, moves with it) but lets it slide. The board is
+  // y = 0.
+  const near = { p: new THREE.Vector3(), n: new THREE.Vector3(), d: 0 };
+  const cTmp = new THREE.Vector3(), cN = new THREE.Vector3(), cL = new THREE.Vector3(), cQ = new THREE.Vector3(), cBest = new THREE.Vector3();
+  const nearBox = new THREE.Box3();
+  // the search over one block's triangles: made once, reused for every query
+  const nq = { at: new THREE.Vector3(), best: 0, found: false };
+  const nearCast = {
+    boundsTraverseOrder: (box) => cTmp.copy(nq.at).clamp(box.min, box.max).distanceToSquared(nq.at),
+    intersectsBounds: (box, isLeaf, score) => score < nq.best,
+    intersectsTriangle: (tri) => {
+      tri.closestPointToPoint(nq.at, cTmp);
+      const d2 = cTmp.distanceToSquared(nq.at);
+      if (d2 < nq.best) { nq.best = d2; nq.found = true; near.p.copy(cTmp); tri.getNormal(near.n); }
+      return false;
+    },
+  };
+  function nearest(m, local, maxD) {
+    const g = m.geometry;
+    const bvh = g.userData.bvh ??= new MeshBVH(g, { indirect: true });
+    nq.at.copy(local);
+    nq.best = maxD * maxD;
+    nq.found = false;
+    bvh.shapecast(nearCast);
+    if (nq.found) near.d = Math.sqrt(nq.best);
+    return nq.found;
+  }
+  // The blocks a rope could touch this frame, filed in a coarse grid (in his
+  // space) so each link only looks at the few round it.
+  const GRID = 0.03, REACH = 0.012;
+  function nearBlocks(R) {
+    nearBox.makeEmpty();
+    for (const p of R.P) nearBox.expandByPoint(cTmp.copy(p).applyMatrix4(hfInv));
+    nearBox.expandByScalar(0.03);
+    const grid = R.grid ||= new Map();
+    grid.clear();
+    for (const m of blocks) {
+      const bb = m?.geometry.boundingBox;
+      if (!bb || !nearBox.intersectsBox(bb)) continue;
+      const x0 = Math.floor((bb.min.x - REACH) / GRID), x1 = Math.floor((bb.max.x + REACH) / GRID);
+      const y0 = Math.floor((bb.min.y - REACH) / GRID), y1 = Math.floor((bb.max.y + REACH) / GRID);
+      const z0 = Math.floor((bb.min.z - REACH) / GRID), z1 = Math.floor((bb.max.z + REACH) / GRID);
+      for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) for (let z = z0; z <= z1; z++) {
+        const k = x + 1000 * (y + 1000 * z);
+        let list = grid.get(k);
+        if (!list) grid.set(k, (list = []));
+        list.push(m);
+      }
+    }
+  }
+  // returns the contact normal (world), or null if it's touching nothing
+  function settle(R, p, q, r) {
+    let hitN = null;
+    // (resting on it counts as touching, not just sunk into it)
+    if (p.y < r + 1e-4) { p.y = Math.max(p.y, r); q.y = p.y; hitN = rUp; }
+    cL.copy(p).applyMatrix4(hfInv);
+    const list = R.grid.get(Math.floor(cL.x / GRID) + 1000 * (Math.floor(cL.y / GRID) + 1000 * Math.floor(cL.z / GRID)));
+    if (!list) return hitN;
+    const reach = r + 0.006;
+    let got = false, gd = reach;
+    for (const m of list) {
+      const bb = m.geometry.boundingBox;
+      if (cL.x < bb.min.x - reach || cL.x > bb.max.x + reach || cL.y < bb.min.y - reach || cL.y > bb.max.y + reach || cL.z < bb.min.z - reach || cL.z > bb.max.z + reach) continue;
+      if (nearest(m, cL, gd)) { gd = near.d; got = true; cN.copy(near.n); cBest.copy(near.p); }
+    }
+    if (!got) return hitN;
+    const side = rA.subVectors(cL, cBest).dot(cN);
+    if (side >= r + 1e-4) return hitN;
+    cL.addScaledVector(cN, Math.max(0, r - side));
+    cQ.copy(q).applyMatrix4(hfInv);
+    cQ.addScaledVector(cN, cL.dot(cN) - cQ.dot(cN));   // no speed into him; sliding along him is fine
+    p.copy(cL.applyMatrix4(model.matrixWorld));
+    q.copy(cQ.applyMatrix4(model.matrixWorld));
+    return R.cnTmp.copy(cN).transformDirection(model.matrixWorld);
+  }
+  function ropeStep(R) {
+    const { P, prev, n, md } = R;
+    const g = GRAVITY * ROPE_H * ROPE_H;
+    for (let i = 0; i < n; i++) {
+      rA.subVectors(P[i], prev[i]).multiplyScalar(0.998);
+      prev[i].copy(P[i]);
+      P[i].add(rA).y -= g;
+      R.vy[i] = rA.length() / ROPE_H;   // how fast it's going, before anything stops it
+    }
+    if (md) {
+      rA.subVectors(md.M, md.prev).multiplyScalar(0.996);
+      md.prev.copy(md.M);
+      md.M.add(rA).y -= g;
+    }
+    let hit = 0;
+    for (let it = 0; it < ROPE_ITERS; it++) {
+      for (let i = 0; i < n; i++) if (i !== R.cut) hold(P[i], P[(i + 1) % n], R.d[i], 0.5, 0.5);
+      if (md) hold(P[md.k], md.M, md.r, 0.2, 0.8);
+      // the board every pass (it's cheap), so the links can't tug each other
+      // through it and pop back out
+      for (let i = 0; i < n; i++) if (P[i].y < R.rad) P[i].y = R.rad;
+      if (md && md.M.y < 0.002) md.M.y = 0.002;
+      // (the stone once a step, after the links have pulled each other
+      // about: it's the dear part)
+      if (it !== ROPE_ITERS - 1) continue;
+      const last = true;
+      for (let i = 0; i < n; i++) {
+        const c = settle(R, P[i], prev[i], R.rad);
+        if (!last) continue;
+        // what's touching drags on it (the board more than polished stone),
+        // lies flat to it, and rings as it lands
+        const down = !!c;
+        if (down) {
+          R.cn[i].copy(c);
+          if (!R.down[i]) hit = Math.max(hit, R.vy[i]);
+          const keep = c === rUp ? 0.6 : 0.85;
+          rB.subVectors(P[i], prev[i]);
+          rB.addScaledVector(c, -rB.dot(c));
+          // barely moving on something level enough to hold it (the board, the
+          // tops of his shoulders): it's stopped (static friction), so it lies
+          // still instead of creeping and twitching; on his chest it slides
+          if (c.y > 0.6 && rB.lengthSq() < (0.03 * ROPE_H) ** 2) prev[i].copy(P[i]);
+          else prev[i].add(rB.multiplyScalar(1 - keep));
+        }
+        if (!down) R.face[i] = 0;
+        R.down[i] = down;
+      }
+      if (md) {
+        const c = settle(R, md.M, md.prev, 0.002);
+        if (last) {
+          // near enough the board to be lying on it (not balanced on its rim)
+          const c2 = c || (md.M.y < 0.02 ? rUp : null);
+          md.down = !!c2;
+          if (c2 === rUp && !c) md.cn.copy(rUp);
+          if (c) { md.cn.copy(c); rB.subVectors(md.M, md.prev); rB.addScaledVector(c, -rB.dot(c)).multiplyScalar(0.5); md.prev.add(rB); }
+        }
+      }
+    }
+    return hit;
+  }
+  function drawRope(a) {
+    const R = a.rope, { P, N, n, links, tw, md } = R;
+    for (let i = 0; i < n; i++) {
+      // along: toward its neighbours (just the one, at a snapped end)
+      const iPrev = i === (R.cut + 1) % n ? i : (i + n - 1) % n, iNext = i === R.cut ? i : (i + 1) % n;
+      rA.subVectors(P[iNext], P[iPrev]);
+      if (rA.lengthSq() < 1e-12) rA.set(1, 0, 0);
+      rA.normalize();
+      const f = N[i];
+      // (lying on something: flat to it, the same face up it landed on, so it
+      // doesn't flip over and back as the chain round it moves)
+      if (R.down[i]) {
+        if (!R.face[i]) R.face[i] = f.dot(R.cn[i]) < 0 ? -1 : 1;
+        f.lerp(rB.copy(R.cn[i]).multiplyScalar(R.face[i]), 0.2);
+      }
+      f.addScaledVector(rA, -f.dot(rA));
+      if (f.lengthSq() < 1e-8) f.set(0, 1, 0).addScaledVector(rA, -rA.y);
+      f.normalize();
+      rB.crossVectors(f, rA);
+      rM.makeBasis(rA, rB, f).setPosition(P[i]).multiply(rTw.makeRotationX(i % 2 ? tw * 0.5 : -tw * 0.5));
+      rM.premultiply(R.G0inv);
+      links.setMatrixAt(i, rM);
+    }
+    links.instanceMatrix.needsUpdate = true;
+    links.boundingSphere = null;
+    if (md) {
+      const up = rA.subVectors(P[md.k], md.M);
+      if (up.lengthSq() < 1e-12) up.set(0, 1, 0);
+      up.normalize();
+      if (md.down) md.out.lerp(rB.copy(md.cn).multiplyScalar(md.out.dot(md.cn) < 0 ? -1 : 1), 0.2);
+      md.out.addScaledVector(up, -md.out.dot(up)).normalize();
+      const x = rB.crossVectors(up, md.out).normalize();
+      rM.makeBasis(x, up, md.out).setPosition(md.M);
+      md.group.matrix.copy(R.G0inv).multiply(rM).multiply(md.restInv).multiply(R.G0);
+    }
+  }
+  // returns true while it's still moving
+  function stepRope(a, dt) {
+    const R = a.rope;
+    if (R.sleep) return false;
+    hfInv.copy(model.matrixWorld).invert();
+    R.acc = Math.min(R.acc + dt, ROPE_H * 3);   // a slow frame slows the chain a little rather than piling on more work
+    let hit = 0, moved = 0;
+    const was = R.P[0].clone();
+    nearBlocks(R);
+    while (R.acc >= ROPE_H) { R.acc -= ROPE_H; hit = Math.max(hit, ropeStep(R)); }
+    for (let i = 0; i < R.n; i += 4) moved = Math.max(moved, R.P[i].distanceToSquared(R.prev[i]));
+    R.clinkT -= dt;
+    if (hit > 0.35 && R.clinkT <= 0) { clink(Math.min(1, 0.2 + hit / 2), a); R.clinkT = 0.15; }
+    drawRope(a);
+    R.still = moved < 4e-8 && R.P[0].distanceToSquared(was) < 1e-6 ? R.still + 1 : 0;   // (well under a millimetre)
+    if (R.still > 30) R.sleep = true;
+    return true;
+  }
+  // restore: each link flies back to its place on him
+  function rewindRope(a, ge) {
+    const R = a.rope, mw = model.matrixWorld;
+    for (let i = 0; i < R.n; i++) {
+      R.P[i].lerpVectors(R.from[i], rB.copy(R.restP[i]).applyMatrix4(mw), ge);
+      R.P[i].y += Math.sin(Math.PI * ge) * 0.08;
+      R.N[i].lerp(rB.copy(R.restN[i]).transformDirection(mw), ge).normalize();
+      R.down[i] = 0;
+    }
+    if (R.md) {
+      R.md.M.lerpVectors(R.md.from, rB.setFromMatrixPosition(R.md.restF).applyMatrix4(mw), ge);
+      R.md.M.y += Math.sin(Math.PI * ge) * 0.08;
+      R.md.down = false;
+    }
+    drawRope(a);
+  }
+
   // a shot on one of his things. Each takes a few hits before it comes off
   // (TOUGH, in pistol rounds; the laser does dmg a second): until then it
   // jolts on him and rings, and the laser heats it, dull red to yellow, the
@@ -632,9 +961,9 @@ function start(wrap) {
     flashT = 0.06;
     for (let i = 0; i < 3; i++) puff(hit.point.clone(), new THREE.Vector3(rnd(-0.05, 0.05), rnd(0, 0.06), rnd(0, 0.06)), 0.006, rnd(0.01, 0.02), rnd(0.3, 0.6), 0.6, 0xffe2a0);
     clink(0.9, a);
-    if (a.state === "loose") { detach(a, v.multiplyScalar(0.5)); return; }
+    if (a.state === "loose") { detach(a, v.multiplyScalar(0.5), hit.point); return; }
     a.hp = 0;
-    detach(a, v);
+    detach(a, v, hit.point);
     history.push({ undo: [], pieces: [], acc: a, knocked: [a], left, impacts: 0 });
     shots++;
     updateStats();
@@ -726,6 +1055,7 @@ function start(wrap) {
     for (let k = 0; k < 6; k++) {
       const sp = sparkles[Math.floor(Math.random() * sparkles.length)];
       if (sp.acc.state === "on" && sp.p.z < 0.1) continue;   // round the back of him: out of sight
+      if (sp.acc.rope) continue;
       tw.at = sp;
       tw.t = 0;
       tw.dur = rnd(0.4, 0.65);
@@ -1061,6 +1391,7 @@ function start(wrap) {
     { name: "sledgehammer", every: 0.9, dmg: 3.5, pellets: 1, spread: 0, r: 2.3, deep: 0.75, chips: 40, shake: 1.6, sound: () => hammerSound() },
     { name: "laser", every: 0.04, dmg: 2, beam: true, r: LASER_R, deep: 5, chips: 0, shake: 0.05 },
     { name: "rocket launcher", every: 1.4, dmg: 99, rocket: true, r: 3.0, deep: 1.0, chips: 70, shake: 2.4 },
+    { name: "cash", every: 0.09, cash: true },   // make it rain: see Cash
   ];
   let weapon = WEAPONS[0];
 
@@ -1119,6 +1450,7 @@ function start(wrap) {
   function shoot() {
     if (weapon.beam) return laserSample();
     if (weapon.rocket) return launch();
+    if (weapon.cash) return throwCash();
     const w = weapon, rocks = [], hits = [];
     let anyBroken = false, hitSomething = false, anyStone = false;
     for (let i = 0; i < w.pellets; i++) {
@@ -1462,6 +1794,7 @@ function start(wrap) {
       pc.v.add(away.normalize().multiplyScalar(push)).add(new THREE.Vector3(0, push * 0.6, 0));
       pc.w.add(new THREE.Vector3(rnd(-9, 9), rnd(-9, 9), rnd(-9, 9)));
     }
+    for (const a of ropes) ropeBlast(a, at, 0.32, 1.6);
     if (hit.object.userData.acc) hitAcc(hit.object.userData.acc, hit, w);
     if (hit.object.userData.piece) {
       // a direct hit on a fallen chunk: it's gone
@@ -1628,6 +1961,7 @@ function start(wrap) {
     laserStop();
     clearBurns();
     for (const rk of rockets.splice(0)) { scene.remove(rk.mesh); rk.sound?.stop(); }
+    pocketCash();
     rewind = {
       t: 0, shots: history.length,
       chips: chips.map((c) => ({ c, at: c.p.clone(), delay: rnd(0, 0.45), lift: rnd(0.03, 0.12) })),
@@ -1640,6 +1974,7 @@ function start(wrap) {
     };
     for (const pc of pieces) { pc.shattered = false; pc.hits = 0; pc.mesh.visible = true; }
     for (const pc of [...pieces, ...loose]) pc.rest = true;
+    for (const a of ropes) { a.rope.from = a.rope.P.map((p) => p.clone()); if (a.rope.md) a.rope.md.from = a.rope.md.M.clone(); }
     yawTarget = 0;
     restoreBtn.hidden = true;
     rewindSound();
@@ -1936,8 +2271,236 @@ function start(wrap) {
     } catch (e) { /* no audio, no problem */ }
   }
 
+  // ---------- Cash ----------
+  // Make it rain. Every throw flings one bill from your hand: it tumbles
+  // over in a little arc, slaps onto him and stays there, draped over
+  // whatever it hit (every point of the bill is pressed down onto the
+  // stone, so it folds over his nose or round his cheek). Shoot near a bill
+  // and it's knocked loose; one that misses him, or hits his bling, drifts
+  // down to the board. Restore sends it all back to your pocket.
+  const BILL_W = 0.072, BILL_H = 0.031, MAX_BILLS = 160;
+  const flatBill = new THREE.PlaneGeometry(BILL_W, BILL_H, 8, 4);
+  // A real hundred: the Treasury's own series-2009 specimen scans (public
+  // domain, from Wikimedia Commons), Franklin on the front and Independence
+  // Hall on the back. One mesh per side, so each face gets its own picture.
+  const billSide = (side) => new THREE.MeshStandardMaterial({
+    color: 0xdde6d6, roughness: 0.8, metalness: 0, side,
+    // drawn a hair in front of the stone it lies on, so it never flickers into it
+    polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+  });
+  const billFront = billSide(THREE.FrontSide), billBack = billSide(THREE.BackSide);
+  const texLoader = new THREE.TextureLoader();
+  for (const [mat, file, mirror] of [[billFront, "cash/100-front.jpg", false], [billBack, "cash/100-back.jpg", true]]) {
+    texLoader.load(new URL(file, import.meta.url).href, (t) => {
+      t.colorSpace = THREE.SRGBColorSpace;
+      t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      // seen from behind, a plane shows its picture mirrored: flip it back
+      if (mirror) { t.wrapS = THREE.RepeatWrapping; t.repeat.x = -1; t.offset.x = 1; }
+      mat.map = t;
+      // the scans are bright paper-white; real notes are a duller grey-green
+      mat.color.set(0xa9b49c);
+      mat.needsUpdate = true;
+      kick();
+    });
+  }
+  function billMesh() {
+    const m = new THREE.Mesh(flatBill, billFront), back = new THREE.Mesh(flatBill, billBack);
+    m.receiveShadow = back.receiveShadow = true;
+    m.add(back);
+    return m;
+  }
+  function setBillGeometry(m, g) {
+    m.geometry = g;
+    m.children[0].geometry = g;
+  }
+  // each bill: { mesh, state: fly | stuck | fall | rest | home, ... }
+  const bills = [];
+  let cashThrown = 0;
+  const drapeRay = new THREE.Raycaster();
+  const UP = new THREE.Vector3(0, 1, 0), billX = new THREE.Vector3(), billY = new THREE.Vector3(), billM = new THREE.Matrix4();
+
+  // lying flat on a surface facing n, long side level, turned by roll
+  function faceQ(n, roll) {
+    billX.crossVectors(UP, n);
+    if (billX.lengthSq() < 1e-4) billX.set(1, 0, 0);
+    billX.normalize();
+    billY.crossVectors(n, billX);
+    return new THREE.Quaternion().setFromRotationMatrix(billM.makeBasis(billX, billY, n))
+      .multiply(new THREE.Quaternion().setFromAxisAngle(Z, roll));
+  }
+
+  function throwCash() {
+    if (!ready || drop || rewind) return;
+    // a loose handful: each bill lands a little off the aim
+    const a = Math.random() * Math.PI * 2, d = Math.sqrt(Math.random()) * 0.03;
+    const hit = pick(new THREE.Vector2(Math.cos(a) * d, Math.sin(a) * d * camera.aspect));
+    const from = muzzle(new THREE.Vector3());
+    const to = hit ? hit.point.clone() : ray.ray.at(1.3, new THREE.Vector3());
+    let n = null;
+    if (hit && blocks.includes(hit.object)) {
+      n = hit.face.normal.clone().transformDirection(hit.object.matrixWorld);
+      if (n.dot(ray.ray.direction) > 0) n.negate();
+    }
+    const mesh = billMesh();
+    mesh.position.copy(from);
+    scene.add(mesh);
+    const dist = from.distanceTo(to);
+    bills.push({
+      mesh, state: "fly", from, to, n, t: 0, dur: Math.max(0.16, dist / 2.6),
+      rot: new THREE.Euler(rnd(0, 6), rnd(0, 6), rnd(0, 6)),
+      spin: new THREE.Vector3(rnd(-16, 16), rnd(-16, 16), rnd(-24, 24)),
+      endQ: n ? faceQ(n, rnd(-0.5, 0.5)) : null,
+      back: ray.ray.direction.clone().negate(),
+    });
+    while (bills.length > MAX_BILLS) removeBill(bills[0]);
+    cashThrown += 100;
+    updateStats();
+    wrap.classList.add("shot");
+    if (restoreBtn) restoreBtn.hidden = false;
+    cashSound(false);
+    kick();
+  }
+
+  // Press the bill onto the stone: every vertex of a flat bill lying on the
+  // tangent plane at p is dropped along -n onto whatever stone is under it.
+  // Kept in model space, about its own middle, so it turns with him.
+  function drape(b) {
+    const q = b.endQ, n = b.n, p = b.to;
+    const g = flatBill.clone(), pos = g.attributes.position;
+    const live = blocks.filter(Boolean), v = new THREE.Vector3(), down = n.clone().negate();
+    const inv = new THREE.Matrix4().copy(model.matrixWorld).invert();
+    const anchor = p.clone().applyMatrix4(inv);
+    drapeRay.far = 0.075;
+    for (let i = 0; i < pos.count; i++) {
+      v.set(pos.getX(i), pos.getY(i), 0).applyQuaternion(q).add(p);
+      drapeRay.set(v.clone().addScaledVector(n, 0.05), down);
+      const h = drapeRay.intersectObjects(live, false)[0];
+      // hanging off an edge with nothing under it: curl it back a little
+      if (h) v.copy(h.point).addScaledVector(n, 0.0012);
+      else v.addScaledVector(n, -0.006);
+      v.applyMatrix4(inv).sub(anchor);
+      pos.setXYZ(i, v.x, v.y, v.z);
+    }
+    g.computeVertexNormals();
+    g.computeBoundingSphere();
+    const m = b.mesh;
+    setBillGeometry(m, g);
+    model.add(m);
+    m.position.copy(anchor);
+    m.quaternion.identity();
+    b.anchor = anchor;
+    b.state = "stuck";
+  }
+
+  // let a bill go: off his face (or out of the air) and down to the board
+  function loosen(b, push) {
+    if (b.mesh.parent !== scene) scene.attach(b.mesh);
+    b.state = "fall";
+    b.t = 0;
+    b.v = push.clone().add(new THREE.Vector3(rnd(-0.08, 0.08), rnd(0.02, 0.12), rnd(0, 0.1)));
+    b.w = new THREE.Vector3(rnd(-5, 5), rnd(-3, 3), rnd(-5, 5));
+    b.phase = rnd(0, 6);
+  }
+
+  function knockCash(rocks) {
+    if (!rocks?.length) return;
+    for (const b of bills) {
+      if (b.state !== "stuck") continue;
+      for (const rk of rocks) {
+        const r = Math.max(...rk.scale) * (rk.stretch || 1) * 1.25 + 0.01;
+        if (b.anchor.distanceToSquared(new THREE.Vector3().fromArray(rk.position)) > r * r) continue;
+        const away = b.anchor.clone().sub(new THREE.Vector3().fromArray(rk.position)).normalize()
+          .transformDirection(model.matrixWorld).multiplyScalar(rnd(0.25, 0.45));
+        loosen(b, away);
+        break;
+      }
+    }
+  }
+
+  function removeBill(b) {
+    b.mesh.parent?.remove(b.mesh);
+    if (b.mesh.geometry !== flatBill) b.mesh.geometry.dispose();
+    bills.splice(bills.indexOf(b), 1);
+  }
+
+  // restore: every bill, wherever it is, flies back to your hand
+  function pocketCash() {
+    for (const b of bills) {
+      if (b.mesh.parent !== scene) scene.attach(b.mesh);
+      b.state = "home";
+      b.t = 0;
+      b.from = b.mesh.position.clone();
+      b.q0 = b.mesh.quaternion.clone();
+      b.dur = rnd(0.3, 0.55);
+    }
+    cashThrown = 0;
+    updateStats();
+  }
+
+  const billQ = new THREE.Quaternion(), hand = new THREE.Vector3();
+  function stepBills(dt) {
+    let moving = false;
+    for (let i = bills.length - 1; i >= 0; i--) {
+      const b = bills[i], m = b.mesh;
+      if (b.state === "stuck" || b.state === "rest") continue;
+      moving = true;
+      b.t += dt;
+      if (b.state === "fly") {
+        const u = Math.min(1, b.t / b.dur);
+        m.position.lerpVectors(b.from, b.to, u);
+        m.position.y += Math.sin(Math.PI * u) * 0.05;
+        b.rot.x += b.spin.x * dt; b.rot.y += b.spin.y * dt; b.rot.z += b.spin.z * dt;
+        m.quaternion.setFromEuler(b.rot);
+        // it turns to meet the face it's about to hit
+        if (b.endQ) m.quaternion.slerp(b.endQ, u * u * u);
+        if (u >= 1) {
+          if (b.n) { drape(b); cashSound(true); }
+          else loosen(b, b.back.clone().multiplyScalar(0.2));
+        }
+      } else if (b.state === "fall") {
+        // paper: slow to fall, quick to lose speed, and it sways as it goes
+        b.v.y -= GRAVITY * 0.3 * dt;
+        b.v.multiplyScalar(Math.pow(0.35, dt));
+        m.position.addScaledVector(b.v, dt);
+        m.position.x += Math.sin(b.t * 5 + b.phase) * 0.05 * dt;
+        m.rotateX(b.w.x * dt + Math.sin(b.t * 4 + b.phase) * 2 * dt);
+        m.rotateY(b.w.y * dt);
+        m.rotateZ(b.w.z * dt);
+        if (m.position.y <= 0.0015) {
+          // landed: lies flat on the board, any way round
+          m.position.y = 0.0015;
+          m.quaternion.copy(faceQ(UP, rnd(0, Math.PI * 2)));
+          b.state = "rest";
+        }
+      } else if (b.state === "home") {
+        const u = Math.min(1, b.t / b.dur), e = u * u;
+        muzzle(hand);
+        m.position.lerpVectors(b.from, hand, e);
+        m.position.y += Math.sin(Math.PI * u) * 0.05;
+        m.quaternion.slerpQuaternions(b.q0, billQ.setFromEuler(camera.rotation), e);
+        m.scale.setScalar(1 - e * 0.7);
+        if (u >= 1) removeBill(b);
+      }
+    }
+    return moving;
+  }
+
+  // a flick of paper on the way out; a soft slap when it lands
+  function cashSound(slap) {
+    try {
+      audio();
+      const t = actx.currentTime;
+      if (slap) {
+        burst(t, { f0: rnd(1400, 2000), f1: 500, q: 0.9, gain: 0.22, dur: 0.06 });
+        thump(t, rnd(180, 230), 0.06, 0.05);
+      } else {
+        burst(t, { type: "highpass", f0: rnd(2500, 3500), f1: 6000, q: 0.5, gain: 0.07, dur: 0.12 });
+      }
+    } catch (e) { /* no audio, no problem */ }
+  }
+
   // ---------- Weapon switch ----------
-  // Soft-launched: a quiet label that cycles on click, and keys 1 to 5.
+  // Soft-launched: a quiet label that cycles on click, and keys 1 to 6.
   const weaponBtn = wrap.querySelector(".bust-weapon");
   function setWeapon(i) {
     laserStop();
@@ -1949,7 +2512,7 @@ function start(wrap) {
   weaponBtn?.addEventListener("click", () => setWeapon(WEAPONS.indexOf(weapon) + 1));
   window.addEventListener("keydown", (e) => {
     if (!ready || e.metaKey || e.ctrlKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
-    const i = ["1", "2", "3", "4", "5"].indexOf(e.key);
+    const i = ["1", "2", "3", "4", "5", "6"].indexOf(e.key);
     if (i >= 0) setWeapon(i);
   });
 
@@ -1957,9 +2520,12 @@ function start(wrap) {
   const stats = wrap.querySelector(".bust-stats");
   function updateStats() {
     if (!stats) return;
-    stats.hidden = shots === 0;
+    stats.hidden = shots === 0 && cashThrown === 0;
     const gone = Math.max(0, Math.min(100, (1 - left) * 100));
-    stats.textContent = `${shots} shot${shots === 1 ? "" : "s"} · ${gone < 10 ? gone.toFixed(1) : Math.round(gone)}% gone`;
+    const parts = [];
+    if (shots) parts.push(`${shots} shot${shots === 1 ? "" : "s"} · ${gone < 10 ? gone.toFixed(1) : Math.round(gone)}% gone`);
+    if (cashThrown) parts.push(`$${cashThrown.toLocaleString("en-US")} thrown`);
+    stats.textContent = parts.join(" · ");
   }
 
   // ---------- Size: stand the plinth on the board's top edge ----------
@@ -2049,6 +2615,7 @@ function start(wrap) {
       }
     }
     if (rockets.length) { stepRockets(dt); busy = true; }
+    if (stepBills(dt)) busy = true;
     // laser burns cooling
     if (uniforms.uHeatCount.value) {
       uniforms.uTime.value = clock();
@@ -2082,6 +2649,7 @@ function start(wrap) {
         pc.mesh.position.y += Math.sin(Math.PI * ge) * 0.08;
         pc.mesh.quaternion.slerpQuaternions(q, toQ, ge);
       }
+      for (const a of [...ropes]) rewindRope(a, ge);
       const u = Math.max(0, rewind.t - GATHER) / REWIND, e = u * u * (3 - 2 * u);
       // undo shots on an ease, so it starts slow and rushes the last ones
       const left = Math.round(rewind.shots * (1 - e));
@@ -2108,6 +2676,7 @@ function start(wrap) {
 
     // fallen chunks tumble and settle
     if (!rewind) for (const pc of [...pieces, ...loose]) if (stepPiece(pc, dt)) { busy = true; shadowDirty = true; }
+    if (!rewind) for (const a of [...ropes]) if (stepRope(a, dt)) { busy = true; shadowDirty = true; }
     if (stepTwinkles(dt)) busy = true;
     if (stepAccs(dt)) busy = true;
 

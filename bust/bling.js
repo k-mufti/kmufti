@@ -480,9 +480,12 @@ function chain(skin, mats, gem, o) {
     const f = frame(p, t, n).multiply(new THREE.Matrix4().makeRotationX(i % 2 ? o.twist * 0.5 : -o.twist * 0.5));
     links.setMatrixAt(i, f);
     if (i % 9 === 0) sparkle.push(p);
-    if (!bottom || (p.z > Z0 && p.y < bottom.p.y)) bottom = { p, t, n };
+    if (!bottom || (p.z > Z0 && p.y < bottom.p.y)) bottom = { p, t, n, i };
   }
   links.userData.sparkle = sparkle;
+  // for bust.js, to string it as a rope once it's knocked off
+  links.userData.twist = o.twist;
+  links.userData.ring = o.ring;
   group.add(links);
   const supports = [new THREE.Vector3(0, o.yBack, -0.03), new THREE.Vector3(0.085, o.ySide, Z0), new THREE.Vector3(-0.085, o.ySide, Z0), bottom.p.clone()];
   const contacts = [];
@@ -493,6 +496,7 @@ function chain(skin, mats, gem, o) {
   const pick = new THREE.Mesh(new THREE.TubeGeometry(curve, 90, o.ring * 1.6, 5, true), new THREE.MeshBasicMaterial());
   pick.visible = false;
   pick.castShadow = false;
+  pick.userData.pick = true;
   group.add(pick);
   return { name: o.name, group, hull: hullOf(links), kind: "chain", supports, contacts };
 }
@@ -535,7 +539,11 @@ function medallion(skin, mats, gem, group, bottom) {
     stones.push({ m: frame(new THREE.Vector3(Math.cos(a) * R * 0.5, Math.sin(a) * R * 0.5, T / 2 + 0.0003).applyMatrix4(f), new THREE.Vector3(1, 0, 0).transformDirection(f), out), r: 0.0014 });
   }
   stones.push({ m: frame(new THREE.Vector3(0, 0, T / 2 + 0.0006).applyMatrix4(f), new THREE.Vector3(1, 0, 0).transformDirection(f), out), r: 0.0062 });
-  group.add(disc, rim, bail, gems(gem, mats.diamond, stones));
+  // all one piece, hung from link bottom.i (bust.js swings it on the rope)
+  const medal = new THREE.Group();
+  medal.add(disc, rim, bail, gems(gem, mats.diamond, stones));
+  group.add(medal);
+  group.userData.medal = { group: medal, f: f.clone(), k: bottom.i };
   // the shadow it makes on his chest: soft, about its own size
   const under = at.clone().addScaledVector(out, -T / 2);
   return { a: under, b: under, r: R * 0.95, s: 0.55 };
