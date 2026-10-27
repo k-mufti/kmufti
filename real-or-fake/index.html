@@ -8,13 +8,13 @@
   <meta name="description" content="Ten headlines a day. Some really happened. Some are satire, some were made up by AI. Call it." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=16" />
 </head>
 <body>
   <header class="site-header">
     <span><a class="brand" href="../">kmufti.com</a> <span class="crumb">/ real or fake</span></span>
-    <span class="tally" id="tally"></span>
+    <span><button class="dev-reset" id="devReset" hidden>Restart (dev)</button> <span class="tally" id="tally"></span></span>
   </header>
 
   <main>
@@ -34,20 +34,14 @@
 
     <!-- A headline -->
     <section class="screen" id="play" hidden>
-      <div class="count"><span id="n">1</span> of <span id="of">10</span></div>
-      <article class="paper" id="paper">
-        <h2 id="headline"></h2>
-        <div class="stamp" id="stamp"></div>
-      </article>
-      <div class="verdict" id="verdict" hidden>
-        <p id="verdictText"></p>
-        <a id="verdictLink" target="_blank" rel="noopener" hidden>Read the story</a>
+      <div class="reel" id="reel"></div>
+      <div class="deck">
+        <div class="choices" id="choices">
+          <button class="real" data-guess="real">Real <kbd>R</kbd></button>
+          <button class="fake" data-guess="fake">Fake <kbd>F</kbd></button>
+        </div>
+        <button class="big" id="next" hidden>Next <kbd>Enter</kbd></button>
       </div>
-      <div class="choices" id="choices">
-        <button class="real" data-guess="real">Real <kbd>R</kbd></button>
-        <button class="fake" data-guess="fake">Fake <kbd>F</kbd></button>
-      </div>
-      <button class="big" id="next" hidden>Next <kbd>Enter</kbd></button>
     </section>
 
     <!-- Results -->
@@ -70,6 +64,6 @@
   </main>
 
   <script src="../you.js"></script>
-  <script src="app.js?v=1"></script>
+  <script src="app.js?v=16"></script>
 </body>
 </html>

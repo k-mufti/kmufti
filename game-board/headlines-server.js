@@ -68,12 +68,26 @@ function decode(s) {
 }
 const tag = (xml, name) => { const m = xml.match(new RegExp(`<${name}[^>]*>([\\s\\S]*?)</${name}>`)); return m ? decode(m[1]) : ""; };
 
+// The story's opening lines, shown once you've answered. WordPress feeds tack
+// on "The post X appeared first on Y" and a read-more link; drop those.
+function blurbOf(item) {
+  const raw = (item.match(/<description>([\s\S]*?)<\/description>/) || [])[1] || "";
+  const first = raw.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"')
+    .split(/<p>The post /)[0].replace(/<a [^>]*>Read the full[\s\S]*?<\/a>/i, "");
+  let text = tag(item, "media:description") || decode(first);
+  if (text.length > 420) text = text.slice(0, 420).replace(/\s+\S*$/, "") + "...";
+  return text;
+}
+const imageOf = (item) => (item.match(/<media:content url="([^"]+)"/) || [])[1] || "";
+
 async function readFeed({ url, source }) {
   const xml = await get(url);
   return [...xml.matchAll(/<item[\s>][\s\S]*?<\/item>/g)].map(([item]) => ({
     text: tag(item, "title"),
     link: tag(item, "link"),
     date: Date.parse(tag(item, "pubDate")) || 0,
+    blurb: blurbOf(item),
+    image: imageOf(item),
     source,
   }));
 }
@@ -170,8 +184,8 @@ async function build(date) {
   state.fakeCursor = fakeCursor;
 
   const rounds = shuffle([
-    ...real.map((h) => ({ text: titleCase(h.text), real: true, source: h.source, link: h.link })),
-    ...satire.map((h) => ({ text: titleCase(h.text), real: false, source: h.source, link: h.link })),
+    ...real.map((h) => ({ text: titleCase(h.text), real: true, source: h.source, link: h.link, blurb: h.blurb, image: h.image })),
+    ...satire.map((h) => ({ text: titleCase(h.text), real: false, source: h.source, link: h.link, blurb: h.blurb, image: "" })),
     ...ai.map((h) => ({ text: titleCase(h.text), real: false, source: "AI", link: "" })),
   ], r);
 
@@ -182,11 +196,33 @@ async function build(date) {
   return day;
 }
 
+// Days built before stories carried their blurb and photo: look them up once.
+let backfilling = null;
+function backfill(date) {
+  if (backfilling && backfilling.date === date) return backfilling.promise;
+  const promise = settled([...REAL_FEEDS, ...SATIRE_FEEDS]).then((items) => {
+    const state = loadState();
+    const day = state.days[date];
+    const byLink = new Map(items.map((h) => [h.link, h]));
+    for (const r of day.rounds) {
+      if (!r.link || r.blurb !== undefined) continue;
+      const h = byLink.get(r.link);
+      r.blurb = h ? h.blurb : "";
+      r.image = h && r.real ? h.image : "";
+    }
+    saveState(state);
+    return day;
+  });
+  backfilling = { date, promise };
+  return promise;
+}
+
 let building = null;
 async function todays() {
   const date = today();
   const saved = loadState().days[date];
-  if (saved) return saved;
+  if (saved && !saved.rounds.some((r) => r.link && r.blurb === undefined)) return saved;
+  if (saved) return backfill(date);
   // One build at a time, so a rush at midnight fetches the feeds once.
   if (!building || building.date !== date) {
     building = { date, promise: build(date).finally(() => setTimeout(() => { building = null; }, 1000)) };
