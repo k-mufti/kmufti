@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Bust — kmufti.com</title>
+  <title>Don Marbleone — kmufti.com</title>
   <link rel="icon" href="../favicon.svg?v=1" type="image/svg+xml" />
-  <meta name="description" content="A marble bust and five weapons. Shoot it to pieces, then put it back together." />
+  <meta name="description" content="A marble don in gold aviators, an iced-out grill, Cuban links and a diamond medallion, on leopard print. Five weapons: shoot it all off him, then put it back." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=7" />
 </head>
 <body>
   <a class="home" href="../">&larr; kmufti.com</a>
@@ -27,10 +27,11 @@
     <!-- What he stands on: bust.js pulls this up until its top border meets
          the plinth, jolts it when he lands, and lets the rubble fall on it. -->
     <div class="board" id="board">
-      <h1>BUST</h1>
+      <h1>DON MARBLEONE</h1>
       <dl class="controls">
         <dt>click</dt><dd>shoot &middot; hold to keep firing</dd>
         <dt>1 &ndash; 5</dt><dd>pistol, shotgun, sledgehammer, laser, rocket launcher</dd>
+        <dt>the bling</dt><dd>a few hits and it comes off &middot; the laser heats it till it drops</dd>
         <dt>restore</dt><dd>runs it all backwards</dd>
       </dl>
     </div>
@@ -38,7 +39,9 @@
 
   <script type="importmap">{ "imports": {
     "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
-  <script type="module" src="bust.js?v=40"></script>
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+    "three-mesh-bvh": "https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.7.8/build/index.module.js",
+    "three-bvh-csg": "https://cdn.jsdelivr.net/npm/three-bvh-csg@0.0.17/build/index.module.js" } }</script>
+  <script type="module" src="bust.js?v=45"></script>
 </body>
 </html>

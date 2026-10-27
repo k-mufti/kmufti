@@ -31,6 +31,8 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
+import { buildBling, carveMouth } from "./bling.js?v=4";
 
 const HIT_R = 0.024;        // radius of the rock one shot knocks out, in metres (bust is ~0.49 tall)
 const REWIND = 0.9;         // seconds for restore to undo every shot, newest first
@@ -43,6 +45,7 @@ const LASER_R = 0.2;         // the laser's slot radius, as a multiple of HIT_R
 const CHAR_N = 512;         // the scorch map: texels across the bust, about a millimetre each
 const HEAT_N = 40;          // stretches of beam path still glowing at once
 const MARBLE_SCALE = 1.6;   // texture repeats per metre: one slab covers about two thirds of the bust
+const MAX_CONTACTS = 96;    // stretches of his things touching him, darkening the stone there
 
 const wrap = document.getElementById("bust");
 if (wrap) start(wrap);
@@ -80,7 +83,7 @@ function start(wrap) {
 
   // One hard key from high left does nearly all the work; the rest is just
   // enough fill that the shadow side isn't black.
-  const key = new THREE.DirectionalLight(0xfff0dc, 3.6);
+  const key = new THREE.DirectionalLight(0xffe8cc, 3.6);
   key.position.set(-1.2, 1.25, 0.45);
   key.castShadow = true;
   key.shadow.mapSize.set(4096, 4096);
@@ -125,6 +128,10 @@ function start(wrap) {
     uHeatB: { value: Array.from({ length: HEAT_N }, () => new THREE.Vector4()) },
     uHeatCount: { value: 0 },
     uTime: { value: 0 },
+    // where his things touch him (see syncContacts): a, radius / b, strength
+    uContactA: { value: Array.from({ length: MAX_CONTACTS }, () => new THREE.Vector4()) },
+    uContactB: { value: Array.from({ length: MAX_CONTACTS }, () => new THREE.Vector4()) },
+    uContactCount: { value: 0 },
   };
   // where every shot so far landed (for the cracks), in order; the newest
   // MAX_IMPACTS of them are drawn
@@ -234,24 +241,25 @@ function start(wrap) {
   // a hold: the rocket's crater is worked out while it's still flying, and
   // kept back until it lands. Replies are applied strictly in order, so
   // anything that comes back after a held one waits behind it.
-  const replies = [], holds = [];
+  const replies = [], holds = [], pendingRocks = [];
   function postCut(rocks, hits, hold = null) {
     worker.postMessage({ type: "cut", gen, rocks });
     pendingImpacts.push(hits);
+    pendingRocks.push(rocks);
     holds.push(hold);
   }
   function drainReplies() {
     while (replies.length && (!replies[0].hold || replies[0].hold.landed)) {
       const r = replies.shift();
-      applyCut(r.m, r.hits);
+      applyCut(r.m, r.hits, r.rocks);
     }
   }
   worker.onmessage = ({ data: m }) => {
     if (m.type !== "cut" || m.gen !== gen) return;   // a cut from before the last restore
-    replies.push({ m, hits: pendingImpacts.shift() || [], hold: holds.shift() || null });
+    replies.push({ m, hits: pendingImpacts.shift() || [], rocks: pendingRocks.shift() || [], hold: holds.shift() || null });
     drainReplies();
   };
-  function applyCut(m, hit) {
+  function applyCut(m, hit, rocks) {
     const undo = [];
     for (const c of m.changed) {
       const mesh = blocks[c.id];
@@ -260,11 +268,32 @@ function start(wrap) {
       if (c.gone) { model.remove(mesh); blocks[c.id] = null; continue; }
       setGeometry(mesh, soupGeometry(c), true);
     }
-    const broke = m.pieces.map(breakOff).filter(Boolean);
+    // his things: a chunk that breaks off takes whatever it was wearing with
+    // it; anything the rock dug out from under falls off
+    const knocked = [], carried = [];
+    const balls = rocks.flatMap(rockBalls);
+    const broke = m.pieces.map((data) => {
+      const worn = bling ? accs.filter((a) => a.state === "on" && wornBy(a, data)) : [];
+      const pc = breakOff(data);
+      for (const { a, all } of worn) {
+        if (pc && all) { carry(a, pc); carried.push(a); }
+        else { detach(a, new THREE.Vector3(0, 0.2, 0.3)); knocked.push(a); }
+      }
+      return pc;
+    }).filter(Boolean);
+    for (const a of accs) {
+      if (a.state !== "on") continue;
+      const b = balls.find((b) => a.supports.some((s) => s.distanceTo(b.p) < b.r * 1.15 + 0.004));
+      if (b) {
+        const away = a.center.clone().sub(b.p).normalize().transformDirection(model.matrixWorld);
+        detach(a, away.multiplyScalar(0.35).add(new THREE.Vector3(0, 0.15, 0.2)));
+        knocked.push(a);
+      }
+    }
     if (m.pieces.length) heights();   // he's shorter now: chunks land on what's left
     impacts.push(...hit);
     syncImpacts();
-    history.push({ undo, pieces: broke, left, impacts: hit.length });
+    history.push({ undo, pieces: broke, left, impacts: hit.length, knocked, carried });
     left = m.left;
     shots++;
     updateStats();
@@ -277,6 +306,8 @@ function start(wrap) {
   function undoShot() {
     const h = history.pop();
     if (h.shattered) { shots = Math.max(0, shots - 1); updateStats(); return; }
+    for (const a of [...(h.knocked || []), ...(h.carried || [])]) home(a);
+    if (h.acc) { shots = Math.max(0, shots - 1); updateStats(); return; }
     for (const { id, mesh, prev } of h.undo.reverse()) {
       if (blocks[id] === mesh) mesh.geometry.dispose();
       else { model.add(mesh); blocks[id] = mesh; }
@@ -364,13 +395,15 @@ function start(wrap) {
   }
   const hfTmp = new THREE.Vector3(), hfInv = new THREE.Matrix4();
   // how far above whatever's under it (him, or the board) a world point is
-  function clearance(p) {
+  // (tol: how far below his top a point can be and still count as resting
+  // on it; small for his things, which start out right up against him)
+  function clearance(p, tol = 0.03) {
     if (!HF.h) return p.y;
     hfTmp.copy(p).applyMatrix4(hfInv);
     const x = Math.floor((hfTmp.x - HF.lo[0]) / HF.cell), z = Math.floor((hfTmp.z - HF.lo[1]) / HF.cell);
     if (x < 0 || z < 0 || x >= HF.n[0] || z >= HF.n[1]) return p.y;
     const top = HF.h[x + HF.n[0] * z];
-    return top > 0 && hfTmp.y > top - 0.03 ? hfTmp.y - top : p.y;   // only from above: deep inside him counts as clear
+    return top > 0 && hfTmp.y > top - tol ? hfTmp.y - top : p.y;   // only from above: deep inside him counts as clear
   }
 
   // a shard too thin to fall whole: it goes to rubble where it was
@@ -392,8 +425,27 @@ function start(wrap) {
     }
   }
 
+  // A chain isn't rigid: once it's down it slumps flat where it lies (in
+  // its own frame, which is level as it comes off him), gathering itself
+  // into a heap rather than standing as a hoop.
+  const levelQ = new THREE.Quaternion();
+  function slump(pc, dt) {
+    const a = pc.acc;
+    pc.flat = Math.min(1, pc.flat + dt * 2.5);
+    const s = 1 - 0.85 * pc.flat * (2 - pc.flat);
+    a.group.scale.set(1, s, 1);
+    a.group.position.set(-a.center.x, -a.center.y * s, -a.center.z);
+    pc.hull = a.hullRel.map((h) => new THREE.Vector3(h.x, h.y * s, h.z));
+    model.getWorldQuaternion(levelQ);
+    levelQ.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), pc.yaw ??= rnd(-0.6, 0.6)));
+    pc.mesh.quaternion.slerp(levelQ, Math.min(1, dt * 6));
+    pc.w.multiplyScalar(Math.pow(0.01, dt));
+    return pc.flat < 1;
+  }
   function stepPiece(pc, dt) {
+    if (pc.acc?.kind === "chain" && pc.landed && slump(pc, dt)) pc.rest = false;
     if (pc.rest || pc.shattered) return false;
+    if (pc.free > 0) pc.free -= dt;
     pc.v.y -= GRAVITY * dt;
     pc.mesh.position.addScaledVector(pc.v, dt);
     const ang = pc.w.length();
@@ -403,13 +455,17 @@ function start(wrap) {
     let low = Infinity, lowP = null;
     for (const h of pc.hull) {
       pieceTmp.copy(h).applyQuaternion(pc.mesh.quaternion).add(pc.mesh.position);
-      const c = clearance(pieceTmp);
+      // (his things get a moment to come clear of him before he can catch them)
+      const c = clearance(pieceTmp, pc.acc ? (pc.free > 0 ? -1 : 0.004) : 0.03);
       if (c < low) { low = c; lowP = pieceTmp.clone(); }
     }
     if (low < 0) {
       pc.mesh.position.y -= low;
       if (pc.v.y < 0) {
-        if (!pc.landed || pc.v.y < -0.4) thud(Math.min(1, -pc.v.y / 1.5));
+        if (!pc.landed || pc.v.y < -0.4) {
+          if (pc.acc) clink(Math.min(1, 0.25 - pc.v.y / 1.5), pc.acc);
+          else thud(Math.min(1, -pc.v.y / 1.5));
+        }
         pc.landed = true;
         pc.v.y *= -0.22;
         pc.v.x *= 0.55; pc.v.z *= 0.55;
@@ -424,6 +480,274 @@ function start(wrap) {
     return true;
   }
 
+  // ---------- His things (bust/bling.js) ----------
+  // Each one is on him (a child of the model), carried (riding a chunk
+  // that broke off with it on), or loose: a body of its own, falling and
+  // landing like a chunk does. Restore brings them all home.
+  let bling = null, sparkles = [];
+  const accs = [], loose = [];
+  // a rock as balls: one, or a row of them down a laser's slot
+  const rockQuat = new THREE.Quaternion(), rockX = new THREE.Vector3();
+  function rockBalls(rk) {
+    const p = new THREE.Vector3().fromArray(rk.position), r = Math.max(rk.scale[0], rk.scale[1]);
+    if (!rk.stretch) return [{ p, r }];
+    rockX.set(1, 0, 0).applyQuaternion(rockQuat.fromArray(rk.quaternion));
+    const half = rk.stretch * r, out = [];
+    for (let d = -half; d <= half + 1e-9; d += r) out.push({ p: p.clone().addScaledVector(rockX, d), r });
+    return out;
+  }
+  // which of its supports a chunk that broke off holds (all of them: it
+  // goes with the chunk; some: it's knocked loose)
+  function wornBy(a, data) {
+    const P = data.arrays.position;
+    let held = 0;
+    for (const s of a.supports) {
+      for (let i = 0; i < data.n * 3; i += 3) {
+        if (Math.abs(P[i] - s.x) < 0.012 && Math.abs(P[i + 1] - s.y) < 0.012 && Math.abs(P[i + 2] - s.z) < 0.012) { held++; break; }
+      }
+    }
+    return held ? { a, all: held === a.supports.length } : null;
+  }
+  // the stone darkens where his things rest on him, for as long as they do
+  function syncContacts() {
+    let n = 0;
+    for (const a of accs) {
+      if (a.state !== "on") continue;
+      for (const c of a.contacts || []) {
+        if (n >= MAX_CONTACTS) break;
+        uniforms.uContactA.value[n].set(c.a.x, c.a.y, c.a.z, c.r);
+        uniforms.uContactB.value[n].set(c.b.x, c.b.y, c.b.z, c.s);
+        n++;
+      }
+    }
+    uniforms.uContactCount.value = n;
+  }
+  function carry(a, pc) {
+    a.group.removeFromParent();
+    a.group.position.copy(pc.mesh.children[0].position);
+    a.group.quaternion.identity();
+    a.jolt = null;
+    pc.mesh.add(a.group);
+    a.state = "carried";
+    a.carrier = pc;
+    (pc.carried ||= []).push(a);
+    syncContacts();
+  }
+  function unCarry(a) {
+    if (!a.carrier) return;
+    a.carrier.carried.splice(a.carrier.carried.indexOf(a), 1);
+    a.carrier = null;
+  }
+  // knock it off: a body of its own where it is now, moving at v
+  function detach(a, v) {
+    if (a.state === "loose") {
+      a.pc.v.add(v);
+      a.pc.w.add(new THREE.Vector3(rnd(-6, 6), rnd(-6, 6), rnd(-6, 6)));
+      a.pc.rest = false;
+      kick();
+      return;
+    }
+    a.jolt = null;
+    a.group.updateWorldMatrix(true, false);
+    const body = new THREE.Group();
+    body.position.copy(a.center).applyMatrix4(a.group.matrixWorld);
+    a.group.getWorldQuaternion(body.quaternion);
+    unCarry(a);
+    a.group.removeFromParent();
+    a.group.position.copy(a.center).negate();
+    a.group.quaternion.identity();
+    body.add(a.group);
+    scene.add(body);
+    // a chain doesn't tumble: it slides off him forward, roughly level
+    const spin = a.kind === "chain" ? new THREE.Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-0.5, 0.5)) : new THREE.Vector3(rnd(-7, 7), rnd(-7, 7), rnd(-7, 7));
+    if (a.kind === "chain") v = v.clone().add(new THREE.Vector3(0, 0, 0.25));
+    a.pc = { mesh: body, hull: a.hullRel, v: v.clone(), w: spin, rest: false, landed: false, acc: a, flat: 0, free: 0.3 };
+    a.state = "loose";
+    loose.push(a.pc);
+    syncContacts();
+    shadowDirty = true;
+    kick();
+  }
+  function home(a) {
+    if (a.state === "on") return;
+    if (a.pc) { scene.remove(a.pc.mesh); loose.splice(loose.indexOf(a.pc), 1); a.pc = null; }
+    unCarry(a);
+    a.group.removeFromParent();
+    a.group.position.set(0, 0, 0);
+    a.group.quaternion.identity();
+    a.group.scale.set(1, 1, 1);
+    model.add(a.group);
+    a.state = "on";
+    syncContacts();
+    shadowDirty = true;
+  }
+  // a shot on one of his things. Each takes a few hits before it comes off
+  // (TOUGH, in pistol rounds; the laser does dmg a second): until then it
+  // jolts on him and rings, and the laser heats it, dull red to yellow, the
+  // nearer it gets to letting go. Once it's off, a hit skips it across the
+  // board.
+  const TOUGH = { shades: 3, grill: 3.5, "stud-l": 1.5, "stud-r": 1.5, cuban: 4.5, rope: 3 };
+  function hitAcc(a, hit, w) {
+    const out = hit.point.clone().setY(0).normalize().multiplyScalar(0.12);
+    const v = out.add(new THREE.Vector3(rnd(-0.06, 0.06), rnd(0.15, 0.3), rnd(0.2, 0.35))).multiplyScalar(0.8 + 0.25 * Math.sqrt(w.r));
+    // (the laser's by the clock, so a slow frame rate doesn't make it gentler)
+    let dmg = w.dmg;
+    if (w.beam) {
+      const now = performance.now(), since = a.beamAt && now - a.beamAt < 150 ? (now - a.beamAt) / 1000 : w.every;
+      a.beamAt = now;
+      dmg *= since;
+    }
+    if (a.state === "on" && a.hp - dmg > 0) {
+      a.hp -= dmg;
+      if (w.beam) {
+        a.heat = Math.max(a.heat, 0.25 + 0.75 * (1 - a.hp / a.tough));
+        a.hotT = 0.15;
+        if (Math.random() < 0.5) puff(hit.point.clone(), new THREE.Vector3(rnd(-0.06, 0.06), rnd(0.03, 0.1), rnd(0, 0.06)), 0.003, rnd(0.004, 0.01), rnd(0.15, 0.35), 0.9, 0xffb050);
+        if (!a.jolt) jolt(a, hit, 0.15);
+        kick();
+        return;
+      }
+      jolt(a, hit, Math.min(1, dmg / 2));
+      flash.position.copy(hit.point);
+      flash.scale.setScalar(0.035);
+      flash.visible = true;
+      flashT = 0.05;
+      for (let i = 0; i < 2; i++) puff(hit.point.clone(), new THREE.Vector3(rnd(-0.04, 0.04), rnd(0, 0.05), rnd(0, 0.05)), 0.005, rnd(0.008, 0.016), rnd(0.25, 0.5), 0.5, 0xffe2a0);
+      clink(0.45 + 0.3 * Math.min(1, dmg), a);
+      history.push({ undo: [], pieces: [], acc: a, knocked: [], left, impacts: 0 });
+      shots++;
+      updateStats();
+      wrap.classList.add("shot");
+      if (restoreBtn) restoreBtn.hidden = false;
+      kick();
+      return;
+    }
+    flash.position.copy(hit.point);
+    flash.scale.setScalar(0.05);
+    flash.visible = true;
+    flashT = 0.06;
+    for (let i = 0; i < 3; i++) puff(hit.point.clone(), new THREE.Vector3(rnd(-0.05, 0.05), rnd(0, 0.06), rnd(0, 0.06)), 0.006, rnd(0.01, 0.02), rnd(0.3, 0.6), 0.6, 0xffe2a0);
+    clink(0.9, a);
+    if (a.state === "loose") { detach(a, v.multiplyScalar(0.5)); return; }
+    a.hp = 0;
+    detach(a, v);
+    history.push({ undo: [], pieces: [], acc: a, knocked: [a], left, impacts: 0 });
+    shots++;
+    updateStats();
+    wrap.classList.add("shot");
+    if (restoreBtn) restoreBtn.hidden = false;
+  }
+  // knocked but still on him: a quick, dying shake. A chain swings out off
+  // his chest from the back of his neck (never into him); the rest twist a
+  // hair about their middle, the way the hit pushed them.
+  const joltQ = new THREE.Quaternion(), joltP = new THREE.Vector3();
+  function jolt(a, hit, s) {
+    let axis, pivot;
+    if (a.kind === "chain") { axis = new THREE.Vector3(1, 0, 0); pivot = a.supports[0]; }
+    else {
+      const p = model.worldToLocal(hit.point.clone()).sub(a.center);
+      const d = ray.ray.direction.clone().transformDirection(new THREE.Matrix4().copy(model.matrixWorld).invert());
+      axis = p.cross(d);
+      if (axis.lengthSq() < 1e-12) axis.set(0, 0, 1);
+      axis.normalize();
+      pivot = a.center;
+    }
+    const amp = (a.kind === "chain" ? 0.07 : a.kind === "glass" ? 0.035 : 0.012) * (0.35 + 0.65 * s);
+    a.jolt = { t: 0, amp: Math.max(amp, a.jolt ? a.jolt.amp * Math.exp(-a.jolt.t * 5) : 0), axis, pivot, swing: a.kind === "chain" };
+  }
+  // returns true while something is still moving or glowing
+  function stepAccs(dt) {
+    let on = false;
+    for (const a of accs) {
+      if (a.jolt) {
+        const j = a.jolt;
+        j.t += dt;
+        const env = j.amp * Math.exp(-j.t * 5);
+        if (env < 0.0004 || a.state !== "on") {
+          a.jolt = null;
+          if (a.state === "on") { a.group.quaternion.identity(); a.group.position.set(0, 0, 0); }
+        } else {
+          const s = Math.sin(j.t * 30);
+          joltQ.setFromAxisAngle(j.axis, j.swing ? -env * Math.abs(s) : env * s);
+          a.group.quaternion.copy(joltQ);
+          a.group.position.copy(j.pivot).sub(joltP.copy(j.pivot).applyQuaternion(joltQ));
+        }
+        on = true;
+        shadowDirty = true;
+      }
+      if (a.heat > 0) {
+        if (a.hotT > 0) a.hotT -= dt;
+        else a.heat = Math.max(0, a.heat - dt * 0.3);
+        glow(a, a.heat);
+        on = true;
+      }
+    }
+    return on;
+  }
+  // the heat on it, in its own copies of the materials while it lasts
+  function glow(a, h) {
+    if (h > 0 && !a.hotMats) {
+      a.hotMats = new Map();
+      for (const m of a.meshes) {
+        if (!m.material.emissive) continue;
+        a.hotMats.set(m, m.material);
+        m.material = m.material.clone();
+      }
+    }
+    if (!a.hotMats) return;
+    if (h <= 0) {
+      for (const [m, orig] of a.hotMats) { m.material.dispose(); m.material = orig; }
+      a.hotMats = null;
+      return;
+    }
+    for (const m of a.hotMats.keys()) m.material.emissive.setRGB(1.8 * h, 0.75 * h * h, 0.25 * h ** 4);
+  }
+  // ---------- Twinkle ----------
+  // Every second or so a diamond catches the light: a four-point star that
+  // flares and fades over half a second.
+  const starTex = starTexture();
+  const twinkles = [];
+  for (let i = 0; i < 3; i++) {
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: starTex, color: 0xffffff, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending }));
+    s.visible = false;
+    s.renderOrder = 11;
+    scene.add(s);
+    twinkles.push({ s, t: 0, dur: 0.5, at: null });
+  }
+  const twTmp = new THREE.Vector3();
+  function twinkle() {
+    if (!ready || !visible || document.hidden || rewind || drop || !sparkles.length) return;
+    const tw = twinkles.find((x) => !x.at);
+    if (!tw) return;
+    for (let k = 0; k < 6; k++) {
+      const sp = sparkles[Math.floor(Math.random() * sparkles.length)];
+      if (sp.acc.state === "on" && sp.p.z < 0.1) continue;   // round the back of him: out of sight
+      tw.at = sp;
+      tw.t = 0;
+      tw.dur = rnd(0.4, 0.65);
+      tw.s.visible = true;
+      tw.s.material.rotation = rnd(0, 0.6);
+      kick();
+      return;
+    }
+  }
+  setInterval(twinkle, 900);
+  function stepTwinkles(dt) {
+    let on = false;
+    for (const tw of twinkles) {
+      if (!tw.at) continue;
+      tw.t += dt;
+      if (tw.t >= tw.dur) { tw.at = null; tw.s.visible = false; continue; }
+      const f = Math.sin(Math.PI * tw.t / tw.dur);
+      tw.at.mesh.localToWorld(twTmp.copy(tw.at.p));
+      tw.s.position.copy(twTmp).addScaledVector(camera.position.clone().sub(twTmp).normalize(), 0.01);
+      tw.s.scale.setScalar(0.03 * f * f);
+      tw.s.material.rotation += dt * 0.8;
+      on = true;
+    }
+    return on;
+  }
+
   // ---------- Load ----------
   let drop = null, ready = false;    // drop: { y, v } while it's falling in
   const foot = [], footTmp = new THREE.Vector3();
@@ -434,7 +758,7 @@ function start(wrap) {
   else window.addEventListener("load", () => whenIdle(loadBust), { once: true });
   function loadBust() {
   const draco = new DRACOLoader().setDecoderPath("https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/");
-  new GLTFLoader().setDRACOLoader(draco).load(new URL("model/bust.glb?v=5", import.meta.url).href, (gltf) => {
+  new GLTFLoader().setDRACOLoader(draco).load(new URL("model/bust.glb?v=5", import.meta.url).href, async (gltf) => {
     draco.dispose();
     // Each block is a node holding a skin part and an inside part (a Group
     // of two meshes, or one mesh if it only has one), quantized across the
@@ -471,6 +795,9 @@ function start(wrap) {
       g.userData.cell = node.userData.cell;
       originals.push(g);
     }
+    // part his lips for the grill (bling.js)
+    let carved = false;
+    try { await carveMouth(originals); carved = true; } catch (e) { console.warn("bust: mouth not carved", e); }
     const box = new THREE.Box3();
     for (const g of originals) { g.computeBoundingBox(); box.union(g.boundingBox); }
     const c = box.getCenter(new THREE.Vector3());
@@ -478,6 +805,31 @@ function start(wrap) {
     charFrame(box);
     pivot.add(model);
     buildBlocks();
+    heights();   // so anything that falls off him lands on him
+    bling = buildBling(originals, { carved });
+    // the studio his gold and diamonds reflect, once it's in
+    new RGBELoader().load(new URL("model/studio.hdr", import.meta.url).href, (hdr) => {
+      const gen = new THREE.PMREMGenerator(renderer);
+      bling.setEnv(gen.fromEquirectangular(hdr).texture);
+      gen.dispose();
+      hdr.dispose();
+      kick();
+    });
+    for (const a of bling.accs) {
+      a.state = "on";
+      a.tough = a.hp = TOUGH[a.name] ?? 3;
+      a.heat = 0;
+      a.hullRel = a.hull.map((h) => h.clone().sub(a.center));
+      a.meshes = [];
+      a.group.traverse((o) => {
+        if (!o.isMesh) return;
+        a.meshes.push(o);
+        for (const p of o.userData.sparkle || []) sparkles.push({ acc: a, mesh: o, p });
+      });
+      model.add(a.group);
+      accs.push(a);
+    }
+    syncContacts();
     worker.postMessage({ type: "init", blocks: originals.map((g) => ({
       position: g.attributes.position.array, normal: g.attributes.normal.array, ao: g.attributes._ao.array,
       index: g.index.array, skinCount: g.groups[0].materialIndex === 0 ? g.groups[0].count : 0, cell: g.userData.cell,
@@ -538,6 +890,9 @@ function start(wrap) {
         uniform vec4 uHeatB[${HEAT_N}];
         uniform int uHeatCount;
         uniform float uTime;
+        uniform vec4 uContactA[${MAX_CONTACTS}];
+        uniform vec4 uContactB[${MAX_CONTACTS}];
+        uniform int uContactCount;
         varying float vRim;
         varying float vAO;
         varying vec3 vObj;
@@ -591,6 +946,8 @@ function start(wrap) {
         // freshly broken: the same veins, but paler and chalky, no patina
         diffuseColor.rgb *= mix(marble, vec3(0.97, 0.96, 0.94), 0.55) * (0.9 + 0.1 * grain);` : `
         diffuseColor.rgb *= marble;
+        // Calacatta oro: the veins run warm, a little gold in the grey
+        diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(1.22, 0.98, 0.62), (1.0 - smoothstep(0.5, 0.82, marbleLum)) * 0.75);
         // age: centuries of dust and handling settle warm into the hollows,
         // the high points stay cleaner, and it's never quite even
         diffuseColor.rgb *= mix(vec3(1.0), vec3(0.86, 0.8, 0.7), clamp(hollow * 0.9 + (0.5 - grime) * 0.35, 0.0, 1.0));
@@ -655,6 +1012,20 @@ function start(wrap) {
         reflectedLight.indirectSpecular *= ao * ao;
         reflectedLight.directDiffuse *= mix(0.55, 1.0, smoothstep(0.15, 0.85, ao));
         reflectedLight.directSpecular *= ao;
+        // where something of his rests on him, the light can't get under it:
+        // a soft dark line along each chain, round the lenses' pads, the
+        // medallion's shadow on his chest
+        float touch = 0.0;
+        for (int i = 0; i < ${MAX_CONTACTS}; i++) {
+          if (i >= uContactCount) break;
+          vec3 ca = uContactA[i].xyz, cab = uContactB[i].xyz - ca;
+          float ct = clamp(dot(vObj - ca, cab) / max(dot(cab, cab), 1e-10), 0.0, 1.0);
+          vec3 cd = vObj - ca - cab * ct;
+          touch = max(touch, uContactB[i].w * exp(-dot(cd, cd) / (uContactA[i].w * uContactA[i].w)));
+        }
+        reflectedLight.indirectDiffuse *= 1.0 - touch;
+        reflectedLight.indirectSpecular *= 1.0 - touch;
+        reflectedLight.directDiffuse *= 1.0 - touch * 0.5;
         // marble is a little translucent: light soaks past the shadow line
         // and comes back warm, which is what keeps it from looking like plaster
         float nl = dot(normal, uKeyDir);
@@ -681,11 +1052,11 @@ function start(wrap) {
   //   beam    the laser: fired continuously while held (see laserSample)
   //   rocket  fires a projectile that explodes where it lands (see launch)
   const WEAPONS = [
-    { name: "pistol", every: 0.12, pellets: 1, spread: 0, r: 1, deep: 1.25, chips: 16, shake: 0.35, sound: (b) => impactSound(b, true) },
-    { name: "shotgun", every: 0.55, pellets: 7, spread: 0.07, r: 0.55, deep: 1.0, chips: 6, shake: 0.8, sound: () => shotgunSound() },
-    { name: "sledgehammer", every: 0.9, pellets: 1, spread: 0, r: 2.3, deep: 0.75, chips: 40, shake: 1.6, sound: () => hammerSound() },
-    { name: "laser", every: 0.04, beam: true, r: LASER_R, deep: 5, chips: 0, shake: 0.05 },
-    { name: "rocket launcher", every: 1.4, rocket: true, r: 3.0, deep: 1.0, chips: 70, shake: 2.4 },
+    { name: "pistol", every: 0.12, dmg: 1, pellets: 1, spread: 0, r: 1, deep: 1.25, chips: 16, shake: 0.35, sound: (b) => impactSound(b, true) },
+    { name: "shotgun", every: 0.55, dmg: 0.6, pellets: 7, spread: 0.07, r: 0.55, deep: 1.0, chips: 6, shake: 0.8, sound: () => shotgunSound() },
+    { name: "sledgehammer", every: 0.9, dmg: 3.5, pellets: 1, spread: 0, r: 2.3, deep: 0.75, chips: 40, shake: 1.6, sound: () => hammerSound() },
+    { name: "laser", every: 0.04, dmg: 2, beam: true, r: LASER_R, deep: 5, chips: 0, shake: 0.05 },
+    { name: "rocket launcher", every: 1.4, dmg: 99, rocket: true, r: 3.0, deep: 1.0, chips: 70, shake: 2.4 },
   ];
   let weapon = WEAPONS[0];
 
@@ -736,6 +1107,7 @@ function start(wrap) {
     // the bust, and any chunk lying on the board (those shatter)
     const targets = blocks.filter(Boolean);
     for (const pc of pieces) if (!pc.shattered) targets.push(pc.mesh.children[0]);
+    for (const a of accs) targets.push(...a.meshes);
     return ray.intersectObjects(targets, false)[0] || null;
   }
 
@@ -744,7 +1116,7 @@ function start(wrap) {
     if (weapon.beam) return laserSample();
     if (weapon.rocket) return launch();
     const w = weapon, rocks = [], hits = [];
-    let anyBroken = false, hitSomething = false;
+    let anyBroken = false, hitSomething = false, anyStone = false;
     for (let i = 0; i < w.pellets; i++) {
       // pellets spread over a disc around the aim point
       const a = Math.random() * Math.PI * 2, d = Math.sqrt(Math.random()) * w.spread;
@@ -752,6 +1124,8 @@ function start(wrap) {
       if (!hit) continue;
       hitSomething = true;
       if (hit.object.userData.piece) { shatter(hit.object.userData.piece, hit, w); continue; }
+      if (hit.object.userData.acc) { hitAcc(hit.object.userData.acc, hit, w); continue; }
+      anyStone = true;
       // Into the stone along the line of fire, tipped a little toward the
       // surface's own normal. A fresh hit on the skin sinks in and blasts a
       // crater; a hit on stone that's already broken (inside a crater) keeps
@@ -797,7 +1171,8 @@ function start(wrap) {
       }
     }
     shake = Math.max(shake, w.shake);
-    w.sound(anyBroken);
+    if (anyStone || w.name !== "pistol") w.sound(anyBroken);
+    else gunshot();
     kick();
   }
   const lastShotDir = new THREE.Vector3(0, 0, -1);
@@ -889,6 +1264,7 @@ function start(wrap) {
     const hit = beamTarget();
     if (!hit) { laser.prev = null; return; }
     if (hit.object.userData.piece) { laser.prev = null; shatter(hit.object.userData.piece, hit, weapon, true); return; }
+    if (hit.object.userData.acc) { laser.prev = null; if (hit.object.userData.acc.state !== "loose") hitAcc(hit.object.userData.acc, hit, weapon); return; }
     // straight down the beam, a thin slot sunk well past the surface, from
     // where the line had got to; a fresh line starts with a single needle.
     // Held still, it waits until it has moved a little before cutting again.
@@ -1069,7 +1445,7 @@ function start(wrap) {
     const at = hit.point;
     const w = weapon.rocket ? weapon : WEAPONS.find((x) => x.rocket);
     // anything on the board nearby is thrown clear
-    for (const pc of pieces) {
+    for (const pc of [...pieces, ...loose]) {
       if (pc.shattered) continue;
       const away = pc.mesh.position.clone().sub(at);
       const d = away.length();
@@ -1079,6 +1455,7 @@ function start(wrap) {
       pc.v.add(away.normalize().multiplyScalar(push)).add(new THREE.Vector3(0, push * 0.6, 0));
       pc.w.add(new THREE.Vector3(rnd(-9, 9), rnd(-9, 9), rnd(-9, 9)));
     }
+    if (hit.object.userData.acc) hitAcc(hit.object.userData.acc, hit, w);
     if (hit.object.userData.piece) {
       // a direct hit on a fallen chunk: it's gone
       const pc = hit.object.userData.piece;
@@ -1138,6 +1515,7 @@ function start(wrap) {
       return;
     }
     pc.shattered = true;
+    for (const a of [...(pc.carried || [])]) detach(a, new THREE.Vector3(rnd(-0.1, 0.1), rnd(0.2, 0.35), rnd(0, 0.15)));
     pc.mesh.visible = false;
     const count = Math.min(60, 10 + Math.round(size * 900));
     const at = new THREE.Vector3();
@@ -1235,6 +1613,7 @@ function start(wrap) {
     if (rewind) return;
     gen++;               // anything still being cut is dropped
     pendingImpacts.length = 0;
+    pendingRocks.length = 0;
     holds.length = 0;
     replies.length = 0;
     pointer.down = false;
@@ -1246,9 +1625,14 @@ function start(wrap) {
       t: 0, shots: history.length,
       chips: chips.map((c) => ({ c, at: c.p.clone(), delay: rnd(0, 0.45), lift: rnd(0.03, 0.12) })),
       pieces: pieces.map((pc) => ({ pc, at: pc.mesh.position.clone(), q: pc.mesh.quaternion.clone() })),
+      loose: loose.map((pc) => ({
+        pc, at: pc.mesh.position.clone(), q: pc.mesh.quaternion.clone(),
+        to: pc.acc.center.clone().applyMatrix4(model.matrixWorld), toQ: model.getWorldQuaternion(new THREE.Quaternion()),
+        s0: pc.acc.group.scale.y,
+      })),
     };
     for (const pc of pieces) { pc.shattered = false; pc.hits = 0; pc.mesh.visible = true; }
-    for (const pc of pieces) pc.rest = true;
+    for (const pc of [...pieces, ...loose]) pc.rest = true;
     yawTarget = 0;
     restoreBtn.hidden = true;
     rewindSound();
@@ -1387,6 +1771,28 @@ function start(wrap) {
         play("boom", { at: t, gain: 0.22, rate: rnd(1.9, 2.3), take: 1 });
       }
       stoneHit(t, { gain: broken ? 0.7 : 0.85, rate: broken ? rnd(0.68, 0.76) : rnd(0.8, 0.9), grit: 2 + Math.floor(Math.random() * 3) });
+    } catch (e) { /* no audio, no problem */ }
+  }
+  // gold (or a lens) struck or landing: a bright, inharmonic ring; a chain
+  // is a handful of them tumbling over each other
+  function clink(strength = 0.6, a) {
+    try {
+      audio();
+      const t = actx.currentTime, n = a?.kind === "chain" ? 6 : 2;
+      for (let k = 0; k < n; k++) {
+        const at = t + (k ? rnd(0.01, 0.16) : 0), f = rnd(2200, 3300) * (a?.kind === "glass" ? 1.35 : 1);
+        for (const [m, g, d] of [[1, 0.09, 0.4], [2.76, 0.05, 0.25], [5.4, 0.03, 0.12]]) {
+          if (f * m < 18000) tone(at, f * m, f * m * 0.995, g * strength * (k ? 0.6 : 1), d);
+        }
+        burst(at, { type: "highpass", f0: 5000, q: 0.7, gain: 0.04 * strength, dur: 0.03 });
+      }
+    } catch (e) { /* no audio, no problem */ }
+  }
+  // the pistol on its own, when the shot didn't touch stone
+  function gunshot() {
+    try {
+      audio();
+      if (!play("gunshot", { at: actx.currentTime, gain: 0.8, rate: rnd(0.97, 1.03) })) thump(actx.currentTime, rnd(105, 125), 0.28, 0.16);
     } catch (e) { /* no audio, no problem */ }
   }
   // a chunk hitting the board
@@ -1612,6 +2018,8 @@ function start(wrap) {
     if (drop) {
       drop.v -= GRAVITY * 2.2 * dt;
       drop.y += drop.v * dt;
+      // (he's still moving this frame: the shadow follows him down to the board)
+      shadowDirty = true;
       if (drop.y <= 0) { drop = null; pivot.position.y = 0; land(); }
       else pivot.position.y = drop.y;
       busy = true;
@@ -1658,6 +2066,15 @@ function start(wrap) {
         pc.mesh.position.y += Math.sin(Math.PI * ge) * 0.06;
         pc.mesh.quaternion.slerpQuaternions(q, pc.home.q, ge);
       }
+      for (const { pc, at, q, to, toQ, s0 } of rewind.loose) {
+        const a = pc.acc, sy = s0 + (1 - s0) * ge;
+        if (a.pc !== pc) continue;   // already home (its shot came undone)
+        a.group.scale.set(1, sy, 1);
+        a.group.position.set(-a.center.x, -a.center.y * sy, -a.center.z);
+        pc.mesh.position.lerpVectors(at, to, ge);
+        pc.mesh.position.y += Math.sin(Math.PI * ge) * 0.08;
+        pc.mesh.quaternion.slerpQuaternions(q, toQ, ge);
+      }
       const u = Math.max(0, rewind.t - GATHER) / REWIND, e = u * u * (3 - 2 * u);
       // undo shots on an ease, so it starts slow and rushes the last ones
       const left = Math.round(rewind.shots * (1 - e));
@@ -1672,6 +2089,7 @@ function start(wrap) {
       }
       if (rewind.t >= GATHER + REWIND) {
         while (history.length) undoShot();
+        for (const a of accs) { home(a); a.hp = a.tough; a.heat = 0; glow(a, 0); }
         for (const pc of pieces.splice(0)) { scene.remove(pc.mesh); pc.mesh.children[0].geometry.dispose(); }
         worker.postMessage({ type: "reset" });
         chips.length = 0;
@@ -1682,7 +2100,9 @@ function start(wrap) {
     }
 
     // fallen chunks tumble and settle
-    if (!rewind) for (const pc of pieces) if (stepPiece(pc, dt)) { busy = true; shadowDirty = true; }
+    if (!rewind) for (const pc of [...pieces, ...loose]) if (stepPiece(pc, dt)) { busy = true; shadowDirty = true; }
+    if (stepTwinkles(dt)) busy = true;
+    if (stepAccs(dt)) busy = true;
 
     // dust settles back into the craters once the shooting stops
     if (history.length && uniforms.uDust.value < 1 && !pointer.down) {
@@ -1755,6 +2175,31 @@ function start(wrap) {
     if (busy && visible && !document.hidden) requestAnimationFrame(frame);
     else running = false;
   }
+}
+
+// a four-point star with a soft glow, for the twinkle
+function starTexture() {
+  const c = document.createElement("canvas");
+  c.width = c.height = 128;
+  const g = c.getContext("2d");
+  const glow = g.createRadialGradient(64, 64, 0, 64, 64, 30);
+  glow.addColorStop(0, "rgba(255,255,255,1)");
+  glow.addColorStop(0.25, "rgba(255,250,235,0.5)");
+  glow.addColorStop(1, "rgba(255,240,210,0)");
+  g.fillStyle = glow;
+  g.fillRect(0, 0, 128, 128);
+  for (const [w, h] of [[3, 62], [62, 3]]) {
+    const ray = g.createRadialGradient(64, 64, 0, 64, 64, 62);
+    ray.addColorStop(0, "rgba(255,255,255,1)");
+    ray.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = ray;
+    g.beginPath();
+    g.ellipse(64, 64, w, h, 0, 0, Math.PI * 2);
+    g.fill();
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
 }
 
 function radialTexture(inner, outer) {

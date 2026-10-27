@@ -1,13 +1,16 @@
 /* =========================================================================
-   Bust — a marble bust standing on a board, to be shot to pieces (bust.js).
-   Plain black behind him, so the stone is all there is to look at.
+   Bust — a marble don standing on a board, to be shot to pieces (bust.js).
+   Leopard print behind him (model/leopard.jpg), a black lacquer board
+   trimmed in gold under him, and gold for everything written.
    ========================================================================= */
 :root {
-  --ink: #efe6d8;
-  --ink-dim: rgba(239, 230, 216, 0.6);
-  --ink-faint: rgba(239, 230, 216, 0.38);
-  --board: rgba(255, 255, 255, 0.04);
-  --board-line: rgba(239, 230, 216, 0.1);
+  --ink: #f4e3b8;
+  --ink-dim: rgba(244, 227, 184, 0.66);
+  --ink-faint: rgba(244, 227, 184, 0.5);
+  --gold: #e8bd68;
+  --gold-line: rgba(232, 189, 104, 0.85);
+  --lacquer: #0a0705;
+  --pill: rgba(10, 6, 3, 0.74);
 }
 * { box-sizing: border-box; }
 html { overflow-x: hidden; }
@@ -15,24 +18,44 @@ body {
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
-  background: #000;
+  background: #3a2412;
   color: var(--ink);
   font-family: "JetBrains Mono", monospace;
 }
 a { color: inherit; text-decoration: none; }
+/* the print: a seamless tile made from a leopard fur photo
+   (model/leopard-tile.mjs), repeated at half its pixel size so it stays
+   sharp, fixed to the window, dimmed toward the edges so he's lit and the
+   wall isn't */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 62% 58% at 50% 34%, rgba(12, 6, 0, 0.1) 0%, rgba(12, 6, 0, 0.45) 62%, rgba(4, 2, 0, 0.8) 100%),
+    url("model/leopard.jpg") center top / 480px auto repeat;
+}
 
 .home {
   position: absolute;
-  top: 18px;
-  left: 20px;
+  top: 16px;
+  left: 16px;
   z-index: 10;
+  padding: 5px 11px;
   font-size: 11px;
   letter-spacing: 2px;
-  color: var(--ink-faint);
+  color: var(--ink-dim);
+  background: var(--pill);
+  border: 1px solid rgba(232, 189, 104, 0.3);
+  border-radius: 999px;
 }
 .home:hover { color: var(--ink); }
 
 .stage {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -45,18 +68,26 @@ a { color: inherit; text-decoration: none; }
   position: relative;
   width: min(980px, 100%);
   padding: 34px 30px 30px;
-  background: var(--board);
-  border: 1px solid var(--board-line);
+  background: radial-gradient(120% 150% at 50% 0%, #1f160d 0%, var(--lacquer) 58%, #040201 100%);
+  border: 1px solid var(--gold-line);
   border-radius: 26px;
+  /* a second, finer gold line just inside the first */
+  box-shadow: inset 0 0 0 5px var(--lacquer), inset 0 0 0 6px rgba(232, 189, 104, 0.32), 0 22px 60px rgba(0, 0, 0, 0.6);
   text-align: center;
 }
 .board h1 {
   margin: 0 0 18px;
-  font-family: "Anton", Impact, sans-serif;
-  font-weight: 400;
-  font-size: 34px;
-  letter-spacing: 6px;
-  color: var(--ink);
+  font-family: "Playfair Display", Didot, "Bodoni 72", serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 44px;
+  line-height: 1.05;
+  letter-spacing: 8px;
+  color: var(--gold);
+  background: linear-gradient(180deg, #fff4cf 0%, #f1cd7c 38%, #a8741f 52%, #e9c46f 70%, #fff0c2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .controls {
   display: grid;
@@ -68,7 +99,7 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 1px;
   text-align: left;
 }
-.controls dt { color: var(--ink); text-align: right; }
+.controls dt { color: var(--gold); text-align: right; }
 .controls dd { margin: 0; color: var(--ink-dim); }
 
 /* ---------- The bust ------------------------------------------------------ */
@@ -99,16 +130,25 @@ html.bust-aim, html.bust-aim * {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cg stroke='%23111' stroke-width='2' fill='none'%3E%3Ccircle cx='16' cy='16' r='9'/%3E%3Cpath d='M16 2v8M16 22v8M2 16h8M22 16h8'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='1.5' fill='%23e23b2e'/%3E%3C/svg%3E") 16 16, crosshair !important;
 }
 .bust-hint,
+.bust-restore,
+.bust-weapon,
+.bust-stats {
+  padding: 5px 11px;
+  background: var(--pill);
+  border: 1px solid rgba(232, 189, 104, 0.3) !important;
+  border-radius: 999px;
+}
+.bust-hint,
 .bust-restore {
   position: absolute;
   left: calc(50% + 300px);
-  bottom: calc(var(--foot) + 10px);
+  bottom: calc(var(--foot) + 14px);
   margin: 0;
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: lowercase;
-  color: var(--ink-faint);
+  color: var(--ink-dim);
   white-space: nowrap;
 }
 .bust-hint {
@@ -119,9 +159,6 @@ html.bust-aim, html.bust-aim * {
 .bust.ready .bust-hint { opacity: 1; transition-delay: 1.2s; }
 .bust.shot .bust-hint { opacity: 0; transition-delay: 0s; }
 .bust-restore {
-  padding: 0;
-  background: none;
-  border: 0;
   cursor: pointer;
   pointer-events: auto;
 }
@@ -131,14 +168,11 @@ html.bust-aim, html.bust-aim * {
 .bust-weapon {
   position: absolute;
   right: calc(50% + 300px);
-  bottom: calc(var(--foot) + 10px);
-  padding: 0;
-  background: none;
-  border: 0;
+  bottom: calc(var(--foot) + 14px);
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
   letter-spacing: 2px;
-  color: var(--ink-faint);
+  color: var(--ink-dim);
   cursor: pointer;
   pointer-events: auto;
 }
@@ -147,12 +181,12 @@ html.bust-aim, html.bust-aim * {
 .bust-stats {
   position: absolute;
   right: calc(50% + 300px);
-  bottom: calc(var(--foot) + 28px);
+  bottom: calc(var(--foot) + 46px);
   margin: 0;
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
   letter-spacing: 2px;
-  color: var(--ink-faint);
+  color: var(--ink-dim);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
   pointer-events: none;
@@ -173,8 +207,11 @@ html.bust-aim, html.bust-aim * {
 
 @media (max-width: 620px) {
   .stage { padding: 44px 14px 56px; }
-  .bust { height: 400px; }   /* no bigger: at phone width his shoulders already fill it */
+  /* no taller: at phone width his shoulders (and the fur) already fill it,
+     so the canvas runs right out to the screen's edges */
+  .bust { height: 400px; width: calc(100% + 28px); margin-left: -14px; margin-right: -14px; }
   .bust-hint, .bust-restore { left: auto; right: 16px; }
   .bust-stats, .bust-weapon { right: auto; left: 16px; }
   .board { padding: 26px 16px 24px; border-radius: 20px; }
+  .board h1 { font-size: 36px; }
 }
