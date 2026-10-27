@@ -184,6 +184,16 @@ const ARTWORK = {
           <image href="images/meccha-pose2.png?v=2" x="-5" y="-65" width="330" height="330"
                  preserveAspectRatio="xMidYMid meet"/>
         </g>
+        <!-- brush look: wobble the stroke edges, then scratch bristle streaks
+             out of the paint so it reads as dry-brushed, not typed -->
+        <filter id="mc-brush" x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves="2" seed="3" result="wob"/>
+          <feDisplacementMap in="SourceGraphic" in2="wob" scale="4" xChannelSelector="R" yChannelSelector="G" result="paint"/>
+          <feTurbulence type="fractalNoise" baseFrequency="0.25 1.1" numOctaves="2" seed="8" result="bristle"/>
+          <feColorMatrix in="bristle" type="matrix" result="holes"
+                         values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.8 1.95"/>
+          <feComposite in="paint" in2="holes" operator="in"/>
+        </filter>
         <mask id="mc-body" maskUnits="userSpaceOnUse" x="0" y="0" width="320" height="200">
           <use href="#mc-fig" filter="url(#mc-solid)"/>
         </mask>
@@ -191,12 +201,27 @@ const ARTWORK = {
       <rect width="320" height="200" fill="#000000"/>
       <use href="#mc-fig"/>
       <!-- the paint: only lands on him, and his shading shows through it -->
-      <g mask="url(#mc-body)" style="mix-blend-mode:multiply" opacity="0.94"
-         font-family="Anton, sans-serif" text-anchor="middle">
-        <text x="56" y="114" font-size="40" textLength="52" lengthAdjust="spacingAndGlyphs" fill="#e23b2e">FIND</text>
-        <!-- six different colours picked from across the game's MECCHA
-             CHAMELEON title, none repeated -->
-        <text x="198" y="150" font-size="78" textLength="226" lengthAdjust="spacingAndGlyphs"><tspan fill="#a8e10c">M</tspan><tspan fill="#8b45d6">E</tspan><tspan fill="#ff8a1f">C</tspan><tspan fill="#58c4f0">C</tspan><tspan fill="#e5189c">H</tspan><tspan fill="#ffd21f">A</tspan></text>
+      <g mask="url(#mc-body)" style="mix-blend-mode:multiply" opacity="0.94">
+        <!-- hand-drawn brush letters: wobbly strokes with dry-brush edges,
+             FIND on his top band and MECCHA stacked under it -->
+        <g filter="url(#mc-brush)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <g stroke="#e23b2e" stroke-width="7" transform="translate(0 3)">
+            <path d="M121,55 Q112,54 104,56 Q103,67 104,77 M105,66 Q111,65 117,67"/>
+            <path d="M131,55 Q130,66 132,77"/>
+            <path d="M142,77 Q141,65 143,55 Q151,66 159,77 Q158,65 160,54"/>
+            <path d="M171,55 Q170,66 172,77 Q190,78 192,66 Q190,54 171,55"/>
+          </g>
+          <!-- six different colours picked from across the game's MECCHA
+               CHAMELEON title, none repeated -->
+          <g stroke-width="11">
+            <path stroke="#a8e10c" d="M92,146 Q93,116 96,88 Q101,108 107,124 Q112,104 118,87 Q121,116 122,147"/>
+            <path stroke="#8b45d6" d="M153,89 Q141,86 131,90 Q129,117 130,145 Q142,147 155,143 M131,116 Q141,114 149,117"/>
+            <path stroke="#ff8a1f" d="M190,97 Q183,86 172,88 Q160,93 161,117 Q161,144 175,146 Q186,146 191,136"/>
+            <path stroke="#58c4f0" d="M226,96 Q216,87 207,89 Q196,94 196,119 Q197,143 210,146 Q220,145 226,137"/>
+            <path stroke="#e5189c" d="M234,87 Q232,117 233,147 M261,88 Q262,117 262,146 M234,118 Q248,114 261,117"/>
+            <path stroke="#ffd21f" d="M269,147 Q276,117 283,87 Q292,117 301,145 M274,128 Q285,125 295,128"/>
+          </g>
+        </g>
       </g>
     </svg>`,
 
