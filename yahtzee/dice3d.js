@@ -29,11 +29,9 @@
 
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import * as CANNON from "cannon-es";
-import { createComposer, DiceSound } from "./dice-fx.js?v=2";
+import { createComposer, DiceSound, DICE_LAYER } from "./dice-fx.js?v=6";
 
 // Photographed surfaces and lighting, all CC0 from Poly Haven -- see
 // assets/README.md.
@@ -120,7 +118,7 @@ function mulberry32(a) {
   };
 }
 
-// Felt wants to look like felt and not like green plastic, and a flat normal
+// Felt wants to look like felt and not like coloured plastic, and a flat normal
 // map is most of the difference. Cheap fibrous noise, generated once.
 function feltNormalMap(size = 512) {
   const c = document.createElement("canvas");
@@ -143,11 +141,17 @@ function feltNormalMap(size = 512) {
 
 // The model's colour map is 1024px with soft-edged pips, which reads as blurry
 // once a die fills a few hundred pixels on a retina screen. Redraw it at
-// 2048px and push every pixel to either the body colour or the pip colour,
-// keeping a narrow ramp between them as anti-aliasing: crisp round pips.
+// 2048px and push every pixel to either body or pip, keeping a narrow ramp
+// between them as anti-aliasing: crisp round pips.
+//
+// The dice are casino dice: see-through red, with the pips drilled and filled
+// with white paint. So the one sheet becomes three -- colour (red body, ivory
+// pips), roughness (glassy body, matte paint), and transmission (light passes
+// through the body, never through the paint).
+const DIE_BODY = [196, 16, 30], DIE_PIP = [246, 240, 226];
 function sharpenPips(src, aniso, size = 2048) {
   const img = src.image;
-  if (!img || !img.width) return { map: src, roughnessMap: null };
+  if (!img || !img.width) return { map: src, roughnessMap: null, transmissionMap: null };
   const c = document.createElement("canvas");
   c.width = c.height = size;
   const ctx = c.getContext("2d", { willReadFrequently: true });
@@ -158,28 +162,28 @@ function sharpenPips(src, aniso, size = 2048) {
   // body colour: the brightest thing on the sheet
   let hi = 0;
   for (let i = 0; i < px.length; i += 4 * 97) hi = Math.max(hi, px[i]);
-  const lo = 12;
-  for (let i = 0; i < px.length; i += 4) {
-    let t = (px[i] / hi - 0.38) / 0.24;                  // ramp across the old soft edge
-    t = t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t);
-    const v = lo + (hi - lo) * t;
-    px[i] = px[i + 1] = px[i + 2] = v;
-  }
-  ctx.putImageData(d, 0, 0);
-  // The pips are matte paint in polished plastic: a roughness map from the
-  // same sheet (three reads roughness from green), glossy body, rough pips.
-  // Without it the dented pips mirror the room and read as metal studs.
-  const rc = document.createElement("canvas");
-  rc.width = rc.height = size;
-  const rctx = rc.getContext("2d");
-  const rd = rctx.createImageData(size, size);
-  for (let i = 0; i < px.length; i += 4) {
-    const t = (px[i] - lo) / (hi - lo);
-    rd.data[i] = rd.data[i + 2] = 0;
-    rd.data[i + 1] = 255 * (0.85 - 0.6 * t);          // 0.85 in a pip, 0.25 on the body
-    rd.data[i + 3] = 255;
-  }
-  rctx.putImageData(rd, 0, 0);
+  const sheet = (fill) => {
+    const cv = document.createElement("canvas");
+    cv.width = cv.height = size;
+    const cx = cv.getContext("2d");
+    const out = cx.createImageData(size, size);
+    for (let i = 0; i < px.length; i += 4) {
+      let t = (px[i] / hi - 0.38) / 0.24;                // ramp across the old soft edge
+      t = t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t);  // 1 on the body, 0 in a pip
+      fill(out.data, i, t);
+      out.data[i + 3] = 255;
+    }
+    cx.putImageData(out, 0, 0);
+    return cv;
+  };
+  const colour = sheet((o, i, t) => {
+    for (let k = 0; k < 3; k++) o[i + k] = DIE_PIP[k] + (DIE_BODY[k] - DIE_PIP[k]) * t;
+  });
+  // three reads roughness from green: 0.85 in a pip, 0.06 on the body. Without
+  // the matte pips they mirror the room and read as metal studs.
+  const rough = sheet((o, i, t) => { o[i] = o[i + 2] = 0; o[i + 1] = 255 * (0.85 - 0.79 * t); });
+  // and transmission from red
+  const clear = sheet((o, i, t) => { o[i] = 255 * t; o[i + 1] = o[i + 2] = 0; });
   const tex = (cv, srgb) => {
     const t = new THREE.CanvasTexture(cv);
     t.flipY = src.flipY;
@@ -188,7 +192,7 @@ function sharpenPips(src, aniso, size = 2048) {
     t.anisotropy = aniso;
     return t;
   };
-  return { map: tex(c, true), roughnessMap: tex(rc, false) };
+  return { map: tex(colour, true), roughnessMap: tex(rough, false), transmissionMap: tex(clear, false) };
 }
 
 // Walnut for the rails: dark streaks along the length of the board, drawn once.
@@ -219,7 +223,7 @@ function woodGrainMap(aniso, w = 1024, h = 256) {
 }
 
 // Low-frequency mottling for the felt: a tiny random grid scaled up smooth,
-// so the cloth is never one flat green. Multiplies the felt colour.
+// so the cloth is never one flat blue. Multiplies the felt colour.
 function feltColorMap(aniso, size = 1024) {
   const small = document.createElement("canvas");
   small.width = small.height = 48;
@@ -271,38 +275,179 @@ function contactShadowMap(size = 128) {
   return _contactTex;
 }
 
-// Wear on the dice's clear coat, as a roughness map (three reads green):
-// mostly glassy, with fingerprint smudges and a scatter of fine scratches
-// that each catch the light a little differently.
-function wearMap(aniso, size = 1024) {
+// The room the dice reflect: a penthouse at night. Drawn, not photographed --
+// an indigo sky, a ring of art deco towers full of lit gold windows, a couple
+// of searchlight beams, and a pale lamp overhead. Painted flat into an
+// equirectangular sheet and then lifted into HDR, so the windows are bright
+// enough to put real gold glints on clear red dice and black lacquer.
+function nightCityEquirect(W = 1024, H = 512) {
+  const u = W / 2048;                                 // drawn at 2048 wide, scaled
+  const c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const ctx = c.getContext("2d");
+  const horizon = H * 0.5;
+  // sky: black overhead, deep ultramarine down at the skyline
+  const sky = ctx.createLinearGradient(0, 0, 0, horizon);
+  sky.addColorStop(0, "#020108");
+  sky.addColorStop(0.55, "#0b0a3a");
+  sky.addColorStop(1, "#2a2ab0");
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, horizon);
+  // searchlights, fanning up out of the city
+  ctx.globalCompositeOperation = "lighter";
+  for (const [x, lean] of [[0.18, 0.12], [0.24, -0.1], [0.63, 0.14], [0.86, -0.08]]) {
+    const g = ctx.createLinearGradient(0, horizon, 0, horizon * 0.15);
+    g.addColorStop(0, "rgba(120,130,255,0.55)");
+    g.addColorStop(1, "rgba(120,130,255,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(x * W - 4 * u, horizon);
+    ctx.lineTo(x * W + 4 * u, horizon);
+    ctx.lineTo((x + lean) * W + 26 * u, horizon * 0.15);
+    ctx.lineTo((x + lean) * W - 26 * u, horizon * 0.15);
+    ctx.fill();
+  }
+  ctx.globalCompositeOperation = "source-over";
+  // the floor of the room, below the horizon: nearly black
+  const floor = ctx.createLinearGradient(0, horizon, 0, H);
+  floor.addColorStop(0, "#0a0820");
+  floor.addColorStop(1, "#010103");
+  ctx.fillStyle = floor;
+  ctx.fillRect(0, horizon, W, H - horizon);
+  // the towers: setbacks and spires, windows on a grid, about a third lit
+  const rnd = mulberry32(1931);
+  for (let layer = 0; layer < 2; layer++) {
+    let x = -20;
+    while (x < W) {
+      const bw = ((layer ? 40 : 26) + rnd() * (layer ? 80 : 50)) * u;
+      // Kept low, under about 25 degrees: the dice's top faces look up into
+      // the sky, and towers reaching that high read on them as gold grime.
+      const bh = ((layer ? 30 : 50) + rnd() * (layer ? 60 : 90)) * u;
+      const top = horizon - bh;
+      ctx.fillStyle = layer ? "#07061c" : "#0d0c34";
+      ctx.fillRect(x, top, bw, bh);
+      // a setback or two and a spire, art deco style
+      if (rnd() < 0.6) {
+        ctx.fillRect(x + bw * 0.18, top - bh * 0.12, bw * 0.64, bh * 0.12);
+        if (rnd() < 0.5) {
+          ctx.beginPath();
+          ctx.moveTo(x + bw * 0.42, top - bh * 0.12);
+          ctx.lineTo(x + bw * 0.5, top - bh * 0.42);
+          ctx.lineTo(x + bw * 0.58, top - bh * 0.12);
+          ctx.fill();
+        }
+      }
+      for (let wy = top + 6 * u; wy < horizon - 4 * u; wy += 7 * u)
+        for (let wx = x + 4 * u; wx < x + bw - 4 * u; wx += 6 * u)
+          if (rnd() < (layer ? 0.45 : 0.3)) {
+            ctx.fillStyle = rnd() < 0.85 ? "#ffd27a" : "#fff1c9";
+            ctx.fillRect(wx, wy, 3 * u, 4 * u);
+          }
+      x += bw + rnd() * 10 * u;
+    }
+  }
+  // one pale lamp straight overhead, so the top faces have something to catch
+  const lamp = ctx.createRadialGradient(W * 0.5, 0, 0, W * 0.5, 0, H * 0.14);
+  lamp.addColorStop(0, "rgba(235,228,255,1)");
+  lamp.addColorStop(1, "rgba(235,228,255,0)");
+  ctx.fillStyle = lamp;
+  ctx.fillRect(0, 0, W, H * 0.14);
+
+  // Into HDR: the darks stay where they are, anything bright (windows, beams,
+  // the lamp) is pushed up to several times white.
+  const px = ctx.getImageData(0, 0, W, H).data;
+  const out = new Uint16Array(W * H * 4);
+  const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+  for (let i = 0; i < px.length; i += 4) {
+    const r = lin(px[i]), g = lin(px[i + 1]), b = lin(px[i + 2]);
+    const l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    const k = 1 + 9 * Math.min(1, Math.max(0, (l - 0.25) / 0.5));
+    out[i] = THREE.DataUtils.toHalfFloat(r * k);
+    out[i + 1] = THREE.DataUtils.toHalfFloat(g * k);
+    out[i + 2] = THREE.DataUtils.toHalfFloat(b * k);
+    out[i + 3] = THREE.DataUtils.toHalfFloat(1);
+  }
+  const tex = new THREE.DataTexture(out, W, H, THREE.RGBAFormat, THREE.HalfFloatType);
+  tex.mapping = THREE.EquirectangularReflectionMapping;
+  tex.colorSpace = THREE.LinearSRGBColorSpace;
+  tex.minFilter = tex.magFilter = THREE.LinearFilter;
+  tex.flipY = true;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+// A four-point star: the cross-shaped glint that sits on every hard edge in
+// a 1980s airbrush illustration. Two long tapered rays, two short diagonal
+// ones, and a hot core. Drawn white; the sprite tints it.
+let _glintTex = null;
+function glintMap(size = 256) {
+  if (_glintTex) return _glintTex;
   const c = document.createElement("canvas");
   c.width = c.height = size;
   const ctx = c.getContext("2d");
-  ctx.fillStyle = "rgb(0,14,0)";                      // 0.055: polished
-  ctx.fillRect(0, 0, size, size);
-  const rnd = mulberry32(99);
-  for (let n = 0; n < 60; n++) {                       // smudges
-    const x = rnd() * size, y = rnd() * size, r = 20 + rnd() * 70;
-    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-    g.addColorStop(0, `rgba(0,70,0,${0.25 + rnd() * 0.35})`);
-    g.addColorStop(1, "rgba(0,70,0,0)");
+  const m = size / 2;
+  ctx.translate(m, m);
+  ctx.globalCompositeOperation = "lighter";
+  const ray = (len, wid, alpha) => {
+    const g = ctx.createLinearGradient(0, 0, len, 0);
+    g.addColorStop(0, `rgba(255,255,255,${alpha})`);
+    g.addColorStop(0.55, `rgba(255,255,255,${alpha * 0.45})`);
+    g.addColorStop(1, "rgba(255,255,255,0)");
     ctx.fillStyle = g;
-    ctx.fillRect(x - r, y - r, r * 2, r * 2);
-  }
-  ctx.lineCap = "round";
-  for (let n = 0; n < 260; n++) {                      // hairline scratches
-    const x = rnd() * size, y = rnd() * size, len = 6 + rnd() * 40, a = rnd() * Math.PI;
-    ctx.strokeStyle = `rgba(0,${90 + rnd() * 90},0,${0.35 + rnd() * 0.4})`;
-    ctx.lineWidth = 0.6 + rnd() * 0.9;
     ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + Math.cos(a) * len, y + Math.sin(a) * len);
-    ctx.stroke();
+    ctx.moveTo(0, -wid);
+    ctx.quadraticCurveTo(len * 0.15, 0, len, 0);
+    ctx.quadraticCurveTo(len * 0.15, 0, 0, wid);
+    ctx.fill();
+  };
+  for (let k = 0; k < 4; k++) { ray(m, size * 0.028, 1); ctx.rotate(Math.PI / 2); }
+  ctx.rotate(Math.PI / 4);
+  for (let k = 0; k < 4; k++) { ray(m * 0.34, size * 0.018, 0.55); ctx.rotate(Math.PI / 2); }
+  const core = ctx.createRadialGradient(0, 0, 0, 0, 0, m * 0.16);
+  core.addColorStop(0, "rgba(255,255,255,1)");
+  core.addColorStop(0.3, "rgba(255,255,255,0.5)");
+  core.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = core;
+  ctx.fillRect(-m, -m, size, size);
+  _glintTex = new THREE.CanvasTexture(c);
+  _glintTex.colorSpace = THREE.SRGBColorSpace;
+  return _glintTex;
+}
+
+const CORNERS = [];
+for (const x of [-0.5, 0.5]) for (const y of [-0.5, 0.5]) for (const z of [-0.5, 0.5])
+  CORNERS.push(new THREE.Vector3(x, y, z).multiplyScalar(DIE * 0.94));
+
+// The collision shape of one brilliant cut, the same proportions as the mesh
+// (point at -0.6, girdle at 0, crown ring and table at 0.38). Its real shape
+// matters: a box rests flat, table up, and a scatter of those reads as
+// sequins. A real stone rests point-up or tipped onto its side, showing the
+// silhouette that says "diamond".
+const _gemShapes = new Map();
+function gemShape(r) {
+  const key = r.toFixed(3);
+  if (_gemShapes.has(key)) return _gemShapes.get(key);
+  const N = 8, v = [new CANNON.Vec3(0, -0.6 * r, 0)];
+  for (let i = 0; i < N; i++) { const a = (i / N) * Math.PI * 2; v.push(new CANNON.Vec3(Math.cos(a) * r, 0, Math.sin(a) * r)); }
+  for (let i = 0; i < N; i++) { const a = (i / N) * Math.PI * 2; v.push(new CANNON.Vec3(Math.cos(a) * 0.62 * r, 0.38 * r, Math.sin(a) * 0.62 * r)); }
+  const g = (i) => 1 + (i % N), c = (i) => 1 + N + (i % N);
+  const faces = [];
+  for (let i = 0; i < N; i++) {
+    faces.push([0, g(i), g(i + 1)]);
+    faces.push([g(i), c(i), c(i + 1), g(i + 1)]);
   }
-  const tex = new THREE.CanvasTexture(c);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.anisotropy = aniso;
-  return tex;
+  faces.push(Array.from({ length: N }, (_, i) => c(i)));
+  // wind every face outward, whichever way it was written
+  const centre = new CANNON.Vec3(0, -0.06 * r, 0);
+  for (const f of faces) {
+    const [a, b, d] = f.map((k) => v[k]);
+    const n = b.vsub(a).cross(d.vsub(a));
+    const mid = f.reduce((m, k) => m.vadd(v[k]), new CANNON.Vec3()).scale(1 / f.length);
+    if (n.dot(mid.vsub(centre)) < 0) f.reverse();
+  }
+  const shape = new CANNON.ConvexPolyhedron({ vertices: v, faces });
+  _gemShapes.set(key, shape);
+  return shape;
 }
 
 /* ---------- the table ---------- */
@@ -343,38 +488,37 @@ export class DiceTable {
     r.shadowMap.type = THREE.PCFShadowMap;
     r.toneMapping = THREE.ACESFilmicToneMapping;
     r.toneMappingExposure = 1.15;
+    // What the see-through dice show of the felt behind them is a blurry,
+    // stained glimpse anyway: render it at half size, it's a whole extra
+    // pass of the scene every frame.
+    r.transmissionResolutionScale = 0.5;
     this._aniso = r.capabilities.getMaxAnisotropy();
 
     const scene = (this.scene = new THREE.Scene());
-    scene.background = new THREE.Color(0x050806);
+    scene.background = new THREE.Color(0x04030c);
     const cam = (this.camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100));
 
-    // The dice reflect a real room: a photographed billiard hall, dim, with
-    // warm lamps over the tables. A made-up room (three's RoomEnvironment)
-    // is the fallback if the file can't load.
-    // Handed to each material directly rather than only set as
-    // scene.environment: since three r163 the scene-wide one overrides every
-    // material's envMapIntensity, so the felt was reflecting the room as
-    // brightly as the dice and nothing else could be lit.
+    // The dice reflect a room: a drawn penthouse with the city outside (see
+    // nightCityEquirect). Handed to each material directly rather than only
+    // set as scene.environment: since three r163 the scene-wide one overrides
+    // every material's envMapIntensity, so the felt was reflecting the room
+    // as brightly as the dice and nothing else could be lit.
     const pmrem = new THREE.PMREMGenerator(r);
-    const [hdr, tex] = await Promise.all([
-      new RGBELoader().loadAsync(ASSET("billiard_hall_1k.hdr")).catch(() => null),
-      this._loadSurfaces(),
-    ]);
-    this._env = scene.environment = hdr
-      ? pmrem.fromEquirectangular(hdr).texture
-      : pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-    hdr?.dispose();
+    const tex = await this._loadSurfaces();
+    const city = nightCityEquirect();
+    this._env = scene.environment = pmrem.fromEquirectangular(city).texture;
+    city.dispose();
     pmrem.dispose();
     this._tex = tex;
 
-    // Lit like a card table in a dark room: one warm lamp hanging straight
-    // over the felt throws a pool of light that falls off toward the rails,
-    // a cool light from across the table catches the dice's back edges, and
-    // the ambient is kept low so the shadows stay deep.
-    scene.add(new THREE.HemisphereLight(0xfff1dd, 0x0b2a1a, 0.018));
+    // Lit like a card table in a penthouse at night: one pale lamp hanging
+    // straight over the velvet throws a pool of light that falls off toward
+    // the rails, the city's gold comes in low from across the table and
+    // catches the dice's back edges, and the ambient is a deep indigo kept low
+    // so the shadows stay black-blue.
+    scene.add(new THREE.HemisphereLight(0xcfd2ff, 0x0a0a3a, 0.03));
 
-    const lamp = (this._lamp = new THREE.SpotLight(0xffd6a3, 820, 0, 0.37, 0.55, 2));
+    const lamp = (this._lamp = new THREE.SpotLight(0xe9e4ff, 820, 0, 0.37, 0.55, 2));
     lamp.position.set(0, 11.5, 0.6);
     lamp.target.position.set(0, 0, 0.3);
     lamp.castShadow = true;
@@ -391,9 +535,9 @@ export class DiceTable {
     // The key swings round with the chair (see setViewSeat) and is what puts
     // the bright glint on the top of each die. No shadow from it: two shadow
     // casters give every die a double shadow.
-    const key = (this._key = new THREE.DirectionalLight(0xfff4e6, 0.12));
+    const key = (this._key = new THREE.DirectionalLight(0xf2eeff, 0.12));
     scene.add(key);
-    const fill = (this._fill = new THREE.DirectionalLight(0x9cc4ff, 0.4));
+    const fill = (this._fill = new THREE.DirectionalLight(0xffc35e, 0.9));
     scene.add(fill);
     this.setViewSeat(0);           // places the camera and swings the lamp with it
 
@@ -401,12 +545,14 @@ export class DiceTable {
     this._buildWorld();
     await this._buildDice();
 
+    this._buildGlints();
+    this._buildSpill();
     this.sound = new DiceSound();
     this._shake = 0;
     this.fx = createComposer(r, scene, cam, {
       high: this._high,
       focus: this._camBase.length() - 0.4,
-      hidden: () => this.dice.flatMap((d) => [d.contact, ...d.ghosts]),
+      hidden: () => [...this.dice.flatMap((d) => [d.contact, ...d.ghosts]), ...this._glints],
     });
 
     this._resize();
@@ -439,16 +585,17 @@ export class DiceTable {
 
   _buildTray() {
     const T = this._tex;
-    // Felt is not shiny. Letting the environment map light it is what made
-    // the first version look like green plastic. What it does have is sheen
-    // -- fibres catching light at a grazing angle -- an uneven colour where
-    // the nap lies in different directions, and a real cloth surface (a
-    // photographed velvet's bumps and roughness, under our own green).
+    // Royal-blue velvet. Cloth is not shiny -- letting the environment map
+    // light it is what made the first version look like plastic. What it
+    // does have is sheen -- fibres catching light at a grazing angle -- an
+    // uneven colour where the nap lies in different directions, and a real
+    // cloth surface (a photographed velvet's bumps and roughness, under our
+    // own blue).
     const felt = new THREE.MeshPhysicalMaterial({
-      color: 0x0d5a36, map: feltColorMap(this._aniso), roughness: 1.0, metalness: 0,
+      color: 0x1020a8, map: feltColorMap(this._aniso), roughness: 1.0, metalness: 0,
       roughnessMap: T.feltRough,
       envMap: this._env, envMapIntensity: 0.04,
-      sheen: 1, sheenColor: new THREE.Color(0x3c9a68), sheenRoughness: 0.55,
+      sheen: 1, sheenColor: new THREE.Color(0x6a78ff), sheenRoughness: 0.5,
       normalMap: T.feltNor || feltNormalMap(), normalScale: new THREE.Vector2(0.55, 0.55),
     });
     felt.normalMap.anisotropy = this._aniso;
@@ -457,9 +604,11 @@ export class DiceTable {
     floor.receiveShadow = true;
     this.scene.add(floor);
 
-    // Walnut, from a photographed veneer, under a satin lacquer. The texture
-    // is cloned per use so each surface can repeat the grain at its own scale.
-    const walnut = (repeat, tint, coat) => {
+    // Black lacquer: a photographed walnut veneer stained almost to black, so
+    // only a ghost of the grain shows, under a deep gloss that mirrors the
+    // city's lights. The texture is cloned per use so each surface can repeat
+    // the grain at its own scale.
+    const walnut = (repeat, tint, coat, coatRough = 0.5) => {
       const tx = (t) => {
         if (!t) return null;
         const c = t.clone();
@@ -471,7 +620,7 @@ export class DiceTable {
         color: tint, map: tx(T.walnut) || woodGrainMap(this._aniso),
         normalMap: tx(T.walnutNor), roughnessMap: tx(T.walnutRough),
         roughness: 1, metalness: 0,
-        clearcoat: coat, clearcoatRoughness: 0.5, envMap: this._env, envMapIntensity: 0.4,
+        clearcoat: coat, clearcoatRoughness: coatRough, envMap: this._env, envMapIntensity: 0.4,
       });
     };
 
@@ -479,7 +628,7 @@ export class DiceTable {
     // lamp's falloff does the rest: it fades into the dark a little way out.
     const { w, d, wallH, rim } = TRAY;
     const BASE = 0.14;
-    const table = new THREE.Mesh(new THREE.PlaneGeometry(60, 40), walnut([7, 5], 0x5e4636, 0.25));
+    const table = new THREE.Mesh(new THREE.PlaneGeometry(60, 40), walnut([7, 5], 0x17142a, 1, 0.12));
     table.rotation.x = -Math.PI / 2;
     table.position.y = -BASE;
     table.receiveShadow = true;
@@ -488,18 +637,19 @@ export class DiceTable {
     // The tray's own base board, showing as a thin step at the bottom.
     const base = new THREE.Mesh(
       new RoundedBoxGeometry(w + rim * 2 + 0.16, BASE, d + rim * 2 + 0.16, 3, 0.05),
-      walnut([3, 2], 0x7a5a42, 0.4)
+      walnut([3, 2], 0x1c1830, 1, 0.1)
     );
     base.position.y = -BASE / 2 - 0.004;     // just under the felt, or the two flicker
     base.receiveShadow = base.castShadow = true;
     this.scene.add(base);
 
-    // Rails with softened edges, topped with a padded leather cushion like a
-    // proper dice tray. The long rails run the full width; the short ones
-    // butt between them.
-    const rail = walnut([2.5, 0.35], 0x7a5a42, 0.3);
+    // Rails with softened edges, topped with a padded crimson leather cushion
+    // like a proper dice tray, with a thin gold inlay running round the inside
+    // where the rail meets the cushion. The long rails run the full width; the
+    // short ones butt between them.
+    const rail = walnut([2.5, 0.35], 0x1c1830, 1, 0.08);
     const leather = new THREE.MeshPhysicalMaterial({
-      color: 0x1d130c, roughness: 0.6, metalness: 0,
+      color: 0x6a0816, roughness: 0.55, metalness: 0,
       clearcoat: 0.15, clearcoatRoughness: 0.5,
       normalMap: T.feltNor, normalScale: new THREE.Vector2(0.12, 0.12),
       envMap: this._env, envMapIntensity: 0.5,
@@ -523,6 +673,20 @@ export class DiceTable {
       cap.position.set(x, bh - PAD * 0.5 + PAD / 2 - 0.02, z);
       cap.receiveShadow = cap.castShadow = true;
       this.scene.add(cap);
+    }
+    const gold = new THREE.MeshPhysicalMaterial({
+      color: 0xe2b04a, metalness: 1, roughness: 0.22, envMap: this._env, envMapIntensity: 1.4,
+    });
+    // [length along x, length along z, x, z]: a strip on each rail's inner
+    // face, standing a hair proud of it so it catches light.
+    const G = 0.045, gy = wallH - PAD * 0.5 - 0.05, inset = d / 2 - G / 2 + 0.012, insetX = w / 2 - G / 2 + 0.012;
+    for (const [sx, sz, x, z] of [
+      [w, G, 0, -inset], [w, G, 0, inset],
+      [G, d, -insetX, 0], [G, d, insetX, 0],
+    ]) {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(sx, G, sz), gold);
+      m.position.set(x, gy, z);
+      this.scene.add(m);
     }
   }
 
@@ -582,22 +746,27 @@ export class DiceTable {
         // geometry wrecks the shadow map, and uniform roughness is what makes
         // a die read as plastic. Both are fixed here rather than in the asset.
         m.side = THREE.FrontSide;
-        // Polished plastic: a glossy clear coat over a slightly softer body,
-        // so the lamp leaves a sharp highlight on every face that tilts to it.
-        // Used, not new: the coat carries fine scratches and fingerprint
-        // smudges (clearcoatRoughnessMap), so the highlight breaks up a little
-        // the way it does on dice that have actually been rolled.
-        // Real dice are faintly translucent -- light soaks in and glows back
-        // out of the shadowed sides. A small warm emissive stands in for that.
-        const sheet = m.map ? sharpenPips(m.map, this._aniso) : { map: null, roughnessMap: null };
+        // Casino dice: clear red cellulose, polished, with the white pips
+        // showing through the body from the far faces. Transmission is what
+        // makes them glass rather than red plastic -- the felt behind a die
+        // shows through it, bent and stained deep red (the attenuation).
+        // Polished like new: casino dice are retired long before they wear,
+        // and scuffs on clear red only picked up the city as gold grime.
+        // A faint red emissive through the body only stands in for light
+        // that soaks in and glows back out of the shadowed sides.
+        const sheet = m.map ? sharpenPips(m.map, this._aniso) : { map: null, roughnessMap: null, transmissionMap: null };
         const shiny = new THREE.MeshPhysicalMaterial({
           map: sheet.map, roughnessMap: sheet.roughnessMap,
           normalMap: m.normalMap, normalScale: m.normalScale,
-          color: m.color, roughness: sheet.roughnessMap ? 1 : 0.3, metalness: 0,
-          clearcoat: 1, clearcoatRoughness: 1, clearcoatRoughnessMap: wearMap(this._aniso),
-          // the glow comes through the plastic, not the painted pips
-          emissive: 0x1a130b, emissiveIntensity: 1, emissiveMap: sheet.map,
-          envMap: this._env, envMapIntensity: 0.5,
+          color: sheet.map ? 0xffffff : 0xc4101e, roughness: sheet.roughnessMap ? 1 : 0.08, metalness: 0,
+          // Not fully clear: red glass over blue velvet filters down to
+          // nearly black, so part of the red is the body's own colour.
+          transmission: 0.6, transmissionMap: sheet.transmissionMap,
+          thickness: 0.9, ior: 1.49,
+          attenuationColor: new THREE.Color(0xff2a3a), attenuationDistance: 1.4,
+          clearcoat: 1, clearcoatRoughness: 0.04,
+          emissive: 0x7a0614, emissiveIntensity: 1, emissiveMap: sheet.transmissionMap,
+          envMap: this._env, envMapIntensity: 0.9,
         });
         if (m.normalMap) m.normalMap.anisotropy = this._aniso;
         o.material = shiny;
@@ -606,7 +775,7 @@ export class DiceTable {
       console.warn("dice3d: die.glb failed to load, using a plain cube --", e.message);
       proto = new THREE.Mesh(
         new THREE.BoxGeometry(DIE, DIE, DIE),
-        new THREE.MeshStandardMaterial({ color: 0xf2efe6, roughness: 0.35, envMap: this._env })
+        new THREE.MeshPhysicalMaterial({ color: 0xc4101e, roughness: 0.08, transmission: 1, thickness: 0.9, envMap: this._env })
       );
       proto.castShadow = proto.receiveShadow = true;
     }
@@ -622,6 +791,7 @@ export class DiceTable {
       // can glow when held.
       mesh.traverse((o) => {
         if (!o.isMesh) return;
+        o.layers.enable(DICE_LAYER);        // so the painting pass knows a die when it sees one
         o.material = o.material.clone();
         o.userData.baseColor = o.material.color.getHex();   // to restore on release
         o.userData.baseEmissive = o.material.emissive.getHex();
@@ -640,6 +810,7 @@ export class DiceTable {
           o.material = o.material.clone();
           o.material.transparent = true;
           o.material.depthWrite = false;
+          o.material.transmission = 0;     // a see-through blur of a see-through die is just noise
           o.material.opacity = 0;
           o.castShadow = false;
           o.receiveShadow = false;
@@ -709,6 +880,296 @@ export class DiceTable {
     this._hits.push({ s: this._simStep, i, kind, v });
   }
 
+  /* ----- star glints ----- */
+
+  // A small pool of sprites, reused. Each one flares up and dies away over
+  // well under a second, turning a little as it goes.
+  _buildGlints() {
+    this._glints = Array.from({ length: 20 }, () => {
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: glintMap(), color: new THREE.Color(2.6, 2.3, 1.7),   // over-white, so bloom takes it
+        blending: THREE.AdditiveBlending, depthTest: false, depthWrite: false, transparent: true,
+      }));
+      sp.visible = false;
+      sp.renderOrder = 10;
+      sp.userData = { t0: 0, dur: 1, size: 1, spin: 0 };
+      this.scene.add(sp);
+      return sp;
+    });
+    this._nextTwinkle = performance.now() + 2500;
+  }
+
+  // Flash a glint on one of die i's top corners -- the corner nearest the
+  // camera, more often than not, since that's where a highlight would sit.
+  glint(i, { delay = 0, size = 1.1 + Math.random() * 0.6 } = {}) {
+    const d = this.dice[i];
+    if (!d || !this._glints) return;
+    const sp = this._glints.find((g) => !g.visible) || this._glints[0];
+    d.pivot.updateWorldMatrix(true, false);
+    const top = CORNERS
+      .map((c) => c.clone().applyMatrix4(d.pivot.matrixWorld))
+      .sort((a, b) => b.y - a.y)
+      .slice(0, 4)
+      .sort((a, b) => a.distanceTo(this.camera.position) - b.distanceTo(this.camera.position));
+    const pick = top[Math.random() < 0.6 ? 0 : 1 + Math.floor(Math.random() * 3)];
+    this.glintAt(pick, { delay, size, sprite: sp });
+  }
+
+  // A glint at any point in the world -- a die's corner, a diamond's table.
+  glintAt(pos, { delay = 0, size = 1, sprite = null } = {}) {
+    if (!this._glints) return;
+    const sp = sprite || this._glints.find((g) => !g.visible) || this._glints[0];
+    sp.position.copy(pos);
+    sp.userData = { t0: performance.now() + delay, dur: 520 + Math.random() * 260, size, spin: (Math.random() - 0.5) * 0.9 };
+    sp.material.rotation = Math.random() * 0.4 - 0.2;
+    sp.scale.setScalar(0.0001);
+    sp.visible = true;
+  }
+
+  _tickGlints(now) {
+    if (!this._glints) return;
+    for (const g of this._glints) {
+      if (!g.visible) continue;
+      const u = g.userData;
+      const k = (now - u.t0) / u.dur;
+      if (k < 0) { g.scale.setScalar(0.0001); continue; }
+      if (k >= 1) { g.visible = false; continue; }
+      // snaps open fast, fades slower
+      const a = k < 0.2 ? k / 0.2 : 1 - (k - 0.2) / 0.8;
+      g.scale.setScalar(u.size * (0.35 + 0.65 * a));
+      g.material.opacity = a;
+      g.material.rotation += u.spin * 0.016;
+    }
+    // Now and then, with nothing moving, one die catches the light.
+    if (!this._playing && now > this._nextTwinkle) {
+      this._nextTwinkle = now + 1800 + Math.random() * 3200;
+      if (document.hidden) {}
+      else if (this._gemsOut() && Math.random() < 0.6) this._glintGem(0.6 + Math.random() * 0.4);
+      else this.glint(Math.floor(Math.random() * this.count), { size: 0.8 + Math.random() * 0.5 });
+    }
+  }
+
+  /* ----- the Yahtzee: a coupe of diamonds, tipped over the table ----- */
+
+  // Made once, hidden until wanted: a crystal coupe on a gold stem, a pool
+  // of brilliant-cut diamonds, and a small physics world of their own -- the
+  // felt, the walls, and the dice as solid blocks where they lie. The dice's
+  // own world is for recorded throws only; diamonds are simulated live, so
+  // two players watching see their own scatter, which is fine for treasure.
+  _buildSpill() {
+    const env = this._env;
+    const crystal = new THREE.MeshPhysicalMaterial({
+      color: 0xe8ecff, roughness: 0.03, metalness: 0, transmission: 1, thickness: 0.15, ior: 1.5,
+      side: THREE.DoubleSide, envMap: env, envMapIntensity: 1.6,
+    });
+    const gold = new THREE.MeshPhysicalMaterial({
+      color: 0xe2b04a, metalness: 1, roughness: 0.22, envMap: env, envMapIntensity: 1.4,
+    });
+    const V = (x, y) => new THREE.Vector2(x, y);
+    // a saucer coupe: wide and shallow, the bowl in crystal
+    const bowl = new THREE.Mesh(new THREE.LatheGeometry(
+      [V(0.001, 1.04), V(0.36, 1.06), V(0.7, 1.13), V(0.95, 1.25), V(1.08, 1.42)], 48), crystal);
+    // ...on a gold stem and foot, with a gold rim
+    const stem = new THREE.Mesh(new THREE.LatheGeometry(
+      [V(0.001, 0.0), V(0.55, 0.0), V(0.58, 0.04), V(0.5, 0.08), V(0.13, 0.15), V(0.06, 0.32),
+       V(0.05, 0.78), V(0.09, 0.93), V(0.16, 1.03), V(0.001, 1.05)], 40), gold);
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(1.08, 0.025, 8, 64), gold);
+    rim.rotation.x = Math.PI / 2;
+    rim.position.y = 1.42;
+    const inner = new THREE.Group();
+    inner.add(bowl, stem, rim);
+    inner.position.y = -1.25;                 // tip it about the middle of the bowl
+    inner.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+    const glass = (this._glass = new THREE.Group());
+    glass.add(inner);
+    glass.scale.setScalar(1.15);
+    glass.visible = false;
+    this.scene.add(glass);
+    this._glassInner = inner;
+
+    // One brilliant cut, faceted: pavilion to a point, girdle, crown, table.
+    // Flat normals so every facet catches its own light, and the ink pass
+    // outlines the facets like the diamonds in the painting.
+    // Two tiers below the girdle and two above, sixteen sides: enough
+    // facets that neighbours catch different light.
+    let gem = new THREE.LatheGeometry(
+      [V(0.001, -0.6), V(0.55, -0.27), V(1, 0), V(0.86, 0.2), V(0.62, 0.38), V(0.001, 0.38)], 16);
+    gem = gem.toNonIndexed();
+    gem.computeVertexNormals();
+    // Not see-through: a clear diamond on blue velvet is just blue glass,
+    // and forty-four refracting stones are a lot to ask of a phone. Mirror
+    // facets instead -- each one throws back a piece of the night city,
+    // indigo or gold, which is what the painting's diamonds look like.
+    const gemMat = new THREE.MeshPhysicalMaterial({
+      color: 0xeef0ff, roughness: 0.02, metalness: 0.85, flatShading: true,
+      envMap: env, envMapIntensity: 1.9,
+      clearcoat: 1, clearcoatRoughness: 0,
+      emissive: 0x100e26,
+    });
+    this._gems = Array.from({ length: 44 }, () => {
+      const m = new THREE.Mesh(gem, gemMat);
+      m.castShadow = true;
+      m.visible = false;
+      this.scene.add(m);
+      return { mesh: m, body: null, r: 0.2 };
+    });
+
+    const w = (this._gemWorld = new CANNON.World({ gravity: new CANNON.Vec3(0, -32, 0) }));
+    w.allowSleep = true;
+    const felt = new CANNON.Material("felt"), stone = new CANNON.Material("stone");
+    this._gemStone = stone;
+    w.addContactMaterial(new CANNON.ContactMaterial(felt, stone, { friction: 0.45, restitution: 0.32 }));
+    w.addContactMaterial(new CANNON.ContactMaterial(stone, stone, { friction: 0.2, restitution: 0.4 }));
+    const plane = (x, y, z, ex, ey) => {
+      const b = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: felt });
+      b.position.set(x, y, z);
+      b.quaternion.setFromEuler(ex, ey, 0);
+      w.addBody(b);
+    };
+    const { w: TW, d: TD } = TRAY;
+    plane(0, 0, 0, -Math.PI / 2, 0);
+    plane(0, 0, -TD / 2, 0, 0); plane(0, 0, TD / 2, 0, Math.PI);
+    plane(-TW / 2, 0, 0, 0, Math.PI / 2); plane(TW / 2, 0, 0, 0, -Math.PI / 2);
+    this._gemFelt = felt;
+    this._diceBlocks = [];
+    this._spill = null;
+  }
+
+  _gemsOut() { return this._gems?.some((g) => g.mesh.visible); }
+
+  _glintGem(size) {
+    const out = this._gems.filter((g) => g.mesh.visible);
+    if (!out.length) return;
+    const g = out[Math.floor(Math.random() * out.length)];
+    this.glintAt(g.mesh.position.clone().add(new THREE.Vector3(0, g.r * 0.4, 0)), { size: size * (0.6 + g.r * 1.8) });
+  }
+
+  // Five of a kind. Fire and forget: it plays over whatever happens next,
+  // and the next throw sweeps the diamonds away.
+  spillDiamonds() {
+    if (!this._glass || document.hidden) return;
+    this.clearDiamonds(true);
+    // the dice, as they lie, are rocks in the diamonds' way
+    for (const b of this._diceBlocks) this._gemWorld.removeBody(b);
+    this._diceBlocks = this.dice.map((d) => {
+      const b = new CANNON.Body({ mass: 0, shape: new CANNON.Box(new CANNON.Vec3(DIE / 2, DIE / 2, DIE / 2)), material: this._gemFelt });
+      b.position.set(d.pivot.position.x, d.pivot.position.y, d.pivot.position.z);
+      b.quaternion.set(d.pivot.quaternion.x, d.pivot.quaternion.y, d.pivot.quaternion.z, d.pivot.quaternion.w);
+      this._gemWorld.addBody(b);
+      return b;
+    });
+    // It pours toward whoever is watching, from the far side of the table,
+    // over whichever half has more room.
+    const s = this.viewSeat === 1 ? -1 : 1;
+    const cx = this.dice.reduce((a, d) => a + d.pivot.position.x, 0) / this.dice.length;
+    const x = cx > 0 ? -1.6 : 1.6;
+    this._spill = {
+      clock: 0, s, spawned: 0, acc: 0, last: performance.now(), lastClink: 0,
+      from: new THREE.Vector3(x * 1.6, 7.5, -s * 6.5),
+      at: new THREE.Vector3(x, 2.7, -s * 0.5),
+      to: new THREE.Vector3(x * 0.5, 8.5, -s * 7),
+    };
+    this._glass.visible = true;
+  }
+
+  // Sweep the diamonds away: a quick shrink, or gone at once.
+  clearDiamonds(now = false) {
+    if (!this._gems) return;
+    if (this._spill) this._spill.spawned = Infinity;    // the glass finishes its exit, empty
+    for (const g of this._gems) {
+      if (g.body) { this._gemWorld.removeBody(g.body); g.body = null; }
+      if (!g.mesh.visible) continue;
+      if (now) g.mesh.visible = false;
+      else g.fade = performance.now();
+    }
+    if (now) { this._spill = null; this._glass.visible = false; }
+  }
+
+  _tickSpill(now) {
+    if (!this._gems) return;
+    const ease = (k) => (k <= 0 ? 0 : k >= 1 ? 1 : k * k * (3 - 2 * k));
+    const sp = this._spill;
+    if (sp) {
+      // Its own clock, never more than 50ms a frame: a slow frame (a busy
+      // phone, a tab coming back) slows the show down instead of skipping
+      // straight past the pour.
+      const dt = Math.min(0.05, Math.max(0, (now - sp.last) / 1000));
+      sp.last = now;
+      sp.clock += dt * 1000;
+      const t = sp.clock;
+      const g = this._glass;
+      // in, tip, pour, hold, right itself and leave
+      if (t < 700) g.position.lerpVectors(sp.from, sp.at, 1 - Math.pow(1 - t / 700, 3));
+      else if (t < 2400) g.position.copy(sp.at);
+      else g.position.lerpVectors(sp.at, sp.to, ease((t - 2400) / 800));
+      const tip = t < 700 ? 0.15 + 0.35 * (t / 700)
+        : t < 1150 ? 0.5 + 1.6 * ease((t - 700) / 450)
+        : t < 2300 ? 2.1 + Math.sin((t - 1150) / 160) * 0.04
+        : 2.1 - 1.8 * ease((t - 2300) / 700);
+      g.rotation.set(tip * sp.s, 0, Math.sin(t / 300) * 0.05);
+      if (t > 3300) { g.visible = false; }
+
+      // diamonds out over the lip while it's tipped
+      if (t > 950 && t < 2100) {
+        const want = Math.min(this._gems.length, Math.ceil(((t - 950) / 1100) * this._gems.length));
+        g.updateMatrixWorld(true);
+        while (sp.spawned < want) {
+          const gm = this._gems[sp.spawned++];
+          const a = (Math.random() - 0.5) * 1.5;
+          // the low side of the rim: +z of the glass tips down for seat 0, -z for seat 1
+          const lip = new THREE.Vector3(Math.sin(a) * 0.95, 1.42, Math.cos(a) * 0.95 * sp.s);
+          this._glassInner.localToWorld(lip);
+          gm.r = 0.13 + Math.random() * 0.12;
+          gm.fade = 0;
+          gm.mesh.scale.setScalar(gm.r);
+          gm.mesh.position.copy(lip);
+          gm.mesh.visible = true;
+          const r = gm.r;
+          const b = new CANNON.Body({
+            mass: 0.05, material: this._gemStone,
+            linearDamping: 0.12, angularDamping: 0.3, allowSleep: true,
+            sleepSpeedLimit: 0.15, sleepTimeLimit: 0.3,
+          });
+          b.addShape(gemShape(r));
+          b.position.set(lip.x, lip.y, lip.z);
+          b.quaternion.setFromEuler(Math.random() * 6.3, Math.random() * 6.3, Math.random() * 6.3);
+          b.velocity.set((Math.random() - 0.5) * 3, -1 - Math.random() * 2, sp.s * (1 + Math.random() * 2.5));
+          b.angularVelocity.set((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20);
+          b.addEventListener("collide", (e) => {
+            const v = Math.abs(e.contact.getImpactVelocityAlongNormal());
+            const at = performance.now();
+            if (v < 2 || at - sp.lastClink < 35) return;
+            sp.lastClink = at;
+            const pan = (b.position.x / (TRAY.w / 2)) * (this.viewSeat === 1 ? -1 : 1);
+            this.sound?.play("die", v * 0.35, pan * 0.8);
+          });
+          this._gemWorld.addBody(b);
+          gm.body = b;
+        }
+        if (Math.random() < 0.35) this._glintGem(0.9);
+      }
+      if (t > 3300 && t < 5000 && Math.random() < 0.05) this._glintGem(0.9);
+      if (t > 5000) this._spill = null;
+      sp.acc += dt;
+      while (sp.acc >= 1 / 120) { this._gemWorld.step(1 / 120); sp.acc -= 1 / 120; }
+    } else if (this._gems.some((g) => g.body && g.body.sleepState !== CANNON.Body.SLEEPING)) {
+      // still settling after the show's over
+      this._gemWorld.step(1 / 60);
+    }
+    for (const g of this._gems) {
+      if (!g.mesh.visible) continue;
+      if (g.body) {
+        g.mesh.position.set(g.body.position.x, g.body.position.y, g.body.position.z);
+        g.mesh.quaternion.set(g.body.quaternion.x, g.body.quaternion.y, g.body.quaternion.z, g.body.quaternion.w);
+      }
+      if (g.fade) {
+        const k = (now - g.fade) / 260;
+        if (k >= 1) { g.mesh.visible = false; g.fade = 0; }
+        else g.mesh.scale.setScalar(g.r * (1 - k));
+      }
+    }
+  }
+
   /* ----- where you are sitting ----- */
 
   // Two chairs at one table. Seat 0 is the +z edge, seat 1 the -z edge --
@@ -742,6 +1203,7 @@ export class DiceTable {
       throw new Error("dice3d: roll() needs one value per die");
 
     this.sound?.wake();
+    this.clearDiamonds();
     const take = this._simulate(loose, seed, values, fromSeat, power);
     for (const i of loose) this.values[i] = values[i];
     this._offsets = take.offsets;
@@ -754,6 +1216,8 @@ export class DiceTable {
       return this.values.slice();
     }
     await this._play(take);
+    // Each die that was thrown catches the light as it comes to rest.
+    loose.forEach((i, n) => this.glint(i, { delay: n * 90 + Math.random() * 60 }));
     this._settled();
     return this.values.slice();
   }
@@ -1016,9 +1480,10 @@ export class DiceTable {
     this.held[i] = !!held;
     this.dice[i].mesh.traverse((o) => {
       if (!o.isMesh) return;
-      o.material.color.setHex(this.held[i] ? 0x53d98c : o.userData.baseColor);
-      o.material.emissive.setHex(this.held[i] ? 0x1c7a42 : o.userData.baseEmissive);
-      o.material.emissiveIntensity = this.held[i] ? 0.7 : 1;
+      // kept dice light up gold from inside, like a lamp behind red glass
+      o.material.color.setHex(this.held[i] ? 0xffd25a : o.userData.baseColor);
+      o.material.emissive.setHex(this.held[i] ? 0xff9418 : o.userData.baseEmissive);
+      o.material.emissiveIntensity = this.held[i] ? 2.4 : 1;
     });
   }
 
@@ -1051,6 +1516,7 @@ export class DiceTable {
   // Lay every die out flat in a row, showing its value. The idle pose, used
   // before the first roll of a turn.
   layoutRow() {
+    this.clearDiamonds(true);
     const flat = new THREE.Quaternion();
     const lay = (list, z) =>
       list.forEach((i, n) => {
@@ -1078,6 +1544,9 @@ export class DiceTable {
     this.camera.updateProjectionMatrix();
   }
 
+  // Comic-print dots over the shadows (see InkShader in dice-fx.js).
+  setHalftone(on) { this.halftone = !!on; this.fx?.setHalftone(this.halftone); }
+
   get muted() { return !!this.sound?.muted; }
   setMuted(m) { this.sound?.setMuted(m); if (!m) this.sound?.wake(); }
 
@@ -1096,6 +1565,8 @@ export class DiceTable {
     );
     this.camera.lookAt(0, 0, 0);
     this._shake = sh * 0.88;
+    this._tickSpill(t * 1000);
+    this._tickGlints(t * 1000);
     // Contact shadows follow their die and fade and spread as it leaves the
     // cloth; a die at rest sits at y = DIE / 2.
     for (const d of this.dice) {

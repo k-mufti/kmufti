@@ -4,6 +4,9 @@
 //   - Post-processing: ambient occlusion in the creases, a little bloom on
 //     the hottest highlights, a shallow depth of field, and a lens vignette
 //     with film grain on top.
+//   - Then the illustration: dark ink lines round every edge, light
+//     gathered into soft cel bands, shadows pushed indigo and highlights
+//     gold -- so the photograph reads as a 1980s airbrush painting.
 //   - Sound: dice on felt, dice on dice, dice on the rail -- synthesised once
 //     into buffers, no audio files.
 //
@@ -52,6 +55,184 @@ const LensShader = {
     }`,
 };
 
+// The painting. Runs after tone mapping, on display colours.
+//
+//   ink:   edges found in a separate render of the scene's normals and
+//          depth (see InkBuffer) -- a silhouette is a jump in depth, a crease
+//          is a turn in the normal. Drawn in a near-black indigo, never black.
+//   bands: brightness pulled part-way toward a few flat steps, with soft
+//          shoulders. Fully flat would kill the airbrushed gradients the
+//          reference art is full of; part-way keeps them, but gives every
+//          surface a lit side and a shadow side with an edge between.
+//   grade: split-toned -- shadows toward ultramarine, highlights toward
+//          warm gold -- and more saturation.
+//   halftone (optional, off by default): shading done the way a comic is
+//          printed. Lit areas become one flat colour; the shadow on them is
+//          carried by dots of a darker shade of that same colour, on a
+//          45-degree screen, growing as the shadow deepens until they merge
+//          into solid shadow. No smooth gradients left at all -- only
+//          flat colour, dots, and ink.
+const InkShader = {
+  uniforms: {
+    tDiffuse: { value: null },
+    tNormal: { value: null },
+    tDepth: { value: null },
+    texel: { value: new THREE.Vector2(1 / 1024, 1 / 1024) },
+    near: { value: 0.1 },
+    far: { value: 100 },
+    ink: { value: new THREE.Color(0x07051c) },
+    inkStrength: { value: 0.85 },
+    bands: { value: 4.0 },
+    bandMix: { value: 0.4 },
+    grade: { value: 1.0 },
+    halftone: { value: 0 },
+    dotCell: { value: 7.0 },          // device pixels between dot centres
+  },
+  vertexShader: /* glsl */ `
+    varying vec2 vUv;
+    void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+  fragmentShader: /* glsl */ `
+    #include <packing>
+    uniform sampler2D tDiffuse, tNormal, tDepth;
+    uniform vec2 texel;
+    uniform float near, far, inkStrength, bands, bandMix, grade, halftone, dotCell;
+    uniform vec3 ink;
+    varying vec2 vUv;
+
+    float depthAt(vec2 uv) {
+      float z = texture2D(tDepth, uv).x;
+      return -perspectiveDepthToViewZ(z, near, far);
+    }
+    vec3 normalAt(vec2 uv) { return texture2D(tNormal, uv).xyz * 2.0 - 1.0; }
+
+    float edge() {
+      float dc = depthAt(vUv);
+      vec3 nc = normalAt(vUv);
+      float e = 0.0;
+      // eight directions, so a line is as thick on the diagonal as it is
+      // straight across
+      for (int k = 0; k < 8; k++) {
+        float a = float(k) * 0.7853982;
+        vec2 o = vec2(cos(a), sin(a)) * texel;
+        float d = depthAt(vUv + o);
+        // relative, so the far end of the table isn't one solid line
+        e = max(e, smoothstep(0.012, 0.03, (d - dc) / dc));
+        e = max(e, smoothstep(0.3, 0.55, 1.0 - dot(nc, normalAt(vUv + o))));
+      }
+      // nothing drawn behind the table, where the depth runs out
+      return dc > far * 0.95 ? 0.0 : e;
+    }
+
+    void main() {
+      vec4 c = texture2D(tDiffuse, vUv);
+      vec3 col = c.rgb;
+      float l = dot(col, vec3(0.299, 0.587, 0.114));
+      // 1 on a die (see InkBuffer): the dice get a light touch
+      float die = 1.0 - texture2D(tNormal, vUv).a;
+
+      // bands: pull the brightness part-way toward the nearest step, with
+      // wide soft shoulders -- a hint of cel shading, not a poster
+      float s = l * bands;
+      float stepped = (floor(s) + smoothstep(0.2, 0.8, fract(s))) / bands;
+      float l2 = mix(l, stepped, bandMix * mix(1.0, 0.3, die));
+      col *= l > 1e-4 ? l2 / l : 1.0;
+
+      // grade: indigo shadows, gold highlights, a touch more colour
+      float g = clamp(l2, 0.0, 1.0);
+      vec3 shadowTint = vec3(0.30, 0.30, 1.0);
+      vec3 lightTint = vec3(1.0, 0.86, 0.55);
+      vec3 graded = col;
+      graded = mix(graded, graded * shadowTint * 1.6 + vec3(0.006, 0.004, 0.03), (1.0 - smoothstep(0.0, 0.35, g)) * 0.35);
+      graded = mix(graded, graded * lightTint * 1.12, smoothstep(0.55, 1.0, g) * 0.25);
+      float gl = dot(graded, vec3(0.299, 0.587, 0.114));
+      graded = mix(vec3(gl), graded, 1.12);
+      col = mix(col, graded, grade * mix(1.0, 0.35, die));
+
+      if (halftone > 0.5) {
+        // How lit is this pixel? Brightness as the strongest channel, not
+        // luma, so a lit red face counts as lit as lit blue velvet.
+        float v = max(col.r, max(col.g, col.b));
+        float shade = 1.0 - smoothstep(0.05, 0.45, v);
+        // The flat colour this surface is printed in: its own hue at one
+        // brightness, so a lit area is a single flat tone with no gradient
+        // across it. Only real highlights keep their own brightness. (The
+        // lift is capped, so the near-black room doesn't amplify grain into
+        // random colour.)
+        float level = mix(0.66, v, smoothstep(0.82, 1.0, v));
+        vec3 printed = col * min(level / max(v, 1e-3), 3.0);
+        // ...and the shadow ink: the same hue, deep, pulled toward
+        // ultramarine -- shadows in the painting are blue, never black.
+        vec3 deep = mix(printed * 0.28, vec3(0.05, 0.04, 0.24), 0.4);
+        // The dot screen: 45 degrees, a dot per cell, its radius set by how
+        // much shadow there is. Past ~0.71 of a cell the dots touch and
+        // merge, so the deepest shadow prints solid.
+        vec2 p = gl_FragCoord.xy / dotCell;
+        p = vec2(p.x + p.y, p.x - p.y) * 0.7071;
+        float d = length(fract(p) - 0.5);
+        float r = sqrt(shade) * 0.78;
+        float aa = 0.9 / dotCell;
+        float inDot = shade < 0.03 ? 0.0 : 1.0 - smoothstep(r - aa, r + aa, d);
+        // never on the dice: dots on the pips read as dirt
+        col = mix(mix(printed, deep, inDot), col, die);
+      }
+
+      col = mix(col, ink, edge() * inkStrength);
+      gl_FragColor = vec4(clamp(col, 0.0, 1.0), c.a);
+    }`,
+};
+
+// What the ink is drawn from: the scene again, every surface in a plain
+// normal material, into a target that keeps its depth. Cheap -- no lights, no
+// textures -- and it ignores the felt's normal map, so the cloth's weave
+// doesn't come out as scribble.
+//
+// It also marks the dice: anything on layer DICE_LAYER is drawn a second time
+// with alpha 0, so the painting pass knows which pixels are dice and can go
+// easy on them (glossy red glass looks fried pushed as hard as cloth).
+export const DICE_LAYER = 1;
+const _clear = new THREE.Color();
+class InkBuffer {
+  constructor(hidden) {
+    this.hidden = hidden;
+    this.material = new THREE.MeshNormalMaterial();
+    // transparent only so three doesn't force alpha to 1; no blending, so
+    // the 0 lands in the target as written
+    this.mark = new THREE.MeshNormalMaterial({ transparent: true, opacity: 0, blending: THREE.NoBlending });
+    this.target = new THREE.WebGLRenderTarget(1, 1, {
+      depthTexture: new THREE.DepthTexture(1, 1),
+      minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter,
+    });
+  }
+  setSize(w, h) { this.target.setSize(w, h); }
+  render(renderer, scene, camera) {
+    const was = this.hidden().map((o) => [o, o.visible]);
+    for (const [o] of was) o.visible = false;
+    const prevOverride = scene.overrideMaterial, prevBg = scene.background;
+    scene.overrideMaterial = this.material;
+    scene.background = null;
+    const prevTarget = renderer.getRenderTarget();
+    const prevClear = renderer.getClearColor(_clear), prevAlpha = renderer.getClearAlpha();
+    renderer.setRenderTarget(this.target);
+    renderer.setClearColor(0x8080ff, 1);
+    renderer.clear();
+    renderer.render(scene, camera);
+    // the dice again, over themselves, marked
+    const mask = camera.layers.mask, autoClear = renderer.autoClear;
+    camera.layers.set(DICE_LAYER);
+    scene.overrideMaterial = this.mark;
+    renderer.autoClear = false;
+    renderer.render(scene, camera);
+    renderer.autoClear = autoClear;
+    camera.layers.mask = mask;
+    renderer.setRenderTarget(prevTarget);
+    renderer.setClearColor(prevClear, prevAlpha);
+    scene.overrideMaterial = prevOverride;
+    scene.background = prevBg;
+    for (const [o, v] of was) o.visible = v;
+  }
+  dispose() { this.target.dispose(); this.material.dispose(); this.mark.dispose(); }
+}
+
 // Things that must not show up in the ambient-occlusion pass: the transparent
 // contact-shadow cards and the motion-blur ghosts. AO is worked out from depth
 // and normals, and a flat card hovering a hair over the felt would darken a
@@ -94,21 +275,36 @@ export function createComposer(renderer, scene, camera, { high, hidden, focus })
   composer.addPass(bloom);
 
   composer.addPass(new OutputPass());
+  const inkBuf = new InkBuffer(hidden);
+  const ink = new ShaderPass(InkShader);
+  ink.uniforms.tNormal.value = inkBuf.target.texture;
+  ink.uniforms.tDepth.value = inkBuf.target.depthTexture;
+  ink.uniforms.near.value = camera.near;
+  ink.uniforms.far.value = camera.far;
+  composer.addPass(ink);
   const lens = new ShaderPass(LensShader);
   composer.addPass(lens);
 
   return {
-    composer, dof,
+    composer, dof, ink,
     setSize(w, h, pr) {
       composer.setPixelRatio(pr);
       composer.setSize(w, h);
+      // The ink buffer at CSS resolution, not device: a quarter of the
+      // pixels on a retina screen, and the lines (about 2.5 CSS pixels)
+      // don't need more.
+      inkBuf.setSize(Math.round(w), Math.round(h));
+      ink.uniforms.texel.value.set(2.5 / w, 2.5 / h);
+      ink.uniforms.dotCell.value = 5.5 * pr;
     },
     render(t) {
       lens.uniforms.time.value = t;
+      inkBuf.render(renderer, scene, camera);
       composer.render();
     },
     setFocus(f) { if (dof) dof.uniforms.focus.value = f; },
-    dispose() { composer.dispose(); },
+    setHalftone(on) { ink.uniforms.halftone.value = on ? 1 : 0; },
+    dispose() { composer.dispose(); inkBuf.dispose(); },
   };
 }
 

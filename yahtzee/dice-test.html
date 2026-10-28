@@ -33,6 +33,7 @@
     <button id="rollWant">Roll those</button>
     <button id="verify">Verify 300 rolls</button>
     <button id="clear">Clear holds</button>
+    <button id="spill">Spill diamonds</button>
   </div>
   <div class="row holds" id="holds"></div>
   <div id="log">loading…</div>
@@ -88,6 +89,8 @@ async function go(values) {
   const seed = (Math.random() * 1e9) | 0;
   const got = await table.roll({ values, seed });
   paint(got);
+  // same as the game: five alike, and the coupe comes out
+  if (got.every((v) => v === got[0])) table.spillDiamonds();
   log(`asked ${values.join(" ")}   got ${got.join(" ")}   seed ${seed}   ${(performance.now() - t0).toFixed(0)}ms`);
   buttons.forEach((b) => (b.disabled = false));
 }
@@ -99,6 +102,7 @@ document.getElementById("rollWant").onclick = () => {
     return log(`need ${COUNT} numbers 1-6`, true);
   go(v);
 };
+document.getElementById("spill").onclick = () => table.spillDiamonds();
 document.getElementById("clear").onclick = () => {
   holds.querySelectorAll("input").forEach((c) => { c.checked = false; });
   for (let i = 0; i < COUNT; i++) table.setHeld(i, false);

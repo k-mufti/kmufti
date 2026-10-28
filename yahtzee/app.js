@@ -15,7 +15,7 @@
 // with max-age=3600 - so a new app.js would run against up-to-an-hour-old
 // copies of these four. Bump every one of them, and app.js in index.html, in
 // the same commit.
-import { DiceTable } from "./dice3d.js?v=13";
+import { DiceTable } from "./dice3d.js?v=18";
 import * as R from "./rules.js?v=7";
 import * as BOT from "./bot.js?v=7";
 import { Net, loadName, saveName } from "./net.js?v=8";
@@ -265,6 +265,7 @@ async function playRoll(values, seed, fromSeat, power = 0.5) {
   render();
   state.dice = values.slice();
   await table.roll({ values, seed, fromSeat, power });
+  if (R.isYahtzee(values)) table.spillDiamonds();
   animating = false;
   if (pendingState) { const s = pendingState; pendingState = null; applyState(s); }
   else { state.busy = false; render(); }
@@ -635,14 +636,32 @@ buildStrip();
 render();
 $("name").value = loadName();
 say("Loading dice…");
+// The lobby is up while the table loads, so you can type your name -- but
+// every way into a game needs the table, so those wait for it.
+const ways = [...document.querySelectorAll("#lobby button")];
+ways.forEach((b) => (b.disabled = true));
 try {
   table = await DiceTable.create({ canvas: $("tray"), count: 5 });
+  ways.forEach((b) => (b.disabled = false));
   // Sound toggle: the table remembers the choice between visits.
   const sound = $("sound");
   const showSound = () => { sound.textContent = table.muted ? "Sound off" : "Sound on"; };
   sound.addEventListener("click", () => { table.setMuted(!table.muted); showSound(); });
   showSound();
   sound.hidden = false;
+  // Halftone: an experiment, off by default, remembered on this device.
+  const ht = $("halftone");
+  const HT_KEY = "yahtzee.halftone";
+  let htOn = false;
+  try { htOn = localStorage.getItem(HT_KEY) === "1"; } catch {}
+  const showHt = () => { table.setHalftone(htOn); ht.setAttribute("aria-pressed", String(htOn)); ht.classList.toggle("on", htOn); };
+  ht.addEventListener("click", () => {
+    htOn = !htOn;
+    try { localStorage.setItem(HT_KEY, htOn ? "1" : "0"); } catch {}
+    showHt();
+  });
+  showHt();
+  ht.hidden = false;
   newSoloGame();
   $("lobby").hidden = false;      // the board is ready behind the menu
 } catch (e) {

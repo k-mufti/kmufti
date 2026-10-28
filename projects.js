@@ -43,7 +43,7 @@ const PROJECTS = [
   {
     slug: "yahtzee",
     title: "Yahtzee",
-    description: "Five dice on green felt, thrown with real physics \u2014 they bounce for themselves. Play a full scorecard against the bot.",
+    description: "Five red casino dice on blue velvet, thrown with real physics \u2014 they bounce for themselves. Play a full scorecard against the bot.",
     tags: ["game", "3d", "js"],
     accent: "#7dffb4",
     accentBg: "linear-gradient(135deg, #177a4c 0%, #083b25 100%)",

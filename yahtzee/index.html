@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Yahtzee — kmufti.com</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
-  <meta name="description" content="Yahtzee on a green felt tray, with real dice physics." />
+  <meta name="description" content="Yahtzee on blue velvet in a penthouse over the city, with red casino dice and real dice physics." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=7" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Limelight&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=8" />
   <script type="importmap">
   {"imports":{
     "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
@@ -27,6 +27,7 @@
     <span class="header-right">
       <span class="conn" id="conn" hidden></span>
       <span class="clock" id="clock" hidden></span>
+      <button class="ghost" id="halftone" hidden aria-pressed="false">Halftone</button>
       <button class="ghost" id="sound" hidden>Sound on</button>
       <button class="ghost" id="new-game">New game</button>
     </span>
@@ -146,7 +147,8 @@
     </div>
   </div>
 
+  <script src="skyline.js?v=1"></script>
   <script src="../you.js?v=2"></script>
-  <script type="module" src="app.js?v=17"></script>
+  <script type="module" src="app.js?v=23"></script>
 </body>
 </html>
