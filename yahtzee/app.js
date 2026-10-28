@@ -98,7 +98,7 @@ function syncHolds() {
 function buildCard() {
   const row = (cat) => `
     <tr data-cat="${cat}">
-      <td class="cat">${R.LABELS[cat]}<em>${R.HINTS[cat]}</em></td>
+      <td class="cat">${R.LABELS[cat]}<i class="lead"></i><em>${R.HINTS[cat]}</em></td>
       <td class="val empty" data-col="0" data-cat="${cat}">&mdash;</td>
       <td class="val empty" data-col="1" data-cat="${cat}">&mdash;</td>
     </tr>`;
@@ -128,7 +128,7 @@ function render() {
         td.classList.remove("empty");
       } else if (col === 0 && legal.includes(cat)) {
         const pts = R.score(cat, state.dice, state.cards[state.mySeat]);
-        td.textContent = pts;
+        td.innerHTML = `<span class="chip">${pts}</span>`;
         td.classList.add("pick");
         if (pts === 0) td.classList.add("zero");
         if (forced) td.classList.add("forced");
