@@ -733,19 +733,6 @@ body.belt-folded .belt { height: 26px; }
   color: rgba(239, 230, 216, 0.45);
 }
 .belt-count { margin-right: auto; }
-.belt-chip {
-  padding: 1px 9px;
-  border: 1px solid rgba(239, 230, 216, 0.16);
-  border-radius: 999px;
-  background: transparent;
-  color: rgba(239, 230, 216, 0.6);
-  font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-  cursor: pointer;
-}
-.belt-chip:hover { color: var(--ink); border-color: rgba(239, 230, 216, 0.35); }
-.belt-chip.on { color: #17120e; background: var(--amber, #e8b45e); border-color: transparent; }
 
 /* Collapse the belt: the standard chevron - down to fold it away, turning
    to point up once it's folded so it reads as "open me". */

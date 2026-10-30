@@ -416,9 +416,7 @@
   const beltTrack = document.getElementById("beltTrack");
   const beltCount = document.getElementById("beltCount");
   const beltFold = document.getElementById("beltFold");
-  const beltEdges = document.getElementById("beltEdges");
   let beltFolded = store("kmufti-puzzle-belt-fold", "") === "1";
-  let edgesOnly = false;
   let beltOrder = [];          // the order pieces ride in: shuffled, never the grid
   let beltOffset = 0;          // px scrolled
   const beltOn = () => !beltFolded;
@@ -435,15 +433,7 @@
     showFold();
     refreshBelt();
   });
-  beltEdges.addEventListener("click", () => {
-    edgesOnly = !edgesOnly;
-    beltEdges.classList.toggle("on", edgesOnly);
-    beltTrack.textContent = "";          // a different set: start the belt over
-    beltOffset = 0;
-    refreshBelt();
-  });
   showFold();
-  const isEdge = (i) => { const c = i % cols, r = (i / cols) | 0; return c === 0 || r === 0 || c === cols - 1 || r === rows - 1; };
 
   // A fixed shuffle per puzzle, so the belt order is the same for everyone
   // and never gives away where a piece goes.
@@ -489,13 +479,13 @@
     // in when it opens)
     if (!beltOn()) return;
     const want = beltOrder.filter((i) => pieces[i] && !pieces[i].placed && membersOf(i).length === 1 &&
-      !holders.has(i) && !inDrag(i) && (!edgesOnly || isEdge(i)));
+      !holders.has(i) && !inDrag(i));
     // keep the items already riding where they are; add and drop the rest
     const have = new Map([...beltTrack.children].map((c) => [Number(c.dataset.i), c]));
     const wantSet = new Set(want);
     for (const [i, c] of have) if (!wantSet.has(i)) c.remove();
     for (const i of want) if (!have.has(i)) beltTrack.appendChild(beltPiece(i));
-    beltCount.textContent = want.length ? `${want.length} loose` : (edgesOnly ? "no loose edges" : "nothing loose");
+    beltCount.textContent = want.length ? `${want.length} loose` : "nothing loose";
     beltEl.classList.toggle("empty", !want.length);
     slideBelt(0);                         // settle it: centred if it all fits
   }
