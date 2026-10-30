@@ -462,6 +462,15 @@ console.log(`table: ${table.def.id} - ${table.placedCount}/${table.pieces.length
 process.on("SIGTERM", () => { saveTable(); process.exit(0); });
 process.on("SIGINT", () => { saveTable(); process.exit(0); });
 
+// Edits to puzzles.json reach a live table: new rows join the rotation, and
+// taking out the puzzle that's on the table skips straight past it.
+fs.watchFile(QUEUE_FILE, { interval: 5000 }, () => {
+  const fresh = loadQueue();
+  if (!fresh.length) return;
+  QUEUE = fresh;
+  if (!table.solvedAt && !QUEUE.some((q) => q.id === table.def.id)) nextPuzzle();
+});
+
 function homeOf(i) {
   const c = i % table.cols, r = (i / table.cols) | 0;
   return { x: table.board.x + c * table.pw, y: table.board.y + r * table.ph };
@@ -639,7 +648,7 @@ function initPayload(peer) {
     contributors: contributorList(),
     solvedAt: table.solvedAt,
     peers: peerList(peer),
-    shelf: shelf.slice(0, 24).map(shelfCard),
+    shelf: shelf.map(shelfCard), // all of it - a 24 cap quietly dropped the oldest
   };
 }
 
@@ -906,7 +915,8 @@ function nextPuzzle() {
   if (fresh.length) QUEUE = fresh;
   imageFix.clear();             // images may have been renamed along with it
   const at = QUEUE.findIndex((q) => q.id === currentId);
-  table = newTable(pickPuzzle((at < 0 ? table.queueIndex : at) + 1));
+  // If it left the queue, whatever followed it has slid up into its old slot.
+  table = newTable(pickPuzzle(at < 0 ? table.queueIndex : at + 1));
   for (const p of peers) p.holding = null;
   saveTable();
   console.log(`next puzzle: ${table.def.id} (${table.pieces.length} pieces)`);

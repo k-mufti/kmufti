@@ -7,8 +7,78 @@
       "image": "images/Rise-@-the-Ebb-100"
     },
     {
-      "id": "darknight",
-      "image": "images/dark-night-200"
+      "id": "snowday",
+      "image": "images/snow-day-80"
+    },
+    {
+      "id": "acidrainbow",
+      "image": "images/Acid-Rainbow-200"
+    },
+    {
+      "id": "finvsfang",
+      "title": "Fin vs. Fang",
+      "image": "images/Fin-vs-Fang-50"
+    },
+    {
+      "id": "karawita",
+      "image": "images/Karawita-100"
+    },
+    {
+      "id": "onlyinadream",
+      "title": "Only in a Dream",
+      "image": "images/Only-in-a-Dream-250"
+    },
+    {
+      "id": "kyute",
+      "image": "images/Kyute-40"
+    },
+    {
+      "id": "amcalisters",
+      "title": "AMC A-Listers",
+      "image": "images/AMC-A-listers-100"
+    },
+    {
+      "id": "sleepyriver",
+      "image": "images/sleepy-river-150"
+    },
+    {
+      "id": "roadtrip",
+      "title": "Rock n' Road Trip",
+      "image": "images/Rock-n'-Road-Trip-75"
+    },
+    {
+      "id": "luslus",
+      "image": "images/lus-lus-80"
+    },
+    {
+      "id": "notebook",
+      "image": "images/notebook-300"
+    },
+    {
+      "id": "fingfang",
+      "image": "images/Fing-Fang-70"
+    },
+    {
+      "id": "meowmeow",
+      "title": "Meow Meow ____",
+      "image": "images/meow-meow-____-100"
+    },
+    {
+      "id": "sultan",
+      "image": "images/sultan-150"
+    },
+    {
+      "id": "dessert",
+      "title": "What's for Dessert?",
+      "image": "images/whats-for-dessert-100"
+    },
+    {
+      "id": "tacky",
+      "image": "images/tacky-100"
+    },
+    {
+      "id": "tiger",
+      "image": "images/tiger-100"
     },
     {
       "id": "pastel",
