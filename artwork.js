@@ -427,98 +427,126 @@ const ARTWORK = {
             font-weight="300" fill="#1a73e8" text-anchor="middle">?</text>
     </svg>`,
 
-  /* Yahtzee — the table it's played on: green felt with a real nap, lit
-     like the game's table, by one warm lamp hanging over the middle: a
-     pool of light falling off into a dark room at the edges. Two glossy
-     ivory dice thrown either side of the word. The
-     word is finished like the dice (ivory, a thick edge, a shadow on the
-     cloth). Anton is already loaded for the hub. */
+  /* Yahtzee — the game's table seen from above, in its noir room: the
+     harlequin casino carpet round the edges, black lacquer rails with a gold
+     inlay and a crimson cushion, blue velvet lit by one lamp, two clear red
+     casino dice, and DICE in gold Limelight with a four-point glint. */
   yahtzee: `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <!-- the lamp: one pool of light with a lampshade's edge -- flat
-             light inside, flat dark outside, only the rim is soft -->
-        <filter id="yz-rim" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="5"/>
-        </filter>
-        <mask id="yz-room" maskUnits="userSpaceOnUse" x="0" y="0" width="320" height="200">
-          <rect width="320" height="200" fill="#fff"/>
-          <ellipse cx="164" cy="96" rx="132" ry="86" fill="#000" filter="url(#yz-rim)"/>
-        </mask>
-        <!-- dice + word: ivory plastic, lit from the top left -->
-        <linearGradient id="yz-ivory" x1="0.1" y1="0" x2="0.7" y2="1">
-          <stop offset="0" stop-color="#ffffff"/>
-          <stop offset="0.55" stop-color="#f4f0e6"/>
-          <stop offset="1" stop-color="#d9d2c1"/>
-        </linearGradient>
-        <radialGradient id="yz-sheen" cx="0.3" cy="0.22" r="0.6">
-          <stop offset="0" stop-color="#ffffff" stop-opacity="0.85"/>
-          <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+        <!-- the carpet: diamonds in two navies, a crimson-and-gold lozenge in
+             the bright ones, a gold star in the dark -->
+        <pattern id="yz-carpet" width="36" height="36" patternUnits="userSpaceOnUse">
+          <rect width="36" height="36" fill="#070622"/>
+          <path d="M18 0 L36 18 L18 36 L0 18 Z" fill="#15145e"/>
+          <path d="M18 2.6 L33.4 18 L18 33.4 L2.6 18 Z" fill="none" stroke="#c21c3a" stroke-opacity="0.7" stroke-width="0.5"/>
+          <path d="M18 12 L24 18 L18 24 L12 18 Z" fill="#8e1029"/>
+          <path d="M18 15 L21 18 L18 21 L15 18 Z" fill="#d9a640"/>
+          <path d="M0 -3.6 Q0 0 2.5 0 Q0 0 0 3.6 Q0 0 -2.5 0 Q0 0 0 -3.6 Z M36 -3.6 Q36 0 38.5 0 Q36 0 36 3.6 Q36 0 33.5 0 Q36 0 36 -3.6 Z M0 32.4 Q0 36 2.5 36 Q0 36 0 39.6 Q0 36 -2.5 36 Q0 36 0 32.4 Z M36 32.4 Q36 36 38.5 36 Q36 36 36 39.6 Q36 36 33.5 36 Q36 36 36 32.4 Z" fill="#d9a640"/>
+        </pattern>
+        <!-- blue velvet, brightest under the lamp -->
+        <radialGradient id="yz-velvet" cx="0.5" cy="0.46" r="0.62">
+          <stop offset="0" stop-color="#3a42ee"/>
+          <stop offset="0.55" stop-color="#2329b8"/>
+          <stop offset="1" stop-color="#0d0f5a"/>
         </radialGradient>
-        <!-- pips are drilled in: dark where the lip shades them, lighter on
-             the far wall that catches the light -->
-        <radialGradient id="yz-pip" cx="0.38" cy="0.36" r="0.7">
-          <stop offset="0" stop-color="#07090a"/>
-          <stop offset="0.7" stop-color="#1b2023"/>
-          <stop offset="1" stop-color="#4b5257"/>
-        </radialGradient>
-        <linearGradient id="yz-word" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#ffffff"/>
-          <stop offset="0.5" stop-color="#f6f2e8"/>
-          <stop offset="1" stop-color="#ddd6c5"/>
-        </linearGradient>
-        <!-- felt nap: fine noise tinted to the cloth, a dark and a light pass -->
         <filter id="yz-nap" x="0" y="0" width="100%" height="100%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" seed="7" result="n"/>
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="7" result="n"/>
           <feColorMatrix in="n" type="matrix" result="dark"
-                         values="0 0 0 0 0.01  0 0 0 0 0.12  0 0 0 0 0.06  -1.1 0 0 0 0.62"/>
+                         values="0 0 0 0 0.02  0 0 0 0 0.02  0 0 0 0 0.12  -1.1 0 0 0 0.62"/>
           <feColorMatrix in="n" type="matrix" result="light"
-                         values="0 0 0 0 0.6  0 0 0 0 0.95  0 0 0 0 0.75  0.9 0 0 0 -0.5"/>
+                         values="0 0 0 0 0.6  0 0 0 0 0.65  0 0 0 0 1  0.9 0 0 0 -0.5"/>
           <feMerge><feMergeNode in="dark"/><feMergeNode in="light"/></feMerge>
+        </filter>
+        <!-- clear red casino plastic: lit through from the top left -->
+        <linearGradient id="yz-red" x1="0.1" y1="0" x2="0.8" y2="1">
+          <stop offset="0" stop-color="#f2283e"/>
+          <stop offset="0.5" stop-color="#d0142f"/>
+          <stop offset="1" stop-color="#7a0618"/>
+        </linearGradient>
+        <radialGradient id="yz-glow" cx="0.62" cy="0.7" r="0.55">
+          <stop offset="0" stop-color="#ff6a70" stop-opacity="0.35"/>
+          <stop offset="1" stop-color="#ff8a8a" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="yz-pip" cx="0.4" cy="0.35" r="0.7">
+          <stop offset="0" stop-color="#ffffff"/>
+          <stop offset="1" stop-color="#e6dccd"/>
+        </radialGradient>
+        <!-- gold leaf for the word -->
+        <linearGradient id="yz-gold" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff3c4"/>
+          <stop offset="0.45" stop-color="#f0c35a"/>
+          <stop offset="1" stop-color="#b07a1e"/>
+        </linearGradient>
+        <filter id="yz-drop" x="-45%" y="-45%" width="190%" height="190%">
+          <feDropShadow dx="1.5" dy="3" stdDeviation="1.4" flood-color="#02021a" flood-opacity="0.7"/>
+          <feDropShadow dx="4" dy="9" stdDeviation="6" flood-color="#02021a" flood-opacity="0.55"/>
         </filter>
         <filter id="yz-soft" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="0.9"/>
         </filter>
-        <filter id="yz-drop" x="-45%" y="-45%" width="190%" height="190%">
-          <feDropShadow dx="0" dy="2" stdDeviation="1.2" flood-color="#021209" flood-opacity="0.55"/>
-          <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#021209" flood-opacity="0.45"/>
+        <filter id="yz-blur" x="-10%" y="-10%" width="120%" height="120%">
+          <feGaussianBlur stdDeviation="0.5"/>
         </filter>
+        <radialGradient id="yz-room" cx="0.5" cy="0.46" r="0.72">
+          <stop offset="0.55" stop-color="#020108" stop-opacity="0"/>
+          <stop offset="1" stop-color="#020108" stop-opacity="0.85"/>
+        </radialGradient>
+        <!-- four-point glint -->
+        <symbol id="yz-star" viewBox="-10 -10 20 20" overflow="visible">
+          <path d="M0 -10 Q0.9 -0.9 10 0 Q0.9 0.9 0 10 Q-0.9 0.9 -10 0 Q-0.9 -0.9 0 -10 Z" fill="#fff8de"/>
+          <circle r="2.2" fill="#ffffff"/>
+        </symbol>
       </defs>
 
-      <rect width="320" height="200" fill="#10603b"/>
-      <rect width="320" height="200" filter="url(#yz-nap)" opacity="0.5"/>
+      <!-- the carpet, dim and a little soft -->
+      <rect width="320" height="200" fill="url(#yz-carpet)" filter="url(#yz-blur)"/>
+      <rect width="320" height="200" fill="#03020a" opacity="0.45"/>
+
+      <!-- the table: lacquer rail, gold inlay, crimson cushion, velvet -->
+      <g filter="url(#yz-drop)">
+        <rect x="20" y="16" width="280" height="168" rx="16" fill="#050409"/>
+      </g>
+      <rect x="21.5" y="17.5" width="277" height="165" rx="14.5" fill="none" stroke="#e8b64c" stroke-opacity="0.75" stroke-width="1"/>
+      <rect x="27" y="23" width="266" height="154" rx="10" fill="none" stroke="#e8b64c" stroke-opacity="0.35" stroke-width="0.6"/>
+      <rect x="31" y="27" width="258" height="146" rx="8" fill="#8e1029"/>
+      <rect x="34" y="30" width="252" height="140" rx="6" fill="url(#yz-velvet)"/>
+      <rect x="34" y="30" width="252" height="140" rx="6" filter="url(#yz-nap)" opacity="0.45"/>
+      <rect x="34" y="30" width="252" height="140" rx="6" fill="none" stroke="#000" stroke-opacity="0.45" stroke-width="3"/>
 
       <!-- two dice, thrown: a five low on the left, a three high on the right -->
-      <g transform="translate(10,110) rotate(-14 28.0 28.0) scale(0.9655)" filter="url(#yz-drop)">
-        <rect y="4" width="58" height="58" rx="13" fill="#a59d89"/>
-        <rect width="58" height="58" rx="13" fill="url(#yz-ivory)"/>
-        <rect width="58" height="58" rx="13" fill="url(#yz-sheen)"/>
-        <rect x="0.8" y="0.8" width="56.4" height="56.4" rx="12.2" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="1.6"/>
-        <path d="M2.5 29 L2.5 15 Q2.5 2.5 15 2.5 L43 2.5 Q50 2.5 52 5 Q30 8 18 18 Q8 27 2.5 29 Z" fill="#ffffff" opacity="0.55"/>
-        <path d="M8 22 Q9 9 22 8" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" filter="url(#yz-soft)"/>
-        <g fill="url(#yz-pip)"><circle cx="16" cy="16" r="5.4"/><circle cx="42" cy="16" r="5.4"/><circle cx="29" cy="29" r="5.4"/><circle cx="16" cy="42" r="5.4"/><circle cx="42" cy="42" r="5.4"/></g>
+      <g transform="translate(42,108) rotate(-14 26 26) scale(0.9)" filter="url(#yz-drop)">
+        <rect width="58" height="58" rx="8" fill="url(#yz-red)"/>
+        <rect width="58" height="58" rx="8" fill="url(#yz-glow)"/>
+        <rect x="0.7" y="0.7" width="56.6" height="56.6" rx="7.3" fill="none" stroke="#ff9aa6" stroke-opacity="0.55" stroke-width="1.4"/>
+        <path d="M3 26 L3 11 Q3 3 11 3 L44 3 Q30 7 19 15 Q9 22 3 26 Z" fill="#ffffff" opacity="0.32"/>
+        <path d="M8 20 Q9 9 20 8" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#yz-soft)" opacity="0.8"/>
+        <g fill="url(#yz-pip)"><circle cx="16" cy="16" r="5"/><circle cx="42" cy="16" r="5"/><circle cx="29" cy="29" r="5"/><circle cx="16" cy="42" r="5"/><circle cx="42" cy="42" r="5"/></g>
       </g>
-      <g transform="translate(250,30) rotate(17 25.0 25.0) scale(0.8621)" filter="url(#yz-drop)">
-        <rect y="4" width="58" height="58" rx="13" fill="#a59d89"/>
-        <rect width="58" height="58" rx="13" fill="url(#yz-ivory)"/>
-        <rect width="58" height="58" rx="13" fill="url(#yz-sheen)"/>
-        <rect x="0.8" y="0.8" width="56.4" height="56.4" rx="12.2" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="1.6"/>
-        <path d="M2.5 29 L2.5 15 Q2.5 2.5 15 2.5 L43 2.5 Q50 2.5 52 5 Q30 8 18 18 Q8 27 2.5 29 Z" fill="#ffffff" opacity="0.55"/>
-        <path d="M8 22 Q9 9 22 8" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" filter="url(#yz-soft)"/>
-        <g fill="url(#yz-pip)"><circle cx="16" cy="16" r="5.4"/><circle cx="29" cy="29" r="5.4"/><circle cx="42" cy="42" r="5.4"/></g>
+      <g transform="translate(236,38) rotate(17 25 25) scale(0.8)" filter="url(#yz-drop)">
+        <rect width="58" height="58" rx="8" fill="url(#yz-red)"/>
+        <rect width="58" height="58" rx="8" fill="url(#yz-glow)"/>
+        <rect x="0.7" y="0.7" width="56.6" height="56.6" rx="7.3" fill="none" stroke="#ff9aa6" stroke-opacity="0.55" stroke-width="1.4"/>
+        <path d="M3 26 L3 11 Q3 3 11 3 L44 3 Q30 7 19 15 Q9 22 3 26 Z" fill="#ffffff" opacity="0.32"/>
+        <path d="M8 20 Q9 9 20 8" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" filter="url(#yz-soft)" opacity="0.8"/>
+        <g fill="url(#yz-pip)"><circle cx="16" cy="16" r="5"/><circle cx="29" cy="29" r="5"/><circle cx="42" cy="42" r="5"/></g>
       </g>
 
-      <!-- the word, in the dice's own ivory with a thick edge -->
-      <g font-family="Anton, Impact, sans-serif" font-size="92" letter-spacing="3" text-anchor="middle" filter="url(#yz-drop)">
-        <text x="160" y="143" fill="#a59d89">DICE</text>
-        <text x="160" y="139" fill="url(#yz-word)">DICE</text>
+      <!-- the word, in gold leaf with a deep edge -->
+      <g font-family="Limelight, 'Playfair Display', Georgia, serif" font-size="64" letter-spacing="4" text-anchor="middle" filter="url(#yz-drop)">
+        <text x="160" y="124" fill="#5a3a0a">DICE</text>
+        <text x="160" y="121" fill="url(#yz-gold)">DICE</text>
       </g>
 
-      <!-- the lamp over everything, felt, dice and word alike: a warm pool,
-           and the room's dark beyond its edge -->
-      <ellipse cx="164" cy="96" rx="132" ry="86" fill="#ffcf96" opacity="0.13" filter="url(#yz-rim)"/>
-      <rect width="320" height="200" fill="#020a06" opacity="0.5" mask="url(#yz-room)"/>
+      <!-- glints: one on the word, one on each die -->
+      <use href="#yz-star" x="94" y="72" width="16" height="16"/>
+      <use href="#yz-star" x="46" y="112" width="11" height="11"/>
+      <use href="#yz-star" x="276" y="44" width="9" height="9"/>
+
+      <!-- the room's dark beyond the lamp -->
+      <rect width="320" height="200" fill="url(#yz-room)"/>
     </svg>`,
+
 
   /* Infinite Kitchen — the game's Tuscan kitchen: a dark walnut counter lit
      from the window, the title in Fraunces italic (brass "Infinite", cream
