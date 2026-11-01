@@ -79,14 +79,14 @@ const CELEBRATE_MS = Number(process.env.PUZZLE_CELEBRATE_MS || 15000);
 
 const DATA_FILE = process.env.PUZZLE_DATA || path.join(__dirname, "table.json");
 const ARCHIVE_FILE = process.env.PUZZLE_ARCHIVE || path.join(__dirname, "shelf.json");
-const QUEUE_FILE = path.join(__dirname, "puzzles.json");
+const catalog = require("./catalog");
 
 /* ========================================================================
    The queue + the shelf
    ======================================================================== */
-// Adding a puzzle should be: drop an image in images/, name it in
-// puzzles.json. Everything else is worked out here - the file's real pixel
-// size, a sensible grid, and which entries are actually ready to play.
+// Adding a puzzle should be: drop an image in images/puzzles-queue/ and push
+// (see catalog.js). Everything else is worked out here - the file's real
+// pixel size, a sensible grid, and the order things play in.
 
 // Pixel size straight from the file header. Beats making someone measure
 // their own images, and a wrong number would stretch the picture.
@@ -142,17 +142,6 @@ function imageSize(file) {
   return null;
 }
 
-// The manifest may name an image with or without its extension, so dropping a
-// .png or a .jpg with the right name both work.
-const IMAGE_EXTS = ["", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"];
-function resolveImage(spec) {
-  for (const ext of IMAGE_EXTS) {
-    const rel = spec + ext;
-    try { fs.accessSync(path.join(__dirname, rel)); return rel; } catch { /* keep looking */ }
-  }
-  return null;
-}
-
 // Pick the grid closest to the wanted piece count whose pieces come out most
 // nearly square. A 3:2 picture at 50 lands on 9x6; a square one on 7x7.
 function chooseGrid(w, h, target) {
@@ -170,50 +159,43 @@ function chooseGrid(w, h, target) {
 
 const DEFAULT_PIECES = Number(process.env.PUZZLE_PIECES || 50);
 
-// A filename can carry the piece count and the title: "images/red-canyon-100"
-// is Red Canyon at about 100 pieces. It saves repeating in the manifest what
-// the file already says. Anything set explicitly on the entry still wins, and
-// a name with no trailing number just falls back to the default.
-function fromFilename(spec) {
-  const base = path.basename(spec).replace(/\.[^.]+$/, "");
-  const m = /^(.*?)[-_ ]+(\d{1,4})$/.exec(base);
-  const words = (m ? m[1] : base).replace(/[-_]+/g, " ").trim();
-  return {
-    pieces: m ? Number(m[2]) : null,
-    title: words.replace(/\b\w/g, (c) => c.toUpperCase()),
-  };
-}
+// When the server first saw each file in the queue folder. The queue plays in
+// that order (files that arrive together go alphabetically), and a queued
+// puzzle counts as played once it has been solved since it arrived - so one
+// dragged back from done-puzzles plays again. Lives beside the shelf, outside
+// the repo.
+const SEEN_FILE = process.env.PUZZLE_SEEN ||
+  path.join(path.dirname(ARCHIVE_FILE), "queue-seen.json");
+let seen = {};
+try { seen = JSON.parse(fs.readFileSync(SEEN_FILE, "utf8")) || {}; } catch { /* first run */ }
 
-// Read the manifest and keep only the entries that are actually playable.
-// Called again at every changeover, so a puzzle added to a running table joins
-// the rotation without a restart.
-function loadQueue() {
-  let raw = [];
-  try { raw = JSON.parse(fs.readFileSync(QUEUE_FILE, "utf8")).queue || []; }
-  catch (e) { console.error("could not read puzzles.json:", e.message); }
+function loadCatalog() {
+  const { queue, done } = catalog.scan(__dirname);
+  const now = Date.now();
+  let changed = false;
+  const here = new Set(queue.map((q) => q.file));
+  for (const q of queue) if (!seen[q.file]) { seen[q.file] = now; changed = true; }
+  for (const f of Object.keys(seen)) if (!here.has(f)) { delete seen[f]; changed = true; }
+  if (changed) {
+    try { fs.writeFileSync(SEEN_FILE + ".tmp", JSON.stringify(seen)); fs.renameSync(SEEN_FILE + ".tmp", SEEN_FILE); }
+    catch (e) { console.error("queue-seen save failed:", e.message); }
+  }
+  queue.sort((a, b) => seen[a.file] - seen[b.file]); // stable: same arrival stays alphabetical
 
-  const ready = [];
-  const waiting = [];
-  for (const def of raw) {
-    const image = resolveImage(def.image);
-    if (!image) { waiting.push(def.id); continue; }
-    const size = imageSize(path.join(__dirname, image)) || { w: 1200, h: 800 };
+  const ready = (def) => {
+    const size = imageSize(path.join(__dirname, def.image)) || { w: 1200, h: 800 };
     const w = def.imageW || size.w, h = def.imageH || size.h;
-    const named = fromFilename(image);
-    const pieces = def.pieces || named.pieces || DEFAULT_PIECES;
     const grid = def.cols && def.rows ? { cols: def.cols, rows: def.rows }
-                                      : chooseGrid(w, h, pieces);
-    ready.push({ ...def, title: def.title || named.title, image,
-                 imageW: w, imageH: h, cols: grid.cols, rows: grid.rows });
-  }
-  if (waiting.length) console.log(`waiting on an image: ${waiting.join(", ")}`);
-  for (const d of ready) {
-    console.log(`  ${d.id.padEnd(11)} ${String(d.imageW).padStart(5)}x${String(d.imageH).padEnd(5)} -> ${d.cols}x${d.rows} = ${d.cols * d.rows} pieces`);
-  }
-  return ready;
+                                      : chooseGrid(w, h, def.pieces || DEFAULT_PIECES);
+    return { ...def, imageW: w, imageH: h, cols: grid.cols, rows: grid.rows };
+  };
+  const out = { queue: queue.map(ready), done: done.map(ready) };
+  console.log(`catalog: ${out.queue.length} queued (${out.queue.map((q) => q.id).join(", ")}), ${out.done.length} done`);
+  return out;
 }
 
-let QUEUE = loadQueue();
+let CATALOG = loadCatalog();
+const allPuzzles = () => [...CATALOG.queue, ...CATALOG.done];
 
 let shelf = []; // finished puzzles, newest first
 try { shelf = JSON.parse(fs.readFileSync(ARCHIVE_FILE, "utf8")) || []; } catch { /* first run */ }
@@ -249,7 +231,7 @@ function shelfImage(e) {
   if (imageFix.has(img)) return imageFix.get(img);
   let fixed = img;
   if (!fs.existsSync(path.join(__dirname, img))) {
-    const def = QUEUE.find((q) => q.id === e.id);
+    const def = allPuzzles().find((q) => q.id === e.id);
     if (def && def.image) {
       fixed = def.image;
     } else {
@@ -343,8 +325,7 @@ function scatter(pw, ph, board) {
 // upright, and turning rotation on later doesn't change the protocol.
 let table = null;
 
-function newTable(queueIndex) {
-  const def = QUEUE[queueIndex % QUEUE.length];
+function newTable(def) {
   const cols = def.cols, rows = def.rows;
   const board = fitBoard(def.imageW || 1200, def.imageH || 800);
   const pw = board.w / cols, ph = board.h / rows;
@@ -363,7 +344,7 @@ function newTable(queueIndex) {
     }
   }
   return {
-    def, queueIndex: queueIndex % QUEUE.length,
+    def,
     cols, rows, board, pw, ph, edges, pieces,
     placedCount: 0,
     startedAt: Date.now(),
@@ -382,7 +363,7 @@ function scheduleSave() {
 function saveTable() {
   if (!table) return;
   const snap = {
-    id: table.def.id, queueIndex: table.queueIndex,
+    id: table.def.id,
     cols: table.cols, rows: table.rows, edges: table.edges,
     boardW: table.board.w, boardH: table.board.h,
     pieces: table.pieces, placedCount: table.placedCount,
@@ -395,9 +376,8 @@ function saveTable() {
 function restoreTable() {
   let snap;
   try { snap = JSON.parse(fs.readFileSync(DATA_FILE, "utf8")); } catch { return null; }
-  const idx = QUEUE.findIndex((q) => q.id === snap.id);
-  if (idx < 0) return null; // that puzzle left the queue - start fresh
-  const def = QUEUE[idx];
+  const def = allPuzzles().find((q) => q.id === snap.id);
+  if (!def) return null; // that puzzle's image is gone - start fresh
   if (def.cols !== snap.cols || def.rows !== snap.rows) return null; // re-cut since
   // Piece positions are absolute table coordinates, so they only mean anything
   // against the board they were laid on. A snapshot from before the board was
@@ -431,7 +411,7 @@ function restoreTable() {
     for (const p of pieces) p.boxed = !p.placed && size[p.g] === 1;
   }
   return {
-    def, queueIndex: idx, cols: snap.cols, rows: snap.rows, board,
+    def, cols: snap.cols, rows: snap.rows, board,
     pw: board.w / snap.cols, ph: board.h / snap.rows,
     edges: snap.edges, pieces,
     placedCount: snap.placedCount || 0,
@@ -442,34 +422,55 @@ function restoreTable() {
   };
 }
 
-// Which puzzle to put out when there's no table to carry on from. Walking
-// forward to the first one nobody has finished yet beats always starting at
-// the top of the queue and handing the room a picture it has already solved.
-// Once the whole wall has been played there is nothing to skip to, so it
-// falls back to the next in line and the queue simply comes round again.
-function pickPuzzle(from) {
-  const played = new Set(shelf.map((e) => e.id));
-  for (let k = 0; k < QUEUE.length; k++) {
-    const i = (from + k) % QUEUE.length;
-    if (!played.has(QUEUE[i].id)) return i;
-  }
-  return from % QUEUE.length;
+// Which puzzle to put out next: the first queued one nobody has solved since
+// it arrived. With none left, replay whatever was solved longest ago, so the
+// table is never empty.
+function lastSolved(id) {
+  let t = 0;
+  for (const e of shelf) if (e.id === id && e.finishedAt > t) t = e.finishedAt;
+  return t;
+}
+function pickPuzzle(skipId) {
+  const fresh = CATALOG.queue.find((q) => q.id !== skipId && lastSolved(q.id) < (seen[q.file] || 0));
+  if (fresh) return fresh;
+  const replays = allPuzzles().filter((q) => q.id !== skipId)
+    .sort((a, b) => lastSolved(a.id) - lastSolved(b.id));
+  return replays[0] || allPuzzles()[0] || null;
 }
 
-table = restoreTable() || newTable(pickPuzzle(0));
+table = restoreTable();
+if (!table) {
+  const first = pickPuzzle();
+  if (!first) { console.error(`no puzzles: put images in ${catalog.QUEUE_DIR}/`); process.exit(1); }
+  table = newTable(first);
+}
 console.log(`table: ${table.def.id} - ${table.placedCount}/${table.pieces.length} placed`);
 
 process.on("SIGTERM", () => { saveTable(); process.exit(0); });
 process.on("SIGINT", () => { saveTable(); process.exit(0); });
 
-// Edits to puzzles.json reach a live table: new rows join the rotation, and
-// taking out the puzzle that's on the table skips straight past it.
-fs.watchFile(QUEUE_FILE, { interval: 5000 }, () => {
-  const fresh = loadQueue();
-  if (!fresh.length) return;
-  QUEUE = fresh;
-  if (!table.solvedAt && !QUEUE.some((q) => q.id === table.def.id)) nextPuzzle();
-});
+// A push reaches a live table without a restart: the folders are checked
+// every few seconds, new files join the queue, and taking the puzzle that's on
+// the table out of the queue skips straight past it.
+function catalogSig() {
+  const list = (d) => { try { return fs.readdirSync(path.join(__dirname, d)).join("|"); } catch { return ""; } };
+  let mtime = 0;
+  try { mtime = fs.statSync(path.join(__dirname, "puzzles.json")).mtimeMs; } catch { /* none */ }
+  return [list(catalog.QUEUE_DIR), list(catalog.DONE_DIR), mtime].join("#");
+}
+let lastSig = catalogSig();
+setInterval(() => {
+  const sig = catalogSig();
+  if (sig === lastSig) return;
+  lastSig = sig;
+  CATALOG = loadCatalog();
+  imageFix.clear();
+  if (table.solvedAt) return; // the changeover is already coming
+  const id = table.def.id;
+  const queued = CATALOG.queue.some((q) => q.id === id);
+  const exists = queued || CATALOG.done.some((q) => q.id === id);
+  if (!exists || (table.def.where === "queue" && !queued)) nextPuzzle();
+}, 10000).unref();
 
 function homeOf(i) {
   const c = i % table.cols, r = (i / table.cols) | 0;
@@ -910,13 +911,12 @@ function onShuffle(peer) {
 }
 
 function nextPuzzle() {
-  const currentId = table.def.id;
-  const fresh = loadQueue();
-  if (fresh.length) QUEUE = fresh;
-  imageFix.clear();             // images may have been renamed along with it
-  const at = QUEUE.findIndex((q) => q.id === currentId);
-  // If it left the queue, whatever followed it has slid up into its old slot.
-  table = newTable(pickPuzzle(at < 0 ? table.queueIndex : at + 1));
+  CATALOG = loadCatalog();
+  imageFix.clear();             // images may have moved folders since
+  lastSig = catalogSig();
+  const def = pickPuzzle(table.def.id);
+  if (!def) return;
+  table = newTable(def);
   for (const p of peers) p.holding = null;
   saveTable();
   console.log(`next puzzle: ${table.def.id} (${table.pieces.length} pieces)`);

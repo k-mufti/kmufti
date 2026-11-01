@@ -1,178 +1,112 @@
 {
-  "_comment": "The queue, played in order, wrapping when it reaches the end. To add a puzzle: drop the image in images/ and add a row here. Name the file after the piece with its piece count on the end - \"images/red-canyon-100\" is Red Canyon at about 100 pieces - and the row needs nothing but an id and the image. The extension may be left off (.png/.jpg/.webp/.svg all work). Anything set on the row wins over the filename: title, pieces, or an exact cols/rows. Pixel size is read from the file itself. An entry whose image isn't there yet is skipped until it is, and the manifest is re-read at every changeover, so a live table picks up new puzzles without a restart. Keep an id stable once it has played: the shelf archive is keyed on it.",
-  "queue": [
-    {
-      "id": "ebb",
-      "title": "Rise @ the Ebb",
-      "image": "images/Rise-@-the-Ebb-100"
+  "_comment": "Puzzles come from the folders: drop an image in images/puzzles-queue/ and push. The file name is the title and piece count (\"red-canyon-100.jpg\" = Red Canyon, about 100 pieces). Solved ones are moved to images/done-puzzles/ once a day and replay when the queue runs dry. This file only holds exceptions, keyed by file name without its extension: \"title\", \"pieces\", an exact \"cols\"/\"rows\", or the \"id\" the shelf already knows a puzzle by (keep an id stable once it has played).",
+  "puzzles": {
+    "1000-lumez-150": {
+      "id": "lumez"
     },
-    {
-      "id": "snowday",
-      "image": "images/snow-day-80"
+    "120-FPM-100": {
+      "id": "fpm120"
     },
-    {
-      "id": "acidrainbow",
-      "image": "images/Acid-Rainbow-200"
-    },
-    {
-      "id": "finvsfang",
-      "title": "Fin vs. Fang",
-      "image": "images/Fin-vs-Fang-50"
-    },
-    {
-      "id": "karawita",
-      "image": "images/Karawita-100"
-    },
-    {
-      "id": "onlyinadream",
-      "title": "Only in a Dream",
-      "image": "images/Only-in-a-Dream-250"
-    },
-    {
-      "id": "kyute",
-      "image": "images/Kyute-40"
-    },
-    {
+    "AMC-A-listers-100": {
       "id": "amcalisters",
-      "title": "AMC A-Listers",
-      "image": "images/AMC-A-listers-100"
+      "title": "AMC A-Listers"
     },
-    {
-      "id": "sleepyriver",
-      "image": "images/sleepy-river-150"
+    "Acid-Rainbow-200": {
+      "id": "acidrainbow"
     },
-    {
+    "Cooling-Off-100": {
+      "id": "coolingoff"
+    },
+    "Dream-a-little-dream-109": {
+      "id": "dream",
+      "title": "Dream a Little Dream"
+    },
+    "Elaphants-Dradle-150": {
+      "id": "dradle"
+    },
+    "Fin-vs-Fang-50": {
+      "id": "finvsfang",
+      "title": "Fin vs. Fang"
+    },
+    "Fing-Fang-70": {
+      "id": "fingfang"
+    },
+    "Gallop-Orange-50": {
+      "id": "gallop"
+    },
+    "Only-in-a-Dream-250": {
+      "id": "onlyinadream",
+      "title": "Only in a Dream"
+    },
+    "Rise-@-the-Ebb-100": {
+      "id": "ebb",
+      "title": "Rise @ the Ebb"
+    },
+    "Rock-n'-Road-Trip-75": {
       "id": "roadtrip",
-      "title": "Rock n' Road Trip",
-      "image": "images/Rock-n'-Road-Trip-75"
+      "title": "Rock n' Road Trip"
     },
-    {
-      "id": "luslus",
-      "image": "images/lus-lus-80"
+    "She-Called-Me-Generic-150": {
+      "id": "generic"
     },
-    {
-      "id": "notebook",
-      "image": "images/notebook-300"
+    "Your-Way-St-150": {
+      "id": "yourway",
+      "title": "Your Way St."
     },
-    {
-      "id": "fingfang",
-      "image": "images/Fing-Fang-70"
+    "among-the-stars-200": {
+      "id": "stars",
+      "title": "Among the Stars"
     },
-    {
-      "id": "meowmeow",
-      "title": "Meow Meow ____",
-      "image": "images/meow-meow-____-100"
+    "bauhaus-50": {
+      "title": "Shapes, Assembled"
     },
-    {
-      "id": "sultan",
-      "image": "images/sultan-150"
+    "cabin-50": {
+      "title": "Somebody's Up"
     },
-    {
-      "id": "dessert",
-      "title": "What's for Dessert?",
-      "image": "images/whats-for-dessert-100"
-    },
-    {
-      "id": "tacky",
-      "image": "images/tacky-100"
-    },
-    {
-      "id": "tiger",
-      "image": "images/tiger-100"
-    },
-    {
-      "id": "pastel",
-      "image": "images/pastel-100"
-    },
-    {
-      "id": "chicago",
-      "title": "Chicago",
-      "image": "images/chicago",
+    "chicago": {
       "pieces": 200
     },
-    {
-      "id": "dunes",
-      "title": "Long Way Home",
-      "image": "images/dunes-50"
+    "coffee-records-300": {
+      "id": "coffee"
     },
-    {
-      "id": "bauhaus",
-      "title": "Shapes, Assembled",
-      "image": "images/bauhaus-50"
+    "dark-night-200": {
+      "id": "darknight"
     },
-    {
-      "id": "cabin",
-      "title": "Somebody's Up",
-      "image": "images/cabin-50"
+    "dunes-50": {
+      "title": "Long Way Home"
     },
-    {
-      "id": "harbor",
-      "title": "Still Awake",
-      "image": "images/harbor-50"
+    "harbor-50": {
+      "title": "Still Awake"
     },
-    {
-      "id": "lumez",
-      "image": "images/1000-lumez-150"
+    "light-years-300": {
+      "id": "lightyears"
     },
-    {
-      "id": "fpm120",
-      "image": "images/120-FPM-100"
+    "lus-lus-80": {
+      "id": "luslus"
     },
-    {
-      "id": "coolingoff",
-      "image": "images/Cooling-Off-100"
+    "meow-libre-100": {
+      "id": "meow"
     },
-    {
-      "id": "dream",
-      "title": "Dream a Little Dream",
-      "image": "images/Dream-a-little-dream-109"
+    "meow-meow-____-100": {
+      "id": "meowmeow",
+      "title": "Meow Meow ____"
     },
-    {
-      "id": "dradle",
-      "image": "images/Elaphants-Dradle-150"
+    "rodeo-roper-50": {
+      "id": "rodeo"
     },
-    {
-      "id": "gallop",
-      "image": "images/Gallop-Orange-50"
+    "sleepy-river-150": {
+      "id": "sleepyriver"
     },
-    {
-      "id": "generic",
-      "image": "images/She-Called-Me-Generic-150"
+    "snow-day-80": {
+      "id": "snowday"
     },
-    {
-      "id": "standstill",
-      "image": "images/Standstill-100"
-    },
-    {
-      "id": "yourway",
-      "title": "Your Way St.",
-      "image": "images/Your-Way-St-150"
-    },
-    {
-      "id": "stars",
-      "title": "Among the Stars",
-      "image": "images/among-the-stars-200"
-    },
-    {
-      "id": "coffee",
-      "image": "images/coffee-records-300"
-    },
-    {
-      "id": "lightyears",
-      "image": "images/light-years-300"
-    },
-    {
-      "id": "meow",
-      "image": "images/meow-libre-100"
-    },
-    {
-      "id": "rodeo",
-      "image": "images/rodeo-roper-50"
-    },
-    {
+    "this-is-not-an-apple-50": {
       "id": "apple",
-      "title": "This Is Not an Apple?",
-      "image": "images/this-is-not-an-apple-50"
+      "title": "This Is Not an Apple?"
+    },
+    "whats-for-dessert-100": {
+      "id": "dessert",
+      "title": "What's for Dessert?"
     }
-  ]
+  }
 }
