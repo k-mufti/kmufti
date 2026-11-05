@@ -194,9 +194,20 @@
 
     const { visLo, visHi } = MECHA.DEFAULTS;
 
-    // Calibrate visibility
-    let bestResult = null, bestSpot = spot, bestDist = Infinity;
-    for (let attempt = 0; attempt < 3; attempt++) {
+    // Calibrate visibility.
+    //
+    // Six attempts, not three. autoPlace now rejects unusable regions instead
+    // of pricing them up, so a draw can come back with the fallback spot, and
+    // a round whose vis won't reach visLo needs somewhere else to stand
+    // rather than a stronger imprint - raising opacity on a region multiply
+    // can't darken just pins the search at the ceiling. The flagged rounds
+    // that did that all sat at the very bottom of the old band.
+    // bestDist is the pure in-band distance of whatever got chosen, so the
+    // `calibrated` flag below keeps meaning "landed in the band" and stays
+    // comparable with rounds flagged before this. bestScore is what the
+    // choosing is done on, and that one carries the spot penalty.
+    let bestResult = null, bestSpot = spot, bestDist = Infinity, bestScore = Infinity;
+    for (let attempt = 0; attempt < 6; attempt++) {
       const s = attempt === 0 ? spot : MECHA.autoPlace(baseData, CW, CH, figW, figH, MECHA.DEFAULTS, rng);
       if (attempt > 0) {
         // Re-render figure for new spot's lighting
@@ -214,8 +225,13 @@
       };
       const r = MECHA.calibratedCompose(p, baseData, visLo, visHi);
       const dist = r.vis < visLo ? visLo - r.vis : r.vis > visHi ? r.vis - visHi : 0;
-      if (dist < bestDist) { bestDist = dist; bestResult = r; bestSpot = s; }
-      if (dist === 0) break;
+      // A spot autoPlace had to fall back to is worth trying, but it loses a
+      // tie: better a different region than a known-bad one that happens to
+      // calibrate. Scored, not skipped, so the fallback still wins over
+      // nothing when every draw comes back rejected.
+      const score = dist + (s.ok === false ? 0.5 : 0);
+      if (score < bestScore) { bestScore = score; bestDist = dist; bestResult = r; bestSpot = s; }
+      if (score === 0) break;   // in band AND on a region that passed
     }
 
     canvas.width = CW; canvas.height = CH;
@@ -234,6 +250,14 @@
         poseIdx, vis: bestResult.vis, calibrated: bestDist === 0,
         detail: bestSpot.st ? bestSpot.st.detail : null,
         lum: bestSpot.st ? bestSpot.st.mean : null,
+        // Whether the region passed autoPlace's filters or is the fallback.
+        // Flagged rounds are read back against this, so a future batch can
+        // say whether the fallback is where the bad ones still come from.
+        spotOk: bestSpot.ok !== false,
+        // Mean luminance of the figure itself. Near 255 means it rendered
+        // white, which multiply cannot show at any strength - that was the
+        // whole story behind the most invisible flagged rounds.
+        figLum: MECHA.figureLum(figImg),
       },
     };
     ctx.drawImage(scene, 0, 0);

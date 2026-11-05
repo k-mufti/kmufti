@@ -336,3 +336,115 @@ well-determined; the directional split is an educated guess.
 | Hemi | `HemisphereLight(0xb0c0e0, 0x4a3f30)` | **Hardcoded** blue sky / brown ground — acts as a hue tint |
 | Zoom | orthographic camera height | Apparent figure size; currently also a framing workaround |
 | Proportions | procedural mode only | Irrelevant to relief (STL) mode |
+
+---
+
+## 8. Retuned against the flagged rounds (2026-11-05)
+
+26 rounds had been flagged in-game (`alt+shift+B` / `G`). 23 of them are from
+after the calibration pass landed, which is the set everything below is drawn
+from: **14 broken, 9 good**.
+
+The flag turns out to be a findability label. Not one broken round was ever
+solved (0/16 won, 14/16 ran the clock out), and 8 of the 10 good ones were.
+So "broken" means *nobody could find it*, and the question is which knob was
+letting that through.
+
+### What the rounds said
+
+| | broken (14) | good (9) | cut at | broken cut | good cut |
+|---|---|---|---|---|---|
+| `vis` | median 9.20, from 6.10 | median 11.94, from 9.85 | 9.5 | **8** | **0** |
+| region `lum` | median 69, from 58.3 | median 111.9, from 71.8 | 70 | **7** | **0** |
+| region `detail` | median 11.80, to 17.30 | median 11.87, to 12.99 | 13 | **3** | **0** |
+
+Together, `vis ≥ 9.5` and `lum ≥ 70` reject **12 of the 14 broken rounds and
+none of the 9 good ones**.
+
+`visLo` was the big one. The band is the difficulty dial, and the bottom half
+of the old `[6, 14]` produced nothing but unfindable rounds — every broken
+round below 9.5 timed out, and no round anyone liked landed below 9.85. At 10
+it starts throwing away rounds that played well, so 9.5 is the knee.
+
+`shadow` was 0.72 in all 26 records and never varied, so there is no evidence
+about it either way.
+
+### The real bug underneath
+
+Three rounds had `vis` under 1.0 — not "well hidden", *absent*. Measuring the
+figure directly explained it: it had rendered at a mean luminance of **253**,
+which is white, and under `multiply` white is a no-op. The figure could not
+be seen at any opacity, which is also why the opacity search sat pinned at
+0.98 on exactly those rounds — it was winding strength up against a figure
+that had nothing to give.
+
+The cause is the lighting being sampled from the region the figure stands on.
+A bright region bleaches it:
+
+| region lum | figure lum | vis |
+|---|---|---|
+| 105–142 | 170–192 | ~11.5 |
+| 172 | 253 | 0.64 |
+
+Hence `maxLum` 225 → 150. The flagged rounds agree from the other direction:
+the brightest round anyone called good sat at 139.8, and the two most
+invisible broken ones at 215.2 and 145.3.
+
+### `autoPlace` was never actually rejecting anything
+
+`checkSpot` has had the right filters all along, but `autoPlace` doesn't call
+it — it priced dark and busy regions up as a *cost* and then returned the
+cheapest candidate regardless. If every candidate was unusable, the round
+shipped on the least-bad unusable one. It now rejects properly and keeps the
+cheapest rejected candidate only as a fallback, with `ok` saying which
+happened.
+
+That narrowed the acceptable window enough that 48 candidate draws often held
+nothing, so `candidates` went to 400 — 0.7ms instead of 0.2ms, about 3ms a
+round.
+
+### Measured, 44 rounds before and after
+
+Split by photo, because the shipped photo set turned out to be the dominant
+variable:
+
+| | below band | near-invisible | median vis |
+|---|---|---|---|
+| usable photos, before | 2/14 | 0 | 10.46 |
+| usable photos, after | **0/10** | 0 | **11.59** |
+| too-bright photos, before | 18/30 | 7/30 | 8.05 |
+| too-bright photos, after | **8/34** | **2/34** | **10.04** |
+
+11.59 is essentially the good rounds' own median of 11.94.
+
+### The photo set is now the binding constraint
+
+Sampling 300 figure-sized regions in each of the 12 shipped photos, against
+`lum ∈ [70, 150]` and `detail ≤ 13`:
+
+| photo | median lum | acceptable spots |
+|---|---|---|
+| img03 | 219 | **0%** |
+| img09 | 234 | **7%** |
+| img12 | 208 | **0%** |
+| img01 | 77 | 0% (too flat — detail, not lum) |
+| img10 | 89 | 21% |
+| img02 | 109 | 13% |
+
+Three of twelve can host a findable figure nowhere at all, and nine of twelve
+manage under 10%. No threshold fixes that; those photos want replacing with
+mid-luminance, mid-texture ones. This matters for un-curated dailies and for
+practice whenever `PEXELS_KEY` is unset — a hand-placed daily reads its
+coordinates from `daily.json` and is unaffected.
+
+### Caveats
+
+- n = 23, and they are *flagged* rounds, not a sample: an ordinary round that
+  played fine was never written down. The thresholds are preferences among
+  candidate spots with a fallback, so the worst case is today's behaviour.
+- The before/after sweeps ran on the 12 repo photos, while every flagged
+  round was a practice round on a Pexels photo. The populations differ, and
+  the Pexels side is unverified locally — it needs a key.
+- `figLum` and `spotOk` are now recorded on every round. The next batch of
+  flags can say whether what is left is the bleached figure, the fallback
+  spot, or something else.

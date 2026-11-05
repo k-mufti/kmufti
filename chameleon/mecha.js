@@ -27,17 +27,46 @@ window.MECHA = (function () {
     feather: 0.8,        // px edge blur when compositing
     rotDeg: 8,           // max random tilt
     // placement + filters
-    candidates: 48,
+    // 400, not 48. The filters below now reject a region rather than merely
+    // charging for it, and the acceptable luminance window is narrower, so a
+    // draw of 48 often held nothing that qualified and the round fell back to
+    // a spot that had been rejected - measured at 5 of 22 rounds. At 400 that
+    // drops to about 1 in 22 and no round lands outside the window at all.
+    // It costs 0.7ms instead of 0.2ms per draw, about 3ms a round in all.
+    candidates: 400,
     targetDetail: 12,    // aim for this fine-detail level
     detailLo: 4,         // detail→strength mapping floor
-    detailHi: 22,        // detail→strength mapping ceiling
-    minLum: 55,          // reject regions darker than this (multiply dies on black)
-    maxLum: 225,         // reject blown-out white
+    detailHi: 22,        // detail→strength mapping ceiling (NOT a reject bound)
+    // Separate from detailHi on purpose: detailHi is the top of the
+    // detail→opacity ramp, so moving it would quietly restrength every
+    // round. This is only the "too busy to be findable" cut-off, and 13 is
+    // where the flagged rounds put it - 3 broken above it, no good ones.
+    detailReject: 13,
+    // 70, not 55: of the flagged rounds, 7 of the 14 broken ones sat on a
+    // region below 70 and not one of the 9 good ones did. 55 was letting
+    // through a band of near-black regions where multiply has nothing to
+    // darken, so the figure was there and nobody could see it.
+    minLum: 70,          // reject regions darker than this (multiply dies on black)
+    // 150, not 225. The figure's lighting is sampled from the region it sits
+    // on, so a bright region renders a near-white figure - and multiply by
+    // white is a no-op, which means no amount of opacity can make it
+    // visible. Measured directly: a region at lum 172 produced a figure at
+    // lum 253 and a vis of 0.64, while regions at 105-142 gave figures at
+    // 170-192 and a vis near 12. The flagged rounds say the same - the
+    // brightest round anyone called good sat at 139.8, and the two most
+    // invisible broken ones at 215.2 and 145.3.
+    maxLum: 150,         // reject regions so bright the figure bleaches out
     inset: 0.08,
     hitAlpha: 32,
     maxCanvasH: 1200,
     // difficulty calibration: target mean ΔLuminance over the figure area
-    visLo: 6,    // below this = nearly invisible (too hard)
+    // visLo was 6, which turned out to be most of the problem. The band is
+    // the difficulty dial, and the bottom half of [6, 14] produced nothing
+    // but unfindable rounds: of the flagged rounds, every one of the 8
+    // calibrated-broken below 9.5 timed out, and the 9 good ones all landed
+    // at 9.85 or above (median 11.9). 9.5 is the knee - at 10 it starts
+    // throwing away rounds that played well.
+    visLo: 9.5,  // below this = nearly invisible (too hard)
     visHi: 14,   // above this = pops out (too easy)
   };
 
@@ -132,12 +161,21 @@ window.MECHA = (function () {
   }
 
   // Auto-pick a hiding spot from many seeded candidates.
+  //
+  // A candidate that fails the filters is now REJECTED rather than merely
+  // charged for. It used to be only a cost: dark and busy regions were priced
+  // up, and then whichever candidate was cheapest won even if every one of
+  // them was unusable - which is how rounds shipped on regions multiply could
+  // do nothing with. Acceptable candidates are preferred; the cheapest
+  // unacceptable one is still kept as a fallback so a round always ships, and
+  // `ok` says which happened.
   function autoPlace(baseData, CW, CH, figW, figH, cfg, rng) {
     const rnd = rng || Math.random;
     const inset = cfg.inset;
     const x0 = CW * inset, x1 = CW * (1 - inset) - figW;
     const y0 = CH * inset, y1 = CH * (1 - inset) - figH;
-    let best = null;
+    const detailReject = cfg.detailReject ?? cfg.detailHi;
+    let best = null, bestAny = null;
     for (let k = 0; k < cfg.candidates; k++) {
       const fx = Math.round(lerp(x0, x1, rnd()));
       const fy = Math.round(lerp(y0, y1, rnd()));
@@ -146,15 +184,43 @@ window.MECHA = (function () {
       const darkPenalty = st.mean < cfg.minLum ? (cfg.minLum - st.mean) * 0.6 : 0;
       const brightPenalty = st.mean > cfg.maxLum ? (st.mean - cfg.maxLum) * 0.6 : 0;
       const cost = detailCost + darkPenalty + brightPenalty;
-      if (!best || cost < best.cost) best = { fx, fy, cost, st };
+      const ok = st.mean >= cfg.minLum && st.mean <= cfg.maxLum &&
+                 st.detail >= cfg.detailLo && st.detail <= detailReject;
+      const cand = { fx, fy, cost, st, ok };
+      if (ok && (!best || cost < best.cost)) best = cand;
+      if (!bestAny || cost < bestAny.cost) bestAny = cand;
     }
-    return best;
+    return best || bestAny;
   }
 
   // Strength of the imprint given local detail (adaptive) — used for auto only.
   function adaptiveOpacity(detail, cfg) {
     const t = clamp((detail - cfg.detailLo) / (cfg.detailHi - cfg.detailLo), 0, 1);
     return lerp(cfg.opacityMin, cfg.opacityMax, t);
+  }
+
+  // Mean luminance of the figure's own opaque pixels. Under multiply the
+  // figure can only darken, so this is the ceiling on what it can ever do: at
+  // 255 it is pure white and literally cannot show up, however strong the
+  // imprint. Recorded with each round so a flagged one can be told apart -
+  // "nobody could find it" because it was well hidden, or because there was
+  // nothing there to find.
+  function figureLum(figImg) {
+    try {
+      const w = figImg.width || figImg.naturalWidth, h = figImg.height || figImg.naturalHeight;
+      if (!w || !h) return null;
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const x = c.getContext('2d', { willReadFrequently: true });
+      x.drawImage(figImg, 0, 0);
+      const d = x.getImageData(0, 0, w, h).data;
+      let n = 0, sum = 0;
+      for (let i = 0; i < d.length; i += 4) {
+        if (d[i + 3] <= 32) continue;
+        sum += 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]; n++;
+      }
+      return n ? sum / n : null;
+    } catch (_) { return null; }
   }
 
   // ---- difficulty calibration ---------------------------------------------
@@ -253,7 +319,7 @@ window.MECHA = (function () {
     FIG_ASPECT, DEFAULTS,
     figure, figureSVG, loadImage, sizeFor,
     regionStats, checkSpot, autoPlace, adaptiveOpacity,
-    compose, revealFigure, measureVisibility, calibratedCompose,
+    compose, revealFigure, measureVisibility, calibratedCompose, figureLum,
     clamp, lerp,
   };
 })();
