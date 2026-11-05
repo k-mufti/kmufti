@@ -178,7 +178,7 @@
   roll.addEventListener("click", () => {
     let n = Y.randomName();
     for (let i = 0; i < 5 && n === Y.name(); i++) n = Y.randomName();
-    input.value = Y.setName(n);
+    input.value = Y.setName(n, false);     // the dice chose it, not you
     roll.classList.remove("rolling");
     void roll.offsetWidth;                     // restart the spin
     roll.classList.add("rolling");

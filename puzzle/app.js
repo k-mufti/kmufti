@@ -991,11 +991,13 @@
   /* ---------- Your name (the colour stays whatever you were dealt) ------- */
   youName.value = myName;
   youIcon.setAttribute("fill", myColor);
-  function commitName() {
+  // typed is false when the die below filled the box, so a rolled name isn't
+  // recorded as one you chose (you.js keeps that flag; analytics.js sends it).
+  function commitName(typed = true) {
     const v = youName.value.trim().slice(0, 18) || myName;
     youName.value = v;
     if (v === myName) return;
-    myName = You ? You.setName(v) : v;
+    myName = You ? You.setName(v, typed) : v;
     if (!You) remember("kmufti-puzzle-name", myName);
     send({ t: "name", name: myName, color: myColor });
   }
@@ -1006,8 +1008,10 @@
     if (document.activeElement !== youName) youName.value = myName;
     send({ t: "name", name: myName, color: myColor });
   });
-  youName.addEventListener("change", commitName);
-  youName.addEventListener("blur", commitName);
+  // Wrapped, not passed straight in: the listener's Event would land in
+  // commitName's `typed` argument.
+  youName.addEventListener("change", () => commitName());
+  youName.addEventListener("blur", () => commitName());
   youName.addEventListener("keydown", (e) => { if (e.key === "Enter") youName.blur(); });
   // The die: a random name, everywhere at once (the onChange above tells the
   // table). It sits inside the name's <label>, so stop the click focusing it.
@@ -1018,7 +1022,7 @@
     let n = fresh();
     for (let i = 0; i < 5 && n === myName; i++) n = fresh();
     youName.value = n;
-    commitName();
+    commitName(false);
     youRoll.classList.remove("rolling");
     void youRoll.offsetWidth;                  // restart the spin
     youRoll.classList.add("rolling");

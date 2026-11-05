@@ -6,7 +6,12 @@
    <script src="../you.js"> before their own code and use:
 
      KmuftiYou.name()          your name (a random one until you pick one)
-     KmuftiYou.setName(n)      change it everywhere; returns what was saved
+     KmuftiYou.setName(n)      change it everywhere; returns what was saved.
+                               setName(n, false) for a name the dice picked,
+                               so it doesn't count as one you chose.
+     KmuftiYou.chosen()        true if you typed this name, false if it was
+                               drawn for you - analytics.js reports it, so a
+                               real name can be told from "someone's dad"
      KmuftiYou.color()         your colour, e.g. for a cursor
      KmuftiYou.onChange(fn)    fn({ name, color }) when it changes, including
                                from another tab
@@ -17,6 +22,7 @@
 (function () {
   const NAME = "kmufti-name";
   const COLOR = "kmufti-color";
+  const CHOSEN = "kmufti-name-chosen";   // "1" once you've typed one yourself
   const MAX = 18;
 
   /* ---------- Random names, for anyone who hasn't picked one ----------
@@ -127,9 +133,15 @@
   // Before there was one name, Jigsaw and Yahtzee each kept their own.
   // Jigsaw's always exists once you've visited (it generated one), so a
   // name you typed into Yahtzee wins over it.
-  let name = clean(read(NAME)) || clean(read("yahtzee-name")) || clean(read("kmufti-puzzle-name"));
+  const own = clean(read(NAME));
+  const fromYahtzee = clean(read("yahtzee-name"));
+  let name = own || fromYahtzee || clean(read("kmufti-puzzle-name"));
+  // A name carried over from Yahtzee was typed in, so it counts as chosen.
+  // Jigsaw's was generated for you, so it doesn't.
+  let chosen = read(CHOSEN) === "1" || (!own && !!fromYahtzee);
   if (!name) name = randomName();
   write(NAME, name);
+  if (chosen) write(CHOSEN, "1");
 
   let color = read(COLOR) || read("kmufti-puzzle-color");
   if (!/^#[0-9a-f]{6}$/i.test(color)) color = pick(COLORS);
@@ -142,17 +154,22 @@
   window.addEventListener("storage", (e) => {
     if (e.key === NAME && clean(e.newValue) && clean(e.newValue) !== name) { name = clean(e.newValue); emit(); }
     if (e.key === COLOR && /^#[0-9a-f]{6}$/i.test(e.newValue || "") && e.newValue !== color) { color = e.newValue; emit(); }
+    if (e.key === CHOSEN && e.newValue === "1" && !chosen) { chosen = true; emit(); }
   });
 
   window.KmuftiYou = {
     MAX,
     name: () => name,
+    chosen: () => chosen,
     color: () => color,
-    setName(n) {
+    // typed is false when the dice picked the name, not the person. Once
+    // you've typed one, rolling the dice doesn't take that back.
+    setName(n, typed = true) {
       const v = clean(n);
       if (!v || v === name) return name;
       name = v;
       write(NAME, name);
+      if (typed && !chosen) { chosen = true; write(CHOSEN, "1"); }
       emit();
       return name;
     },
