@@ -150,8 +150,12 @@ launcher tiles before it became its own project, and the folder name stuck.
    That is one JSON object per line. Each has a `shot` path for the picture:
 
    ```bash
-   curl -s -o round.jpg "https://kmufti.com/chameleon/api/verdicts/shots/<id>.jpg?key=$MC_DEV_KEY"
+   curl -s -o round.jpg -H "X-MC-Dev-Key: $MC_DEV_KEY" \
+     https://kmufti.com/chameleon/api/verdicts/shots/<id>.jpg
    ```
+
+   The key goes in the header, not a `?key=` query string: the query string is
+   copied into nginx's access log and the browser's history.
 
    A `good` record already carries `figure.x`, `figure.y`, `figure.size` and
    `figure.rot` in the units `daily.json` wants, so promoting one into a daily

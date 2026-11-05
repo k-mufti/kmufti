@@ -237,6 +237,9 @@ function readBody(req, limit) {
 
 // Constant-time-ish compare, so the key cannot be guessed a character at a
 // time off the response timing.
+// Header only, never ?key=: a key in the query string is copied into nginx's
+// access log, the browser's history and the Referer of anything the page links
+// out to. verdicts.sh and DEPLOY.md both send the header.
 function keyOk(given) {
   if (!DEV_KEY || !given || given.length !== DEV_KEY.length) return false;
   let diff = 0;
@@ -336,7 +339,7 @@ const server = http.createServer(async (req, res) => {
   // Read the flagged rounds back out, for review. Same key.
   if (apiPath === "/api/verdicts" && req.method === "GET") {
     if (!DEV_KEY) { res.writeHead(503); return res.end("verdicts not enabled"); }
-    if (!keyOk(req.headers["x-mc-dev-key"] || url.searchParams.get("key"))) {
+    if (!keyOk(req.headers["x-mc-dev-key"])) {
       res.writeHead(403); return res.end("bad key");
     }
     let body = "";
@@ -348,7 +351,7 @@ const server = http.createServer(async (req, res) => {
   // The picture from a flagged round.
   const shot = apiPath.match(/^\/api\/verdicts\/shots\/([\w-]+)\.jpg$/);
   if (shot && req.method === "GET") {
-    if (!keyOk(req.headers["x-mc-dev-key"] || url.searchParams.get("key"))) {
+    if (!keyOk(req.headers["x-mc-dev-key"])) {
       res.writeHead(403); return res.end("bad key");
     }
     fs.readFile(path.join(VERDICT_DIR, "shots", shot[1] + ".jpg"), (err, data) => {
@@ -400,10 +403,27 @@ const MIME = {
   ".glb": "model/gltf-binary", ".stl": "model/stl", ".ttf": "font/ttf",
 };
 function serveStatic(req, res, pathname) {
-  let rel = decodeURIComponent(pathname.replace(/^\/+/, ""));
+  let rel;
+  try { rel = decodeURIComponent(pathname.replace(/^\/+/, "")); }
+  catch { res.writeHead(400); return res.end(); }   // a stray % isn't a path
   if (rel === "" || rel.endsWith("/")) rel += "index.html";
   const filePath = path.join(STATIC_DIR, rel);
-  if (!filePath.startsWith(STATIC_DIR)) { res.writeHead(403); return res.end(); }
+
+  // Compared against STATIC_DIR + separator, not STATIC_DIR alone: a bare
+  // prefix test also passes any path whose name merely STARTS with it, so
+  // "../kmufti-hub-backup/..." would resolve outside the root and still
+  // satisfy the check. Nothing reaches here with a ".." in it today - the
+  // `new URL(req.url)` up top normalizes those away before this runs - so
+  // this is the belt to that braces, in case the caller ever changes.
+  if (!filePath.startsWith(STATIC_DIR + path.sep)) { res.writeHead(403); return res.end(); }
+
+  // Nothing starting with a dot, the same rule nginx applies in production.
+  // This one was reachable: the web root is the git checkout, so /.gitignore
+  // answered 200 with its contents and /.git/config would have let the whole
+  // history be walked off a laptop run.
+  if (rel.split(/[\\/]/).some((part) => part.startsWith("."))) {
+    res.writeHead(403); return res.end();
+  }
   fs.readFile(filePath, (err, data) => {
     if (err) { res.writeHead(404); return res.end("not found"); }
     res.writeHead(200, {

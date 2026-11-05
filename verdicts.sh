@@ -79,7 +79,7 @@ if [ "$SHOTS" -eq 1 ]; then
   # One id per line, without needing jq installed.
   for ID in $(sed -n 's/.*"id":"\([^"]*\)".*/\1/p' "$JSONL"); do
     [ -f "$OUT/shots/$ID.jpg" ] && continue
-    if curl -sf -o "$OUT/shots/$ID.jpg" "$BASE/verdicts/shots/$ID.jpg?key=$KEY"; then
+    if curl -sf -o "$OUT/shots/$ID.jpg" -H "X-MC-Dev-Key: $KEY" "$BASE/verdicts/shots/$ID.jpg"; then
       NEW=$((NEW + 1))
     else
       rm -f "$OUT/shots/$ID.jpg"
