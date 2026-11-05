@@ -94,7 +94,15 @@
       const j = await r.json();
       if (Array.isArray(j.images) && j.images.length) IMAGES = j.images;
     } catch (_) {}
-    if (!IMAGES.length) IMAGES = Array.from({ length: 12 }, (_, i) => `images/img${String(i + 1).padStart(2, '0')}.jpg`);
+    // Last resort: manifest.json itself didn't load. Named rather than
+    // counted to img12 - that range included three photos with no spot the
+    // game can hide a figure on at all (img01, img03, img12) and stopped
+    // short of the two best (img20, img22). These are the top scorers by the
+    // measurement in BLENDING-NOTES.md section 8.
+    if (!IMAGES.length) {
+      IMAGES = ['22', '20', '10', '14', '13', '02', '05', '18']
+        .map((n) => `images/img${n}.jpg`);
+    }
   }
   async function loadDaily() {
     try {

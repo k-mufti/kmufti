@@ -1,9 +1,7 @@
 {
-  "note": "Random dev photos (Lorem Picsum, CC0). Swap for curated daily picks later.",
+  "note": "Fallback photos for Meccha Chameleon, used when the backend has no photo to give - no PEXELS_KEY, pool still filling, or the service is down. The daily and practice normally come from Pexels via /chameleon/api/photo. (Lorem Picsum, CC0.) img01, img03, img12, img17, img21 were removed on 2026-11-05: sampling 400 figure-sized regions in each found no spot at all that the game can hide a figure on (lum 70-150, detail 4-13), so every round on them was unfindable. The files are still on disk. img08 and img15 are the next weakest at 1% and 2% and are borderline; img22 (55%) and img20 (23%) are the best of what is left. BLENDING-NOTES.md section 8 has the method.",
   "images": [
-    "images/img01.jpg",
     "images/img02.jpg",
-    "images/img03.jpg",
     "images/img04.jpg",
     "images/img05.jpg",
     "images/img06.jpg",
@@ -12,16 +10,13 @@
     "images/img09.jpg",
     "images/img10.jpg",
     "images/img11.jpg",
-    "images/img12.jpg",
     "images/img13.jpg",
     "images/img14.jpg",
     "images/img15.jpg",
     "images/img16.jpg",
-    "images/img17.jpg",
     "images/img18.jpg",
     "images/img19.jpg",
     "images/img20.jpg",
-    "images/img21.jpg",
     "images/img22.jpg"
   ]
 }
