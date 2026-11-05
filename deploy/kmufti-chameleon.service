@@ -6,9 +6,14 @@
 #
 # After changing chameleon/server.js on the box:  sudo systemctl restart kmufti-chameleon
 #
-# This serves practice photos only. The daily photo is in the repo, hand-picked
-# and hand-placed, and the game reads it straight off disk - so if this service
-# is down, the daily is untouched and practice falls back to the repo photos.
+# This serves the photos for BOTH modes now: practice rounds, and the one photo
+# a day the daily runs on (/api/photo/daily, chosen here so every player gets
+# the same puzzle). If this service is down, both fall back to the photos in
+# chameleon/images/ - and because the fallback picks from them with a
+# date-seeded shuffle, the daily is still the same puzzle for everyone who is
+# falling back, just not the same one as players who reached the API.
+#
+# A hand-placed day in chameleon/daily.json overrides all of it.
 
 [Unit]
 Description=kmufti Meccha Chameleon (practice photos)
@@ -20,8 +25,10 @@ WorkingDirectory=/var/www/kmufti-hub/chameleon
 ExecStart=/usr/bin/node server.js
 Environment=PORT=8025
 # Photos come from Pexels. Without a key there is no upstream call at all and
-# practice uses the photos in chameleon/images/ - so this is what turns the
-# feature on.
+# BOTH the daily and practice use the photos in chameleon/images/ - so this is
+# what turns the feature on. It matters more than it used to: the daily is no
+# longer a repo photo by design, it is one only when this is unset or the pool
+# is still empty.
 #Environment=PEXELS_KEY=your-pexels-api-key
 # Cached photos live outside the repo so a git pull can't wipe the pool. The
 # cap bounds the disk they use: 200 x ~200KB is roughly 40MB.

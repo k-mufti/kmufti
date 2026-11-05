@@ -75,10 +75,20 @@ launcher tiles before it became its own project, and the folder name stuck.
    Photos come from Pexels, so the feature is off until a key is set. Put one
    in the unit (`sudo systemctl edit --full kmufti-chameleon`, uncomment
    `PEXELS_KEY`) and restart. Without a key there is no upstream call at all:
-   the endpoint returns 503 and practice falls back to the photos in
-   `chameleon/images/`. The **daily** photo never touches this service - it is
-   in the repo, hand-picked and hand-placed - so the daily puzzle works even
-   with the backend down.
+   the endpoint returns 503 and both modes fall back to the photos in
+   `chameleon/images/`.
+
+   The **daily** now comes from this service too (`/api/photo/daily`): one
+   photo per UTC day, chosen here rather than by the browser, because every
+   player has to be on the same puzzle for a shared score to mean anything.
+   It is written to `daily-photo.json` beside the pool and pinned, so neither
+   a restart nor the pool hitting its cap can change today's photo out from
+   under someone mid-round.
+
+   With the backend down the daily still works - it falls back to the repo
+   photos with a date-seeded pick, so everyone falling back gets the same
+   puzzle as each other, just not the same one as players who reached the
+   API. A hand-placed day in `chameleon/daily.json` overrides all of it.
 
    The pool fills itself in the background: a photo a minute while there is
    room, against a free tier of 200 an hour, so a practice round is served

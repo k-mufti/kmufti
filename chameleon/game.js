@@ -141,6 +141,23 @@
     } catch (_) { return null; }
   }
 
+  // The photo of the day, from the backend. Everyone gets the same one for
+  // the whole UTC day, which is what keeps the daily a single shared puzzle -
+  // the figure's position is already seeded off the date, so same photo plus
+  // same date is the same round everywhere.
+  //
+  // Null for any reason at all - no key, pool still filling, backend down -
+  // and the caller falls back to the photos in the repo, which is what the
+  // daily did before this existed.
+  async function dailyPhoto() {
+    try {
+      const r = await fetch('/chameleon/api/photo/daily', { cache: 'no-cache' });
+      if (!r.ok) return null;
+      const j = await r.json();
+      return j.src ? j : null;
+    } catch (_) { return null; }
+  }
+
   function showCredit(photo) {
     if (!photoCredit) return;
     if (!photo) { photoCredit.hidden = true; return; }
@@ -777,8 +794,26 @@
       await buildAuto('seed-' + FORCE_SEED);
     } else {
       const entry = DAILY[todayUTCKey()];
-      if (entry) await buildFromEntry(entry);
-      else { showCredit(null); await buildAuto('daily-' + todayUTCKey()); }
+      if (entry) {
+        // A hand-placed day still wins: daily.json names its own image and
+        // the figure's exact position, and nothing here should override that.
+        await buildFromEntry(entry);
+      } else {
+        const photo = await dailyPhoto();
+        try {
+          showCredit(photo);
+          await buildAuto('daily-' + todayUTCKey(), photo);
+        } catch (err) {
+          // The daily now leans on a fetch and a file on the backend, and a
+          // dead daily is the worst thing this page can do - "refresh to try
+          // again" won't help if the photo is gone. So one retry on the repo
+          // photos, which is where the daily used to live anyway.
+          if (!photo) throw err;
+          console.warn('[MC] photo of the day failed, falling back to the repo photos:', err);
+          showCredit(null);
+          await buildAuto('daily-' + todayUTCKey());
+        }
+      }
     }
 
     if (mode === 'daily' && !NO_LOCK && !FORCE_SEED) {

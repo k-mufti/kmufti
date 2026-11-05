@@ -2,14 +2,18 @@
 //
 // It does one job: hand out photographs for practice rounds.
 //
-// The daily photo is not its business. That one lives in the repo, hand-picked
-// and hand-placed in build.html, and the game reads it straight off disk.
 // Practice is the mode that empties a photo pool - a few rounds and you have
-// seen all of them - so it draws from Pexels instead.
+// seen all of them - so it draws from Pexels. The daily draws from the same
+// pool, but the SERVER picks which photo, once per UTC day, because everyone
+// has to be on the same puzzle for the scores to mean anything.
 //
-//   GET  /api/photo?seen=id,id   a photo for a round, as JSON + credit
+// A hand-placed day in daily.json still wins over both: it names its own
+// image and the figure's exact position, and the game never asks here.
+//
+//   GET  /api/photo?seen=id,id   a photo for a practice round, JSON + credit
+//   GET  /api/photo/daily        today's photo, the same for everyone
 //   GET  /api/photo/<id>.jpg     the bytes, from our own cache
-//   GET  /api/photo/stats        how full the pool is
+//   GET  /api/photo/stats        how full the pool is, and today's pick
 //
 // Two things shape the design.
 //
@@ -76,6 +80,76 @@ function jpegSize(buf) {
   return null;
 }
 
+/* ------------------------------------------------------------------------
+   THE PHOTO OF THE DAY
+
+   The daily used to be a photo from the repo picked by a date-seeded shuffle.
+   That kept everyone on the same puzzle, which is the one thing a daily can't
+   do without - the scores are shareable - but it meant 22 fixed photos, and
+   measuring them against what the game can actually hide a figure on, most
+   could barely do it: five had nowhere at all to put one.
+
+   So the daily draws from the practice pool instead, and the SERVER decides
+   which one, because the players can't be trusted to agree. One photo per UTC
+   day, written down, handed to everyone who asks, and pinned so the pool's
+   eviction can't take today's puzzle out from under it at the cap.
+
+   Placement is unchanged: the game still seeds the figure's position from the
+   date, so the same photo plus the same date is the same puzzle everywhere.
+   ------------------------------------------------------------------------ */
+const DAILY_NAME = "daily-photo.json";
+const DAILY_FILE = () => path.join(PHOTO_DIR, DAILY_NAME);
+const DAILY_HISTORY = 60;   // ids not to reuse as a daily, newest last
+
+let daily = { day: "", id: "", history: [] };
+try { daily = { history: [], ...JSON.parse(fs.readFileSync(DAILY_FILE(), "utf8")) }; }
+catch { /* first run */ }
+
+const utcDay = (d = new Date()) => d.toISOString().slice(0, 10);
+
+function saveDaily() {
+  try {
+    fs.mkdirSync(PHOTO_DIR, { recursive: true });
+    fs.writeFileSync(DAILY_FILE(), JSON.stringify(daily));
+  } catch (e) { console.error("daily photo save failed:", e.message); }
+}
+
+// Today's photo, or null if there is nothing to give. Picked once per UTC day
+// and then returned unchanged, including across a restart - a visitor at
+// 23:59 must get the same puzzle as one at 00:01.
+function dailyPhoto() {
+  const today = utcDay();
+  if (daily.day === today && daily.id) {
+    const have = photos.find((p) => p.id === daily.id);
+    if (have) return have;
+    // The file went missing (hand-deleted, or a cache wiped mid-day). Fall
+    // through and choose again rather than serving a 404 all day.
+    console.error(`daily photo ${daily.id} is gone from the pool - choosing again`);
+  }
+  if (!photos.length) return null;
+
+  // Prefer one that has not been a daily lately, so "a new photo every day"
+  // stays true for as long as the pool can manage it.
+  const used = new Set(daily.history);
+  const fresh = photos.filter((p) => !used.has(p.id));
+  const from = fresh.length ? fresh : photos;
+
+  // Seeded by the date, not random: two workers, or a restart inside the same
+  // day before the file is written, land on the same photo anyway.
+  let h = 0;
+  for (let i = 0; i < today.length; i++) h = (h * 31 + today.charCodeAt(i)) | 0;
+  const pick = from[Math.abs(h) % from.length];
+
+  daily = {
+    day: today,
+    id: pick.id,
+    history: [...daily.history.filter((id) => id !== pick.id), pick.id].slice(-DAILY_HISTORY),
+  };
+  saveDaily();
+  console.log(`photo of the day for ${today}: ${pick.id} by ${pick.by}`);
+  return pick;
+}
+
 let photos = [];   // [{ id, by, link, at }], oldest first
 try { photos = JSON.parse(fs.readFileSync(path.join(PHOTO_DIR, "index.json"), "utf8")) || []; }
 catch { /* first run */ }
@@ -115,7 +189,11 @@ function savePhotoIndex() {
   const known = new Set(photos.map((p) => p.id + ".jpg"));
   let gone = 0;
   for (const f of found) {
-    if (f === "index.json" || known.has(f)) continue;
+    // index.json and daily-photo.json are the pool's own bookkeeping, not
+    // stray photos. Leaving DAILY_NAME out of this swept today's chosen photo
+    // away on every restart, so the daily changed whenever the service
+    // bounced - which is the one thing it must never do.
+    if (f === "index.json" || f === DAILY_NAME || known.has(f)) continue;
     try { fs.unlinkSync(path.join(PHOTO_DIR, f)); gone++; } catch { /* leave it */ }
   }
   if (gone) console.log(`photo cache: swept ${gone} orphan${gone === 1 ? "" : "s"}`);
@@ -175,8 +253,13 @@ async function fetchPhoto() {
     photos = photos.filter((q) => q.id !== id);
     photos.push({ id, by: p.photographer || "unknown", link: p.url || "", at: Date.now() });
 
+    // Evict oldest-first at the cap, but never today's puzzle: it is the one
+    // photo in here that someone may still be mid-round on, and it is pinned
+    // for the whole UTC day however old it gets.
     while (photos.length > PHOTO_CAP) {
-      const gone = photos.shift();
+      const i = photos.findIndex((q) => !(daily.day === utcDay() && q.id === daily.id));
+      if (i === -1) break;                      // nothing evictable
+      const [gone] = photos.splice(i, 1);
       try { fs.unlinkSync(path.join(PHOTO_DIR, gone.id + ".jpg")); } catch { /* already gone */ }
     }
     savePhotoIndex();
@@ -282,6 +365,12 @@ function saveVerdict(rec) {
 /* ========================================================================
    HTTP
    ======================================================================== */
+function secondsToUTCMidnight() {
+  const now = new Date();
+  const next = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1);
+  return Math.max(60, Math.floor((next - now.getTime()) / 1000));
+}
+
 // nginx forwards /chameleon/api/ here with the prefix intact, so it is
 // stripped the same way the other backends do it.
 function stripPrefix(pathname) {
@@ -308,6 +397,24 @@ const server = http.createServer(async (req, res) => {
     });
     return res.end(JSON.stringify(pick
       ? { id: pick.id, src: `/chameleon/api/photo/${pick.id}.jpg`, by: pick.by, link: pick.link }
+      : { error: PEXELS_KEY ? "no photos yet" : "no key configured" }));
+  }
+
+  // The photo of the day. Same answer for everyone all day, so the daily is
+  // one shared puzzle. 503 means there is nothing to give - no key, or the
+  // pool hasn't filled yet - and the game falls back to the repo photos,
+  // which is exactly what it did before any of this.
+  if (apiPath === "/api/photo/daily" && req.method === "GET") {
+    const pick = dailyPhoto();
+    res.writeHead(pick ? 200 : 503, {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      // Until the next UTC midnight: it cannot change before then, and must
+      // not be held past it.
+      "Cache-Control": pick ? `public, max-age=${secondsToUTCMidnight()}` : "no-cache",
+    });
+    return res.end(JSON.stringify(pick
+      ? { day: daily.day, id: pick.id, src: `/chameleon/api/photo/${pick.id}.jpg`, by: pick.by, link: pick.link }
       : { error: PEXELS_KEY ? "no photos yet" : "no key configured" }));
   }
 
@@ -367,6 +474,7 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-cache" });
     return res.end(JSON.stringify({
       pool: photos.length, cap: PHOTO_CAP, key: Boolean(PEXELS_KEY),
+      daily: daily.day === utcDay() ? daily.id : null, dailyDay: daily.day || null,
       backingOff: Date.now() < photoBackoffUntil,
       oldest: photos[0]?.at || null, newest: photos[photos.length - 1]?.at || null,
     }));
@@ -436,6 +544,7 @@ function serveStatic(req, res, pathname) {
 
 server.listen(PORT, () => {
   console.log(`chameleon server on http://localhost:${PORT} - pool ${photos.length}/${PHOTO_CAP}` +
+              (daily.day === utcDay() ? ` - today's photo ${daily.id}` : " - no photo chosen for today yet") +
               (PEXELS_KEY ? "" : " (no PEXELS_KEY: practice falls back to the repo photos)") +
               (DEV_KEY ? ` - verdicts on, ${verdictCount()} on file` : " - verdicts off (no MC_DEV_KEY)"));
 });
