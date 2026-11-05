@@ -117,7 +117,13 @@ function saveDaily() {
 // Today's photo, or null if there is nothing to give. Picked once per UTC day
 // and then returned unchanged, including across a restart - a visitor at
 // 23:59 must get the same puzzle as one at 00:01.
-function dailyPhoto() {
+//
+// On a new day it asks Pexels for a genuinely new photo before settling for
+// one off the pool. Without that, "a new photo every day" is only ever true
+// of photos that happen to already be cached: the pool stops fetching the
+// moment it is full, so it can sit unchanged for weeks and the daily would
+// just be touring it.
+async function dailyPhoto() {
   const today = utcDay();
   if (daily.day === today && daily.id) {
     const have = photos.find((p) => p.id === daily.id);
@@ -126,19 +132,32 @@ function dailyPhoto() {
     // through and choose again rather than serving a 404 all day.
     console.error(`daily photo ${daily.id} is gone from the pool - choosing again`);
   }
-  if (!photos.length) return null;
+  // A brand new photo for the new day, if Pexels will give us one. It lands
+  // in the pool like any other, so a failure here is just a slower path to
+  // the same place rather than a broken daily.
+  //
+  // Whatever comes back is then written down and kept for the rest of the
+  // day, fresh or not. If the fetch was merely throttled we could retry on
+  // the next request and probably do better - but two people loading the page
+  // a second apart would get different puzzles, and a daily that flaps is a
+  // worse failure than a daily on a photo a few days old.
+  let pick = await fetchPhoto();
+  if (pick) console.log("photo of the day: fetched a new one");
 
-  // Prefer one that has not been a daily lately, so "a new photo every day"
-  // stays true for as long as the pool can manage it.
-  const used = new Set(daily.history);
-  const fresh = photos.filter((p) => !used.has(p.id));
-  const from = fresh.length ? fresh : photos;
+  if (!pick) {
+    if (!photos.length) return null;
+    // Nothing new to be had - rate limited, no key, no network. Settle for
+    // the one that has gone longest without being the daily.
+    const used = new Set(daily.history);
+    const unused = photos.filter((p) => !used.has(p.id));
+    const from = unused.length ? unused : photos;
 
-  // Seeded by the date, not random: two workers, or a restart inside the same
-  // day before the file is written, land on the same photo anyway.
-  let h = 0;
-  for (let i = 0; i < today.length; i++) h = (h * 31 + today.charCodeAt(i)) | 0;
-  const pick = from[Math.abs(h) % from.length];
+    // Seeded by the date, not random: two workers, or a restart inside the
+    // same day before the file is written, land on the same photo anyway.
+    let h = 0;
+    for (let i = 0; i < today.length; i++) h = (h * 31 + today.charCodeAt(i)) | 0;
+    pick = from[Math.abs(h) % from.length];
+  }
 
   daily = {
     day: today,
@@ -273,11 +292,24 @@ async function fetchPhoto() {
 }
 
 // Fill the pool in the background rather than off the back of someone's
-// round: a photo a minute, only while there is room, so the first people to
-// play practice are not the ones paying for the fetch. Pexels' free tier is
-// 200 an hour, and this asks for 60.
+// round, so the first people to play practice are not the ones paying for the
+// fetch. A photo a minute while there is room; Pexels' free tier is 200 an
+// hour and that asks for 60.
+//
+// Once it is full it keeps going, slowly. The old rule was "only while there
+// is room", which meant the pool stopped the moment it hit the cap and then
+// never moved again - in practice it sat on the same 120 photos for six weeks
+// and every practice round was drawing from September. One an hour rolls the
+// whole pool over in five days, costs 24 calls a day against a 4800/day
+// allowance, and the eviction that makes room drops the oldest, which is
+// exactly the one worth replacing.
+// Overridable for the same reason PEXELS_API is: so the rolling can be made
+// to happen in seconds against a stub instead of being taken on trust.
+const POOL_FILL_MS = Number(process.env.POOL_FILL_MS || 60 * 1000);
+const POOL_REFRESH_MS = Number(process.env.POOL_REFRESH_MS || 60 * 60 * 1000);
 if (PEXELS_KEY) {
-  setInterval(() => { if (photos.length < PHOTO_CAP) fetchPhoto(); }, 60000).unref();
+  setInterval(() => { if (photos.length < PHOTO_CAP) fetchPhoto(); }, POOL_FILL_MS).unref();
+  setInterval(() => { if (photos.length >= PHOTO_CAP) fetchPhoto(); }, POOL_REFRESH_MS).unref();
   setTimeout(() => fetchPhoto(), 3000).unref();
 }
 
@@ -405,7 +437,7 @@ const server = http.createServer(async (req, res) => {
   // pool hasn't filled yet - and the game falls back to the repo photos,
   // which is exactly what it did before any of this.
   if (apiPath === "/api/photo/daily" && req.method === "GET") {
-    const pick = dailyPhoto();
+    const pick = await dailyPhoto();
     res.writeHead(pick ? 200 : 503, {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
