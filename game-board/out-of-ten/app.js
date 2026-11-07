@@ -131,12 +131,14 @@ const initial = (n) => (String(n || "?").trim()[0] || "?").toUpperCase();
 const avatar = (p, cls = "") => `<span class="av ${cls}" style="--c:${esc(p?.color || "#e5322d")}">${esc(initial(p?.name))}</span>`;
 // "a 7", "an 8"
 const aN = (n) => `${n === 8 || n === 18 ? "an" : "a"} ${n}`;
-const scaleOf = (c) => `0 ${esc(c.low)} · 10 ${esc(c.high)}`;
-// A prompt card, shaped like a playing card. `rank` (the number, for those
-// who know it) goes in two corners like a card's rank.
+// the scale, only when it's not the obvious one (0 worst, 10 best)
+const scaleOf = (c) => (c.low === "worst" && c.high === "best" ? "" : `<span class="scale">0 ${esc(c.low)} · 10 ${esc(c.high)}</span>`);
+// A prompt card, shaped like a playing card; `rank` is the number, for
+// those who know it, in the corner.
 const bcard = (c, cls = "", attrs = "", rank = null) => `<div class="bcard${rank != null ? " ranked" : ""} ${cls}" ${attrs}>` +
-  (rank != null ? `<span class="rank">${rank}</span><span class="rank b">${rank}</span>` : "") +
-  `<p>${esc(c.text)}</p><span class="scale">${scaleOf(c)}</span><span class="brand">Out of Ten</span></div>`;
+  (rank != null ? `<span class="rank">${rank}</span>` : "") + `<p>${esc(c.text)}</p>${scaleOf(c)}</div>`;
+const dial = (was) => `<div class="dial" id="dial">${Array.from({ length: R.HIGH - R.LOW + 1 }, (_, i) =>
+  `<button data-n="${R.LOW + i}" class="${R.LOW + i === was ? "was" : ""}">${R.LOW + i}</button>`).join("")}</div>`;
 
 function render() {
   if (!S) return;
@@ -199,24 +201,22 @@ function renderTable() {
       done ? "done" : "",
       S.phase === "throw" && S.next === p.id ? "chosen" : "",
       S.phase === "answer" && S.thrown?.to === p.id ? "catching" : ""].filter(Boolean).join(" ");
-    const status = S.phase === "answer" && S.thrown?.to === p.id ? "answering" : S.phase === "throw" && S.next === p.id ? "up next" : `<b>${p.score}</b> pts`;
+    const status = `<b>${p.score}</b>`;
     return `<button class="${cls}" data-seat="${esc(p.id)}" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%">` +
       `${avatar(p)}${done ? `<span class="tick${turn.closer ? " up" : ""}">${turn.read}</span>` : ""}` +
       `<span class="sn">${esc(p.id === S.you ? "You" : p.name)}</span><span class="ss">${status}</span></button>`;
   }).join("");
 
   const g = playerOf(S.guesser);
-  const c = S.thrown?.card || lastTurn()?.card;
   const showRead = S.turns.some((t) => t.read != null) || S.phase === "reveal";
   const meter = Array.from({ length: R.HIGH - R.LOW + 1 }, (_, i) => {
     const v = R.LOW + i;
     return `<span class="${[v === S.read && showRead ? "at" : "", v === S.number ? "n" : ""].join(" ")}">${v}</span>`;
   }).join("");
   $("middle").innerHTML = (g ? avatar(g) : "") +
-    `<span class="mn">${esc(nameOf(S.guesser))}<small>${S.phase === "reveal" ? `guessed ${S.result.guess ?? "?"}` : S.phase === "guess" ? "final guess" : middle() ? "in the middle, no idea" : showRead ? `at ${aN(S.read)}` : "in the middle"}</small></span>` +
+    `<span class="mn">${esc(nameOf(S.guesser))}</span>` +
     (S.phase === "throw" || S.phase === "deal" ? `<span class="deck" id="deck"><i></i><i></i><i></i></span>` : "") +
-    `<div class="meter" id="meter">${meter}</div>` +
-    `<div class="meter-l"><span>${esc(c ? c.low : "worst")}</span><span>${esc(c ? c.high : "best")}</span></div>`;
+    `<div class="meter" id="meter">${meter}</div>`;
 }
 
 // The card flies from the middle to whoever it was thrown at.
@@ -250,74 +250,58 @@ function renderHand() {
   const h = $("hand");
   const g = nameOf(S.guesser);
   const t = S.thrown;
-  const yours = S.number != null && !middle() && S.phase !== "reveal"
-    ? `<div class="yours"><span class="num">${S.number}</span><p><b>The number</b><br />${esc(g)} can't see it. Don't say it.</p></div>` : "";
+  // the ring's number, as a small card
+  const yours = S.number != null && !middle() && S.phase !== "reveal" ? `<span class="mini">${S.number}</span>` : "";
+  const status = (text) => `<div class="status-row">${yours}<p class="say wait">${text}</p></div>`;
   let x = "";
 
   if (S.phase === "deal") {
     x = `<div class="deal">` + (middle()
-      ? `<span class="big-num q">?</span><p class="say">You're in the middle</p><p class="sub">Everyone else just saw the number. Get it out of them.</p>`
-      : `<span class="big-num">${S.number}</span><p class="say">The number is ${S.number}</p><p class="sub">Out of ten. ${esc(g)} is in the middle and doesn't know it.</p>`) + `</div>`;
+      ? `<span class="big-num q">?</span><p class="say">You're guessing</p>`
+      : `<span class="big-num">${S.number}</span><p class="say">Don't say it</p>`) + `</div>`;
   } else if (S.phase === "throw") {
-    const left = S.toGo;
     if (middle()) {
-      x = `<p class="kicker">Card ${S.turns.length + 1} of ${S.turns.length + left}</p><p class="say">Pick a card for ${esc(nameOf(S.next))}</p>` +
+      x = `<p class="say">Pick a card for ${esc(nameOf(S.next))}</p>` +
         `<div class="offer">${S.offer.map((c, i) => bcard(c, "pick", `data-pick="${i}"`)).join("")}` +
-        `<div class="bcard own pick" data-pick="own"><p>Write your own</p><input id="ownInput" maxlength="${R.PROMPT_MAX}" placeholder="e.g. A school lunch" autocomplete="off" /><span class="brand">Out of Ten</span></div></div>` +
-        `<button class="btn big" id="throwBtn" disabled>Throw it</button>`;
+        `<div class="bcard own pick" data-pick="own"><p>Your own</p><input id="ownInput" maxlength="${R.PROMPT_MAX}" placeholder="Type it" autocomplete="off" /></div></div>` +
+        `<button class="btn big" id="throwBtn" disabled>Throw</button>`;
     } else {
-      x = yours + (S.next === S.you
-        ? `<p class="say wait">${esc(g)} is picking a card for you</p><p class="sub">Have ${aN(S.number)} ready.</p>`
-        : `<p class="say wait">${esc(g)} is picking a card for ${esc(nameOf(S.next))}</p>` +
-          (S.eligible.includes(S.you) ? `<p class="sub">Yours is coming. Have ${aN(S.number)} ready.</p>` : `<p class="sub">You've had your card this round.</p>`));
+      x = status(`${esc(g)} is picking a card for ${S.next === S.you ? "you" : esc(nameOf(S.next))}`);
     }
   } else if (S.phase === "answer") {
     if (catching()) {
-      x = `<p class="kicker">You caught it · ${R.ANSWER_SECS} seconds</p>` +
-        `<div class="catch">${bcard(t.card, "caught", "", S.number)}` +
-        `<p class="sub">Answer with something that's ${aN(S.number)} out of ten.</p>` +
-        `<form class="answer-form" id="answerForm"><input id="answerInput" maxlength="${R.ANSWER_MAX}" placeholder="Your answer…" autocomplete="off" /><button class="btn" type="submit">Play it</button></form></div>`;
+      x = `<div class="catch">${bcard(t.card, "caught", "", S.number)}` +
+        `<form class="answer-form" id="answerForm"><input id="answerInput" maxlength="${R.ANSWER_MAX}" placeholder="Your answer" autocomplete="off" /><button class="btn" type="submit">Play</button></form></div>`;
     } else {
-      x = yours + `<div class="inplay">${bcard(t.card, "caught", "", S.number)}<div class="wcard pending"><span class="wait">${esc(nameOf(t.to))} ${t.to === S.you ? "are" : "is"} thinking</span></div></div>` +
-        (S.number != null ? `<p class="sub">${esc(nameOf(t.to))} needs one that's ${aN(S.number)}.</p>` : `<p class="sub">Listen close.</p>`);
+      x = `<div class="inplay">${bcard(t.card, "caught", "", S.number)}<div class="wcard pending"><span class="wait">${esc(nameOf(t.to))}</span></div></div>`;
     }
   } else if (S.phase === "read") {
     const lt = lastTurn();
-    const ans = lt.answer ? `<div class="wcard caught"><p>${esc(lt.answer)}</p><span class="brand">${esc(nameOf(lt.to))}</span></div>`
-      : `<div class="wcard blank"><p>${esc(nameOf(lt.to))} ran out of time</p></div>`;
+    const ans = lt.answer ? `<div class="wcard caught"><p>${esc(lt.answer)}</p></div>` : `<div class="wcard blank"><p>Out of time</p></div>`;
     if (middle()) {
       if (readSel == null) readSel = S.read;
-      x = `<p class="kicker">${esc(nameOf(lt.to))} says</p><div class="inplay">${bcard(lt.card)}${ans}</div>` +
-        `<p class="say">Where are you at now?</p>` +
-        `<div class="dial" id="dial">${Array.from({ length: R.HIGH - R.LOW + 1 }, (_, i) => `<button data-n="${R.LOW + i}" class="${S.turns.length > 1 && R.LOW + i === S.read ? "was" : ""}">${R.LOW + i}</button>`).join("")}</div>` +
-        `<div class="dial-l"><span>${esc(lt.card.low)}</span><span>${esc(lt.card.high)}</span></div>` +
+      x = `<div class="inplay">${bcard(lt.card)}${ans}</div><p class="say">Where are you at?</p>` + dial(S.turns.length > 1 ? S.read : null) +
         `<button class="btn big" id="readBtn"></button>`;
     } else {
-      x = yours + `<div class="inplay">${bcard(lt.card, "", "", S.number)}${ans}</div><p class="say wait">${esc(g)} is deciding where they're at</p>`;
+      x = `<div class="inplay">${bcard(lt.card, "", "", S.number)}${ans}</div>`;
     }
   } else if (S.phase === "guess") {
     if (middle()) {
       if (readSel == null) readSel = S.read;
-      const c = lastTurn()?.card || { low: "worst", high: "best" };
-      x = `<p class="kicker">Everyone's had a card · you're at ${aN(S.read)}</p><p class="say">Final guess. What's the number?</p>` +
-        `<div class="dial" id="dial">${Array.from({ length: R.HIGH - R.LOW + 1 }, (_, i) => `<button data-n="${R.LOW + i}" class="${R.LOW + i === S.read ? "was" : ""}">${R.LOW + i}</button>`).join("")}</div>` +
-        `<div class="dial-l"><span>${esc(c.low)}</span><span>${esc(c.high)}</span></div>` +
-        `<button class="btn big" id="readBtn"></button>`;
+      x = `<p class="say">Final guess</p>` + dial(S.read) + `<button class="btn big" id="readBtn"></button>`;
     } else {
-      x = yours + `<p class="say wait">${esc(g)} is making a final guess</p><p class="sub">They're at ${aN(S.read)}.</p>`;
+      x = status(`${esc(g)}'s final guess`);
     }
   } else if (S.phase === "reveal") {
     const r = S.result;
     const off = Math.abs(r.guess - r.number);
-    const gl = playerOf(S.guesser);
-    const head = r.why === "left" ? "Round's off" : r.why === "empty" ? "Nobody to throw at" : r.exact ? `${S.guesser === S.you ? "You" : esc(g)} nailed it` : `Off by ${off}`;
-    const sub = r.why === "left" ? `${esc(gl ? gl.name : "The one in the middle")} left.` : r.exact ? `+${R.POINTS.exact} to ${S.guesser === S.you ? "you" : esc(g)}, +${R.POINTS.everyone} to everyone who played a card` : off === 1 ? "So close." : "";
-    x = `<div class="reveal"><div class="pair"><div><b>${r.number}</b>The number</div>` +
-      (r.why === "done" ? `<div class="g${r.exact ? " hit" : ""}"><b>${r.guess}</b>${esc(g)} said</div>` : "") + `</div>` +
-      `<p class="say">${head}</p>${sub ? `<p class="sub">${sub}</p>` : ""}` +
+    const head = r.why === "left" ? `${esc(g)} left` : r.why === "empty" ? "Round's off" : r.exact ? "Spot on" : `Off by ${off}`;
+    x = `<div class="reveal"><div class="pair"><div><b>${r.number}</b>Number</div>` +
+      (r.why === "done" ? `<div class="g${r.exact ? " hit" : ""}"><b>${r.guess}</b>Guess</div>` : "") + `</div>` +
+      `<p class="say">${head}</p>` +
       (isHost() || S.quick
-        ? `<div class="two"><button class="btn big" id="nextBtn">${S.gameOver ? "See the standings" : "Next round"}</button>${isHost() && !S.quick && !S.gameOver ? `<button class="btn big alt" id="endBtn">End game</button>` : ""}</div>`
-        : `<p class="sub">Waiting for ${esc(nameOf(S.host))}…</p>`) + `</div>`;
+        ? `<div class="two"><button class="btn big" id="nextBtn">${S.gameOver ? "Standings" : "Next round"}</button>${isHost() && !S.quick && !S.gameOver ? `<button class="btn big alt" id="endBtn">End game</button>` : ""}</div>`
+        : "") + `</div>`;
   }
   h.innerHTML = `<div class="timer"><i id="timerFill"></i></div>` + x;
   paintPicks();
@@ -339,13 +323,13 @@ function paintPicks() {
     const b = $("throwBtn");
     if (b) {
       b.disabled = !okCard;
-      b.textContent = `Throw it at ${nameOf(S.next)}`;
+      b.textContent = "Throw";
     }
   }
   if ((S.phase === "read" || S.phase === "guess") && middle()) {
     for (const el of document.querySelectorAll("#dial button")) el.classList.toggle("sel", Number(el.dataset.n) === readSel);
     const b = $("readBtn");
-    if (b) b.textContent = S.phase === "guess" ? `Final answer: ${readSel}` : `I'm at ${aN(readSel)}`;
+    if (b) b.textContent = `Lock in ${readSel}`;
   }
 }
 
@@ -364,11 +348,12 @@ setInterval(tickTimer, 100);
 
 /* ---------- the cards played this round ---------- */
 function renderPlayed() {
-  $("played").innerHTML = S.turns.map((t) => {
+  // the card being read right now is already in the hand, so not here too
+  $("played").innerHTML = S.turns.filter((t) => t.read != null).map((t) => {
     const r = t.read == null ? `<span class="r">…</span>`
-      : `<span class="r${t.closer ? " up" : ""}">at ${aN(t.read)}${t.closer ? ` · +${R.POINTS.closer}` : ""}</span>`;
+      : `<span class="r${t.closer ? " up" : ""}">${t.read}${t.closer ? ` +${R.POINTS.closer}` : ""}</span>`;
     return `<div class="pc"><div class="q">${esc(t.card.text)}</div>` +
-      `<div class="a${t.answer ? "" : " blank"}">${esc(t.answer || "Ran out of time")}</div>` +
+      `<div class="a${t.answer ? "" : " blank"}">${esc(t.answer || "Out of time")}</div>` +
       `<div class="f"><span>${esc(nameOf(t.to))}</span>${r}</div></div>`;
   }).reverse().join("");
 }
