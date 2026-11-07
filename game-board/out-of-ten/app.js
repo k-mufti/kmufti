@@ -132,7 +132,11 @@ const avatar = (p, cls = "") => `<span class="av ${cls}" style="--c:${esc(p?.col
 // "a 7", "an 8"
 const aN = (n) => `${n === 8 || n === 18 ? "an" : "a"} ${n}`;
 const scaleOf = (c) => `0 ${esc(c.low)} · 10 ${esc(c.high)}`;
-const bcard = (c, cls = "", attrs = "") => `<div class="bcard ${cls}" ${attrs}><p>${esc(c.text)}</p><span class="brand">Out of Ten</span><span class="scale">${scaleOf(c)}</span></div>`;
+// A prompt card, shaped like a playing card. `rank` (the number, for those
+// who know it) goes in two corners like a card's rank.
+const bcard = (c, cls = "", attrs = "", rank = null) => `<div class="bcard${rank != null ? " ranked" : ""} ${cls}" ${attrs}>` +
+  (rank != null ? `<span class="rank">${rank}</span><span class="rank b">${rank}</span>` : "") +
+  `<p>${esc(c.text)}</p><span class="scale">${scaleOf(c)}</span><span class="brand">Out of Ten</span></div>`;
 
 function render() {
   if (!S) return;
@@ -270,10 +274,11 @@ function renderHand() {
   } else if (S.phase === "answer") {
     if (catching()) {
       x = `<p class="kicker">You caught it · ${R.ANSWER_SECS} seconds</p>` +
-        `<div class="catch"><span class="num">${S.number}<small>yours</small></span>${bcard(t.card, "caught")}</div>` +
-        `<form class="answer-form" id="answerForm"><input id="answerInput" maxlength="${R.ANSWER_MAX}" placeholder="Something that's ${aN(S.number)}…" autocomplete="off" /><button class="btn" type="submit">Play it</button></form>`;
+        `<div class="catch">${bcard(t.card, "caught", "", S.number)}` +
+        `<p class="sub">Answer with something that's ${aN(S.number)} out of ten.</p>` +
+        `<form class="answer-form" id="answerForm"><input id="answerInput" maxlength="${R.ANSWER_MAX}" placeholder="Your answer…" autocomplete="off" /><button class="btn" type="submit">Play it</button></form></div>`;
     } else {
-      x = yours + `<div class="inplay">${bcard(t.card, "caught")}<div class="wcard pending"><span class="wait">${esc(nameOf(t.to))} ${t.to === S.you ? "are" : "is"} thinking</span></div></div>` +
+      x = yours + `<div class="inplay">${bcard(t.card, "caught", "", S.number)}<div class="wcard pending"><span class="wait">${esc(nameOf(t.to))} ${t.to === S.you ? "are" : "is"} thinking</span></div></div>` +
         (S.number != null ? `<p class="sub">${esc(nameOf(t.to))} needs one that's ${aN(S.number)}.</p>` : `<p class="sub">Listen close.</p>`);
     }
   } else if (S.phase === "read") {
@@ -288,7 +293,7 @@ function renderHand() {
         `<div class="dial-l"><span>${esc(lt.card.low)}</span><span>${esc(lt.card.high)}</span></div>` +
         `<button class="btn big" id="readBtn"></button>`;
     } else {
-      x = yours + `<div class="inplay">${bcard(lt.card)}${ans}</div><p class="say wait">${esc(g)} is deciding where they're at</p>`;
+      x = yours + `<div class="inplay">${bcard(lt.card, "", "", S.number)}${ans}</div><p class="say wait">${esc(g)} is deciding where they're at</p>`;
     }
   } else if (S.phase === "guess") {
     if (middle()) {
