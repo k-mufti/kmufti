@@ -51,6 +51,16 @@ const PROJECTS = [
     status: "live",
   },
   {
+    slug: "out-of-ten",
+    title: "Out of Ten",
+    description: "One of you doesn't know the number. Everyone else answers a card with something that's that number out of ten, and the one in the middle has to work it out.",
+    tags: ["game", "realtime", "party"],
+    accent: "#ffffff",
+    accentBg: "linear-gradient(135deg, #1a1a1a 0%, #000000 100%)",
+    href: "game-board/out-of-ten/",
+    status: "live",
+  },
+  {
     slug: "game-board",
     title: "Game Board",
     description: "Board games, off the shelf and onto your phones: Wavelength, where one of you knows where the target is and the rest turn the dial, and Imposter, where everyone knows the word but one.",

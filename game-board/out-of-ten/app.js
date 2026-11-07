@@ -61,7 +61,7 @@ function send(m) {
 let S = null;
 let stateAt = 0;
 // my picks while I'm in the middle, before I throw / lock
-let selCard = null, selTo = null, readSel = null;
+let selCard = null, readSel = null;
 const me = () => S && S.players.find((p) => p.id === S.you);
 const playerOf = (id) => S.players.find((p) => p.id === id);
 const nameOf = (id) => (id === S.you ? "You" : playerOf(id)?.name || "someone");
@@ -79,7 +79,7 @@ function onMessage(m) {
   const prev = S;
   S = m;
   stateAt = performance.now();
-  if (S.phase !== lastPhase) { lastPhase = S.phase; selCard = null; selTo = null; readSel = null; }
+  if (S.phase !== lastPhase) { lastPhase = S.phase; selCard = null; readSel = null; }
   render();
   sounds(prev);
 }
@@ -91,8 +91,7 @@ function sounds(prev) {
   lastBeat = beat;
   if (S.phase === "deal") { snd.swoosh(0.7); if (!middle()) snd.buzz([40, 30, 40]); }
   if (S.phase === "throw") {
-    const t = lastTurn();
-    if (t && t.closer) snd.points(1); else if (t) snd.tick(true);
+    if (lastTurn()) snd.tick(true);
     if (middle()) { snd.yourTurn(); snd.buzz([60, 40, 60]); }
   }
   if (S.phase === "answer") {
@@ -101,6 +100,7 @@ function sounds(prev) {
     if (catching()) { snd.yourTurn(); snd.buzz([80, 40, 80]); }
   }
   if (S.phase === "read") { snd.tick(); if (middle()) snd.buzz(40); }
+  if (S.phase === "guess") { snd.drumroll(0.8); if (middle()) { snd.yourTurn(); snd.buzz([60, 40, 60]); } }
   if (S.phase === "reveal") {
     snd.drumroll(1.1);
     setTimeout(() => (S.result?.exact ? (snd.fanfare(), snd.buzz([80, 50, 160])) : snd.points(0)), 1100);
@@ -185,7 +185,6 @@ function renderTable() {
   const ring = ringOrder();
   const n = ring.length || 1;
   const start = -Math.PI / 2 + Math.PI / n;
-  const picking = S.phase === "throw" && middle();
   $("ring").innerHTML = ring.map((p, i) => {
     const a = start + (i / n) * Math.PI * 2;
     const x = 50 + 41 * Math.cos(a), y = 50 + 40 * Math.sin(a);
@@ -194,10 +193,9 @@ function renderTable() {
     const cls = ["seat",
       p.online ? "" : "away",
       done ? "done" : "",
-      picking && S.eligible.includes(p.id) ? "can" : "",
-      picking && selTo === p.id ? "chosen" : "",
+      S.phase === "throw" && S.next === p.id ? "chosen" : "",
       S.phase === "answer" && S.thrown?.to === p.id ? "catching" : ""].filter(Boolean).join(" ");
-    const status = S.phase === "answer" && S.thrown?.to === p.id ? "answering" : `<b>${p.score}</b> pts`;
+    const status = S.phase === "answer" && S.thrown?.to === p.id ? "answering" : S.phase === "throw" && S.next === p.id ? "up next" : `<b>${p.score}</b> pts`;
     return `<button class="${cls}" data-seat="${esc(p.id)}" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%">` +
       `${avatar(p)}${done ? `<span class="tick${turn.closer ? " up" : ""}">${turn.read}</span>` : ""}` +
       `<span class="sn">${esc(p.id === S.you ? "You" : p.name)}</span><span class="ss">${status}</span></button>`;
@@ -211,7 +209,7 @@ function renderTable() {
     return `<span class="${[v === S.read && showRead ? "at" : "", v === S.number ? "n" : ""].join(" ")}">${v}</span>`;
   }).join("");
   $("middle").innerHTML = (g ? avatar(g) : "") +
-    `<span class="mn">${esc(nameOf(S.guesser))}<small>${S.phase === "reveal" ? `said ${S.read}` : middle() ? "in the middle, no idea" : showRead ? `at ${aN(S.read)}` : "in the middle"}</small></span>` +
+    `<span class="mn">${esc(nameOf(S.guesser))}<small>${S.phase === "reveal" ? `guessed ${S.result.guess ?? "?"}` : S.phase === "guess" ? "final guess" : middle() ? "in the middle, no idea" : showRead ? `at ${aN(S.read)}` : "in the middle"}</small></span>` +
     (S.phase === "throw" || S.phase === "deal" ? `<span class="deck" id="deck"><i></i><i></i><i></i></span>` : "") +
     `<div class="meter" id="meter">${meter}</div>` +
     `<div class="meter-l"><span>${esc(c ? c.low : "worst")}</span><span>${esc(c ? c.high : "best")}</span></div>`;
@@ -242,7 +240,7 @@ function flyCard() {
 /* ---------- the hand: what you can do right now ---------- */
 let handKey = "";
 function renderHand() {
-  const key = [S.phase, S.round, S.turns.length, S.thrown?.to, S.offer.map((c) => c.text).join("/"), S.number, S.last, S.eligible.join(",")].join("|");
+  const key = [S.phase, S.round, S.turns.length, S.thrown?.to, S.offer.map((c) => c.text).join("/"), S.number, S.next].join("|");
   if (key === handKey) return paintPicks();
   handKey = key;
   const h = $("hand");
@@ -259,14 +257,15 @@ function renderHand() {
   } else if (S.phase === "throw") {
     const left = S.toGo;
     if (middle()) {
-      x = `<p class="kicker">Card ${S.turns.length + 1} of ${S.turns.length + left}</p><p class="say">Pick a card</p>` +
+      x = `<p class="kicker">Card ${S.turns.length + 1} of ${S.turns.length + left}</p><p class="say">Pick a card for ${esc(nameOf(S.next))}</p>` +
         `<div class="offer">${S.offer.map((c, i) => bcard(c, "pick", `data-pick="${i}"`)).join("")}` +
         `<div class="bcard own pick" data-pick="own"><p>Write your own</p><input id="ownInput" maxlength="${R.PROMPT_MAX}" placeholder="e.g. A school lunch" autocomplete="off" /><span class="brand">Out of Ten</span></div></div>` +
-        `<div class="throw-to"><p class="kicker">Throw it at</p><div class="chips">${S.eligible.map((id) => `<button class="chip" data-to="${esc(id)}">${avatar(playerOf(id))}${esc(nameOf(id))}</button>`).join("")}</div></div>` +
         `<button class="btn big" id="throwBtn" disabled>Throw it</button>`;
     } else {
-      x = yours + `<p class="say wait">${esc(g)} is picking a card</p>` +
-        (S.eligible.includes(S.you) ? `<p class="sub">It might come your way. Have ${aN(S.number)} ready.</p>` : `<p class="sub">You've had your card this round.</p>`);
+      x = yours + (S.next === S.you
+        ? `<p class="say wait">${esc(g)} is picking a card for you</p><p class="sub">Have ${aN(S.number)} ready.</p>`
+        : `<p class="say wait">${esc(g)} is picking a card for ${esc(nameOf(S.next))}</p>` +
+          (S.eligible.includes(S.you) ? `<p class="sub">Yours is coming. Have ${aN(S.number)} ready.</p>` : `<p class="sub">You've had your card this round.</p>`));
     }
   } else if (S.phase === "answer") {
     if (catching()) {
@@ -284,12 +283,23 @@ function renderHand() {
     if (middle()) {
       if (readSel == null) readSel = S.read;
       x = `<p class="kicker">${esc(nameOf(lt.to))} says</p><div class="inplay">${bcard(lt.card)}${ans}</div>` +
-        `<p class="say">${S.last ? "Final guess. What's the number?" : "Where are you at now?"}</p>` +
+        `<p class="say">Where are you at now?</p>` +
         `<div class="dial" id="dial">${Array.from({ length: R.HIGH - R.LOW + 1 }, (_, i) => `<button data-n="${R.LOW + i}" class="${S.turns.length > 1 && R.LOW + i === S.read ? "was" : ""}">${R.LOW + i}</button>`).join("")}</div>` +
         `<div class="dial-l"><span>${esc(lt.card.low)}</span><span>${esc(lt.card.high)}</span></div>` +
         `<button class="btn big" id="readBtn"></button>`;
     } else {
       x = yours + `<div class="inplay">${bcard(lt.card)}${ans}</div><p class="say wait">${esc(g)} is deciding where they're at</p>`;
+    }
+  } else if (S.phase === "guess") {
+    if (middle()) {
+      if (readSel == null) readSel = S.read;
+      const c = lastTurn()?.card || { low: "worst", high: "best" };
+      x = `<p class="kicker">Everyone's had a card · you're at ${aN(S.read)}</p><p class="say">Final guess. What's the number?</p>` +
+        `<div class="dial" id="dial">${Array.from({ length: R.HIGH - R.LOW + 1 }, (_, i) => `<button data-n="${R.LOW + i}" class="${R.LOW + i === S.read ? "was" : ""}">${R.LOW + i}</button>`).join("")}</div>` +
+        `<div class="dial-l"><span>${esc(c.low)}</span><span>${esc(c.high)}</span></div>` +
+        `<button class="btn big" id="readBtn"></button>`;
+    } else {
+      x = yours + `<p class="say wait">${esc(g)} is making a final guess</p><p class="sub">They're at ${aN(S.read)}.</p>`;
     }
   } else if (S.phase === "reveal") {
     const r = S.result;
@@ -309,7 +319,7 @@ function renderHand() {
   const focus = $("answerInput");
   if (focus) focus.focus({ preventScroll: true });
   // your move: bring the hand into view (the table can push it off a phone screen)
-  if (catching() || (middle() && (S.phase === "throw" || S.phase === "read"))) {
+  if (catching() || (middle() && ["throw", "read", "guess"].includes(S.phase))) {
     requestAnimationFrame(() => h.scrollIntoView({ behavior: "smooth", block: h.offsetHeight > innerHeight ? "start" : "end" }));
   }
   tickTimer();
@@ -318,27 +328,24 @@ function renderHand() {
 // My picks, without rebuilding the hand (and losing what I've typed).
 function paintPicks() {
   if (S.phase === "throw" && middle()) {
-    if (selTo && !S.eligible.includes(selTo)) selTo = null;
     for (const el of document.querySelectorAll("[data-pick]")) el.classList.toggle("sel", el.dataset.pick === String(selCard));
-    for (const el of document.querySelectorAll(".chip[data-to]")) el.classList.toggle("sel", el.dataset.to === selTo);
-    for (const el of document.querySelectorAll(".seat[data-seat]")) el.classList.toggle("chosen", el.dataset.seat === selTo);
     const own = $("ownInput");
     const okCard = selCard === "own" ? !!(own && own.value.trim()) : selCard != null;
     const b = $("throwBtn");
     if (b) {
-      b.disabled = !(okCard && selTo);
-      b.textContent = selTo ? `Throw it at ${nameOf(selTo)}` : "Throw it";
+      b.disabled = !okCard;
+      b.textContent = `Throw it at ${nameOf(S.next)}`;
     }
   }
-  if (S.phase === "read" && middle()) {
+  if ((S.phase === "read" || S.phase === "guess") && middle()) {
     for (const el of document.querySelectorAll("#dial button")) el.classList.toggle("sel", Number(el.dataset.n) === readSel);
     const b = $("readBtn");
-    if (b) b.textContent = S.last ? `Final answer: ${readSel}` : `I'm at ${aN(readSel)}`;
+    if (b) b.textContent = S.phase === "guess" ? `Final answer: ${readSel}` : `I'm at ${aN(readSel)}`;
   }
 }
 
 // The time left for whoever's up, as a bar across the top of the hand.
-const TOTALS = { deal: R.DEAL_SECS, throw: R.THROW_SECS, answer: R.ANSWER_SECS, read: R.READ_SECS };
+const TOTALS = { deal: R.DEAL_SECS, throw: R.THROW_SECS, answer: R.ANSWER_SECS, read: R.READ_SECS, guess: R.GUESS_SECS };
 function tickTimer() {
   const f = $("timerFill");
   if (!f || !S) return;
@@ -393,34 +400,25 @@ function pickCard(v) {
   if (v === "own") $("ownInput")?.focus();
   paintPicks();
 }
-function pickTo(id) {
-  if (!(S && S.phase === "throw" && middle() && S.eligible.includes(id))) return;
-  selTo = id;
-  snd.tick(true);
-  paintPicks();
-}
 function doThrow() {
-  if (!S || S.phase !== "throw" || !middle() || !selTo || selCard == null) return;
+  if (!S || S.phase !== "throw" || !middle() || selCard == null) return;
   const text = selCard === "own" ? ($("ownInput")?.value || "").trim() : "";
   if (selCard === "own" && !text) return;
   snd.lock();
-  send(selCard === "own" ? { t: "throw", text, to: selTo } : { t: "throw", i: Number(selCard), to: selTo });
+  send(selCard === "own" ? { t: "throw", text } : { t: "throw", i: Number(selCard) });
 }
 function lockRead() {
-  if (!S || S.phase !== "read" || !middle() || readSel == null) return;
+  if (!S || !["read", "guess"].includes(S.phase) || !middle() || readSel == null) return;
   snd.lock(); snd.buzz(30);
-  send({ t: "read", n: readSel });
+  send({ t: S.phase, n: readSel });
 }
 
 document.addEventListener("click", (e) => {
   if (!e.target.closest("#exitBtn") && exitArmed) armExit(false);
   const pk = e.target.closest("[data-pick]");
   if (pk) return e.target.closest("input") ? (selCard !== "own" && pickCard("own")) : pickCard(pk.dataset.pick);
-  const seat = e.target.closest("[data-seat]");
-  if (seat) return pickTo(seat.dataset.seat);
   const b = e.target.closest("button");
   if (!b) return;
-  if (b.dataset.to) return pickTo(b.dataset.to);
   if (b.dataset.n != null) { readSel = Number(b.dataset.n); snd.tick(true); return paintPicks(); }
   switch (b.id) {
     case "throwBtn": return doThrow();
@@ -461,7 +459,7 @@ document.addEventListener("submit", (e) => {
 });
 // In the middle, reading: number keys pick, Enter locks it in.
 document.addEventListener("keydown", (e) => {
-  if (!S || S.phase !== "read" || !middle() || e.target.closest("input")) return;
+  if (!S || !["read", "guess"].includes(S.phase) || !middle() || e.target.closest("input")) return;
   if (/^[0-9]$/.test(e.key)) { readSel = Number(e.key); snd.tick(true); paintPicks(); }
   if (e.key === "Enter") lockRead();
 });

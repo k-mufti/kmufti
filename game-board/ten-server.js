@@ -5,17 +5,20 @@
 // is told it; the one in the middle isn't, until the round's over.
 //
 // A round: the number goes round (deal); the one in the middle picks a
-// prompt card and who to throw it at (throw); they answer in 30s (answer);
-// the one in the middle says where they're at now (read). Every player in
-// the ring gets one card, then the last read is the final guess (reveal).
-// Everyone sits in the middle once, then it's the final standings.
+// prompt card and it goes to the next player round the circle (throw);
+// they answer in 30s (answer); the one in the middle says where they're at
+// now (read). Every player in the ring gets one card, then the one in the
+// middle makes a final guess (guess), and only then does anyone learn who
+// moved the read closer (reveal). Everyone sits in the middle once, then
+// it's the final standings.
 //
 // Protocol, client -> server, on top of server.js's hello/leave:
 //   {t:"create"} {t:"join", code} {t:"quick"} {t:"leave"} {t:"name", name}
 //   {t:"start"}                 host: the first round
-//   {t:"throw", i, text, to}    the middle: card i of the offer (or text: my own), at player `to`
+//   {t:"throw", i, text}        the middle: card i of the offer (or text: my own), to whoever's next
 //   {t:"answer", text}          whoever caught the card
 //   {t:"read", n}               the middle: I'm at an n (0-10)
+//   {t:"guess", n}              the middle: my final guess (0-10)
 //   {t:"next"}                  host: the next round (or the standings, once everyone's sat in the middle)
 //   {t:"end"}                   host: to the final standings now
 //   {t:"again"}                 host: from the final standings, back to the lobby
@@ -48,17 +51,19 @@ module.exports = function ten({ send, cleanText, cleanName, newCode, P, R }) {
       quick: !!quick,
       startAt: 0, startTimer: null,
       players: [],        // { id, name, color, peer, score, stats, bot }
-      phase: "lobby",     // lobby | deal | throw | answer | read | reveal | final
+      phase: "lobby",     // lobby | deal | throw | answer | read | guess | reveal | final
       round: 0,
       guesser: null,      // who's in the middle
       lastGuesser: -1,    // index into players, so it goes round
       sat: new Set(),     // who's been in the middle this game
       number: null,
       deck: [], offer: [],
+      next: null,         // who the next card goes to
       thrown: null,       // { to, card: { text, low, high }, mine }
       done: new Set(),    // who's had a card this round
       turns: [],          // [{ to, card, answer, before, read, closer }]
       read: R.START_READ,
+      guess: null,
       result: null,       // { number, guess, exact, why }
       history: [],
       deadline: 0, timer: null,
@@ -103,11 +108,11 @@ module.exports = function ten({ send, cleanText, cleanName, newCode, P, R }) {
       offer: middle && room.phase === "throw" ? room.offer.map((i) => P.card(P.PROMPTS[i])) : [],
       eligible: eligible(room),
       toGo: left.length,      // still to get a card, here or not
+      next: room.phase === "throw" ? room.next : null,
       thrown: room.thrown,
-      turns: room.turns,
+      // who moved the read closer stays secret until the reveal
+      turns: over ? room.turns : room.turns.map((t) => ({ ...t, closer: null })),
       read: room.read,
-      // reading after the last card: this one's the final guess
-      last: room.phase === "read" && left.filter((id) => !room.thrown || id !== room.thrown.to).length === 0,
       result: room.result,
       gameOver: room.phase === "reveal" && gameOver(room),
       msLeft: room.deadline ? Math.max(0, room.deadline - Date.now()) : 0,
@@ -156,6 +161,7 @@ module.exports = function ten({ send, cleanText, cleanName, newCode, P, R }) {
     room.thrown = null; room.offer = [];
     room.done = new Set(); room.turns = [];
     room.read = R.START_READ;
+    room.guess = null;
     room.result = null;
     room.phase = "deal";
     setTimer(room, R.DEAL_SECS, () => beginThrow(room));
@@ -172,23 +178,37 @@ module.exports = function ten({ send, cleanText, cleanName, newCode, P, R }) {
     return out;
   }
 
-  // The one in the middle picks a card and who gets it. Nobody left: the
-  // last read stands as the final guess.
+  // The next player round the circle from the one in the middle who's still
+  // to get a card - someone who's here, if anyone is.
+  function pointNext(room) {
+    const left = waiting(room), here = eligible(room);
+    const k = room.players.findIndex((p) => p.id === room.guesser), n = room.players.length;
+    for (const pool of [here, left]) {
+      for (let i = 1; i <= n; i++) {
+        const p = room.players[(k + i) % n];
+        if (pool.includes(p.id)) return (room.next = p.id);
+      }
+    }
+    return (room.next = null);
+  }
+
+  // The one in the middle picks a card; it goes to whoever's next. Nobody
+  // left: on to the final guess.
   function beginThrow(room) {
     room.thrown = null;
-    if (!waiting(room).length) return finish(room, room.turns.length ? "done" : "empty");
+    if (!waiting(room).length) return room.turns.length ? beginGuess(room) : finish(room, "empty");
+    pointNext(room);
     room.offer = draw(room);
     room.phase = "throw";
-    // too slow: a random card at a random player (someone who's here, if anyone is)
-    setTimer(room, R.THROW_SECS, () => {
-      const here = eligible(room);
-      doThrow(room, P.card(P.PROMPTS[pick(room.offer)]), pick(here.length ? here : waiting(room)), false);
-    });
+    // too slow: a random card
+    setTimer(room, R.THROW_SECS, () => doThrow(room, P.card(P.PROMPTS[pick(room.offer)]), false));
     pushState(room);
   }
 
-  function doThrow(room, card, to, mine) {
+  function doThrow(room, card, mine) {
+    const to = room.next;
     if (!to) return beginThrow(room);
+    room.next = null;
     room.thrown = { to, card, mine };
     room.offer = [];
     room.phase = "answer";
@@ -210,28 +230,37 @@ module.exports = function ten({ send, cleanText, cleanName, newCode, P, R }) {
   function doRead(room, n) {
     const turn = room.turns[room.turns.length - 1];
     turn.read = n;
-    turn.closer = !!turn.answer && R.closer(turn.before, n, room.number);
-    if (turn.closer) {
-      const p = playerOf(room, turn.to);
-      if (p) { p.score += R.POINTS.closer; p.stats.closer++; }
-    }
     room.read = n;
     room.done.add(turn.to);
     beginThrow(room);
   }
 
+  // Everyone's had a card: one final guess.
+  function beginGuess(room) {
+    room.phase = "guess";
+    // too slow: their last read is the guess
+    setTimer(room, R.GUESS_SECS, () => { room.guess = room.read; finish(room, "done"); });
+    pushState(room);
+  }
+
   function finish(room, why) {
     stopTimer(room);
-    room.thrown = null; room.offer = [];
+    room.thrown = null; room.offer = []; room.next = null;
     const g = playerOf(room, room.guesser);
-    const exact = why === "done" && room.read === room.number;
+    // now it comes out who moved the read closer
+    for (const t of room.turns) {
+      t.closer = !!t.answer && t.read != null && R.closer(t.before, t.read, room.number);
+      const p = t.closer && playerOf(room, t.to);
+      if (p) { p.score += R.POINTS.closer; p.stats.closer++; }
+    }
+    const exact = why === "done" && room.guess === room.number;
     if (exact) {
       if (g) { g.score += R.POINTS.exact; g.stats.exact++; }
       for (const p of room.players) if (p.id !== room.guesser && room.turns.some((t) => t.to === p.id)) p.score += R.POINTS.everyone;
     }
-    room.result = { number: room.number, guess: room.read, exact, why };
+    room.result = { number: room.number, guess: room.guess, exact, why };
     room.history.push({ round: room.round, guesser: room.guesser, guesserName: g ? g.name : "someone",
-      number: room.number, guess: room.read, exact, why, turns: room.turns.length });
+      number: room.number, guess: room.guess, exact, why, turns: room.turns.length });
     room.phase = "reveal";
     pushState(room);
   }
@@ -330,7 +359,7 @@ module.exports = function ten({ send, cleanText, cleanName, newCode, P, R }) {
     }
     if (!room.players.some((p) => !p.bot)) { stopTimer(room); stopCountdown(room); rooms.delete(room.code); return; }
     if (!room.players.some((p) => online(p) && !p.bot)) room.emptySince = Date.now();
-    const live = ["deal", "throw", "answer", "read"].includes(room.phase);
+    const live = ["deal", "throw", "answer", "read", "guess"].includes(room.phase);
     // A dropped connection (a phone locking, a reload) doesn't stop anything:
     // the timers carry the round on until they're back. Leaving for good does.
     if (live && forGood && room.guesser === id) return finish(room, "left");
@@ -340,6 +369,8 @@ module.exports = function ten({ send, cleanText, cleanName, newCode, P, R }) {
     if (forGood && room.phase === "answer" && room.thrown && room.thrown.to === id) return answer(room, null);
     // the last one still to get a card left
     if (room.phase === "throw" && !waiting(room).length) return beginThrow(room);
+    // the card was going to them: it goes to whoever's next now
+    if (room.phase === "throw" && room.next === id) pointNext(room);
     quickCheck(room);
     pushState(room);
   }
@@ -381,7 +412,7 @@ module.exports = function ten({ send, cleanText, cleanName, newCode, P, R }) {
   function botAct(room, b) {
     const say = (m) => handle(b.peer, m);
     if (room.phase === "throw" && room.guesser === b.id) {
-      return say({ t: "throw", i: crypto.randomInt(0, room.offer.length), to: pick(eligible(room)) });
+      return say({ t: "throw", i: crypto.randomInt(0, room.offer.length) });
     }
     if (room.phase === "answer" && room.thrown && room.thrown.to === b.id) {
       return say({ t: "answer", text: BOT_SAYS[room.number] });
@@ -390,6 +421,10 @@ module.exports = function ten({ send, cleanText, cleanName, newCode, P, R }) {
       // a nudge towards the number, give or take
       const n = room.number + crypto.randomInt(-2, 3);
       return say({ t: "read", n: Math.max(R.LOW, Math.min(R.HIGH, n)) });
+    }
+    if (room.phase === "guess" && room.guesser === b.id) {
+      const n = room.number + crypto.randomInt(-1, 2);
+      return say({ t: "guess", n: Math.max(R.LOW, Math.min(R.HIGH, n)) });
     }
   }
 
@@ -437,13 +472,12 @@ module.exports = function ten({ send, cleanText, cleanName, newCode, P, R }) {
       }
       case "throw": {
         if (room.phase !== "throw" || room.guesser !== me.id) return;
-        if (!eligible(room).includes(m.to)) return send(peer, { t: "error", msg: "Throw it at someone who hasn't had a card." });
         const own = cleanText(m.text, R.PROMPT_MAX);
         let card;
         if (own) card = { text: own, low: "worst", high: "best" };
         else if (Number.isInteger(m.i) && m.i >= 0 && m.i < room.offer.length) card = P.card(P.PROMPTS[room.offer[m.i]]);
         else return send(peer, { t: "error", msg: "Pick a card first." });
-        return doThrow(room, card, m.to, !!own);
+        return doThrow(room, card, !!own);
       }
       case "answer": {
         if (room.phase !== "answer" || !room.thrown || room.thrown.to !== me.id) return;
@@ -456,6 +490,13 @@ module.exports = function ten({ send, cleanText, cleanName, newCode, P, R }) {
         const n = Number(m.n);
         if (!Number.isInteger(n) || n < R.LOW || n > R.HIGH) return;
         return doRead(room, n);
+      }
+      case "guess": {
+        if (room.phase !== "guess" || room.guesser !== me.id) return;
+        const n = Number(m.n);
+        if (!Number.isInteger(n) || n < R.LOW || n > R.HIGH) return;
+        room.guess = n;
+        return finish(room, "done");
       }
       case "next":
         if (!(isHost || room.quick) || room.phase !== "reveal") return;

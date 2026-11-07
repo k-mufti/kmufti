@@ -622,6 +622,26 @@ const ARTWORK = {
   bust: `<img src="bust/cover.jpg?v=4" alt="" loading="lazy" />`,
   /* Game Board — the shelf: Wavelength's box, Imposter's and Stop the
      Clock's LED clock standing on a plank. */
+  /* Out of Ten — a black prompt card and a white answer card, tossed on a
+     white table, in bold Helvetica like the game itself. */
+  "out-of-ten": `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <rect width="320" height="200" fill="#ffffff"/>
+      <g transform="rotate(-7 110 100)">
+        <rect x="52" y="26" width="118" height="152" rx="10" fill="#000"/>
+        <text x="64" y="58" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="15" fill="#fff">Name a fast</text>
+        <text x="64" y="77" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="15" fill="#fff">food that's</text>
+        <text x="64" y="96" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="15" fill="#fff">a 2 out of ten.</text>
+        <text x="64" y="166" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="8" fill="#fff">Out of Ten</text>
+      </g>
+      <g transform="rotate(6 220 108)">
+        <rect x="160" y="36" width="118" height="152" rx="10" fill="#fff" stroke="#000" stroke-width="3"/>
+        <text x="172" y="68" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="15" fill="#000">Fake Panda</text>
+        <text x="172" y="87" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="15" fill="#000">Express.</text>
+        <text x="172" y="176" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="8" fill="#000">Out of Ten</text>
+      </g>
+    </svg>`,
+
   "game-board": `
     <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
