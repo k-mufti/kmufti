@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Out of Ten</title>
+  <link rel="icon" href="favicon.svg?v=1" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css?v=1" />
+</head>
+<body>
+  <header class="bar">
+    <a class="back" href="../">&larr; Game Board</a>
+    <span class="logo">Out of Ten.</span>
+    <span class="bar-r">
+      <span class="code" id="codeChip" hidden></span>
+      <button class="mute" id="muteBtn" aria-label="Sound on"></button>
+    </span>
+  </header>
+
+  <!-- Not in a room yet -->
+  <section class="screen" id="home">
+    <div class="home">
+      <div class="home-pitch">
+        <div class="bcard hero">
+          <p>Name a fast food that's a <u>2</u> out of ten.</p>
+          <span class="brand">Out of Ten</span>
+        </div>
+        <div class="wcard hero-a">
+          <p>Fake Panda Express.</p>
+          <span class="brand">Out of Ten</span>
+        </div>
+        <ol class="how">
+          <li><b>One of you sits in the middle.</b> Everyone else is told a number from 0 to 10. You aren't.</li>
+          <li><b>Throw a card</b> at someone: "Fast food". They get 30 seconds to name one that's that number out of ten.</li>
+          <li><b>After every answer, say where you're at.</b> "I'm at a 7." Moved you closer? They score.</li>
+          <li><b>Everyone gets a card, then your last read is the guess.</b> Spot on is 5 for you and 1 for everyone.</li>
+        </ol>
+      </div>
+      <div class="home-card">
+        <label class="field">
+          <span>Your name</span>
+          <input id="nameInput" maxlength="18" autocomplete="nickname" spellcheck="false" />
+        </label>
+        <button class="btn big" id="createBtn">Start a room</button>
+        <button class="btn big alt" id="quickBtn">Quick game<small>play with whoever's around</small></button>
+        <div class="or"><span>or join one</span></div>
+        <form class="join" id="joinForm">
+          <input id="codeInput" maxlength="4" placeholder="CODE" autocomplete="off" spellcheck="false" autocapitalize="characters" />
+          <button class="btn" type="submit">Join</button>
+        </form>
+        <p class="status" id="homeStatus"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- In a room, before the first round -->
+  <section class="screen" id="lobby" hidden>
+    <div class="lobby">
+      <p class="room-line" id="roomLine">Room code</p>
+      <p class="room-code" id="lobbyCode"></p>
+      <p class="room-hint" id="roomHint"></p>
+      <div class="crew" id="lobbyPlayers"></div>
+      <div class="bots" id="botRow" hidden><button class="btn ghost" id="addBotBtn">Add a bot</button><button class="link" id="clearBotsBtn">Remove bots</button><small>Dev mode (localhost only)</small></div>
+      <button class="btn big" id="startBtn">Start</button>
+      <p class="status" id="lobbyStatus"></p>
+      <button class="link" id="leaveBtn">Leave room</button>
+    </div>
+  </section>
+
+  <!-- A round: the ring round the one in the middle, what you can do, the cards played -->
+  <section class="screen" id="game" hidden>
+    <div class="table" id="table">
+      <div class="ring" id="ring"></div>
+      <div class="middle" id="middle"></div>
+    </div>
+    <div class="hand" id="hand"></div>
+    <div class="played" id="played"></div>
+  </section>
+
+  <!-- The end: standings and every round -->
+  <section class="screen" id="final" hidden></section>
+
+  <button class="exit" id="exitBtn" hidden>&larr; <b>Leave game</b></button>
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../../you.js?v=3"></script>
+  <script src="../dev-seat.js?v=2"></script>
+  <script type="module" src="app.js?v=1"></script>
+</body>
+</html>
