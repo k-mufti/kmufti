@@ -131,12 +131,11 @@ const initial = (n) => (String(n || "?").trim()[0] || "?").toUpperCase();
 const avatar = (p, cls = "") => `<span class="av ${cls}" style="--c:${esc(p?.color || "#e5322d")}">${esc(initial(p?.name))}</span>`;
 // "a 7", "an 8"
 const aN = (n) => `${n === 8 || n === 18 ? "an" : "a"} ${n}`;
-// the scale, only when it's not the obvious one (0 worst, 10 best)
-const scaleOf = (c) => (c.low === "worst" && c.high === "best" ? "" : `<span class="scale">0 ${esc(c.low)} · 10 ${esc(c.high)}</span>`);
 // A prompt card, shaped like a playing card; `rank` is the number, for
-// those who know it, in the corner.
-const bcard = (c, cls = "", attrs = "", rank = null) => `<div class="bcard${rank != null ? " ranked" : ""} ${cls}" ${attrs}>` +
-  (rank != null ? `<span class="rank">${rank}</span>` : "") + `<p>${esc(c.text)}</p>${scaleOf(c)}</div>`;
+// those who know it, in the corner. Long prompts get smaller type.
+const lenClass = (t) => (t.length > 80 ? " longer" : t.length > 40 ? " long" : "");
+const bcard = (c, cls = "", attrs = "", rank = null) => `<div class="bcard${rank != null ? " ranked" : ""}${lenClass(c.text)} ${cls}" ${attrs}>` +
+  (rank != null ? `<span class="rank">${rank}</span>` : "") + `<p>${esc(c.text)}</p></div>`;
 const dial = (was) => `<div class="dial" id="dial">${Array.from({ length: R.HIGH - R.LOW + 1 }, (_, i) =>
   `<button data-n="${R.LOW + i}" class="${R.LOW + i === was ? "was" : ""}">${R.LOW + i}</button>`).join("")}</div>`;
 

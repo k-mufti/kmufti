@@ -49,6 +49,8 @@ button, input { font: inherit; color: inherit; }
 .bcard p, .wcard p { margin: 0; }
 /* in the game every card is a playing card: portrait, rank in two corners */
 .bcard.ranked p { padding-right: 26px; }
+.bcard.long p { font-size: 0.8em; }
+.bcard.longer p { font-size: 0.66em; line-height: 1.2; }
 .rank { position: absolute; top: 12px; right: 14px; font-size: 26px; font-weight: 700; line-height: 1; letter-spacing: -1px; }
 .brand { position: absolute; left: 18px; bottom: 14px; font-size: 11px; font-weight: 700; letter-spacing: 0; display: flex; align-items: center; gap: 6px; }
 .brand::before { content: ""; width: 10px; height: 13px; border-radius: 2px; border: 1.5px solid currentColor; transform: rotate(-8deg); }
