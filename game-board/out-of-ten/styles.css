@@ -25,14 +25,14 @@ button, input { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
 
 /* ---------- the bar ---------- */
-.bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 2px solid var(--ink); }
+.bar { display: flex; align-items: center; gap: 12px; padding: 9px 16px; border-bottom: 2px solid var(--ink); }
 .back { color: var(--soft); text-decoration: none; font-size: 14px; font-weight: 500; }
 .back:hover { color: var(--ink); }
 .logo { font-weight: 700; font-size: 20px; letter-spacing: -0.5px; flex: 1; text-align: center; white-space: nowrap; }
 .bar-r { display: flex; align-items: center; gap: 8px; }
 .code { font-weight: 700; letter-spacing: 3px; font-size: 14px; background: var(--ink); color: #fff; padding: 4px 9px; border-radius: 6px; }
 .mute { background: none; border: 0; padding: 4px; cursor: pointer; display: flex; }
-.screen { padding: 16px; }
+.screen { padding: 12px 16px; }
 
 /* ---------- cards ---------- */
 .bcard, .wcard {
@@ -86,7 +86,7 @@ input:focus { box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12); }
 }
 .btn:active { transform: scale(0.97); }
 .btn:disabled { opacity: 0.3; cursor: default; }
-.btn.big { padding: 15px 20px; font-size: 18px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+.btn.big { padding: 12px 18px; font-size: 17px; width: 100%; display: flex; flex-direction: column; align-items: center; }
 .btn small { font-size: 12px; font-weight: 500; opacity: 0.75; }
 .btn.alt { background: #fff; color: var(--ink); }
 .btn.ghost { background: #fff; color: var(--ink); width: auto; }
@@ -122,20 +122,21 @@ input:focus { box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12); }
 /* ---------- the table: the ring, and the one in the middle ---------- */
 #game { max-width: 1040px; margin: 0 auto; }
 #game .hand, #game .played { max-width: 760px; margin-left: auto; margin-right: auto; }
-.table { position: relative; height: clamp(380px, 70vw, 600px); margin: 0 0 16px; }
+/* sized by the screen's height too, so a round fits without scrolling */
+.table { position: relative; height: clamp(280px, min(54vw, 50vh), 460px); margin: 0 0 8px; }
 .table::before {
   content: ""; position: absolute; left: 14%; right: 14%; top: 16%; bottom: 16%;
   border: 2px dashed var(--line); border-radius: 50%;
 }
 .seat {
-  position: absolute; width: 130px; margin-left: -65px; margin-top: -54px;
+  position: absolute; width: 120px; margin-left: -60px; margin-top: -46px;
   display: flex; flex-direction: column; align-items: center; gap: 3px;
   background: none; border: 0; padding: 0; cursor: default;
   transition: left 0.5s ease, top 0.5s ease;
 }
-.seat .av { width: 68px; height: 68px; font-size: 28px; border-width: 3px; }
-.seat .sn { font-size: 16px; font-weight: 700; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.seat .ss { font-size: 14px; color: var(--soft); font-weight: 500; min-height: 13px; }
+.seat .av { width: 58px; height: 58px; font-size: 24px; border-width: 3px; }
+.seat .sn { font-size: 15px; font-weight: 700; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.seat .ss { font-size: 13px; color: var(--soft); font-weight: 500; min-height: 13px; }
 .seat .ss b { color: var(--ink); }
 .seat.away { opacity: 0.35; }
 .seat.done .av { opacity: 0.45; }
@@ -154,17 +155,17 @@ input:focus { box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12); }
   width: min(380px, 50%); text-align: center;
   display: flex; flex-direction: column; align-items: center; gap: 6px;
 }
-.middle .av { width: 92px; height: 92px; font-size: 38px; border-width: 3px; }
-.middle .mn { font-weight: 700; font-size: 20px; }
+.middle .av { width: 76px; height: 76px; font-size: 32px; border-width: 3px; }
+.middle .mn { font-weight: 700; font-size: 18px; }
 .middle .mn small { display: block; font-weight: 500; color: var(--soft); font-size: 11px; }
-.deck { position: relative; width: 50px; height: 68px; margin-top: 4px; }
+.deck { position: relative; width: 42px; height: 58px; margin-top: 2px; }
 .deck i { position: absolute; inset: 0; background: var(--ink); border-radius: 5px; border: 1.5px solid #fff; }
 .deck i:nth-child(1) { transform: rotate(-9deg) translate(-3px, 1px); }
 .deck i:nth-child(2) { transform: rotate(5deg) translate(3px, 0); }
 
 /* the read: where the one in the middle is at, 0-10 */
 .meter { width: 100%; display: grid; grid-template-columns: repeat(11, 1fr); gap: 3px; margin-top: 8px; position: relative; }
-.meter span { height: 30px; border-radius: 5px; background: var(--tint); font-size: 13px; font-weight: 700; color: var(--soft); display: grid; place-items: center; }
+.meter span { height: 26px; border-radius: 5px; background: var(--tint); font-size: 12px; font-weight: 700; color: var(--soft); display: grid; place-items: center; }
 .meter span.n { background: #fff; outline: 2px solid var(--red); outline-offset: -2px; color: var(--red); }
 .meter span.at { background: var(--ink); color: #fff; outline: none; }
 .meter span.at.n { background: var(--red); }
@@ -179,12 +180,12 @@ input:focus { box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12); }
 }
 
 /* ---------- the hand: what you can do right now ---------- */
-.hand { position: relative; padding: 14px 0 0; }
+.hand { position: relative; padding: 10px 0 0; }
 .timer { position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--tint); border-radius: 2px; overflow: hidden; }
 .timer i { display: block; height: 100%; background: var(--ink); transform-origin: left; transition: transform 0.1s linear; }
 .timer i.low { background: var(--red); }
 .kicker { margin: 0 0 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--soft); }
-.say { margin: 0 0 14px; font-size: clamp(22px, 5vw, 30px); font-weight: 700; letter-spacing: -0.6px; line-height: 1.12; }
+.say { margin: 0 0 10px; font-size: clamp(20px, 4.4vw, 26px); font-weight: 700; letter-spacing: -0.6px; line-height: 1.12; }
 .sub { margin: 6px 0 0; color: var(--soft); font-size: 14px; }
 .wait { color: var(--soft); font-weight: 500; }
 .wait::after { content: "…"; display: inline-block; animation: dots 1.2s steps(4) infinite; width: 1em; overflow: hidden; vertical-align: bottom; }
@@ -202,13 +203,13 @@ input:focus { box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12); }
 
 /* the deal: the number flips over */
 .deal { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 6px 0; }
-.deal .big-num { width: 120px; height: 168px; border-radius: 16px; background: var(--ink); color: #fff; font-size: 80px; font-weight: 700; display: grid; place-items: center; letter-spacing: -4px; animation: flip 0.7s cubic-bezier(.3, 1.4, .5, 1); }
+.deal .big-num { width: 100px; height: 140px; border-radius: 16px; background: var(--ink); color: #fff; font-size: 66px; font-weight: 700; display: grid; place-items: center; letter-spacing: -4px; animation: flip 0.7s cubic-bezier(.3, 1.4, .5, 1); }
 .deal .big-num.q { background: #fff; color: var(--ink); border: 3px solid var(--ink); }
 .deal .say { margin: 14px 0 2px; }
 @keyframes flip { from { transform: rotateY(90deg) scale(0.8); } }
 
 /* picking a card */
-.offer { display: grid; grid-template-columns: repeat(4, minmax(0, 130px)); justify-content: center; gap: 10px; margin-bottom: 14px; }
+.offer { display: grid; grid-template-columns: repeat(4, minmax(0, 116px)); justify-content: center; gap: 10px; margin-bottom: 10px; }
 .offer .bcard { aspect-ratio: 5 / 7; font-size: clamp(14px, 2.2vw, 17px); padding: 12px; cursor: pointer; border: 3px solid transparent; transition: transform 0.15s ease; text-align: left; overflow: hidden; }
 .offer .bcard:hover { transform: translateY(-3px) rotate(-1deg); }
 .offer .bcard.sel { border-color: var(--red); transform: translateY(-4px) rotate(-1.5deg); }
@@ -223,8 +224,8 @@ input:focus { box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12); }
 .chip.sel { background: var(--ink); color: #fff; }
 
 /* the card you caught / the card in play */
-.inplay { display: flex; justify-content: center; gap: 14px; margin-bottom: 14px; }
-.inplay .bcard, .inplay .wcard { width: min(150px, 42%); aspect-ratio: 5 / 7; font-size: clamp(15px, 4vw, 18px); padding: 14px 14px 18px; overflow: hidden; }
+.inplay { display: flex; justify-content: center; gap: 12px; margin-bottom: 10px; }
+.inplay .bcard, .inplay .wcard { width: min(132px, 40%); aspect-ratio: 5 / 7; font-size: clamp(14px, 3.6vw, 16px); padding: 12px 12px 16px; overflow: hidden; }
 .inplay .wcard.blank { color: var(--soft); border-style: dashed; font-weight: 500; font-size: 18px; }
 .inplay .wcard.pending { border-style: dashed; color: var(--soft); display: grid; place-items: center; font-size: 14px; font-weight: 500; text-align: center; }
 .caught { animation: catch 0.6s cubic-bezier(.3, 1.5, .5, 1); }
@@ -232,13 +233,13 @@ input:focus { box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12); }
 .answer-form { display: flex; gap: 8px; }
 /* catching: the card, held up like a playing card, and your answer right under it */
 .catch { display: flex; flex-direction: column; align-items: center; text-align: center; }
-.catch .bcard { width: min(170px, 46vw); aspect-ratio: 5 / 7; font-size: 20px; padding: 16px 16px 20px; text-align: left; }
-.catch .answer-form { width: 100%; max-width: 320px; margin-top: 12px; }
+.catch .bcard { width: min(150px, 42vw); aspect-ratio: 5 / 7; font-size: 18px; padding: 14px 14px 18px; text-align: left; }
+.catch .answer-form { width: 100%; max-width: 300px; margin-top: 10px; }
 .answer-form input { flex: 1; min-width: 0; }
 
 /* the read */
-.dial { display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; margin: 0 auto 12px; max-width: 460px; }
-.hand > .say, .hand > .btn.big { max-width: 460px; margin-left: auto; margin-right: auto; }
+.dial { display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; margin: 0 auto 10px; max-width: 420px; }
+.hand > .say, .hand > .btn.big { max-width: 420px; margin-left: auto; margin-right: auto; }
 .hand > .say { text-align: center; }
 .dial button { aspect-ratio: 3 / 4; border: 2px solid var(--ink); border-radius: 8px; background: #fff; font-weight: 700; font-size: clamp(14px, 3.6vw, 22px); cursor: pointer; padding: 0; position: relative; }
 .dial button.was::after { content: ""; position: absolute; bottom: 4px; left: 50%; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: var(--soft); }
@@ -289,7 +290,7 @@ input:focus { box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12); }
 
 /* ---------- bits ---------- */
 /* at the foot of the game, not floating: it would cover the answer box on a phone */
-.exit { display: block; margin: 24px auto 8px; background: #fff; border: 2px solid var(--ink); border-radius: 999px; padding: 8px 14px; cursor: pointer; font-size: 14px; color: var(--soft); }
+.exit { display: block; margin: 16px auto 8px; background: #fff; border: 2px solid var(--ink); border-radius: 999px; padding: 8px 14px; cursor: pointer; font-size: 14px; color: var(--soft); }
 .exit b { font-weight: 700; }
 .exit:hover { color: var(--ink); }
 .exit.armed { background: var(--red); color: #fff; border-color: var(--red); }
@@ -302,7 +303,7 @@ input:focus { box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12); }
   .hero { font-size: 24px; min-height: 200px; }
   .hero-a { font-size: 22px; min-height: 160px; margin-top: -90px; }
   .final-cols { grid-template-columns: 1fr; }
-  .offer { grid-template-columns: repeat(2, minmax(0, 130px)); }
+  .offer { grid-template-columns: repeat(2, minmax(0, 116px)); }
   .seat { width: 84px; margin-left: -42px; margin-top: -40px; }
   .seat .av { width: 48px; height: 48px; font-size: 20px; }
   .seat .sn { font-size: 14px; }

@@ -279,7 +279,7 @@ function renderHand() {
     const ans = lt.answer ? `<div class="wcard caught"><p>${esc(lt.answer)}</p></div>` : `<div class="wcard blank"><p>Out of time</p></div>`;
     if (middle()) {
       if (readSel == null) readSel = S.read;
-      x = `<div class="inplay">${bcard(lt.card)}${ans}</div><p class="say">Where are you at?</p>` + dial(S.turns.length > 1 ? S.read : null) +
+      x = `<div class="inplay">${bcard(lt.card)}${ans}</div>` + dial(S.turns.length > 1 ? S.read : null) +
         `<button class="btn big" id="readBtn"></button>`;
     } else {
       x = `<div class="inplay">${bcard(lt.card, "", "", S.number)}${ans}</div>`;
