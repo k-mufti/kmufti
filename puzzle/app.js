@@ -101,7 +101,7 @@
   /* ---------- World state ------------------------------------------------ */
   let board = null;          // { x, y, w, h }
   let cols = 0, rows = 0, pw = 0, ph = 0;
-  let pieces = [];           // server-known [{ x, y, placed, g }] - g: the group it's joined into
+  let pieces = [];           // server-known [{ x, y, r, placed, g }] - g: the group it's joined into, r: degrees turned
   let nodes = [];            // per piece: { g, hold }
   let total = 0, placedCount = 0;
   let holders = new Map();   // pieceIndex -> peerId
@@ -109,6 +109,7 @@
   let drag = null;           // { i, offX, offY, members, from } - i is the piece under your hand
   let finaleEl = null;
   let ws = null, retry = 0, helloSent = false;
+  let hard = { on: false, voters: [], of: 0 }; // hard mode and who wants it switched
 
   /* =========================================================================
      Cutting the pieces
@@ -187,7 +188,7 @@
     ph = board.h / rows;
     total = init.pieces.length;
     placedCount = init.placedCount;
-    pieces = init.pieces.map((p, i) => ({ x: p.x, y: p.y, placed: p.placed, g: Number.isInteger(p.g) ? p.g : i }));
+    pieces = init.pieces.map((p, i) => ({ x: p.x, y: p.y, r: p.r || 0, placed: p.placed, g: Number.isInteger(p.g) ? p.g : i }));
     nodes = [];
     holders = new Map();
     drag = null;
@@ -251,7 +252,11 @@
       g.appendChild(hold);
       g.appendChild(el("path", { class: "pc-hit", d }));
 
-      nodes[i] = { g, hold, d };
+      // A piece turns about its own centre (in the finished picture's
+      // coordinates; the translate in applyPiece carries it to where it lies).
+      const home = homeOf(i);
+      g.style.transformOrigin = `${r2(home.x + pw / 2)}px ${r2(home.y + ph / 2)}px`;
+      nodes[i] = { g, hold, d, rot: pieces[i].r };
       applyPiece(i, true);
     }
 
@@ -259,6 +264,7 @@
     holders.forEach((by, i) => paintHold(i, by));
 
     beltOrder = beltShuffle(init.puzzle.id);
+    beltTrack.textContent = "";      // rebuilt: pieces may have turned or changed puzzle
     refreshBelt();
     soldOutNow = !!init.soldOut;
     titleEl.textContent = soldOutNow ? "The Table" : `“${init.puzzle.title}”`;
@@ -269,6 +275,7 @@
     veil.classList.toggle("gone", !init.soldOut);
     beltEl.style.display = soldOutNow ? "none" : "";
     document.getElementById("shuffleBtn").style.display = soldOutNow ? "none" : "";
+    showHard(init.hard);
     paintRunning();
     if (DEV_SOLVE && !devSolveDone) { devSolveDone = true; setTimeout(() => window.solve(), 700); }
   }
@@ -278,7 +285,12 @@
     const p = pieces[i], n = nodes[i];
     if (!p || !n) return;
     const home = homeOf(i);
-    n.g.style.transform = `translate(${r2(p.x - home.x)}px, ${r2(p.y - home.y)}px)`;
+    // n.rot keeps counting past 360 so a turn from 270 to 0 animates as one
+    // more quarter turn, not three back.
+    const want = p.r || 0, delta = ((want - (n.rot % 360)) % 360 + 540) % 360 - 180;
+    n.rot += delta;
+    n.g.style.transform = `translate(${r2(p.x - home.x)}px, ${r2(p.y - home.y)}px)` +
+      (n.rot ? ` rotate(${n.rot}deg)` : "");
     const layer = p.placed ? placedLayer : looseLayer;
     n.g.classList.toggle("placed", p.placed);
     if (insert || n.g.parentNode !== layer) layer.appendChild(n.g);
@@ -295,12 +307,22 @@
     for (let k = 0; k < pieces.length; k++) if (pieces[k].g === g) out.push(k);
     return out;
   }
+  // A quarter-turned offset - MUST match turn() in server.js. Joined pieces
+  // keep the finished picture's layout, turned by the group's angle.
+  function turn(dx, dy, r) {
+    switch (r) {
+      case 90: return { x: -dy, y: dx };
+      case 180: return { x: -dx, y: -dy };
+      case 270: return { x: dy, y: -dx };
+      default: return { x: dx, y: dy };
+    }
+  }
   function moveGroup(members, i, x, y) {
-    const hi = homeOf(i);
+    const hi = homeOf(i), r = pieces[i].r || 0;
     for (const k of members) {
-      const hk = homeOf(k);
-      pieces[k].x = x + hk.x - hi.x;
-      pieces[k].y = y + hk.y - hi.y;
+      const hk = homeOf(k), o = turn(hk.x - hi.x, hk.y - hi.y, r);
+      pieces[k].x = x + o.x;
+      pieces[k].y = y + o.y;
       applyPiece(k);
     }
   }
@@ -353,6 +375,8 @@
     drag = {
       i, offX: at.x - p.x, offY: at.y - p.y, members,
       from: members.map((k) => [k, pieces[k].x, pieces[k].y]),
+      // for telling a tap (turn it, in hard mode) from a drag
+      sx: e.clientX, sy: e.clientY, t0: performance.now(), moved: false,
     };
     for (const k of members) {
       nodes[k].g.classList.add("dragging");
@@ -373,6 +397,8 @@
       drag.fly.tx = at.x - drag.offX; drag.fly.ty = at.y - drag.offY;
     } else if (drag) {
       const p = pieces[drag.i];
+      if (!drag.moved && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) > TAP_SLOP) drag.moved = true;
+      if (!drag.moved && hard.on && !drag.fromBelt) return; // might still be a tap: don't nudge it
       moveGroup(drag.members, drag.i, at.x - drag.offX, at.y - drag.offY);
       moveGhost(e);
       if (now - lastMoveSend > 30) {
@@ -386,9 +412,11 @@
     }
   });
 
+  const TAP_SLOP = 7, TAP_MS = 450;
   function endDrag(e) {
     if (!drag) return;
     const i = drag.i, p = pieces[i];
+    const tap = hard.on && !drag.fromBelt && !drag.moved && performance.now() - drag.t0 < TAP_MS;
     // let go mid-flight: it lands where it was heading
     if (drag.fly) { p.x = drag.fly.tx; p.y = drag.fly.ty; applyPiece(i); drag.fly = null; }
     for (const k of drag.members) nodes[k].g.classList.remove("dragging");
@@ -400,6 +428,7 @@
     drag = null;
     refreshBelt();
     send({ t: "drop", x: Math.round(p.x), y: Math.round(p.y) });
+    if (tap) send({ t: "rotate", p: i });
     if (e) { try { svg.releasePointerCapture(e.pointerId); } catch { /* fine */ } }
   }
   window.addEventListener("pointerup", endDrag);
@@ -458,19 +487,25 @@
   // as on the table.
   function beltPiece(i) {
     const home = homeOf(i), m = 0.24 * Math.min(pw, ph);
-    const vb = `${r2(home.x - m)} ${r2(home.y - m)} ${r2(pw + 2 * m)} ${r2(ph + 2 * m)}`;
+    const r = pieces[i].r || 0, side = r % 180 !== 0;   // on its side: tall, not wide
+    const w = (side ? ph : pw) + 2 * m, h = (side ? pw : ph) + 2 * m;
+    const cx = home.x + pw / 2, cy = home.y + ph / 2;
+    const vb = `${r2(cx - w / 2)} ${r2(cy - h / 2)} ${r2(w)} ${r2(h)}`;
     const item = document.createElementNS(SVGNS, "svg");
     item.setAttribute("viewBox", vb);
     item.setAttribute("class", "belt-piece");
     item.dataset.i = String(i);
-    item.style.width = (BELT_H * (pw + 2 * m) / (ph + 2 * m)).toFixed(1) + "px";
+    item.dataset.r = String(r);
+    item.style.width = (BELT_H * w / h).toFixed(1) + "px";
+    const body = el("g", r ? { transform: `rotate(${r} ${r2(cx)} ${r2(cy)})` } : {});
     const win = el("g", { "clip-path": `url(#pc-${i})` });
     const use = el("use");
     use.setAttribute("href", "#puzImg");
     use.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#puzImg");
     win.appendChild(use);
-    item.appendChild(win);
-    item.appendChild(el("path", { class: "pc-edge", d: nodes[i].d }));
+    body.appendChild(win);
+    body.appendChild(el("path", { class: "pc-edge", d: nodes[i].d }));
+    item.appendChild(body);
     return item;
   }
   const BELT_H = 78;
@@ -491,7 +526,9 @@
     // keep the items already riding where they are; add and drop the rest
     const have = new Map([...beltTrack.children].map((c) => [Number(c.dataset.i), c]));
     const wantSet = new Set(want);
-    for (const [i, c] of have) if (!wantSet.has(i)) c.remove();
+    for (const [i, c] of have) {
+      if (!wantSet.has(i) || Number(c.dataset.r || 0) !== (pieces[i].r || 0)) { c.remove(); have.delete(i); }
+    }
     for (const i of want) if (!have.has(i)) beltTrack.appendChild(beltPiece(i));
     beltCount.textContent = want.length ? `${want.length} loose` : "nothing loose";
     beltEl.classList.toggle("empty", !want.length);
@@ -996,6 +1033,29 @@
     setTimeout(() => { shuffleBtn.disabled = false; }, 4000);
   });
 
+  /* ---------- Hard mode: voted in (and out) by whoever's at the table ----- */
+  // More than half the people here vote and it flips: on, every loose piece
+  // is tipped out turned (tap to turn it back); off, they all stand upright.
+  const hardBtn = document.getElementById("hardBtn");
+  function showHard(s) {
+    if (!s) return;
+    const was = hard.on;
+    hard = { on: !!s.on, voters: s.voters || [], of: s.of || 0 };
+    const mine = hard.voters.includes(myId);
+    const want = hard.on ? "normal mode" : "hard mode";
+    hardBtn.textContent = hard.voters.length ? `${want} ${hard.voters.length}/${hard.of}` : want;
+    hardBtn.classList.toggle("voted", mine);
+    hardBtn.title = mine ? "you voted - click to take it back"
+      : hard.on ? "vote to go back to upright pieces"
+      : "vote for hard mode: pieces come turned, tap one to turn it";
+    hardBtn.style.display = soldOutNow ? "none" : "";
+    document.body.classList.toggle("hard-mode", hard.on);
+    if (was !== hard.on) paintRunning();
+  }
+  hardBtn.addEventListener("click", () => {
+    send({ t: "vote", want: !hard.voters.includes(myId) });
+  });
+
   /* ---------- Your name (the colour stays whatever you were dealt) ------- */
   youName.value = myName;
   youIcon.setAttribute("fill", myColor);
@@ -1062,7 +1122,8 @@
     if (!tableStartedAt || soldOutNow) { runningEl.textContent = ""; return; }
     const end = tableSolvedAt || Date.now();
     const t = fmtClock(end - tableStartedAt);
-    runningEl.textContent = tableSolvedAt ? `solved in ${t}` : `${t} on the table`;
+    runningEl.textContent = (tableSolvedAt ? `solved in ${t}` : `${t} on the table`) +
+      (hard.on && !tableSolvedAt ? " · hard mode, tap a piece to turn it" : "");
   }
   setInterval(paintRunning, 1000);
 
@@ -1364,6 +1425,20 @@
         play("click", m.by.id === myId ? 1 : 0.55);
         break;
       }
+
+      // Tapped in hard mode: a group turned a quarter turn.
+      case "turned": {
+        for (const [i, x, y] of m.pos) {
+          if (!pieces[i]) continue;
+          pieces[i].x = x; pieces[i].y = y; pieces[i].r = m.r;
+          applyPiece(i);
+        }
+        play("click", 0.3);
+        refreshBelt();
+        break;
+      }
+
+      case "hard": showHard(m); break;
 
       case "solved":
         tableSolvedAt = m.entry.finishedAt || Date.now();

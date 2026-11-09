@@ -320,9 +320,9 @@ function scatter(pw, ph, board) {
   return { x: minX, y: minY };
 }
 
-// `table` is the whole live world. Pieces carry `r` (rotation) so the wire
-// format and the save file are already shaped for it - V1 leaves every piece
-// upright, and turning rotation on later doesn't change the protocol.
+// `table` is the whole live world. Pieces carry `r`: their rotation in
+// degrees, a quarter turn at a time (0, 90, 180, 270), clockwise on screen.
+// Only hard mode turns them; a joined group always shares one r.
 let table = null;
 
 function newTable(def) {
@@ -351,6 +351,7 @@ function newTable(def) {
     contributors: {},   // clientId -> { name, color, count }
     order: [],          // [pieceIndex, name, msSinceStart] - kept for replays
     solvedAt: 0,        // non-zero during the celebration window
+    hard: false,        // hard mode: pieces turned, tap to rotate (voted in)
   };
 }
 
@@ -368,6 +369,7 @@ function saveTable() {
     boardW: table.board.w, boardH: table.board.h,
     pieces: table.pieces, placedCount: table.placedCount,
     startedAt: table.startedAt, contributors: table.contributors, order: table.order,
+    hard: !!table.hard,
   };
   const tmp = DATA_FILE + ".tmp";
   try { fs.writeFileSync(tmp, JSON.stringify(snap)); fs.renameSync(tmp, DATA_FILE); }
@@ -403,6 +405,7 @@ function restoreTable() {
   }
   // Saved before pieces could join up: every piece is its own group.
   pieces.forEach((p, i) => { if (!Number.isInteger(p.g)) p.g = i; });
+  pieces.forEach((p) => { if (![0, 90, 180, 270].includes(p.r)) p.r = 0; });
   // Saved before the box existed: loose pieces that aren't joined to
   // anything go back in the box; groups somebody built stay on the table.
   if (pieces.every((p) => p.boxed === undefined)) {
@@ -419,6 +422,7 @@ function restoreTable() {
     contributors: snap.contributors || {},
     order: snap.order || [],
     solvedAt: 0,
+    hard: !!snap.hard,
   };
 }
 
@@ -670,6 +674,7 @@ function initPayload(peer) {
     contributors: contributorList(),
     solvedAt: table.solvedAt,
     soldOut,
+    hard: hardState(),
     peers: peerList(peer),
     shelf: shelf.map(shelfCard), // all of it - a 24 cap quietly dropped the oldest
   };
@@ -690,24 +695,39 @@ function membersOf(i) {
 }
 
 // Put the group containing `i` so that piece i sits at (x, y).
+// A quarter-turned offset. Joined pieces sit as they do in the finished
+// picture, turned by the group's angle - so the offset between two of them is
+// their offset in the picture, turned the same way. Every piece turns about
+// its own centre, so offsets between top-left corners turn just the same.
+function turn(dx, dy, r) {
+  switch (r) {
+    case 90: return { x: -dy, y: dx };
+    case 180: return { x: -dx, y: -dy };
+    case 270: return { x: dy, y: -dx };
+    default: return { x: dx, y: dy };
+  }
+}
+function offsetOf(i, k) {
+  const hi = homeOf(i), hk = homeOf(k);
+  return turn(hk.x - hi.x, hk.y - hi.y, table.pieces[i].r || 0);
+}
+
 function placeGroup(members, i, x, y) {
-  const hi = homeOf(i);
   for (const k of members) {
-    const hk = homeOf(k), pc = table.pieces[k];
-    pc.x = x + hk.x - hi.x;
-    pc.y = y + hk.y - hi.y;
+    const o = offsetOf(i, k), pc = table.pieces[k];
+    pc.x = x + o.x;
+    pc.y = y + o.y;
   }
 }
 
 // Keep a whole group on the table: clamp piece i's spot so that no member
 // wanders further off an edge than a lone piece is allowed to.
 function clampGroup(members, i, x, y) {
-  const hi = homeOf(i);
   let minDx = 0, maxDx = 0, minDy = 0, maxDy = 0;
   for (const k of members) {
-    const hk = homeOf(k);
-    minDx = Math.min(minDx, hk.x - hi.x); maxDx = Math.max(maxDx, hk.x - hi.x);
-    minDy = Math.min(minDy, hk.y - hi.y); maxDy = Math.max(maxDy, hk.y - hi.y);
+    const o = offsetOf(i, k);
+    minDx = Math.min(minDx, o.x); maxDx = Math.max(maxDx, o.x);
+    minDy = Math.min(minDy, o.y); maxDy = Math.max(maxDy, o.y);
   }
   return {
     x: clamp(x, -table.pw * 0.5 - minDx, STAGE_W - table.pw * 0.5 - maxDx),
@@ -782,10 +802,12 @@ function joinNeighbours(i) {
         const pk = table.pieces[k];
         // (boxed pieces join too: they lie on the table like any other, the
         // belt only mirrors them)
-        if (pk.placed || pk.g === mine || holderOf(k)) continue;
+        const pj = table.pieces[j];
+        // Only pieces turned the same way can fit together.
+        if (pk.placed || pk.g === mine || holderOf(k) || (pk.r || 0) !== (pj.r || 0)) continue;
         // Where k would have to be for j and k to fit together.
-        const hj = homeOf(j), hk = homeOf(k), pj = table.pieces[j];
-        const wantX = pj.x + hk.x - hj.x, wantY = pj.y + hk.y - hj.y;
+        const o = offsetOf(j, k);
+        const wantX = pj.x + o.x, wantY = pj.y + o.y;
         if (Math.abs(pk.x - wantX) <= snap && Math.abs(pk.y - wantY) <= snap) { hit = { j, k }; break; }
       }
       if (hit) break;
@@ -793,8 +815,8 @@ function joinNeighbours(i) {
     if (!hit) break;
     // Slide our group onto k's, then adopt k's group id.
     const { j, k } = hit;
-    const hj = homeOf(j), hk = homeOf(k), pk = table.pieces[k];
-    placeGroup(members, j, pk.x + hj.x - hk.x, pk.y + hj.y - hk.y);
+    const o = offsetOf(k, j), pk = table.pieces[k];
+    placeGroup(members, j, pk.x + o.x, pk.y + o.y);
     const theirs = pk.g;
     for (const m of members) table.pieces[m].g = theirs;
     joined.push(k);
@@ -822,12 +844,22 @@ function onDrop(peer, x, y, box) {
   }
   const at = clampGroup(members, i, x, y);
   placeGroup(members, i, at.x, at.y);
+  if (settle(peer, i)) return;
+  broadcast({ t: "freed", p: i });
+  for (const k of membersOf(i)) dirtyPieces.add(k);
+  scheduleSave();
+}
 
+// After a drop or a turn: home if it's lined up (and upright), else onto any
+// matching neighbour. True if it went home.
+function settle(peer, i) {
+  let members = membersOf(i);
   // Home first: the whole group goes in at once if it's lined up with where
   // it belongs (and a group touching placed pieces in the right spot is, by
   // definition, lined up with home).
   const tryHome = () => {
     const home = homeOf(i), snap = snapDistance();
+    if (table.pieces[i].r) return false; // only an upright piece goes home
     if (Math.abs(table.pieces[i].x - home.x) > snap || Math.abs(table.pieces[i].y - home.y) > snap) return false;
     members = membersOf(i);
     const c = table.contributors[peer.id] ||
@@ -850,22 +882,109 @@ function onDrop(peer, x, y, box) {
     if (table.placedCount >= table.pieces.length) finish(peer);
     return true;
   };
-  if (tryHome()) return;
+  if (tryHome()) return true;
 
   // Otherwise, onto any matching neighbour lying loose on the table.
   const joined = joinNeighbours(i);
   if (joined.length) {
     members = membersOf(i);
     // A join can carry the group home too (it just slid a few units).
-    if (tryHome()) return;
+    if (tryHome()) return true;
     broadcast({
       t: "joined", g: table.pieces[i].g, ps: members, by: peer.id,
       pos: members.map((k) => [k, Math.round(table.pieces[k].x), Math.round(table.pieces[k].y)]),
     });
   }
-  broadcast({ t: "freed", p: i });
-  for (const k of members) dirtyPieces.add(k);
+  return false;
+}
+
+/* ---------- Hard mode ---------------------------------------------------- */
+// Tap a piece: its whole group turns a quarter turn clockwise about the piece
+// you tapped, the rest of the group swinging round with it.
+function onRotate(peer, i) {
+  if (!table.hard || table.solvedAt) return;
+  if (!Number.isInteger(i) || i < 0 || i >= table.pieces.length) return;
+  const piece = table.pieces[i];
+  if (piece.placed || holderOf(i)) return;
+  const members = membersOf(i);
+  const r = ((piece.r || 0) + 90) % 360;
+  for (const k of members) table.pieces[k].r = r;
+  const at = clampGroup(members, i, piece.x, piece.y);
+  placeGroup(members, i, at.x, at.y);
+  broadcast({
+    t: "turned", r, ps: members,
+    pos: members.map((k) => [k, Math.round(table.pieces[k].x), Math.round(table.pieces[k].y)]),
+  });
+  settle(peer, i);
   scheduleSave();
+}
+
+// Tip a group out somewhere in the margin, as it's turned now.
+function scatterGroup(members, i) {
+  const r = table.pieces[i].r || 0;
+  let minX = 0, maxX = 0, minY = 0, maxY = 0;
+  for (const k of members) {
+    const o = offsetOf(i, k);
+    minX = Math.min(minX, o.x); maxX = Math.max(maxX, o.x);
+    minY = Math.min(minY, o.y); maxY = Math.max(maxY, o.y);
+  }
+  // a piece on its side takes up a tall spot instead of a wide one
+  const fw = r % 180 ? table.ph : table.pw, fh = r % 180 ? table.pw : table.ph;
+  const s = scatter(maxX - minX + fw, maxY - minY + fh, table.board);
+  placeGroup(members, i, s.x - minX - (table.pw - fw) / 2, s.y - minY - (table.ph - fh) / 2);
+}
+
+// Votes: the ids of people at the table who want the mode switched. More than
+// half of everyone here and it flips (on or off); then the votes start over.
+const switchVotes = new Set();
+function seatedIds() {
+  const ids = new Set();
+  for (const p of peers) if (p.id) ids.add(p.id);
+  return ids;
+}
+function hardState() {
+  const ids = seatedIds();
+  return { on: !!table.hard, voters: [...switchVotes].filter((id) => ids.has(id)), of: ids.size };
+}
+function checkVotes() {
+  const ids = seatedIds();
+  for (const id of [...switchVotes]) if (!ids.has(id)) switchVotes.delete(id);
+  if (ids.size && switchVotes.size * 2 > ids.size && !table.solvedAt && !soldOut) {
+    switchVotes.clear();
+    setHard(!table.hard);
+    return;
+  }
+  broadcast({ t: "hard", ...hardState() });
+}
+function onVote(peer, want) {
+  if (want) switchVotes.add(peer.id); else switchVotes.delete(peer.id);
+  checkVotes();
+}
+
+// Turning it on: every loose piece and group gets a new spot and a random
+// turn (never upright); groups stay together. Turning it off: everything
+// loose turns upright where it lies. Placed pieces never move.
+function setHard(on) {
+  table.hard = on;
+  // The table is about to move under everyone's hands: let go first.
+  for (const p of peers) if (p.holding != null) { p.holding = null; }
+  const done = new Set();
+  for (let i = 0; i < table.pieces.length; i++) {
+    const p = table.pieces[i];
+    if (p.placed || done.has(p.g)) continue;
+    done.add(p.g);
+    const members = membersOf(i);
+    const r = on ? 90 * (1 + ((Math.random() * 3) | 0)) : 0;
+    for (const k of members) table.pieces[k].r = r;
+    if (on) scatterGroup(members, i);
+    else {
+      const at = clampGroup(members, i, p.x, p.y);
+      placeGroup(members, i, at.x, at.y);
+    }
+  }
+  saveTable();
+  console.log(`hard mode ${on ? "on" : "off"}: ${table.def.id}`);
+  for (const p of peers) if (p.id) send(p, initPayload(p));
 }
 
 // Last piece in: shelve it, tell the room, and set the next one going.
@@ -914,16 +1033,7 @@ function onShuffle(peer) {
     if (p.placed || done.has(p.g) || holderOf(i)) continue;
     done.add(p.g);
     const members = membersOf(i);
-    // Scatter the group's bounding box, then lay the group in it.
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    for (const k of members) {
-      const h = homeOf(k);
-      minX = Math.min(minX, h.x); minY = Math.min(minY, h.y);
-      maxX = Math.max(maxX, h.x + table.pw); maxY = Math.max(maxY, h.y + table.ph);
-    }
-    const s = scatter(maxX - minX, maxY - minY, table.board);
-    const hi = homeOf(i);
-    placeGroup(members, i, s.x + hi.x - minX, s.y + hi.y - minY);
+    scatterGroup(members, i);
     if (members.length === 1) { table.pieces[i].boxed = true; boxed.push(i); }
     for (const k of members) pos.push([k, Math.round(table.pieces[k].x), Math.round(table.pieces[k].y)]);
   }
@@ -940,6 +1050,7 @@ function nextPuzzle() {
   if (!def) return;
   table = newTable(def);
   refreshSoldOut();
+  switchVotes.clear();
   for (const p of peers) p.holding = null;
   saveTable();
   console.log(`next puzzle: ${table.def.id} (${table.pieces.length} pieces)`);
@@ -961,6 +1072,7 @@ function handle(peer, raw) {
     peer.color = cleanColor(m.color);
     send(peer, initPayload(peer));
     broadcast({ t: "join", peer: { id: peer.id, name: peer.name, color: peer.color, x: 0, y: 0, holding: null } }, peer);
+    checkVotes();
     return;
   }
   if (!peer.id) return; // everything else needs a hello first
@@ -975,6 +1087,8 @@ function handle(peer, raw) {
     case "move": onMove(peer, m.x, m.y); break;
     case "drop": onDrop(peer, m.x, m.y, m.box === true); break;
     case "shuffle": if (!soldOut) onShuffle(peer); break;
+    case "rotate": if (!soldOut) onRotate(peer, m.p | 0); break;
+    case "vote": if (!soldOut) onVote(peer, m.want === true); break;
     case "name":
       peer.name = cleanName(m.name);
       peer.color = cleanColor(m.color);
@@ -1080,7 +1194,7 @@ server.on("upgrade", (req, socket) => {
     dirtyCursors.delete(peer);
     // Walking away puts your piece back on the table for everyone else.
     if (peer.holding != null) { const i = peer.holding; peer.holding = null; broadcast({ t: "freed", p: i }); }
-    if (peer.id) broadcast({ t: "left", id: peer.id });
+    if (peer.id) { broadcast({ t: "left", id: peer.id }); checkVotes(); }
     try { socket.destroy(); } catch {}
   };
 
