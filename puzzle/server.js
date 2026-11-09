@@ -444,6 +444,13 @@ if (!table) {
   if (!first) { console.error(`no puzzles: put images in ${catalog.QUEUE_DIR}/`); process.exit(1); }
   table = newTable(first);
 }
+// A replay nobody has touched yet gives way as soon as a new puzzle is queued.
+function untouchedReplay() {
+  if (table.solvedAt || table.placedCount > 0) return false;
+  if (CATALOG.queue.some((q) => q.id === table.def.id)) return false;
+  return CATALOG.queue.some((q) => lastSolved(q.id) < (seen[q.file] || 0));
+}
+if (untouchedReplay()) table = newTable(pickPuzzle(table.def.id));
 console.log(`table: ${table.def.id} - ${table.placedCount}/${table.pieces.length} placed`);
 
 process.on("SIGTERM", () => { saveTable(); process.exit(0); });
@@ -469,7 +476,7 @@ setInterval(() => {
   const id = table.def.id;
   const queued = CATALOG.queue.some((q) => q.id === id);
   const exists = queued || CATALOG.done.some((q) => q.id === id);
-  if (!exists || (table.def.where === "queue" && !queued)) nextPuzzle();
+  if (!exists || (table.def.where === "queue" && !queued) || untouchedReplay()) nextPuzzle();
 }, 10000).unref();
 
 function homeOf(i) {
