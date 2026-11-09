@@ -315,12 +315,14 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ---------- Under the table: your name, and the way down --------------- */
+.under-buttons { display: flex; align-items: center; justify-content: center; gap: 14px; }
 .under-table {
   flex: 0 0 auto;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 18px;
+  gap: 10px;
   padding: 0 22px 6px;
 }
 
@@ -328,9 +330,9 @@ a { color: inherit; text-decoration: none; }
    shouldn't be the first thing a hand reaches for. */
 .shuffle-btn {
   padding: 9px 22px;
-  border: 1px solid rgba(216, 164, 92, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 999px;
-  background: rgba(216, 164, 92, 0.12);
+  background: transparent;
   color: var(--ink);
   font-size: 14px;
   font-weight: 600;
@@ -339,8 +341,8 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
   transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease, opacity 0.18s ease;
 }
-.shuffle-btn:hover { color: #1a120b; background: var(--amber); border-color: var(--amber); }
-.shuffle-btn[disabled] { opacity: 0.4; cursor: default; color: var(--ink); background: rgba(216, 164, 92, 0.12); border-color: rgba(216, 164, 92, 0.55); }
+.shuffle-btn:hover { border-color: rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.06); }
+.shuffle-btn[disabled] { opacity: 0.4; cursor: default; background: transparent; border-color: rgba(255, 255, 255, 0.28); }
 /* Hard mode in red, so it reads as the tough option. */
 .hard-btn { border-color: rgba(226, 96, 79, 0.65); background: rgba(226, 96, 79, 0.14); }
 .hard-btn:hover { color: #1a0b08; background: #e2604f; border-color: #e2604f; }
