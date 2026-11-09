@@ -451,6 +451,15 @@ function untouchedReplay() {
   return CATALOG.queue.some((q) => lastSolved(q.id) < (seen[q.file] || 0));
 }
 if (untouchedReplay()) table = newTable(pickPuzzle(table.def.id));
+
+// Out of new puzzles: the table holds a replay nobody can play, and players
+// see "ran out" until something new is queued (then untouchedReplay swaps it).
+let soldOut = false;
+function refreshSoldOut() {
+  soldOut = !CATALOG.queue.some((q) => q.id === table.def.id) &&
+    !CATALOG.queue.some((q) => lastSolved(q.id) < (seen[q.file] || 0));
+}
+refreshSoldOut();
 console.log(`table: ${table.def.id} - ${table.placedCount}/${table.pieces.length} placed`);
 
 process.on("SIGTERM", () => { saveTable(); process.exit(0); });
@@ -477,6 +486,11 @@ setInterval(() => {
   const queued = CATALOG.queue.some((q) => q.id === id);
   const exists = queued || CATALOG.done.some((q) => q.id === id);
   if (!exists || (table.def.where === "queue" && !queued) || untouchedReplay()) nextPuzzle();
+  else {
+    const was = soldOut;
+    refreshSoldOut();
+    if (was !== soldOut) for (const p of peers) if (p.id) send(p, initPayload(p));
+  }
 }, 10000).unref();
 
 function homeOf(i) {
@@ -655,6 +669,7 @@ function initPayload(peer) {
     startedAt: table.startedAt,
     contributors: contributorList(),
     solvedAt: table.solvedAt,
+    soldOut,
     peers: peerList(peer),
     shelf: shelf.map(shelfCard), // all of it - a 24 cap quietly dropped the oldest
   };
@@ -924,6 +939,7 @@ function nextPuzzle() {
   const def = pickPuzzle(table.def.id);
   if (!def) return;
   table = newTable(def);
+  refreshSoldOut();
   for (const p of peers) p.holding = null;
   saveTable();
   console.log(`next puzzle: ${table.def.id} (${table.pieces.length} pieces)`);
@@ -955,10 +971,10 @@ function handle(peer, raw) {
       peer.y = clamp(m.y, -200, STAGE_H + 200);
       dirtyCursors.add(peer);
       break;
-    case "grab": onGrab(peer, m.p | 0); break;
+    case "grab": if (!soldOut) onGrab(peer, m.p | 0); break;
     case "move": onMove(peer, m.x, m.y); break;
     case "drop": onDrop(peer, m.x, m.y, m.box === true); break;
-    case "shuffle": onShuffle(peer); break;
+    case "shuffle": if (!soldOut) onShuffle(peer); break;
     case "name":
       peer.name = cleanName(m.name);
       peer.color = cleanColor(m.color);

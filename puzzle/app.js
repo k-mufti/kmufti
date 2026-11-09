@@ -73,6 +73,7 @@
   const tableEl = document.getElementById("table");
   const veil = document.getElementById("veil");
   const veilText = document.getElementById("veilText");
+  let soldOutNow = false; // out of new puzzles: the table is covered
   const titleEl = document.getElementById("puzzleTitle");
   const presenceEl = document.getElementById("presence");
   const runningEl = document.getElementById("running");
@@ -259,9 +260,16 @@
 
     beltOrder = beltShuffle(init.puzzle.id);
     refreshBelt();
-    titleEl.textContent = `“${init.puzzle.title}”`;
+    soldOutNow = !!init.soldOut;
+    titleEl.textContent = soldOutNow ? "The Table" : `“${init.puzzle.title}”`;
     renderShelf(init.shelf || []);
-    veil.classList.add("gone");
+    // Out of new puzzles: keep the table covered with a note instead.
+    veilText.textContent = init.soldOut ? "ran out, come back soon when new puzzles are in" : "";
+    veil.classList.toggle("sold-out", !!init.soldOut);
+    veil.classList.toggle("gone", !init.soldOut);
+    beltEl.style.display = soldOutNow ? "none" : "";
+    document.getElementById("shuffleBtn").style.display = soldOutNow ? "none" : "";
+    paintRunning();
     if (DEV_SOLVE && !devSolveDone) { devSolveDone = true; setTimeout(() => window.solve(), 700); }
   }
 
@@ -1051,7 +1059,7 @@
   let tableSolvedAt = 0;
 
   function paintRunning() {
-    if (!tableStartedAt) { runningEl.textContent = ""; return; }
+    if (!tableStartedAt || soldOutNow) { runningEl.textContent = ""; return; }
     const end = tableSolvedAt || Date.now();
     const t = fmtClock(end - tableStartedAt);
     runningEl.textContent = tableSolvedAt ? `solved in ${t}` : `${t} on the table`;
