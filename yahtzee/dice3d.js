@@ -469,6 +469,34 @@ export class DiceTable {
     this.values = new Array(count).fill(1);
     this._offsets = Array.from({ length: count }, () => new THREE.Quaternion());
     this._playing = null;
+    // Eco: only draw while something moves (see setEco).
+    this.eco = false;
+    this._wakeUntil = 0;
+    this.framesDrawn = 0;
+  }
+
+  // Eco mode: draw only while something is moving, then stop - a still table
+  // costs almost nothing. Also renders at the screen's own sharpness instead
+  // of forcing 2x+, and uses a lighter shadow map.
+  setEco(on) {
+    this.eco = !!on;
+    const r = this.renderer;
+    if (!r) return;
+    r.setPixelRatio(this.eco ? Math.min(devicePixelRatio, 2) : Math.min(Math.max(devicePixelRatio, 2), 3));
+    const size = this.eco || !this._high ? 2048 : 4096;
+    const sh = this._lamp?.shadow;
+    if (sh && sh.mapSize.x !== size) {
+      sh.mapSize.set(size, size);
+      sh.map?.dispose();
+      sh.map = null;
+    }
+    this._resize();
+    this._wake();
+  }
+
+  // Keep drawing for at least this long - called by anything that changes the scene.
+  _wake(ms = 1200) {
+    this._wakeUntil = Math.max(this._wakeUntil, performance.now() + ms);
   }
 
   /* ----- scene, tray, physics ----- */
@@ -942,7 +970,7 @@ export class DiceTable {
     }
     // Now and then, with nothing moving, one die catches the light.
     if (!this._playing && now > this._nextTwinkle) {
-      this._nextTwinkle = now + 1800 + Math.random() * 3200;
+      this._nextTwinkle = now + (1800 + Math.random() * 3200) * (this.eco ? 2 : 1);
       if (document.hidden) {}
       else if (this._gemsOut() && Math.random() < 0.6) this._glintGem(0.6 + Math.random() * 0.4);
       else this.glint(Math.floor(Math.random() * this.count), { size: 0.8 + Math.random() * 0.5 });
@@ -1552,21 +1580,31 @@ export class DiceTable {
 
   _render() {
     this._raf = requestAnimationFrame(() => this._render());
+    const wasPlaying = !!this._playing;
     if (this._playing) this._playing();
     else this._hideGhosts();
-    // A camera on a person, not a tripod: a slow drift of a few centimetres,
-    // plus whatever shake the last hard landing left behind.
+    if (wasPlaying && !this._playing) this._wake(800); // let the last settle show
     const t = performance.now() / 1000;
     const sh = this._shake || 0;
-    this.camera.position.set(
-      this._camBase.x + Math.sin(t * 0.21) * 0.06 + (Math.random() - 0.5) * sh,
-      this._camBase.y + Math.sin(t * 0.17 + 1.3) * 0.035 + (Math.random() - 0.5) * sh,
-      this._camBase.z + Math.cos(t * 0.13) * 0.05 + (Math.random() - 0.5) * sh
-    );
-    this.camera.lookAt(0, 0, 0);
     this._shake = sh * 0.88;
     this._tickSpill(t * 1000);
     this._tickGlints(t * 1000);
+    if (this.eco) {
+      const busy = this._playing || this._spill || sh > 0.002 ||
+        this._glints?.some((g) => g.visible) || t * 1000 < this._wakeUntil;
+      if (!busy) return; // nothing moved: the last frame is still right
+    }
+    // A camera on a person, not a tripod: a slow drift of a few centimetres,
+    // plus whatever shake the last hard landing left behind. Eco keeps it
+    // still, or the table would never be at rest.
+    const drift = this.eco ? 0 : 1;
+    this.camera.position.set(
+      this._camBase.x + Math.sin(t * 0.21) * 0.06 * drift + (Math.random() - 0.5) * sh,
+      this._camBase.y + Math.sin(t * 0.17 + 1.3) * 0.035 * drift + (Math.random() - 0.5) * sh,
+      this._camBase.z + Math.cos(t * 0.13) * 0.05 * drift + (Math.random() - 0.5) * sh
+    );
+    this.camera.lookAt(0, 0, 0);
+    this.framesDrawn++;
     // Contact shadows follow their die and fade and spread as it leaves the
     // cloth; a die at rest sits at y = DIE / 2.
     for (const d of this.dice) {
@@ -1586,6 +1624,13 @@ export class DiceTable {
     this.fx?.dispose();
     this.renderer.dispose();
   }
+}
+
+// Everything that changes what the table shows wakes eco mode's drawing.
+for (const m of ["roll", "setHeld", "setValues", "layoutRow", "setViewSeat",
+  "spillDiamonds", "clearDiamonds", "setHalftone", "_resize"]) {
+  const f = DiceTable.prototype[m];
+  DiceTable.prototype[m] = function (...args) { this._wake(); return f.apply(this, args); };
 }
 
 const _qa = new THREE.Quaternion(), _qb = new THREE.Quaternion();

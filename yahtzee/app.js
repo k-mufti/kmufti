@@ -15,7 +15,7 @@
 // with max-age=3600 - so a new app.js would run against up-to-an-hour-old
 // copies of these four. Bump every one of them, and app.js in index.html, in
 // the same commit.
-import { DiceTable } from "./dice3d.js?v=18";
+import { DiceTable } from "./dice3d.js?v=19";
 import * as R from "./rules.js?v=7";
 import * as BOT from "./bot.js?v=7";
 import { Net, loadName, saveName } from "./net.js?v=8";
@@ -649,19 +649,29 @@ try {
   sound.addEventListener("click", () => { table.setMuted(!table.muted); showSound(); });
   showSound();
   sound.hidden = false;
-  // Halftone: an experiment, off by default, remembered on this device.
-  const ht = $("halftone");
-  const HT_KEY = "yahtzee.halftone";
-  let htOn = false;
-  try { htOn = localStorage.getItem(HT_KEY) === "1"; } catch {}
-  const showHt = () => { table.setHalftone(htOn); ht.setAttribute("aria-pressed", String(htOn)); ht.classList.toggle("on", htOn); };
-  ht.addEventListener("click", () => {
-    htOn = !htOn;
-    try { localStorage.setItem(HT_KEY, htOn ? "1" : "0"); } catch {}
-    showHt();
+  // Halftone: comic-print dots over the shadows, always on.
+  table.setHalftone(true);
+  // Eco: only redraw while something moves, so laptops stay cool. On by
+  // default; turning it off is remembered on this device.
+  const eco = $("eco");
+  const ECO_KEY = "yahtzee.eco2";
+  let ecoOn = true;
+  try { ecoOn = localStorage.getItem(ECO_KEY) !== "0"; } catch {}
+  const showEco = () => { table.setEco(ecoOn); eco.setAttribute("aria-pressed", String(ecoOn)); eco.classList.toggle("on", ecoOn); };
+  eco.addEventListener("click", () => {
+    ecoOn = !ecoOn;
+    try { localStorage.setItem(ECO_KEY, ecoOn ? "1" : "0"); } catch {}
+    showEco();
   });
-  showHt();
-  ht.hidden = false;
+  showEco();
+  eco.hidden = false;
+  // On localhost only: how many frames the table drew in the last second.
+  if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
+    const fps = $("fps");
+    let last = table.framesDrawn;
+    setInterval(() => { fps.textContent = `${table.framesDrawn - last} fps`; last = table.framesDrawn; }, 1000);
+    fps.hidden = false;
+  }
   newSoloGame();
   $("lobby").hidden = false;      // the board is ready behind the menu
 } catch (e) {
