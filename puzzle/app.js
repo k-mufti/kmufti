@@ -1352,6 +1352,11 @@
         break;
 
       case "freed":
+        // A late answer to a drop we sent: click fast and you've already
+        // picked the same piece up again. It mustn't knock it out of your
+        // hand (the server knows you're holding it), or every click after
+        // gets cancelled the same way and the piece seems frozen.
+        if (drag && drag.members.includes(m.p)) break;
         holders.delete(m.p);
         paintHold(m.p, null);
         refreshBelt();

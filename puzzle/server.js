@@ -760,7 +760,7 @@ function onGrab(peer, i) {
   if (piece.placed) return send(peer, { t: "deny", p: i });
   const holder = holderOf(i);
   if (holder && holder !== peer) return send(peer, { t: "deny", p: i }); // someone else got there first
-  if (peer.holding != null) {                              // one group at a time,
+  if (peer.holding != null && peer.holding !== i) {        // one group at a time,
     const prev = peer.holding; peer.holding = null;        // like one pair of hands
     broadcast({ t: "freed", p: prev });
   }
