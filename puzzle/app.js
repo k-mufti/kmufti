@@ -1042,7 +1042,7 @@
     const was = hard.on;
     hard = { on: !!s.on, voters: s.voters || [], of: s.of || 0 };
     const mine = hard.voters.includes(myId);
-    const want = hard.on ? "normal mode" : "hard mode";
+    const want = hard.on ? "easy mode" : "hard mode";
     hardBtn.textContent = hard.voters.length ? `${want} ${hard.voters.length}/${hard.of}` : want;
     hardBtn.classList.toggle("voted", mine);
     hardBtn.title = mine ? "you voted - click to take it back"
