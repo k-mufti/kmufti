@@ -45,6 +45,7 @@ repo (`/var/lib/kmufti-puzzle/`, `/var/lib/kmufti-admin/`) so a `git pull` can't
 progress or the uptime history. Everything else that persists — wishlist boards, game stats — is in
 the visitor's `localStorage`.
 
+
 ## Repo layout
 
 ```
