@@ -25,6 +25,7 @@ each tile is a self-contained app living in its own folder.
 
 Mostly static files. A few small zero-dependency Node backends do the live bits:
 
+
 | Backend | Port | Does |
 |---------|------|------|
 | `wishlist/server.js` | 8021 | Link unfurling (title/image/price scrape) + an image proxy, with an SSRF guard. |
