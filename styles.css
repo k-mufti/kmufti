@@ -473,3 +473,131 @@ html[data-bg="haze"] body {
 html[data-bg="haze"] .deep-space {
   background: linear-gradient(180deg, #0c0812 0%, var(--space-2) 100%);
 }
+
+/* =========================================================================
+   The board-games shelf, under the tiles: one box per game standing on a
+   wooden plank (the same boxes as the Game Board page), so every game is
+   in sight from the front door. Each grid row gets its own plank — the
+   items have no column gap, so their plank strips join up.
+   ========================================================================= */
+.bg-shelf {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1130px;
+  margin-top: 18px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line, rgba(17, 17, 17, 0.12));
+}
+.bg-shelf[hidden] { display: none; }
+.bg-head { text-align: center; margin-bottom: 26px; }
+.bg-title {
+  margin: 0;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 800;
+  font-size: 34px;
+  letter-spacing: -0.5px;
+  color: var(--ink, #111);
+}
+.bg-sub {
+  margin: 6px 0 0;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12.5px;
+  letter-spacing: 1px;
+  color: var(--ink-faint, rgba(17, 17, 17, 0.5));
+}
+.bg-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  row-gap: 30px;
+}
+.bg-item {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 14px 10px 18px;   /* room for the badge above, the plank below */
+  text-decoration: none;
+}
+.bg-item::after {           /* this item's stretch of plank */
+  content: "";
+  position: absolute;
+  left: -1px; right: -1px; bottom: 0;   /* overlap the neighbours: no seams */
+  height: 18px;
+  background: linear-gradient(#8a5a35 0%, #5e3a20 100%);
+}
+.bg-item::before {          /* the plank's shadow on the wall below */
+  content: "";
+  position: absolute;
+  left: -1px; right: -1px; bottom: -14px;
+  height: 14px;
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+
+/* a game box, standing on its edge, its lid facing out */
+.bg-box {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 170px;
+  aspect-ratio: 170 / 200;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 6px 0 0 rgba(0, 0, 0, 0.25), 0 14px 22px -10px rgba(0, 0, 0, 0.7);
+  transition: transform 0.18s ease;
+  container-type: inline-size;
+}
+.bg-item:hover .bg-box { transform: translateY(-8px) rotate(-1deg); }
+.bg-name {
+  position: absolute; top: 10.5cqw; left: 4px; right: 4px;
+  text-align: center;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 800;
+  font-size: 14.5cqw;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+.bg-tag {
+  position: absolute; top: 31cqw; left: 4px; right: 4px;
+  text-align: center;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 6.6cqw;
+}
+.bg-box svg { position: absolute; left: 8%; right: 8%; bottom: 7%; width: 84%; }
+.bg-box.wave { background: #efe8da; color: #1d3d5c; }
+.bg-box.wave .bg-name { font-style: italic; font-weight: 700; }
+.bg-box.wave .bg-tag { color: #5b6573; }
+.bg-box.wave svg { left: 6%; width: 88%; bottom: 8%; }
+.bg-box.imp { background: #1f1535; color: #f6f0ff; }
+.bg-box.imp .bg-tag { color: #ff6d8f; }
+.bg-box.drf { background: #0f1216; color: #f4f1ea; }
+.bg-box.drf .bg-tag { color: #2fe08a; }
+.bg-box.tq { background: #e9e1cf; color: #1f2a44; }
+.bg-box.tq .bg-name { font-size: 12.8cqw; }
+.bg-box.tq .bg-tag { color: #e4572e; }
+.bg-box.clk { background: #0b100d; color: #eef5ef; }
+.bg-box.clk .bg-name { font-size: 11.6cqw; }
+.bg-box.clk .bg-tag { color: #22e06b; }
+.bg-box.ten { background: #000; color: #fff; }
+.bg-box.ten .bg-name { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 700; letter-spacing: -0.8px; font-size: 14cqw; }
+.bg-box.ten .bg-tag { color: #bdbdbd; }
+
+/* the active-user badge sits on top of the box like a sticker */
+.bg-item .app-active {
+  top: 2px;
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.78);
+}
+
+@media (max-width: 1000px) {
+  .bg-row { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 520px) {
+  .bg-row { grid-template-columns: repeat(2, 1fr); row-gap: 24px; }
+  .bg-title { font-size: 28px; }
+  .bg-sub { font-size: 11px; letter-spacing: 0.5px; }
+}

@@ -42,6 +42,34 @@
     appsWrap.appendChild(el);
   });
 
+  /* ---------- The board-games shelf ---------------------------------------
+     Every board game gets its own box, so nobody has to open a "Game Board"
+     tile to find out there are six games in it. */
+  const shelf = document.getElementById("bgShelf");
+  const row = document.getElementById("bgRow");
+  if (shelf && row && typeof BOARD_GAMES !== "undefined" && BOARD_GAMES.length) {
+    BOARD_GAMES.forEach((g) => {
+      const a = document.createElement("a");
+      a.className = "bg-item";
+      a.href = g.href;
+      a.dataset.slug = g.slug;
+      a.setAttribute("aria-label", g.title);
+      const box = document.createElement("span");
+      box.className = "bg-box " + g.cls;
+      const name = document.createElement("span");
+      name.className = "bg-name";
+      name.textContent = g.title;
+      const tag = document.createElement("span");
+      tag.className = "bg-tag";
+      tag.textContent = g.tag;
+      box.append(name, tag);
+      box.insertAdjacentHTML("beforeend", g.art);
+      a.appendChild(box);
+      row.appendChild(a);
+    });
+    shelf.hidden = false;
+  }
+
   /* ---------- The DVD screensaver -----------------------------------------
      Constant velocity, perfect reflections off the viewport edges, and a new
      colour on every wall hit. It rides behind the mounting board, so it slides
@@ -153,19 +181,20 @@
 
 /* =========================================================================
    "1 active user" on a tile, top right — only while someone is actually on
-   that project. Every project page reports in through presence.js (Jigsaw
-   counts its table's sockets instead); this asks for all the counts in one
-   request every 15s, and right away when the tab comes back into view. If
-   the backend is down the badges just stay hidden.
+   that project. Every project page reports in through presence.js; this
+   asks for all the counts in one request every 60s, and right away when the
+   tab comes back into view. If the backend is down the badges just stay
+   hidden.
    ========================================================================= */
 (function activeUsers() {
   const badges = new Map(); // slug -> badge element
-  document.querySelectorAll(".app[data-slug] .app-art").forEach((art) => {
+  // Tiles carry the badge on their cover; shelf boxes wear it on the lid.
+  document.querySelectorAll(".app[data-slug] .app-art, .bg-item[data-slug]").forEach((host) => {
     const badge = document.createElement("span");
     badge.className = "app-active";
     badge.hidden = true;
-    art.appendChild(badge);
-    badges.set(art.parentElement.dataset.slug, badge);
+    host.appendChild(badge);
+    badges.set(host.closest("[data-slug]").dataset.slug, badge);
   });
   if (!badges.size) return;
 
@@ -184,7 +213,7 @@
       .catch(() => show(null));
   }
   check();
-  setInterval(check, 15000);
+  setInterval(check, 60000);
   document.addEventListener("visibilitychange", check);
 })();
 

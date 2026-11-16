@@ -622,11 +622,6 @@ function activeCounts() {
     if (!room.size) { presence.delete(slug); continue; }
     out[slug] = room.size;
   }
-  // Jigsaw doesn't load presence.js - its table already knows its players
-  // from their sockets, so it's counted from those.
-  const table = new Set();
-  for (const p of peers) if (p.id) table.add(p.id);
-  if (table.size) out.puzzle = table.size;
   return out;
 }
 
