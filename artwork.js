@@ -620,81 +620,6 @@ const ARTWORK = {
   /* Don Marbleone — "DON" laser-carved into his forehead, caught mid-burn
      with the N still glowing: a real shot of the game (bust/cover.jpg). */
   bust: `<img src="bust/cover.jpg?v=4" alt="" loading="lazy" />`,
-  /* Game Board — the shelf: Wavelength's box, Imposter's and Stop the
-     Clock's LED clock standing on a plank. */
-  /* Out of Ten — a black prompt card and a white answer card, tossed on a
-     white table, in bold Helvetica like the game itself. */
-  "out-of-ten": `
-    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <rect width="320" height="200" fill="#ffffff"/>
-      <g transform="rotate(-7 110 100)">
-        <rect x="52" y="26" width="118" height="152" rx="10" fill="#000"/>
-        <text x="64" y="58" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="15" fill="#fff">Name a fast</text>
-        <text x="64" y="77" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="15" fill="#fff">food that's</text>
-        <text x="64" y="96" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="15" fill="#fff">a 2 out of ten.</text>
-        <text x="64" y="166" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="8" fill="#fff">Out of Ten</text>
-      </g>
-      <g transform="rotate(6 220 108)">
-        <rect x="160" y="36" width="118" height="152" rx="10" fill="#fff" stroke="#000" stroke-width="3"/>
-        <text x="172" y="68" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="15" fill="#000">Fake Panda</text>
-        <text x="172" y="87" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="15" fill="#000">Express.</text>
-        <text x="172" y="176" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="8" fill="#000">Out of Ten</text>
-      </g>
-    </svg>`,
-
-  "game-board": `
-    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="gb-wall" cx="0.5" cy="0.1" r="0.9">
-          <stop offset="0" stop-color="#4a3a2e"/>
-          <stop offset="1" stop-color="#1e1712"/>
-        </radialGradient>
-        <linearGradient id="gb-wood" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#9a6a40"/>
-          <stop offset="1" stop-color="#5e3a20"/>
-        </linearGradient>
-        <clipPath id="gb-lid"><rect x="-62" y="-60" width="124" height="72"/></clipPath>
-      </defs>
-      <rect width="320" height="200" fill="url(#gb-wall)"/>
-      <!-- Stop the Clock: the black LED clock, its red button on top -->
-      <ellipse cx="289" cy="116" rx="8" ry="3.2" fill="#8a1209"/>
-      <path d="M281 116A8 6 0 0 1 297 116Z" fill="#f2392b"/>
-      <rect x="283" y="116" width="12" height="6" fill="#141615"/>
-      <rect x="270" y="122" width="38" height="40" rx="4" fill="#141615"/>
-      <rect x="273" y="130" width="32" height="20" rx="2" fill="#000"/>
-      <text x="289" y="144" text-anchor="middle" font-family="'Courier New', monospace" font-weight="700" font-size="10.5" fill="#39ff6a" fill-opacity="0.12">88.88</text>
-      <text x="289" y="144" text-anchor="middle" font-family="'Courier New', monospace" font-weight="700" font-size="10.5" fill="#39ff6a">10.00</text>
-      <!-- Wavelength: the box, its side in shadow, its dial on the lid -->
-      <rect x="140" y="50" width="8" height="112" fill="#bfb6a6"/>
-      <rect x="22" y="46" width="120" height="116" rx="5" fill="#efe8da"/>
-      <text x="82" y="73" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-weight="700" font-size="17" fill="#1d3d5c">Wavelength</text>
-      <g transform="translate(82 150)" clip-path="url(#gb-lid)">
-        <circle r="52" fill="#fbfaf6"/>
-        <circle r="48" fill="#1d3d5c"/>
-        <circle r="44" fill="#f4efe4"/>
-        <path d="M0 0L-23 -37.5A44 44 0 0 1 -15.3 -41.2Z" fill="#f3b52f"/>
-        <path d="M0 0L-15.3 -41.2A44 44 0 0 1 -7.6 -43.3Z" fill="#ee7a33"/>
-        <path d="M0 0L-7.6 -43.3A44 44 0 0 1 0 -44Z" fill="#a8d4e6"/>
-        <path d="M0 0L0 -44A44 44 0 0 1 7.6 -43.3Z" fill="#ee7a33"/>
-        <path d="M0 0L7.6 -43.3A44 44 0 0 1 15.3 -41.2Z" fill="#f3b52f"/>
-        <rect x="-54" y="0" width="108" height="14" fill="#1d3d5c"/>
-        <rect x="-58" y="-2.5" width="12" height="5" rx="2.5" fill="#7fd8c3"/>
-        <rect x="46" y="-2.5" width="12" height="5" rx="2.5" fill="#7fd8c3"/>
-        <path d="M-2 0L0 -40L2 0Z" fill="#d8342b" transform="rotate(-14)"/>
-        <circle r="8" fill="#d8342b"/>
-      </g>
-      <!-- Imposter: three cards, the odd one pink -->
-      <rect x="258" y="58" width="8" height="104" fill="#0e0918"/>
-      <rect x="152" y="54" width="108" height="108" rx="5" fill="#1f1535"/>
-      <text x="206" y="78" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="16" fill="#f6f0ff">Imposter</text>
-      <rect x="168" y="100" width="30" height="42" rx="4" fill="#f6f0ff" transform="rotate(-12 183 121)"/>
-      <rect x="214" y="100" width="30" height="42" rx="4" fill="#f6f0ff" transform="rotate(12 229 121)"/>
-      <rect x="191" y="94" width="30" height="44" rx="4" fill="#ff3d6e"/>
-      <text x="206" y="124" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="22" fill="#fff">?</text>
-      <!-- the plank -->
-      <rect x="0" y="162" width="320" height="12" fill="url(#gb-wood)"/>
-      <rect x="0" y="174" width="320" height="26" fill="#000" opacity="0.25"/>
-    </svg>`,
   /* Destroy — the word half blown away: a chunk bitten out of it, pixel
      fire where the rocket landed, and a few loose letters on the floor. */
   destroy: `
@@ -732,3 +657,226 @@ const ARTWORK = {
       <rect x="0" y="186" width="320" height="14" fill="#16161d"/>
     </svg>`,
 };
+
+/* =========================================================================
+   The multiplayer covers (BOARD_GAMES in projects.js), shown in the
+   scrolling band on the hub. Same recipe as the tiles above: each game's
+   own display face and palette, a lit, textured backdrop, and the one
+   object the game is about.
+   ========================================================================= */
+Object.assign(ARTWORK, {
+  /* Wavelength — the dial itself rising from the bottom edge: cream face,
+     the hidden 2-3-4-3-2 target, the red needle, on the game's navy. */
+  wavelength: `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="wl-bg" cx="0.5" cy="0.95" r="0.85">
+          <stop offset="0" stop-color="#2a557d"/>
+          <stop offset="1" stop-color="#0f2234"/>
+        </radialGradient>
+        <filter id="wl-sh" x="-20%" y="-30%" width="140%" height="160%">
+          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.45"/>
+        </filter>
+      </defs>
+      <rect width="320" height="200" fill="url(#wl-bg)"/>
+      <g opacity="0.08" fill="none" stroke="#f8f3e9" stroke-width="1">
+        <circle cx="160" cy="214" r="150"/><circle cx="160" cy="214" r="176"/><circle cx="160" cy="214" r="202"/>
+      </g>
+      <text x="160" y="58" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-style="italic" font-weight="700" font-size="46" fill="#f8f3e9" filter="url(#wl-sh)">Wavelength</text>
+      <g transform="translate(160 206)" filter="url(#wl-sh)">
+        <circle r="122" fill="#f8f3e9"/>
+        <circle r="115" fill="#1d3d5c"/>
+        <circle r="108" fill="#f4efe4"/>
+        <g transform="rotate(14)">
+          <path d="M0 0L-40.4 -100.2A108 108 0 0 1 -22.8 -105.6Z" fill="#f3b52f"/>
+          <path d="M0 0L-22.8 -105.6A108 108 0 0 1 -5.6 -107.9Z" fill="#ee7a33"/>
+          <path d="M0 0L-5.6 -107.9A108 108 0 0 1 11.3 -107.4Z" fill="#a8d4e6"/>
+          <path d="M0 0L11.3 -107.4A108 108 0 0 1 28 -104.3Z" fill="#ee7a33"/>
+          <path d="M0 0L28 -104.3A108 108 0 0 1 44.2 -98.5Z" fill="#f3b52f"/>
+          <text x="-23" y="-86" text-anchor="middle" font-family="Rubik, Arial, sans-serif" font-weight="700" font-size="10" fill="#7a4a10" transform="rotate(-12 -23 -86)">2</text>
+          <text x="-8" y="-90" text-anchor="middle" font-family="Rubik, Arial, sans-serif" font-weight="700" font-size="10" fill="#fff" transform="rotate(-4 -8 -90)">3</text>
+          <text x="3" y="-91" text-anchor="middle" font-family="Rubik, Arial, sans-serif" font-weight="700" font-size="11" fill="#1d3d5c">4</text>
+          <text x="19" y="-89" text-anchor="middle" font-family="Rubik, Arial, sans-serif" font-weight="700" font-size="10" fill="#fff" transform="rotate(8 19 -89)">3</text>
+          <text x="35" y="-84" text-anchor="middle" font-family="Rubik, Arial, sans-serif" font-weight="700" font-size="10" fill="#7a4a10" transform="rotate(16 35 -84)">2</text>
+        </g>
+        <path d="M-3.5 0L0 -100L3.5 0Z" fill="#d8342b" transform="rotate(22)"/>
+        <circle r="17" fill="#d8342b"/>
+        <circle r="17" fill="none" stroke="#9e1f19" stroke-width="2"/>
+        <circle cx="-5" cy="-5" r="5" fill="#fff" opacity="0.25"/>
+      </g>
+      <rect x="18" y="186" width="24" height="9" rx="4.5" fill="#7fd8c3"/>
+      <rect x="278" y="186" width="24" height="9" rx="4.5" fill="#7fd8c3"/>
+    </svg>`,
+
+  /* Imposter — a row of cards that all say the same word, except the one
+     lifted out of line: pink, a question mark, a glow. */
+  imposter: `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="im-bg" cx="0.62" cy="0.62" r="0.8">
+          <stop offset="0" stop-color="#3a2768"/>
+          <stop offset="1" stop-color="#140c26"/>
+        </radialGradient>
+        <radialGradient id="im-glow" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stop-color="#ff3d6e" stop-opacity="0.55"/>
+          <stop offset="1" stop-color="#ff3d6e" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="im-sh" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000" flood-opacity="0.5"/>
+        </filter>
+      </defs>
+      <rect width="320" height="200" fill="url(#im-bg)"/>
+      <text x="22" y="56" font-family="'Bricolage Grotesque', Arial, sans-serif" font-weight="800" font-size="44" letter-spacing="-1.5" fill="#f6f0ff">Imposter</text>
+      <g font-family="'Space Mono', monospace" font-weight="700" font-size="9" text-anchor="middle" fill="#271b44">
+        <g transform="translate(40 150) rotate(-10)" filter="url(#im-sh)"><rect x="-24" y="-34" width="48" height="68" rx="7" fill="#f6f0ff"/><text y="3">PIZZA</text></g>
+        <g transform="translate(94 140) rotate(-4)" filter="url(#im-sh)"><rect x="-24" y="-34" width="48" height="68" rx="7" fill="#f6f0ff"/><text y="3">PIZZA</text></g>
+        <g transform="translate(226 140) rotate(5)" filter="url(#im-sh)"><rect x="-24" y="-34" width="48" height="68" rx="7" fill="#f6f0ff"/><text y="3">PIZZA</text></g>
+        <g transform="translate(280 150) rotate(11)" filter="url(#im-sh)"><rect x="-24" y="-34" width="48" height="68" rx="7" fill="#f6f0ff"/><text y="3">PIZZA</text></g>
+      </g>
+      <ellipse cx="160" cy="118" rx="62" ry="62" fill="url(#im-glow)"/>
+      <g transform="translate(160 118) rotate(3)" filter="url(#im-sh)">
+        <rect x="-30" y="-42" width="60" height="84" rx="9" fill="#ff3d6e"/>
+        <rect x="-30" y="-42" width="60" height="84" rx="9" fill="none" stroke="#ffd1dd" stroke-width="2" opacity="0.6"/>
+        <text y="16" text-anchor="middle" font-family="'Bricolage Grotesque', Arial, sans-serif" font-weight="800" font-size="50" fill="#fff">?</text>
+      </g>
+    </svg>`,
+
+  /* Out of Ten — the game's own black-on-white, a prompt card, and a judge's
+     red scorecard held up: 7. */
+  "out-of-ten": `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="ot-sh" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#000" flood-opacity="0.22"/>
+        </filter>
+      </defs>
+      <rect width="320" height="200" fill="#ffffff"/>
+      <rect width="320" height="200" fill="#f3f3f3" opacity="0.6"/>
+      <g font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" fill="#000" letter-spacing="-2">
+        <text x="22" y="82" font-size="50">Out of</text>
+        <text x="22" y="134" font-size="50">Ten.</text>
+      </g>
+      <g transform="translate(232 92) rotate(-8)" filter="url(#ot-sh)">
+        <rect x="-44" y="-62" width="88" height="124" rx="10" fill="#000"/>
+        <g font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="10.5" fill="#fff">
+          <text x="-35" y="-38">A movie</text>
+          <text x="-35" y="-24">that's a 3</text>
+          <text x="-35" y="-10">out of ten.</text>
+        </g>
+        <text x="-34" y="52" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="7" fill="#fff">Out of Ten.</text>
+      </g>
+      <g transform="translate(268 148) rotate(9)" filter="url(#ot-sh)">
+        <rect x="-4" y="10" width="8" height="40" rx="2" fill="#c9c9c9"/>
+        <rect x="-30" y="-28" width="60" height="46" rx="6" fill="#e5322d"/>
+        <text y="12" text-anchor="middle" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-weight="700" font-size="38" fill="#fff">7</text>
+      </g>
+    </svg>`,
+
+  /* Draft — an auction: the word in the game's heavy black face, a bid
+     paddle up, chips stacked, the price in money green. */
+  draft: `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="dr-bg" cx="0.75" cy="0.35" r="0.85">
+          <stop offset="0" stop-color="#1d2a24"/>
+          <stop offset="0.6" stop-color="#11161b"/>
+          <stop offset="1" stop-color="#0a0d10"/>
+        </radialGradient>
+        <radialGradient id="dr-glow" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stop-color="#2fe08a" stop-opacity="0.35"/>
+          <stop offset="1" stop-color="#2fe08a" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="dr-sh" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000" flood-opacity="0.55"/>
+        </filter>
+        <g id="dr-chip">
+          <ellipse cx="0" cy="3" rx="17" ry="6" fill="#0d7a45"/>
+          <ellipse cx="0" cy="0" rx="17" ry="6" fill="#2fe08a"/>
+          <ellipse cx="0" cy="0" rx="11" ry="3.6" fill="none" stroke="#e9fff3" stroke-width="1.4" stroke-dasharray="3 2.4"/>
+        </g>
+      </defs>
+      <rect width="320" height="200" fill="url(#dr-bg)"/>
+      <g opacity="0.06" stroke="#f4f1ea">
+        <path d="M0 40H320M0 80H320M0 120H320M0 160H320"/>
+      </g>
+      <text x="20" y="104" font-family="'Archivo Black', Arial Black, sans-serif" font-size="54" letter-spacing="-2" fill="#f4f1ea" filter="url(#dr-sh)">DRAFT</text>
+      <g transform="translate(26 158)">
+        <rect width="92" height="26" rx="6" fill="#20262e"/>
+        <text x="10" y="18" font-family="'Space Mono', monospace" font-weight="700" font-size="14" fill="#2fe08a">$120</text>
+        <text x="62" y="18" font-family="'Space Mono', monospace" font-weight="700" font-size="11" fill="#ffcf3f">▲</text>
+      </g>
+      <ellipse cx="256" cy="106" rx="80" ry="80" fill="url(#dr-glow)"/>
+      <g filter="url(#dr-sh)">
+        <use href="#dr-chip" x="214" y="172"/><use href="#dr-chip" x="214" y="164"/><use href="#dr-chip" x="214" y="156"/>
+        <use href="#dr-chip" x="250" y="176"/><use href="#dr-chip" x="250" y="168"/>
+      </g>
+      <g transform="translate(276 84) rotate(14)" filter="url(#dr-sh)">
+        <rect x="-5" y="22" width="10" height="64" rx="4" fill="#b98a58"/>
+        <rect x="-5" y="22" width="4" height="64" rx="2" fill="#d9ab78"/>
+        <circle r="36" fill="#ff5a1f"/>
+        <circle r="36" fill="none" stroke="#ffb08a" stroke-width="2" opacity="0.5"/>
+        <text y="16" text-anchor="middle" font-family="'Archivo Black', Arial Black, sans-serif" font-size="44" fill="#fff">$</text>
+      </g>
+    </svg>`,
+
+  /* 21 Questions — a page of the notebook it's played in: ruled lines, a
+     red margin, the title in pen and one circled YES. */
+  "21-questions": `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="tq-paper" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#fdf9ee"/>
+          <stop offset="1" stop-color="#efe6cf"/>
+        </linearGradient>
+        <filter id="tq-ink">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="2" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="1.2"/>
+        </filter>
+      </defs>
+      <rect width="320" height="200" fill="url(#tq-paper)"/>
+      <g stroke="#b9d3ec" stroke-width="1.2">
+        <path d="M0 44H320M0 70H320M0 96H320M0 122H320M0 148H320M0 174H320"/>
+      </g>
+      <path d="M46 0V200" stroke="#e4572e" stroke-width="1.6" opacity="0.8"/>
+      <g fill="#d8cfb9"><circle cx="20" cy="40" r="6"/><circle cx="20" cy="100" r="6"/><circle cx="20" cy="160" r="6"/></g>
+      <text x="60" y="112" font-family="Caveat, 'Comic Sans MS', cursive" font-weight="700" font-size="50" fill="#1f2a44" filter="url(#tq-ink)">21 Questions</text>
+      <g transform="translate(250 158) rotate(-10)" filter="url(#tq-ink)">
+        <ellipse rx="36" ry="20" fill="none" stroke="#2a9d5c" stroke-width="3"/>
+        <text y="9" text-anchor="middle" font-family="Caveat, 'Comic Sans MS', cursive" font-weight="700" font-size="28" fill="#2a9d5c">YES!</text>
+      </g>
+    </svg>`,
+
+  /* Stop the Clock — the game's own clock: a black LED face in its dark
+     case, DSEG7 bold-italic digits glowing green over their unlit 8s. */
+  "stop-the-clock": `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="sc-bg" cx="0.5" cy="0.6" r="0.8">
+          <stop offset="0" stop-color="#131a15"/>
+          <stop offset="1" stop-color="#070a08"/>
+        </radialGradient>
+        <linearGradient id="sc-face" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#050605"/>
+          <stop offset="0.6" stop-color="#000"/>
+        </linearGradient>
+        <filter id="sc-glow" x="-20%" y="-40%" width="140%" height="180%">
+          <feGaussianBlur stdDeviation="2" result="a"/>
+          <feGaussianBlur stdDeviation="7" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="a"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="sc-sh" x="-20%" y="-30%" width="140%" height="160%">
+          <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000" flood-opacity="0.8"/>
+        </filter>
+      </defs>
+      <rect width="320" height="200" fill="url(#sc-bg)"/>
+      <text x="160" y="44" text-anchor="middle" font-family="'Russo One', Arial Black, sans-serif" font-size="22" letter-spacing="1" fill="#eef5ef">STOP THE CLOCK</text>
+      <g filter="url(#sc-sh)">
+        <rect x="24" y="64" width="272" height="112" rx="22" fill="#141615" stroke="#2c2f2d" stroke-width="1"/>
+        <rect x="35" y="75" width="250" height="90" rx="13" fill="url(#sc-face)" stroke="#2a2d2b" stroke-width="1"/>
+      </g>
+      <g font-family="DSEG7, 'Courier New', monospace" font-size="54" text-anchor="middle">
+        <text x="160" y="149" fill="#39ff6a" opacity="0.07">88:88</text>
+        <text x="160" y="149" fill="#39ff6a" filter="url(#sc-glow)">01:00</text>
+      </g>
+    </svg>`,
+});

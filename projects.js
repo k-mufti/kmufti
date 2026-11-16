@@ -113,11 +113,11 @@ const PROJECTS = [
 ];
 
 /* =========================================================================
-   The board games — shown on the hub as their own shelf (a box per game,
-   standing on a plank) under the tiles, rather than hidden behind one
+   The board games — shown on the hub in their own window under the tiles
+   (three tiles wide, scrolling sideways), rather than hidden behind one
    "Game Board" tile. Each `slug` is also what that game's page reports to
-   presence.js, so its box can say "1 active user". `art` is the lid
-   picture, drawn on a 120×96 canvas (Wavelength's dial has its own box).
+   presence.js, so its tile can say "1 active user". `cls` picks the cover
+   colours in styles.css; `art` is the picture on the cover.
    ========================================================================= */
 const BOARD_GAMES = [
   {

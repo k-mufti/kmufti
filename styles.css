@@ -1,3 +1,9 @@
+/* Stop the Clock's seven-segment face, for its cover on the hub */
+@font-face {
+  font-family: "DSEG7"; font-display: block;
+  src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-BoldItalic.woff2") format("woff2");
+}
+
 /* Borrowed from the Jigsaw project for its launcher tile art. */
 @font-face {
   font-family: "Super Stamped";
@@ -475,129 +481,163 @@ html[data-bg="haze"] .deep-space {
 }
 
 /* =========================================================================
-   The board-games shelf, under the tiles: one box per game standing on a
-   wooden plank (the same boxes as the Game Board page), so every game is
-   in sight from the front door. Each grid row gets its own plank — the
-   items have no column gap, so their plank strips join up.
+   The multiplayer band: a full row of the tile grid (board-games.js puts it
+   in #apps right after the Jigsaw / White Canvas row) holding a window
+   three tiles wide that scrolls sideways forever. The tiles are ordinary
+   hub tiles; their covers are built from each one's colours, name and
+   picture (BOARD_GAMES in projects.js).
    ========================================================================= */
-.bg-shelf {
+.bg-window {
   position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 1130px;
-  margin-top: 18px;
-  padding-top: 28px;
-  border-top: 1px solid var(--line, rgba(17, 17, 17, 0.12));
+  flex: 1 1 100%;               /* a full row of the tile grid */
+  max-width: 1080px;            /* exactly three 340px tiles and their gaps */
 }
-.bg-shelf[hidden] { display: none; }
-.bg-head { text-align: center; margin-bottom: 26px; }
-.bg-title {
-  margin: 0;
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 800;
-  font-size: 34px;
-  letter-spacing: -0.5px;
-  color: var(--ink, #111);
-}
-.bg-sub {
-  margin: 6px 0 0;
+.bg-window .bg-tile { width: auto; }
+
+/* "multiplayer ————" */
+.bg-head { display: flex; align-items: center; gap: 14px; margin: 4px 0 2px; }
+.bg-label {
   font-family: "JetBrains Mono", monospace;
   font-size: 12.5px;
-  letter-spacing: 1px;
-  color: var(--ink-faint, rgba(17, 17, 17, 0.5));
+  letter-spacing: 1.5px;
+  color: var(--ink-soft, rgba(17, 17, 17, 0.75));
 }
-.bg-row {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  row-gap: 30px;
-}
-.bg-item {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  padding: 14px 10px 18px;   /* room for the badge above, the plank below */
-  text-decoration: none;
-}
-.bg-item::after {           /* this item's stretch of plank */
-  content: "";
-  position: absolute;
-  left: -1px; right: -1px; bottom: 0;   /* overlap the neighbours: no seams */
-  height: 18px;
-  background: linear-gradient(#8a5a35 0%, #5e3a20 100%);
-}
-.bg-item::before {          /* the plank's shadow on the wall below */
-  content: "";
-  position: absolute;
-  left: -1px; right: -1px; bottom: -14px;
-  height: 14px;
-  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0));
-  pointer-events: none;
-}
+.bg-rule { flex: 1; height: 1px; background: var(--line, rgba(17, 17, 17, 0.12)); }
 
-/* a game box, standing on its edge, its lid facing out */
-.bg-box {
-  position: relative;
-  display: block;
+/* ---------- a board-game cover: name and tag left, picture right ------- */
+.bg-cover {
   width: 100%;
-  max-width: 170px;
-  aspect-ratio: 170 / 200;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 6px 0 0 rgba(0, 0, 0, 0.25), 0 14px 22px -10px rgba(0, 0, 0, 0.7);
-  transition: transform 0.18s ease;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 4%;
+  padding: 0 6% 0 8%;
+  box-sizing: border-box;
   container-type: inline-size;
 }
-.bg-item:hover .bg-box { transform: translateY(-8px) rotate(-1deg); }
+.bg-words { flex: 1 1 52%; min-width: 0; text-align: left; }
 .bg-name {
-  position: absolute; top: 10.5cqw; left: 4px; right: 4px;
-  text-align: center;
+  display: block;
   font-family: "Fraunces", Georgia, serif;
   font-weight: 800;
-  font-size: 14.5cqw;
-  line-height: 1.05;
-  letter-spacing: -0.5px;
-  white-space: nowrap;
+  font-size: 10.5cqw;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
 }
 .bg-tag {
-  position: absolute; top: 31cqw; left: 4px; right: 4px;
-  text-align: center;
+  display: block;
+  margin-top: 3cqw;
   font-family: "Inter", system-ui, sans-serif;
-  font-size: 6.6cqw;
+  font-weight: 500;
+  font-size: 4.3cqw;
 }
-.bg-box svg { position: absolute; left: 8%; right: 8%; bottom: 7%; width: 84%; }
-.bg-box.wave { background: #efe8da; color: #1d3d5c; }
-.bg-box.wave .bg-name { font-style: italic; font-weight: 700; }
-.bg-box.wave .bg-tag { color: #5b6573; }
-.bg-box.wave svg { left: 6%; width: 88%; bottom: 8%; }
-.bg-box.imp { background: #1f1535; color: #f6f0ff; }
-.bg-box.imp .bg-tag { color: #ff6d8f; }
-.bg-box.drf { background: #0f1216; color: #f4f1ea; }
-.bg-box.drf .bg-tag { color: #2fe08a; }
-.bg-box.tq { background: #e9e1cf; color: #1f2a44; }
-.bg-box.tq .bg-name { font-size: 12.8cqw; }
-.bg-box.tq .bg-tag { color: #e4572e; }
-.bg-box.clk { background: #0b100d; color: #eef5ef; }
-.bg-box.clk .bg-name { font-size: 11.6cqw; }
-.bg-box.clk .bg-tag { color: #22e06b; }
-.bg-box.ten { background: #000; color: #fff; }
-.bg-box.ten .bg-name { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 700; letter-spacing: -0.8px; font-size: 14cqw; }
-.bg-box.ten .bg-tag { color: #bdbdbd; }
+.bg-pic { flex: 0 0 44%; display: flex; align-items: center; justify-content: center; }
+.bg-pic svg { width: 100%; height: auto; display: block; }
+.bg-cover.wave { background: #efe8da; color: #1d3d5c; }
+.bg-cover.wave .bg-name { font-style: italic; font-weight: 700; }
+.bg-cover.wave .bg-tag { color: #5b6573; }
+.bg-cover.imp { background: #1f1535; color: #f6f0ff; }
+.bg-cover.imp .bg-tag { color: #ff6d8f; }
+.bg-cover.drf { background: #0f1216; color: #f4f1ea; }
+.bg-cover.drf .bg-tag { color: #2fe08a; }
+.bg-cover.tq { background: #e9e1cf; color: #1f2a44; }
+.bg-cover.tq .bg-tag { color: #e4572e; }
+.bg-cover.clk { background: #0b100d; color: #eef5ef; }
+.bg-cover.clk .bg-tag { color: #22e06b; }
+.bg-cover.ten { background: #000; color: #fff; }
+.bg-cover.ten .bg-name { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 700; letter-spacing: -0.04em; }
+.bg-cover.ten .bg-tag { color: #bdbdbd; }
 
-/* the active-user badge sits on top of the box like a sticker */
-.bg-item .app-active {
-  top: 2px;
-  right: auto;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-  background: rgba(0, 0, 0, 0.78);
+/* ---------- the window ------------------------------------------------- */
+.bg-frame { position: relative; }
+.bg-track {
+  --gap: 30px;
+  display: flex;
+  gap: var(--gap);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  padding: 14px 0 16px;        /* room for the hover lift and the shadows */
+  /* the peeking tiles fade out towards the edges */
+  -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0, #000 calc(var(--peek) + 4px), #000 calc(100% - var(--peek) - 4px), rgba(0, 0, 0, 0.15) 100%);
+          mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0, #000 calc(var(--peek) + 4px), #000 calc(100% - var(--peek) - 4px), rgba(0, 0, 0, 0.15) 100%);
+}
+.bg-track::-webkit-scrollbar { display: none; }
+
+/* The first time the band comes into view, the tiles slide a little way
+   left and spring back - a hint that they scroll. */
+.bg-window.nudge .bg-tile { animation: bg-nudge 1.1s cubic-bezier(.35, 0, .25, 1); }
+@keyframes bg-nudge {
+  0%   { transform: translateX(0); }
+  35%  { transform: translateX(-56px); }
+  62%  { transform: translateX(8px); }
+  82%  { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) { .bg-window.nudge .bg-tile { animation: none; } }
+/* Three whole tiles, plus a slice of the one before and the one after
+   peeking in at the edges, so it's plain the row carries on both ways. */
+.bg-track {
+  --cols: 3;
+  --peek: 7%;
+  scroll-padding-inline: calc(var(--peek) + var(--gap));
+}
+.bg-track > .bg-tile {
+  flex: 0 0 calc((100% - 2 * var(--peek) - (var(--cols) + 1) * var(--gap)) / var(--cols));
+  scroll-snap-align: start;
 }
 
-@media (max-width: 1000px) {
-  .bg-row { grid-template-columns: repeat(3, 1fr); }
+.bg-arrow {
+  position: absolute;
+  top: calc(14px + (100% - 30px) / 2);
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(20, 16, 22, 0.82);
+  color: #fff;
+  display: grid; place-items: center;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s ease;
 }
-@media (max-width: 520px) {
-  .bg-row { grid-template-columns: repeat(2, 1fr); row-gap: 24px; }
-  .bg-title { font-size: 28px; }
-  .bg-sub { font-size: 11px; letter-spacing: 0.5px; }
+.bg-arrow svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.bg-arrow:hover { transform: translateY(-50%) scale(1.08); }
+.bg-prev { left: -22px; }
+.bg-next { right: -22px; }
+
+@media (max-width: 760px) {
+  .bg-track { --gap: 16px; }
+  .bg-track { --cols: 1; --peek: 10%; }              /* one tile, both neighbours peeking in */
+  .bg-arrow { display: none; }                      /* swipe instead */
+}
+
+/* ---------- the tray: setting the band apart from the tiles around it ---
+   board-games.js sets data-look="well" on the band, turning it into a
+   sunken panel that bleeds a little past the tile columns. */
+.bg-window[data-look] {
+  --bleed: 26px;
+  margin: 0 calc(var(--bleed) * -1);
+  padding: 14px var(--bleed) 6px;
+  border-radius: 26px;
+  max-width: calc(1080px + 2 * var(--bleed));
+}
+.bg-window[data-look] .bg-arrow.bg-prev { left: calc(var(--bleed) * -1 - 6px); }
+.bg-window[data-look] .bg-arrow.bg-next { right: calc(var(--bleed) * -1 - 6px); }
+
+/* sunken tray: darker than the page, pressed in, lit on top */
+.bg-window[data-look="well"] {
+  background: rgba(0, 0, 0, 0.42);
+  border-top: 1px solid rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: inset 0 4px 18px rgba(0, 0, 0, 0.7), inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+}
+.bg-window[data-look="well"] .bg-label { color: var(--ink, #efe6d8); }
+
+@media (max-width: 760px) {
+  .bg-window[data-look] { --bleed: 12px; border-radius: 20px; }
 }

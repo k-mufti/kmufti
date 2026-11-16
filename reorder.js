@@ -19,7 +19,7 @@
   if (!apps || typeof PROJECTS === "undefined") return;
 
   // app.js builds the tiles in PROJECTS order; label each with its slug
-  const tiles = [...apps.children];
+  const tiles = [...apps.children].filter((el) => el.classList.contains("app"));
   tiles.forEach((el, i) => { if (PROJECTS[i]) el.dataset.slug = PROJECTS[i].slug; });
   const defaultOrder = PROJECTS.map((p) => p.slug);
 
@@ -30,7 +30,8 @@
   function apply(order) {
     const bySlug = new Map([...apps.children].map((el) => [el.dataset.slug, el]));
     for (const slug of order) { const el = bySlug.get(slug); if (el) { apps.appendChild(el); bySlug.delete(slug); } }
-    for (const el of bySlug.values()) apps.appendChild(el);   // anything new goes last
+    for (const el of bySlug.values()) if (el.classList.contains("app")) apps.appendChild(el);   // anything new goes last
+    if (window.placeBoardGames) window.placeBoardGames();       // the board games keep their spot
   }
   const saved = read();
   if (saved) apply(saved);
@@ -117,7 +118,8 @@
       chosenClass: "reorder-chosen",
       dragClass: "reorder-drag",
       disabled: !on,
-      onEnd() { write(current()); showOrder(); },
+      draggable: ".app",
+      onEnd() { write(current()); showOrder(); if (window.placeBoardGames) window.placeBoardGames(); },
     });
   };
   document.head.appendChild(s);
