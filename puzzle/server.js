@@ -1160,6 +1160,20 @@ const server = http.createServer((req, res) => {
     return res.end(JSON.stringify({ visits }));
   }
 
+  // How many people are at the table right now - the hub polls this to put
+  // "1 active user" on the Jigsaw tile. Counts seated players by their id, so
+  // one person with two tabs open is still one.
+  if (apiPath === "/api/active" && req.method === "GET") {
+    const ids = new Set();
+    for (const p of peers) if (p.id) ids.add(p.id);
+    res.writeHead(200, {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Cache-Control": "no-cache",
+    });
+    return res.end(JSON.stringify({ active: ids.size }));
+  }
+
   if (apiPath === "/api/archive" && req.method === "GET") {
     res.writeHead(200, {
       "Content-Type": "application/json",

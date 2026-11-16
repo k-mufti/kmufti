@@ -30,6 +30,7 @@
     el.title = p.title;
 
     el.appendChild(art);
+    if (live) el.dataset.slug = p.slug;
 
     if (!live) {
       const sub = document.createElement("div");
@@ -148,6 +149,35 @@
       el.hidden = false;
     })
     .catch(() => { /* no counter today */ });
+})();
+
+/* =========================================================================
+   "1 active user" on the Jigsaw tile, top right — only while someone is
+   actually at the table. Polled every 15s (and right away when the tab comes
+   back into view); if the backend is down the badge just stays hidden.
+   ========================================================================= */
+(function jigsawActive() {
+  const tile = document.querySelector('.app[data-slug="puzzle"] .app-art');
+  if (!tile) return;
+  const badge = document.createElement("span");
+  badge.className = "app-active";
+  badge.hidden = true;
+  tile.appendChild(badge);
+
+  function check() {
+    if (document.hidden) return;
+    fetch("/puzzle/api/active", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        const n = d && typeof d.active === "number" ? d.active : 0;
+        badge.textContent = `${n} active user${n === 1 ? "" : "s"}`;
+        badge.hidden = n < 1;
+      })
+      .catch(() => { badge.hidden = true; });
+  }
+  check();
+  setInterval(check, 15000);
+  document.addEventListener("visibilitychange", check);
 })();
 
 /* =========================================================================
