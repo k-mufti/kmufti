@@ -594,6 +594,42 @@ function makeParser(onMessage, onClose, onPing) {
 const peers = new Set(); // { socket, id, name, color, x, y, holding }
 let nextSeat = 1;
 
+/* Presence: who's on which project page right now, for the hub's tile
+   badges. Memory only - an anonymous per-browser id and a timestamp, gone
+   ~50s after the last heartbeat and never written to disk. Counting by id
+   means one person with three tabs open is one user. */
+const PRESENCE_TTL = 50 * 1000;
+const presence = new Map(); // slug -> Map(id -> lastSeen)
+const SLUG_RE = /^[a-z0-9-]{1,40}$/;
+const ID_RE = /^[A-Za-z0-9_-]{4,40}$/;
+function notePresence(slug, id, leave) {
+  if (typeof slug !== "string" || !SLUG_RE.test(slug)) return;
+  if (typeof id !== "string" || !ID_RE.test(id)) return;
+  let room = presence.get(slug);
+  if (leave) { if (room) room.delete(id); return; }
+  if (!room) {
+    if (presence.size >= 60) return; // a fixed set of projects; refuse junk slugs
+    room = new Map(); presence.set(slug, room);
+  }
+  if (!room.has(id) && room.size >= 5000) return;
+  room.set(id, Date.now());
+}
+function activeCounts() {
+  const now = Date.now();
+  const out = {};
+  for (const [slug, room] of presence) {
+    for (const [id, t] of room) if (now - t > PRESENCE_TTL) room.delete(id);
+    if (!room.size) { presence.delete(slug); continue; }
+    out[slug] = room.size;
+  }
+  // Jigsaw doesn't load presence.js - its table already knows its players
+  // from their sockets, so it's counted from those.
+  const table = new Set();
+  for (const p of peers) if (p.id) table.add(p.id);
+  if (table.size) out.puzzle = table.size;
+  return out;
+}
+
 function send(peer, obj) {
   try { peer.socket.write(encodeFrame(0x1, Buffer.from(JSON.stringify(obj)))); } catch { /* gone */ }
 }
@@ -1160,18 +1196,29 @@ const server = http.createServer((req, res) => {
     return res.end(JSON.stringify({ visits }));
   }
 
-  // How many people are at the table right now - the hub polls this to put
-  // "1 active user" on the Jigsaw tile. Counts seated players by their id, so
-  // one person with two tabs open is still one.
+  // Who's on which project right now. Every project page loads presence.js,
+  // which POSTs {slug, id} here every 20s (and {leave: true} on the way out);
+  // the hub GETs /api/active and puts "N active users" on each tile.
+  if (apiPath === "/api/presence" && req.method === "POST") {
+    let body = "";
+    req.on("data", (c) => { body += c; if (body.length > 512) req.destroy(); });
+    req.on("end", () => {
+      try {
+        const m = JSON.parse(body);
+        notePresence(m.slug, m.id, !!m.leave);
+      } catch { /* junk in, nothing counted */ }
+      res.writeHead(204, { "Cache-Control": "no-cache" });
+      res.end();
+    });
+    return;
+  }
   if (apiPath === "/api/active" && req.method === "GET") {
-    const ids = new Set();
-    for (const p of peers) if (p.id) ids.add(p.id);
     res.writeHead(200, {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
       "Cache-Control": "no-cache",
     });
-    return res.end(JSON.stringify({ active: ids.size }));
+    return res.end(JSON.stringify({ active: activeCounts() }));
   }
 
   if (apiPath === "/api/archive" && req.method === "GET") {
