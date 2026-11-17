@@ -665,6 +665,49 @@ const ARTWORK = {
    object the game is about.
    ========================================================================= */
 Object.assign(ARTWORK, {
+  /* VITALIS — the app's orb (images/vitalis-orb.png, drawn by its own badge
+     code) and the name in its Michroma, centred across the top as one
+     lockup with the name centred on the orb, on its dotted paper; its
+     halftone astronaut (images/vitalis-body.jpg, a render of its 3D body)
+     rising from the bottom with the real halftone heart from its organ view
+     (images/vitalis-heart.png) glowing at his chest;
+     and the credit bottom left. */
+  vitalis: `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="vt-grid" width="4" height="4" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="0.45" fill="#0e0e0e" opacity="0.13"/>
+        </pattern>
+        <radialGradient id="vt-halo" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stop-color="#3fe6ff" stop-opacity="0.65"/>
+          <stop offset="0.45" stop-color="#1c6dff" stop-opacity="0.3"/>
+          <stop offset="1" stop-color="#1c6dff" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <!-- paper -->
+      <rect width="320" height="200" fill="#f5f5f2"/>
+      <rect width="320" height="200" fill="url(#vt-grid)"/>
+
+      <!-- the astronaut, rising from the bottom, his heart showing through -->
+      <image href="images/vitalis-body.jpg" x="51" y="68" width="315" height="310" style="mix-blend-mode:multiply"/>
+      <ellipse cx="219.5" cy="195" rx="37" ry="37" fill="url(#vt-halo)"/>
+      <image href="images/vitalis-heart.png" x="203.5" y="170.5" width="34" height="48.4"/>
+
+      <!-- the lockup, centred across the tile: orb, then the name centred on it -->
+      <g transform="translate(27 0)">
+        <image href="images/vitalis-orb.png" x="0" y="20" width="60" height="60"/>
+        <text x="68" y="62" font-family="Michroma, 'Tektur', sans-serif" font-size="31" letter-spacing="5.2"
+              fill="#0a1f6b" stroke="#0a1f6b" stroke-width="1.7" stroke-linejoin="round" paint-order="stroke">VITALIS</text>
+      </g>
+
+      <!-- credit -->
+      <g font-family="Inter, system-ui, sans-serif" font-size="13.5">
+        <text x="20" y="166" font-weight="600" fill="#4a4a46">NASA Hackathon</text>
+        <text x="20" y="183" font-weight="500" fill="#8a8a85">2026</text>
+      </g>
+    </svg>`,
+
   /* Wavelength — the dial itself rising from the bottom edge: cream face,
      the hidden 2-3-4-3-2 target, the red needle, on the game's navy. */
   wavelength: `
