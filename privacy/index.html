@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Alfred — Privacy Policy</title>
+  <link rel="icon" href="/favicon.svg?v=1" type="image/svg+xml" />
+  <meta name="description" content="Privacy policy for Alfred, a personal Telegram bot that plans Kareem Muftee's day and tracks job applications." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <!-- Privacy policy for Alfred (personal Telegram bot, Google OAuth).
+       Google's OAuth verification links here, so keep it accurate to what
+       the bot actually does. Standalone page, like then/. -->
+  <style>
+    :root {
+      --ink: #111111;
+      --ink-dim: rgba(17, 17, 17, 0.55);
+      --ink-faint: rgba(17, 17, 17, 0.32);
+      --line: rgba(17, 17, 17, 0.12);
+      --wall: #f1f0ee;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--wall);
+      color: var(--ink);
+      font-family: Inter, system-ui, sans-serif;
+      font-weight: 300;
+      line-height: 1.65;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 22px 28px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      letter-spacing: 2px;
+    }
+    header a { color: var(--ink-dim); text-decoration: none; }
+    header a:hover { color: var(--ink); }
+    main {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 24px 28px 80px;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-weight: 400;
+      font-size: clamp(22px, 3vw, 30px);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+    }
+    .when {
+      margin: 0 0 36px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--ink-faint);
+    }
+    h2 {
+      margin: 36px 0 8px;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+    }
+    p, li { font-size: 16px; }
+    p { margin: 0 0 14px; }
+    ul { margin: 0 0 14px; padding-left: 20px; }
+    li { margin-bottom: 10px; }
+    strong { font-weight: 500; }
+    main a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--ink-faint); }
+    main a:hover { text-decoration-color: var(--ink); }
+    .statement {
+      margin: 20px 0;
+      padding: 14px 18px;
+      border-left: 2px solid var(--ink);
+      background: rgba(255, 255, 255, 0.6);
+    }
+    @media (max-width: 760px) {
+      header, main { padding-left: 16px; padding-right: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/">kmufti.com</a>
+    <a href="/">home &rarr;</a>
+  </header>
+  <main>
+    <h1>Alfred — Privacy Policy</h1>
+    <p class="when">last updated 23 november 2026</p>
+
+    <h2>What Alfred is</h2>
+    <p>Alfred is a personal productivity tool, a Telegram bot that plans my day and keeps track of my job applications. It is built and used only by me, Kareem Muftee. It is not offered to the public.</p>
+
+    <h2>Google data Alfred accesses</h2>
+    <ul>
+      <li><strong>Gmail (read-only).</strong> Alfred reads the sender, subject and preview of recent job-search emails. It uses them to count job applications and to notice recruiter replies, interviews and rejections. It cannot send, modify or delete email.</li>
+      <li><strong>Google Calendar.</strong> Alfred reads events to find busy time. It creates planning blocks, and it removes only the planning blocks it added itself.</li>
+    </ul>
+
+    <h2>Where the data goes</h2>
+    <ul>
+      <li>Data is stored in a private database on my own machine or server.</li>
+      <li>Email sender, subject and preview are sent to an AI model (through <a href="https://openrouter.ai" target="_blank" rel="noopener">OpenRouter</a>) only to classify them.</li>
+      <li>Nothing is sold or shared for advertising, and I don't use any of it to train models.</li>
+    </ul>
+    <p class="statement">Alfred's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
+
+    <h2>Revoking access</h2>
+    <p>Anyone can remove Alfred's access to their Google account at <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">myaccount.google.com/permissions</a>.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about this policy: <a href="mailto:kareem.muftee@gmail.com">kareem.muftee@gmail.com</a>.</p>
+  </main>
+</body>
+</html>
