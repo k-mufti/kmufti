@@ -23,7 +23,7 @@ const PROJECTS = [
   {
     slug: "dailies",
     title: "Dailies",
-    description: "An almanac of every Wordle-type daily game, drawn in ink. Write yours onto today's page and a little bird hops you through them.",
+    description: "An almanac of every Wordle-type daily game, drawn in ink. Write yours onto today's page and Bardudi the bird hops you through them.",
     tags: ["daily", "games", "js"],
     accent: "#1f1b16",
     accentBg: "linear-gradient(135deg, #f7dd84 0%, #f4efe2 100%)",

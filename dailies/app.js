@@ -43,7 +43,8 @@
   const STRIKE =
     '<svg class="strike" viewBox="0 0 200 10" preserveAspectRatio="none"><path d="M2 6 C40 3 80 7 120 4 C150 2 175 6 198 4" fill="none" stroke="#1f1b16" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linecap="round"/></svg>';
   const MARK = '<svg viewBox="0 0 24 24"><path d="M6.5 3.5 h11 v17 l-5.5 -4.2 l-5.5 4.2 z" stroke-linejoin="round"/></svg>';
-  const BIRD = '<svg class="bird" viewBox="0 0 48 40" aria-hidden="true"><use href="#bird"/></svg>';
+  // The bird is called Bardudi.
+  const BIRD = '<svg class="bird" viewBox="0 0 48 40" role="img" aria-label="Bardudi"><title>Bardudi</title><use href="#bird"/></svg>';
 
   function markDone(id, on = true) {
     rollDay();
@@ -205,7 +206,7 @@
         '<div class="hero-art plain"><svg viewBox="30 10 190 140"><use href="#orn"/></svg>' + BIRD.replace('class="bird"', 'class="bird home"') + "</div>" +
         '<div class="hero-text"><p class="kicker">Today</p><h2 class="hero-name">All done.</h2>' +
         '<p class="hero-blurb">' + list.length + " of " + list.length + " played" +
-        (state.streak > 1 ? " · " + state.streak + " days in a row" : "") + ". See you tomorrow.</p>" + lemons + "</div>";
+        (state.streak > 1 ? " · " + state.streak + " days in a row" : "") + ". Bardudi will see you tomorrow.</p>" + lemons + "</div>";
     } else {
       hero.innerHTML =
         '<a class="hero-art" href="' + esc(next.url) + '" target="_blank" rel="noopener">' + artFor(next.id, next) + "</a>" +
