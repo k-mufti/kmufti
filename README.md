@@ -19,6 +19,7 @@ each tile is a self-contained app living in its own folder.
 | **`/translate/`** | **Lost in Translation** — a phrase appears in a mystery language. Guess what it means, and name the language for bonus points. |
 | **`/infinite-kitchen/`** | **Infinite Kitchen** — start from six elements (Water, Grain, Plant, Animal, Salt, Sugar) and the tools in a 3D kitchen, and combine your way to anything food. Every combo is hand-written in `core.txt`; `node infinite-kitchen/core.js` builds `recipes.json` from it. |
 | **`/yahtzee/`** | **Yahtzee** — five red casino dice on blue velvet in a penthouse over the city, thrown with real physics. Play the bot, or a stranger 1v1 over a socket. |
+| **`/dailies/`** | **Dailies** — an ink-and-wash almanac of every Wordle-type daily game: "The Almanac" is the catalogue (as illustrated plates), "Today's Page" is your own list with a "Next chapter" button and a bird that hops to the next game. Resets at midnight; all in localStorage. Add a game in `dailies/games.js`, then run `node dailies/fetch-thumbs.js` to save its official share image into `dailies/thumbs/` (games without one fall back to an ink drawing in `dailies/art.js`). |
 | **`/destroy/`** | **Destroy** — every word on a page becomes a platform and every picture a target; run, fly and blow it apart. Plays its demo article, any kmufti.com page (in a same-origin frame), or any site via a bookmarklet. All client-side, in `destroy.js`. |
 
 ## Architecture

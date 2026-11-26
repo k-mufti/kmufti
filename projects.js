@@ -21,6 +21,16 @@ const PROJECTS = [
     status: "live",
   },
   {
+    slug: "dailies",
+    title: "Dailies",
+    description: "An almanac of every Wordle-type daily game, drawn in ink. Write yours onto today's page and a little bird hops you through them.",
+    tags: ["daily", "games", "js"],
+    accent: "#1f1b16",
+    accentBg: "linear-gradient(135deg, #f7dd84 0%, #f4efe2 100%)",
+    href: "dailies/",
+    status: "live",
+  },
+  {
     slug: "vitalis",
     title: "VITALIS",
     description: "Health monitoring for astronauts on a Mars mission, built in a weekend for NASA Space Apps 2026: a 3D halftone body twin, every reading from 8 devices checked against NASA limits, and Vitaly, a voice assistant that talks the crew through first aid while Earth is 20 minutes away.",

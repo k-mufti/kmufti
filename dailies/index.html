@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dailies — kmufti.com</title>
+  <link rel="icon" href="favicon.svg?v=3" type="image/svg+xml" />
+  <meta name="description" content="An almanac of daily puzzle games. Every Wordle-type game in one place, and a page of your own to cross them off." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=IM+Fell+English:ital@0;1&family=Jost:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=15" />
+</head>
+<body>
+  <!-- Shared drawing tools: the fine-liner wobble, cross-hatching, the bird. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="wob" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="7" />
+        <feDisplacementMap in="SourceGraphic" scale="1.6" />
+      </filter>
+      <filter id="wob2" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="3" />
+        <feDisplacementMap in="SourceGraphic" scale="2.4" />
+      </filter>
+      <pattern id="hatch" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="3" stroke="#1f1b16" stroke-width="0.7" />
+      </pattern>
+      <symbol id="bird" viewBox="0 0 48 40">
+        <g filter="url(#wob)" stroke="#1f1b16" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M8 24 L1 30 L5 31 L2 35 L12 29 Z" fill="#6f7fb8" />
+          <path d="M9 22 C9 12 18 8 26 10 C28 4 36 3 39 9 C42 14 40 20 36 22 C36 30 28 35 19 34 C12 33 9 29 9 22 Z" fill="#9aa5d9" />
+          <path d="M14 22 C18 18 26 19 29 24 C26 29 18 30 14 27 Z" fill="#7f9c6b" />
+          <path d="M17 31 C22 33 29 32 33 27" fill="none" />
+          <path d="M39 12 L46 13.5 L39 16 Z" fill="#e8a93a" />
+          <circle cx="35" cy="11" r="1.4" fill="#1f1b16" stroke="none" />
+          <path d="M20 34 L19 39 M25 34 L25 39 M17 39 h5 M23 39 h5" fill="none" />
+        </g>
+      </symbol>
+      <symbol id="orn" viewBox="0 0 240 150">
+
+        <g filter="url(#wob2)" stroke-linecap="round" stroke-linejoin="round">
+          <!-- left sprig -->
+          <path d="M46 92 C30 84 22 70 26 56 C40 62 48 76 46 92 Z" fill="#5f8a4f" stroke="#1f1b16" stroke-width="1.1" />
+          <path d="M44 88 C38 78 32 68 28 60" fill="none" stroke="#1f1b16" stroke-width=".7" />
+          <!-- the peel D: ink, then yellow, then pith highlight -->
+          <g fill="none">
+            <defs><path id="peel" d="M98 30 C86 18 70 24 76 36 C80 44 92 38 92 30 M92 30 C96 60 88 92 96 122 C100 136 86 142 78 134 M92 30 C150 18 178 46 176 76 C174 112 140 130 96 122" /></defs>
+            <use href="#peel" stroke="#1f1b16" stroke-width="13" />
+            <use href="#peel" stroke="#f2c53d" stroke-width="10.5" />
+            <use href="#peel" stroke="#fbf1c9" stroke-width="2.5" stroke-dasharray="16 22" />
+          </g>
+          <!-- lemon half, bottom left -->
+          <circle cx="66" cy="118" r="21" fill="#f2c53d" stroke="#1f1b16" stroke-width="1.2" />
+          <circle cx="66" cy="118" r="17" fill="#fbe7a1" stroke="#1f1b16" stroke-width=".8" />
+          <path d="M66 101 V135 M49 118 H83 M54 106 L78 130 M78 106 L54 130" stroke="#e7b52c" stroke-width="1.4" />
+          <circle cx="66" cy="118" r="2" fill="#fbf1c9" stroke="#1f1b16" stroke-width=".6" />
+          <!-- leaves + blossom, top right -->
+          <path d="M168 40 C176 22 194 16 210 20 C204 36 186 44 168 40 Z" fill="#5f8a4f" stroke="#1f1b16" stroke-width="1.1" />
+          <path d="M170 39 C182 32 194 26 206 22" fill="none" stroke="#1f1b16" stroke-width=".7" />
+          <path d="M182 92 C196 90 206 98 210 110 C196 112 186 104 182 92 Z" fill="#79a065" stroke="#1f1b16" stroke-width="1.1" />
+          <g stroke="#1f1b16" stroke-width=".9" fill="#fffdf6">
+            <ellipse cx="160" cy="30" rx="4.5" ry="6.5" transform="rotate(0 160 37)" />
+            <ellipse cx="160" cy="30" rx="4.5" ry="6.5" transform="rotate(72 160 37)" />
+            <ellipse cx="160" cy="30" rx="4.5" ry="6.5" transform="rotate(144 160 37)" />
+            <ellipse cx="160" cy="30" rx="4.5" ry="6.5" transform="rotate(216 160 37)" />
+            <ellipse cx="160" cy="30" rx="4.5" ry="6.5" transform="rotate(288 160 37)" />
+          </g>
+          <circle cx="160" cy="37" r="2.6" fill="#e8a93a" stroke="#1f1b16" stroke-width=".7" />
+          <!-- peel speckles -->
+          <g fill="#1f1b16">
+            <circle cx="120" cy="26" r=".7" /><circle cx="146" cy="30" r=".7" /><circle cx="170" cy="60" r=".7" />
+            <circle cx="172" cy="88" r=".7" /><circle cx="150" cy="116" r=".7" /><circle cx="92" cy="70" r=".7" /><circle cx="94" cy="100" r=".7" />
+          </g>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="topbar">
+    <a class="logo" href="./" aria-label="Dailies home">
+      <svg class="logo-mark" viewBox="30 10 190 140" aria-hidden="true"><use href="#orn" /></svg>
+      <span>Dailies</span>
+    </a>
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="today">Today <span class="count" id="tabCount"></span></button>
+      <button class="tab" role="tab" data-tab="explore">All games</button>
+    </nav>
+    <div class="bar-right">
+      <input class="search" id="search" type="search" placeholder="Search games" autocomplete="off" />
+      <a class="home-link" href="../">kmufti.com</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Today -->
+    <section class="panel" id="today" hidden>
+      <div class="hero" id="hero"></div>
+      <section class="shelf" id="listShelf">
+        <h2 class="genre"><span class="g-name">Your list</span><span class="g-rule"></span><span class="g-count" id="listCount"></span></h2>
+        <div class="shelf-wrap">
+          <button class="nudge left" aria-label="Scroll left">‹</button>
+          <div class="track" id="list"></div>
+          <button class="nudge right" aria-label="Scroll right">›</button>
+        </div>
+      </section>
+    </section>
+
+    <!-- All games -->
+    <section class="panel" id="explore" hidden>
+      <div id="grid"></div>
+      <form class="custom" id="customForm">
+        <h3>Missing one? Add it</h3>
+        <div class="custom-row">
+          <input id="customName" placeholder="Name" maxlength="40" required />
+          <input id="customUrl" type="url" placeholder="Link" required />
+          <button class="btn" type="submit">Add</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="games.js?v=4"></script>
+  <script src="thumbs/thumbs.js?v=2"></script>
+  <script src="art.js?v=6"></script>
+  <script src="app.js?v=13"></script>
+  <script src="../presence.js" data-slug="dailies" defer></script>
+</body>
+</html>
