@@ -617,6 +617,50 @@ const ARTWORK = {
       <!-- a little spilt flour -->
       <g fill="#fbf1dc" opacity="0.55"><circle cx="69.5" cy="181.6" r="1.2"/><circle cx="70.4" cy="181.1" r="1.0"/><circle cx="52.9" cy="181.1" r="1.0"/><circle cx="90.7" cy="176.9" r="0.7"/><circle cx="47.1" cy="184.1" r="1.1"/><circle cx="44.1" cy="185.8" r="1.3"/><circle cx="82.0" cy="182.2" r="0.6"/><circle cx="42.4" cy="181.3" r="0.5"/><circle cx="53.3" cy="178.4" r="0.5"/><circle cx="70.3" cy="180.4" r="1.2"/><circle cx="73.7" cy="182.4" r="0.9"/><circle cx="82.6" cy="180.6" r="0.7"/><circle cx="103.4" cy="186.0" r="1.2"/><circle cx="85.4" cy="179.2" r="0.7"/></g>
     </svg>`,
+  /* Dailies — the almanac's own cover: cream paper, the lemon-peel D drawn
+     in fine-liner, the name in a book serif, and today's list ticked off. */
+  dailies: `
+    <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="dl-wob" x="-5%" y="-5%" width="110%" height="110%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="3"/>
+          <feDisplacementMap in="SourceGraphic" scale="2.4"/>
+        </filter>
+        <filter id="dl-grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="5"/>
+          <feColorMatrix values="0 0 0 0 0.12  0 0 0 0 0.1  0 0 0 0 0.08  0 0 0 0.09 0"/></filter>
+        <path id="dl-peel" d="M98 30 C86 18 70 24 76 36 C80 44 92 38 92 30 M92 30 C96 60 88 92 96 122 C100 136 86 142 78 134 M92 30 C150 18 178 46 176 76 C174 112 140 130 96 122"/>
+      </defs>
+      <rect width="320" height="200" fill="#f4efe2"/>
+      <rect width="320" height="200" filter="url(#dl-grain)"/>
+      <rect x="9" y="9" width="302" height="182" fill="none" stroke="#1f1b16" stroke-width="1" filter="url(#dl-wob)"/>
+      <rect x="13" y="13" width="294" height="174" fill="none" stroke="#1f1b16" stroke-width=".5" filter="url(#dl-wob)"/>
+      <g transform="translate(0 34) scale(.7)" filter="url(#dl-wob)" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M46 92 C30 84 22 70 26 56 C40 62 48 76 46 92 Z" fill="#5f8a4f" stroke="#1f1b16" stroke-width="1.1"/>
+        <g fill="none">
+          <use href="#dl-peel" stroke="#1f1b16" stroke-width="13"/>
+          <use href="#dl-peel" stroke="#f2c53d" stroke-width="10.5"/>
+          <use href="#dl-peel" stroke="#fbf1c9" stroke-width="2.5" stroke-dasharray="16 22"/>
+        </g>
+        <circle cx="66" cy="118" r="21" fill="#f2c53d" stroke="#1f1b16" stroke-width="1.2"/>
+        <circle cx="66" cy="118" r="17" fill="#fbe7a1" stroke="#1f1b16" stroke-width=".8"/>
+        <path d="M66 101 V135 M49 118 H83 M54 106 L78 130 M78 106 L54 130" stroke="#e7b52c" stroke-width="1.4"/>
+        <path d="M168 40 C176 22 194 16 210 20 C204 36 186 44 168 40 Z" fill="#5f8a4f" stroke="#1f1b16" stroke-width="1.1"/>
+        <path d="M170 39 C182 32 194 26 206 22" fill="none" stroke="#1f1b16" stroke-width=".7"/>
+      </g>
+      <text x="228" y="90" font-family="'Cormorant Garamond', 'Iowan Old Style', Georgia, serif" font-size="40" font-weight="700" fill="#1f1b16" text-anchor="middle">Dailies</text>
+      <path d="M168 98 Q228 94 288 98" stroke="#1f1b16" stroke-width=".8" fill="none" filter="url(#dl-wob)"/>
+      <g font-family="'Cormorant Garamond', Georgia, serif" font-size="15" font-style="italic" fill="#1f1b16" filter="url(#dl-wob)">
+        <g stroke="#1f1b16" stroke-width="1" fill="none" stroke-linecap="round">
+          <rect x="186" y="114" width="10" height="10"/><path d="M187 119 l3 4 l7 -10" stroke-width="1.6"/>
+          <rect x="186" y="134" width="10" height="10"/><path d="M187 139 l3 4 l7 -10" stroke-width="1.6"/>
+          <rect x="186" y="154" width="10" height="10"/>
+          <path d="M203 120 h44" stroke-width=".9"/><path d="M203 140 h56" stroke-width=".9"/>
+        </g>
+        <text x="204" y="124">Wordle</text>
+        <text x="204" y="144">Connections</text>
+        <text x="204" y="164">Strands</text>
+      </g>
+    </svg>`,
   /* Don Marbleone — "DON" laser-carved into his forehead, caught mid-burn
      with the N still glowing: a real shot of the game (bust/cover.jpg). */
   bust: `<img src="bust/cover.jpg?v=4" alt="" loading="lazy" />`,
