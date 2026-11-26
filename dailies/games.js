@@ -109,6 +109,7 @@ const GAMES = [
   { id: "chronofive", name: "ChronoFive", by: "chronofive.com", cat: "history", url: "https://chronofive.com/", blurb: "A daily history puzzle." },
 
   // Trivia
+  { id: "krillion", name: "Krillion", by: "krillion.io", cat: "trivia", url: "https://krillion.io/", blurb: "Seven prompts a day. The rarer your right answer, the more it scores." },
   { id: "costcodle", name: "Costcodle", by: "costcodle.com", cat: "trivia", url: "https://costcodle.com/", blurb: "Guess the price of a Costco item." },
   { id: "metazooa", name: "Metazooa", by: "metazooa.com", cat: "trivia", url: "https://metazooa.com/", blurb: "Find the mystery animal through the tree of life." },
   { id: "metaflora", name: "Metaflora", by: "metazooa.com", cat: "trivia", url: "https://flora.metazooa.com/", blurb: "Metazooa, but for plants." },

@@ -18,6 +18,7 @@ const THUMBS = {
   "globle-capitals": "thumbs/globle-capitals.png",
   "heardle80s": "thumbs/heardle80s.png",
   "hexcodle": "thumbs/hexcodle.png",
+  "krillion": "thumbs/krillion.png",
   "letter-boxed": "thumbs/letter-boxed.png",
   "mathler": "thumbs/mathler.png",
   "metaflora": "thumbs/metaflora.png",
