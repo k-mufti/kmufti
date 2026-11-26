@@ -56,6 +56,62 @@
     }
     save();
     updateToday();
+    if (on && list.length && list.every((g) => isDone(g.id))) celebrate();
+  }
+
+  /* Paper confetti in the almanac's colours, thrown up from both bottom
+     corners. If the last game was ticked from another tab (Play opens one),
+     it waits until you come back so you actually see it. */
+  function celebrate() {
+    if (document.hidden) {
+      const go = () => { if (!document.hidden) { document.removeEventListener("visibilitychange", go); celebrate(); } };
+      document.addEventListener("visibilitychange", go);
+      return;
+    }
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const cv = document.createElement("canvas");
+    cv.className = "confetti";
+    document.body.appendChild(cv);
+    const ctx = cv.getContext("2d");
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const W = innerWidth, H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.scale(dpr, dpr);
+    const COLORS = ["#f2c53d", "#f7dd84", "#5f8a4f", "#9aa5d9", "#e8a93a", "#e9bdb4", "#fffdf6"];
+    const bits = [];
+    for (let i = 0; i < 220; i++) {
+      const left = i % 2 === 0;
+      const ang = (left ? -60 : -120) + (Math.random() - 0.5) * 50;
+      const sp = 11 + Math.random() * 11;
+      bits.push({
+        x: left ? -10 : W + 10, y: H * (0.75 + Math.random() * 0.2),
+        vx: Math.cos(ang * Math.PI / 180) * sp, vy: Math.sin(ang * Math.PI / 180) * sp,
+        w: 6 + Math.random() * 7, h: 4 + Math.random() * 5,
+        r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.3,
+        flip: Math.random() * 6.28, vf: 0.08 + Math.random() * 0.12,
+        c: COLORS[i % COLORS.length], round: Math.random() < 0.18,
+      });
+    }
+    const t0 = performance.now();
+    (function frame(t) {
+      ctx.clearRect(0, 0, W, H);
+      let alive = 0;
+      for (const b of bits) {
+        b.vy += 0.32; b.vx *= 0.985; b.vy *= 0.985;
+        b.x += b.vx + Math.sin(b.flip) * 0.6; b.y += b.vy;
+        b.r += b.vr; b.flip += b.vf;
+        if (b.y > H + 20) continue;
+        alive++;
+        ctx.save();
+        ctx.translate(b.x, b.y); ctx.rotate(b.r); ctx.scale(1, Math.cos(b.flip));
+        ctx.fillStyle = b.c; ctx.strokeStyle = "#1f1b16"; ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        if (b.round) ctx.arc(0, 0, b.h * 0.7, 0, 6.28); else ctx.rect(-b.w / 2, -b.h / 2, b.w, b.h);
+        ctx.fill(); ctx.stroke();
+        ctx.restore();
+      }
+      if (alive && t - t0 < 7000) requestAnimationFrame(frame); else cv.remove();
+    })(t0);
   }
 
   function toggleList(id) {

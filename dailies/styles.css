@@ -220,3 +220,6 @@ main { padding: 0 0 80px; }
 @media (prefers-reduced-motion: reduce) {
   .hero-art .bird.home, .hero.fresh { animation: none; }
 }
+
+/* Confetti when the last game is ticked (app.js celebrate). */
+.confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; }
